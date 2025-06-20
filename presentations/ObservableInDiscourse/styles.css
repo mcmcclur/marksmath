@@ -1,0 +1,11 @@
+/* My css styles */
+
+.title {
+  font-size: 150% !important;
+}
+.quarto-title-author-name {
+  font-size: 90% !important;
+}
+.quarto-title-affiliation {
+  font-size: 120% !important;
+}

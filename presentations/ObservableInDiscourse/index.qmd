@@ -1,0 +1,339 @@
+---
+title: Integrating Observable into Discourse
+subtitle: Developing Students' Technical Communication Skills
+date: Jan 3, 2024
+author: Mark McClure
+institute: UNC - Asheville
+echo: false
+format:
+  revealjs:
+    controls: true
+    controls-layout: bottom-right
+    navigation-mode: vertical
+    smaller: true
+    keyboard: true
+    date-format: ddd, MMM DD, YYYY
+    theme: default
+    transition: slide
+    progress: false
+    history: false
+    css: styles.css
+    template-partials:
+      - title-slide.html
+  beamer:
+    aspectratio: 32
+    navigation: vertical
+    theme: default
+    titlegraphic: "images/qrcode.pdf"
+---
+
+# A bit about me
+
+- Ph.D. from Ohio State 1994
+- Professor of Mathematics at UNC Asheville since 1997
+- Scholarly interests include
+  - Fractal geometry
+  - Complex dynamics
+  - Scientific and data visualization
+
+---
+
+## More (than you want to know) about me
+
+- Worked for 3 years on the development of Wolfram Alpha
+- [Observable ambassador](https://observablehq.com/ambassadors)
+
+:::{.fragment}
+I guess that the programming skills I've developed to explore my scholarly interests have expanded into my professional existence.
+:::
+
+---
+
+## A bit about this talk
+
+ - Discourse is open source forum software
+   - (like a Math.Stackexchange that you can host yourself)
+ - Observable is a notebook based, Javascript programming platform
+   - (like an online Jupyter for data visualization with Javascript)
+
+:::{.fragment}
+In this talk, I'll show you how my students and I use these two tools in the classroom together.
+:::
+
+
+# Two basic tools students should learn
+
+- LaTeX - as we all know
+- Markdown [(*I wonder how many folks use Markdown?*)]{class="fragment"}
+
+---
+
+## LaTeX and Markdown
+
+- LaTeX is a document preparation system
+  with lots of specialized tools for Mathematical typesetting.
+- Markdown might also be thought of as a document preparation system
+  that allows you to incorporate LaTeX snippets.
+
+Thus, you can use simple markdown to describe overall document structure while using small bits of LaTeX for the tricky typesetting.
+
+---
+
+## Example
+
+The standard normal $f(x) = e^{-x^2/2}/\sqrt{2\pi}$ is **cool** because
+
+ - it has applications in statistics,
+ - it has applications in partial differential equations, *and*
+
+ $$\int_{-\infty}^{\infty} f(x) \, dx = 1!$$
+
+---
+
+We can type that previous slide in markdown as
+
+    ## Example
+
+    The standard normal $f(x) = e^{-x^2/2}/\sqrt{2\pi}$ is
+    **cool** because
+
+     - it has applications in statistics,
+     - it has applications in partial differential equations,
+      *and*
+
+     $$\int_{-\infty}^{\infty} f(x) \, dx = 1!$$
+
+---
+
+This very presentation, in fact, was written in markdown. It was then exported to two different presentation formats using a relatively new tool called [Quarto](https://quarto.org/).
+
+Quarto can export to many formats, including
+
+- Beamer,
+- Powerpoint, and
+- RevealJS.
+
+---
+
+## More tools students should learn
+
+- Graphing tool or tools
+- A programming language or languages
+- How to integrate these things together
+
+
+# Discourse
+
+[![](images/discourse_screenshot.png)](https://discourse.marksmath.org/)
+
+---
+
+## Description
+
+Discourse is open source, online forum software that is (relatively) easy to host yourself. With any luck, we can take a quick look at my Discourse instance here:
+
+[https://discourse.marksmath.org/](https://discourse.marksmath.org/)
+
+Otherwise, we'll slip through a few slides below.
+---
+
+## Basic usage
+
+![](images/basic_use.png)
+
+---
+
+## Example calculus assignment
+
+![](images/calculus_example.png){fig-align="center"}
+
+---
+
+## Example calculus solution
+
+![](images/calculus_solution1.png){fig-align="center"}
+
+---
+
+## Example calculus solution (cont)
+
+![](images/calculus_solution2.png){fig-align="center"}
+
+---
+
+## Example fractal assignment
+
+![](images/fractal_example.png){fig-align="center"}
+
+---
+
+## Example fractal solution
+
+![](images/fractal_solution.png){fig-align="center"; height=300}
+
+
+# Observable
+
+[![](images/observable_screenshot.png)](https://observablehq.com/)
+
+---
+
+## Description
+
+Observable is an online platform for the development of visualizations in Javascript. While the platform is proprietary and not open source, the company develops and contributes to many open source libraries.
+
+The next slide shows the notebook editor working with [this Observable notebook](https://observablehq.com/@mcmcclur/frequency).
+
+---
+
+![](images/observable_interface.png){fig-align="center"}
+
+---
+
+## The embedded visualization
+
+
+::: {.content-visible when-format="revealjs"}
+
+```{ojs}
+import {viewof s, plot} from '@mcmcclur/frequency';
+viewof s
+plot
+```
+:::::: aside
+[Notebook link](https://observablehq.com/@mcmcclur/frequency)
+::::::
+:::
+
+::: {.content-visible unless-format="revealjs"}
+![](images/frequency.png)
+[Notebook link](https://observablehq.com/@mcmcclur/frequency)
+:::
+
+---
+
+## The cycloid
+
+The cycloid is a nice example to share with students in many intro courses - from Precalculus, as an application of trigonometry, to Calculus III, as motion defined by the following parameterization:
+
+$$
+\begin{aligned}
+  x(t) &= t - r\sin(t) \\
+  y(t) &= 1-r\cos(t).
+\end{aligned}
+$$
+
+---
+
+## Animated cycloid
+
+::: {.content-visible when-format="revealjs"}
+```{ojs}
+import {viewof r, viewof t, cycloid} from '@mcmcclur/the-cycloid'
+viewof r 
+viewof t
+cycloid
+```
+:::::: aside
+[Notebook link](https://observablehq.com/@mcmcclur/the-cycloid)
+::::::
+:::
+
+::: {.content-visible unless-format="revealjs"}
+![](images/cycloid.png)
+[Notebook link](https://observablehq.com/@mcmcclur/the-cycloid)
+:::
+
+---
+
+## Vibration
+
+We might model a guitar string with the damped wave equation:
+
+$$u_{tt} + d \, u_t = c^2u_{xx}$$
+
+with appropriate boundary and conditions; perhaps
+
+$$\begin{aligned}
+&u(0,t) = 0 \text{ and } u(1,t) = 0 \\
+&u(x,0) = f(x) \text{ and } u_t(x,0) = 0.
+\end{aligned}$$
+
+
+---
+
+## Pluck
+
+::: {.content-visible when-format="revealjs"}
+```{ojs}
+import {guitar_string} from '@mcmcclur/pluck';
+guitar_string
+```
+:::::: aside
+[Notebook link](https://observablehq.com/@mcmcclur/pluck)
+::::::
+:::
+
+::: {.content-visible unless-format="revealjs"}
+![](images/pluck.png)
+[Notebook link](https://observablehq.com/@mcmcclur/pluck)
+:::
+
+---
+
+## Importantly
+
+It's not just *me* building these things; students do this as well. They take their first steps in these kinds of classes and, in some cases, go further.
+
+The next slide shows an image of a student's exploration of the parameter space for the complex family
+$$f_c(z) = (z^2+c)/z.$$
+
+---
+
+![](images/nathan.png){fig-align="center"}
+
+::: {.content-visible when-format="revealjs"}
+:::::: aside
+[Notebook link](https://observablehq.com/@nathanabram/exploring-a-complex-rational-function)
+::::::
+:::
+
+::: {.content-visible unless-format="revealjs"}
+[Notebook link](https://observablehq.com/@nathanabram/exploring-a-complex-rational-function)
+:::
+
+
+
+# Tools used for this presentation
+
+- Markdown (for the overall structure)
+- Observable (for the interactive images)
+- Mac screen capture (for the not so interactive images)
+- LaTeX (for the typesetting)
+- Beamer (for the slideshow - PDF version)
+- RevealJS (for the slideshow - HTML version)
+- Quarto (to render the markdown to either slideshow)!
+
+---
+
+## Thank you!
+
+::: {.content-visible when-format="revealjs"}
+```{ojs}
+import {membrane, style, do_it} from '@mcmcclur/koch-vibration'
+membrane
+```
+:::
+
+::: {style="display: none"}
+```{ojs}
+style 
+```
+```{ojs}
+do_it
+```
+:::
+
+::: {.content-visible unless-format="revealjs"}
+![](images/koch.png)
+:::
