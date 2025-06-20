@@ -1,0 +1,165 @@
+---
+title: Scholarly activities 
+---
+
+::: {.grid}
+
+::::: {.g-col-8}
+
+My scholarly interests include real analysis, fractal geometry, real and complex dynamics, and computer graphics illustrating these ideas. My images have been featured on the covers of [The Mathematica Journal]{style="font-style: italic"}, [Mathematica in Education and Research]{style="font-style: italic"}, [The Mathematical Intelligencer]{style="font-style: italic"}, and [Math Horizons]{style="font-style: italic"}.
+
+My publication rate has slowed in recent years as my interests have shifted over the years. Much of my creative output these days goes into mathematical, scientific, and data visualization. You can see a lot of this work on
+
+  -   [My visualization webpage](./visualization.html)
+  -   [My Observable Profile](https://observablehq.com/@mcmcclur?page=1&sort=stars&direction=desc)
+  -   [My consulting webpage](http://wncviz.com)
+
+Some of the visualization work I've done has been produced for other academics doing grant funded work. This includes:
+
+  -   [UNCA\'s Digital Humanties Group](./scholarship/NEH/) (2023-2024)
+  -   Map visualization for the Buncombe Partnership for Children
+    (2021-2023)
+  -   COVID visualization for Stanford\'s School of Health Policy
+    (2020-2021)
+  -   Evaluation of [FCLA](http://linear.ups.edu/html/fcla.html)
+    (2019-2020)
+  -   Teacher education for [FCR STEM](https://lsi.fsu.edu/fcrstem)
+    (2015-2017)
+
+## Recent presentations
+
+  - [Integrating Observable into Discourse](../presentations/ObservableInDiscourse/)
+  -   [Computational Adventures in Complex Dynamics](Presentations/cacd/)
+    -   [The code](Presentations/cacd/code/)
+  -   [Classroom Discourse](Presentations/cdt/)
+
+## Publications
+
+### Fractals in real and abstract analysis
+
+  -   [*Fractal Measures on Infinite Dimensional
+    Sets*](papers/dissertation.pdf)\
+    My 1994 OSU dissertation
+  -   [\"Entropy dimensions of the hyperspace of compact
+    sets\"](papers/edim.pdf)\
+    *The Real Analysis Exchange*, V21 (1995/96), #2, pp 194-202
+  -   [\"The Hausdorff dimension of the hyperspace of compact
+    sets\"](papers/hdim.pdf)\
+    *The Real Analysis Exchage*, V22 (1996/97), #2, pp 611-625
+  -   [\"The prevalent dimension of graphs\"](papers/prevfunc.pdf)\
+    *The Real Analysis Exchage*, V23 (1997/98), #1, pp 241-246
+  -   [\"The Hausdorff dimension of Hilbert\'s coordinate
+    functions\"](papers/hilbertcurves.pdf)\
+    *The Real Analysis Exchange* V24 (1998/99), #2, pp 875-883
+  -   [\"The Borel structure of the collections sub-self-similar sets and
+    super-self-similar sets\"](papers/sss.pdf)\
+    *Acta Mathematica UC*, V69, #2, (2000) pp 145-150\
+    with Bob Vallin
+  -   [\"Self-similar structure in Hilbert\'s space filling
+    curve\"](papers/hilbertexpos.pdf)\
+    *Mathematics Magazine*, V76, #1, (2003) pp 40-47
+
+### Fractals from a computational perspective
+
+  -   [\"Inverse iteration algorithms for Julia
+    sets\"](papers/Julia.pdf)\
+    *Mathematica in Education and Research*, V7 (1998), #2, pp 22-28\
+    [Mathematica V10 compatible
+    notebook](papers/JuliaNew.nb){.small_link}
+  -   [\"Directed-graph iterated function
+    systems\"](papers/DigraphFractals.pdf)\
+    *Mathematica in Education and Research*, V9, #2, (2000)
+  -   [\"Digraph self-similar sets and aperiodic
+    tilings\"](papers/DigraphFractiles.pdf)\
+    *The Mathematical Intelligencer*, V24, #2 (2002), pp 33-42
+  -   [\"Self-similar intersections\"](papers/intersections.pdf)\
+    *Fractals*, V16 #2 (2008), pp 187-197
+  -   [\"Images of a vibrating Koch drum\"](papers/KochDrum.pdf)\
+    *Computers and Graphics*, V32, #6, (2008), pp 711-715
+  -   [\"Generating self-affine tiles and their
+    boundaries\"](papers/SelfAffineTilesPP.pdf)\
+    *The Mathematica Journal*, V11, #1, (2009).
+  -   [\"Parameterized dynamics for the Weierstrass elliptic function over
+    square period lattices\"](papers/hawkins-mcclure.pdf)\
+    *Intl. Jour. of Bifurcation and Chaos.*, V21, #1, (2011), pp 1-11\
+    with [Jane
+    Hawkins](http://www.math.unc.edu/Faculty/jhawkins/){.small_link}
+  -   [\"Through the Looking-Glass, and What the Quadratic Camera Found
+    There\"](papers/QuadraticCamera.pdf)\
+    *The Mathematical Intelligencer.*, Volume 34, Issue 3, (2011) pp
+    30-34.\
+    with [Stan Wagon](http://stanwagon.com/){.small_link}, [Bart de
+    Smit](http://www.math.leidenuniv.nl/~desmit/){.small_link}, Willem
+    Jan Palenstijn, and Isaac Sparling
+
+### Computational discrete mathematics
+
+  -   [\"A stochastic cellular automaton for three-coloring Penrose
+    tiles\"](papers/Penrose3Color.pdf)\
+    *Computers and Graphics*, V26, #3, (2002) pp 519-524
+  -   [\"Decremental tag systems and random
+    trees\"](papers/DecrementalTagTreesPreprint.pdf)\
+    *Complex Systems*, V18, #2 (2009)\
+    With [Patrick
+    Bahls](https://sites.google.com/a/unca.edu/pbahls/){.small_link} and
+    Josh Knox.\
+  -   [\"Four-coloring the US
+    counties\"](papers/FourColoringUSCounties.pdf)\
+    *Math Horizons* April, 2009 pp 20-21\
+    with [Stan Wagon](http://stanwagon.com/){.small_link}
+
+### Columns from *Mathematica in Education and research*, plus one invited review
+
+  -   [A review of Stan Wagon\'s *Mathematica in Action*, 2nd
+    Ed](papers/MIAReview.pdf)\
+    V8, issue 3/4 (1999).
+  -   [\"The connected locus for complex cubic
+    iteration\"](papers/CubicIterationPP.pdf)\
+    V10, #2 (2005)
+  -   [\"Parametric L-systems and borderline
+    fractals\"](papers/PLSystemsPP.pdf)\
+    V10, #3 (2005)
+  -   [\"Steffen\'s flexible
+    polyhedron\"](papers/SteffenPolyhedronPP.pdf)\
+    V10, #4 (2005)
+  -   [\"Bifurcation sets and critical
+    curves\"](papers/CriticalBifurcationPP.pdf)\
+    V11, #1 (2006)
+  -   [\"Newton\'s method for complex
+    polynomials\"](papers/NewtonsMethodPP.pdf)\
+    V11, #2 (2006)
+  -   [\"The Read-Bajraktarevic operator\"](papers/ReadBajPP.pdf)\
+    V11, #3 (2006)
+  -   [\"The kings problem\"](papers/KingsProblem.pdf)\
+    V11, #4 (2006)
+  -   [\"Boundary scanning and complex
+    dynamics\"](papers/BoundaryScanPP.pdf)\
+    V12, #1 (2006)
+  -   [\"Vibration of the Koch drum\"](papers/KochDrumPP.pdf)\
+    V12, #2 (2007)
+  -   [\"Generating Google maps\"](papers/GoogleMappingPP.pdf)\
+    V12, #3 (2007)
+
+
+:::::
+
+::::: {.g-col-4 .d-none .d-md-block transform="translate(0,-25px)"}
+
+
+::: {.overflow-container}
+
+<div id="observablehq-side_spiral-456b7d22"></div>
+
+<script type="module">
+import {Runtime, Inspector} from "https://cdn.jsdelivr.net/npm/@observablehq/runtime@5/dist/runtime.js";
+import define from "https://api.observablehq.com/@mcmcclur/self-similar-spirals@301.js?v=4";
+new Runtime().module(define, name => {
+  if (name === "side_spiral") return new Inspector(document.querySelector("#observablehq-side_spiral-456b7d22"));
+});
+</script>
+
+::: 
+
+:::::
+
+:::

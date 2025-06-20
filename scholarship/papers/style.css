@@ -1,0 +1,79 @@
+@media screen and (min-width: 48em) {
+	body {
+		background-color: #eee;
+		margin: 0px;
+	}
+	main {
+		margin: 4%;
+		background-color: #fff;
+		padding: 10px;
+	  font-family: sans-serif;
+	  font-weight: 300;
+	  font-size: 18px;
+	  line-height: 1.5em;
+	  color: #5D6063;
+		border: 1px solid #ccc;
+		/* border-radius: 4px; */
+	}
+	.page_side {
+		border-left: #999 1px solid;
+	}
+	.lg-pad-right {
+		padding-right: 20px;
+	}
+}
+@media screen and (max-width: 48em) {
+	main {
+		background-color: #fff;
+		padding: 5px;
+	  font-family: sans-serif;
+	  font-weight: 300;
+	  font-size: 18px;
+	  line-height: 1.5em;
+	  color: #5D6063;
+	}
+	.hide-small {
+		display: none!important;
+	}
+}
+
+em {
+  font-style: italic;
+}
+
+strong {
+  font-weight: bold;  /* Or 700 */
+}
+
+h1, h2, h3, h4, h5, h6 {
+  /* line-height: 1.3em; */
+  font-weight: normal;
+  font-style: normal;
+}
+
+.x3dom-progress {
+	display: none
+}
+canvas {
+	outline: none;
+}
+x3d {
+	outline: none
+}
+
+.it {
+	font-style: italic;
+}
+.bold {
+	font-weight: bold;
+}
+.red {
+	color: red;
+}
+.new {
+	color: #009900;
+	font-weight: bold;
+}
+.list-heading {
+	font-weight: bolder;
+}

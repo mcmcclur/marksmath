@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style media="screen">
+      body {
+        margin: 0 auto;
+        max-width: 900px;
+        font-size: 150%;
+      }
+      .content {
+        margin: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="content">
+      <h1>
+        A population choropleth<br />
+        <span style="font-size: 60%">
+          Rendered by Observable Plot
+        </span>
+      </h1>
+      <p>
+        The choropleth map below was built in a few lines of code on Observable. <a href="https://observablehq.com/d/5625607b37151c08">Here's the notebook</a>.
+      </p>
+      <p>
+        It's probably worth noting that you can point users to the notebook, rather than hosting the visualization in your own webspace. Observable also provides an
+        <a href="https://observablehq.com/embed/5625607b37151c08@242?cells=topmatter%2Cmap">embeddable link</a>.
+      </p>
+      <div id="observablehq-map-c28c5a38"></div>
+    </div>
+
+    <script type="module">
+    import {Runtime, Inspector} from "https://cdn.jsdelivr.net/npm/@observablehq/runtime@5/dist/runtime.js";
+    import define from "https://api.observablehq.com/d/5625607b37151c08.js?v=3";
+    new Runtime().module(define, name => {
+      if (name === "map") return new Inspector(document.querySelector("#observablehq-map-c28c5a38"));
+    });
+    </script>
+  </body>
+</html>
