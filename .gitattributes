@@ -1,0 +1,5 @@
+# Ignore Mathematica notebooks in language stats;
+# They weigh too much!
+
+*.nb linguist-generated
+
