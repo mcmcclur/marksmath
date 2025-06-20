@@ -1,0 +1,37 @@
+project:
+  type: website 
+  resources:
+    - favicon.ico
+
+website:
+  title: "Mark's Math"
+  search: false
+  sidebar: false
+  navbar:
+    collapse-below: md
+    left:
+      - href: scholarship/index.qmd
+        text: Scholarship
+      - href: visualization/index.qmd
+        text: Viz
+    right:
+      - href: https://bsky.app/profile/mark-mcclure.bsky.social
+        text: <i class="fa fa-brands fa-bluesky"></i>
+      - href: https://www.linkedin.com/in/mark-mcclure-6739911a9/
+        text: <i class="fa fa-brands fa-linkedin"></i>
+      - href: https://github.com/mcmcclur
+        text: <i class="fa fa-brands fa-github"></i>
+      - href: mailto:mcmcclur@unca.edu
+        text: <i class="fa fa-regular fa-envelope"></i>
+
+format:
+  html:
+    toc: false
+    anchor-sections: false
+    respect-user-color-scheme: true
+    theme:
+      light: flatly
+      dark: darkly
+    css: styles.css
+    page-layout: full
+    echo: false

@@ -1,0 +1,16 @@
+# This is the default environment activated by a 
+# `quarto render` or `quarto preview` command.
+# Thus, any .qmd file containing a reference to 
+# {{< env MAPBOX_CYCLING_TOKEN >}}
+# will use the token below, which is restricted in scope.
+# 
+# For development, we want to use Mapbox's Default public token,
+# which is unrestricted in scope and will work from Quarto's
+# development scope. We can place that in a file of the form 
+# _environment-devel and then preview or render with 
+# quarto preview --profile devel
+#
+# Of course, that second file should be added to 
+# .gitignore so that it's not published on GitHub!
+
+MAPBOX_CYCLING_TOKEN=pk.eyJ1IjoibWNtY2NsdXIiLCJhIjoiY21jNHc5ZGs0MGtuZjJsb2ZvaGViaHk4NyJ9.0L5GNVfSTjDI953Akivffw

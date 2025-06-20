@@ -1,0 +1,95 @@
+/* Main style sheet for MarksMath.org */
+
+@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css");
+
+/* Headers */
+h1, h2, h3, h4, h5, h6 {
+  border-bottom: none;
+}
+
+p {
+  max-width: 950px;
+}
+
+/* Centering and spacing */
+.centered {
+  text-align: center
+}
+/* .centered-div {
+  max-width: 100%;
+  margin: 0 auto;
+} */
+.spacer {
+  margin-top: 15px;
+}
+.give-space {
+  padding: 15px;
+}
+.controls {
+  padding: 15px;
+}
+.plain-controls {
+  padding: 15px;
+}
+
+
+/* Light / Dark */
+.quarto-dark .viz-container {
+  background-color: #333;
+  border: solid 2px #555;
+  padding: 5px;
+}
+.quarto-light .viz-container {
+  background-color: #fafafa;
+  border: solid 2px #ccc;
+  padding: 5px;
+}
+.quarto-light .controls {
+  border: solid 1px black;
+  background-color: #f1f1f1;
+}
+.quarto-dark .controls {
+  border: solid 1px #999;
+  background-color: #666;  /* #0A3463 */
+}
+.quarto-light .responsive-stroke {
+  stroke: black;
+  color: black;
+}
+.quarto-dark .responsive-stroke {
+  stroke: white;
+  color: white !important;
+}
+.quarto-light .responsive-border {
+  border: solid 1px #222
+}
+.quarto-dark .responsive-border {
+  border: solid 1px #eee
+}
+
+/* MathJax labels on images produced by D3 */
+/* require fairly specific selectors. */
+
+.quarto-light .mathjax-container > svg > g {
+  color: black;
+}
+.quarto-dark .mathjax-container > svg > g {
+  color: white;
+}
+.quarto-light .mathjax-container > rect {
+  fill: white;
+  stroke: #ccc;
+}
+.quarto-dark .mathjax-container > rect {
+  fill: #222;
+  stroke: #444;
+}
+
+/* Selector for tips produced by Observable Plot */
+.quarto-dark g[aria-label='tip'] {
+  fill: #222;
+}
+
+.hidden {
+  display: none;
+}

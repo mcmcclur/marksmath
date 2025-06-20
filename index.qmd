@@ -1,0 +1,23 @@
+::: {.grid}
+::::: {.g-col-8}
+## [Mark McClure]{.h1}
+
+Professor of [Mathematics](https://math.unca.edu/)  
+[UNC - Asheville](https://www.unca.edu)  
+325 Robinson  
+mcmcclur-AT-unca-DOT-edu
+
+## Summer 2025
+
+- Reading
+- Writing
+- Developing
+:::::
+::::: {.g-col-4 .d-none .d-sm-block transform="translate(0,-25px)"}
+```{ojs}
+import {animate_network} from './components/neural_multiplier.js';
+model = await FileAttachment("./components/multiplication_model.json").json();
+animate_network(model);
+```
+:::::
+:::
