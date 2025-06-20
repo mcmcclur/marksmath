@@ -1,0 +1,150 @@
+---
+title: Cycling in the Asheville area
+css: styles.css
+---
+
+I've been cycling in and around Asheville since 1998. Here are just a few of the awesome rides I've done in the area.
+
+When you select a ride from the ride menu in the upper left, the corresponding route and elevation chart should appear. You can touch or hover over the elevation chart to see how the points on the chart correspond to points on the map. You can also use the controls on the right zoom in or out, locate yourself on the map, or toggle fullscreen mode.
+ 
+<div id="container">
+<div id="map"></div>
+<div id="elevation_chart_container"></div>
+<div id="full_screen_container" data-collapse_status="collapsed">
+  <i class="fa-solid fa-expand"></i>
+</div> 
+<div id="menu_container">
+```{ojs}
+params = new URLSearchParams(location.search);
+ride_menu = {
+  let init = ["---"];
+  let filenames = Object.keys(menu_files);
+  let ride_menu = Inputs.select(["---"].concat(filenames), {
+    width: 100,
+    value: params.get("gpx") ? params.get("gpx") : "---"
+  });
+  d3.select(ride_menu).on("input", async function () {
+    if (this.value == "---") {
+      d3.select(elevation_chart_container)
+        .selectAll("svg")
+        .remove();
+      if (map.getLayer("path")) {
+        map.removeLayer("path");
+      }
+      if (map.getSource("route")) {
+        map.removeSource("route"); 
+      }
+      if (map.start_marker) {
+        map.start_marker.remove();
+        map.start_marker = null; 
+      } 
+      if (map.stop_marker) {
+        map.stop_marker.remove();
+        map.stop_marker = null;
+      }
+      // d3.select(webpage_text).style("opacity", 0.7);
+    } else {
+      const pts = await get_trkpts(await menu_files[this.value].text());
+      map.add_path(map, pts)
+      map.make_elevation_chart(pts, map);
+      // d3.select(webpage_text).style("opacity", 0);
+    }
+  });
+  // if (
+  //  Object.keys(other_files).indexOf(params.get("gpx")) > -1 &&
+  //  !params.get("menu")
+  // ) {
+  //  d3.select(ride_menu).style("display", "none");
+  // }
+  return ride_menu;
+}
+```
+</div>
+</div>
+
+::: {.hidden}
+```{python}
+import os
+MAPBOX_CYCLING_TOKEN = os.getenv('MAPBOX_CYCLING_TOKEN')
+ojs_define(MAPBOX_CYCLING_TOKEN = MAPBOX_CYCLING_TOKEN)
+```
+```{ojs} 
+import {make_map, get_trkpts} from './components/make_map.js'
+window.MAPBOX_CYCLING_TOKEN = MAPBOX_CYCLING_TOKEN
+map = make_map()
+```
+
+```{ojs}
+d3.select("#full_screen_container")
+  .on('click', function() {
+    const thisD3 = d3.select(this);
+    if(thisD3.attr('data-collapse_status') == "collapsed") {
+      d3.select("#map")
+        .style('height', '100vh');
+      d3.select("#container")
+        .style('height', '100vh')
+        .node().requestFullscreen();
+      thisD3.select('i').attr('class', "fa-solid fa-compress");
+      thisD3.attr('data-collapse_status', 'expanded')
+    }
+    else {
+      document.exitFullscreen();
+      d3.select("#map")
+        .style('height', '75vh');
+      d3.select("#container")
+        .style('height', '75vh');
+      thisD3.select('i').attr('class', "fa-solid fa-expand");
+      thisD3.attr('data-collapse_status', 'collapsed')
+    }
+  });
+```
+
+```{ojs}
+// These files can be accessed from the menu
+menu_files = ({
+  "Road: 276": FileAttachment("./menu_files/276.reduced.gpx"),
+  "Road: Bakery": FileAttachment("./menu_files/Bakery3.reduced.gpx"),
+  "Road: Coxes Creek": FileAttachment("./menu_files/CoxesCreek.reduced.gpx"),
+  "Road: Haw Creek Overlook": FileAttachment("./menu_files/HawcreekTownMtn.reduced.gpx"),
+  "Road: Hookers Gap to Marshall": FileAttachment(
+    "./menu_files/HookersGapAndMarshall.reduced.gpx"
+  ),
+  "Road: Lake Logan": FileAttachment("./menu_files/LakeLogan.reduced.gpx"),
+  "Road: Up Ox Creek": FileAttachment("./menu_files/OxCreekBiltmoreForrest.reduced.gpx"),
+  "Road: Smokies to AVL": FileAttachment("./menu_files/SmokiesToAvl.gpx"),
+  "GRVL: Curtis Creek": FileAttachment("./menu_files/FolkArtCurtisCreekParkway.reduced.gpx"),
+  "GRVL: Bent Creek": FileAttachment("./menu_files/BCG6.reduced.gpx"),
+  "GRVL: Bent Creek WVL": FileAttachment("./menu_files/BCGfromWVL.reduced.gpx"),
+  "GRVL: Three dirt too": FileAttachment("./menu_files/NorthAshevilleGravel.reduced.gpx"),
+  "GRVL: Pisgah 470s": FileAttachment("./menu_files/PisgahGravel470s.reduced.gpx"),
+  "GRVL: Stoney Fork": FileAttachment("./menu_files/StoneyFork.reduced.gpx"),
+  "GRVL: Yellow Gap": FileAttachment("./menu_files/YellowGapTo276.reduced.gpx"),
+  "MTN: A lotta Bent Creek": FileAttachment("./menu_files/AlottaBentCreek.reduced.gpx"),
+  "MTN: Avery Bennett": FileAttachment("./menu_files/AveryBennett.gpx"),
+  "MTN: Bent Creek Lasso": FileAttachment("./menu_files/BentCreekLasso.gpx"),
+  "MTN: Big Creek": FileAttachment("./menu_files/BIGBigCreek.reduced.gpx"),
+  "MTN: Fish Hatch": FileAttachment("./menu_files/CoveCreekDanielButterCat.reduced.gpx"),
+  "MTN: G5 Trails": FileAttachment("./menu_files/G5Trails.gpx"), 
+  "MTN: Heartbreak": FileAttachment("./menu_files/Heartbreak.reduced.gpx"), 
+  "MTN: Jerdon Mountain": FileAttachment("./menu_files/JerdonMountain.reduced.gpx"),
+  "MTN: Down Kitsuma Up Bernard": FileAttachment("./menu_files/DownKitsumaUpBernard.gpx"),
+  "MTN: Down Kitsuma and Bernard": FileAttachment("./menu_files/DownKitsumaAndBernard.gpx"),
+  "MTN: Lower Heartbreak": FileAttachment("./menu_files/LowerHeartbreakFirstRide.gpx"),
+  "MTN: Pink Beds to Bennett Gap": FileAttachment(
+    "./menu_files/PinkBedsBennettGap.reduced.gpx"
+  ),
+  "MTN: Spencer Fletcher": FileAttachment("./menu_files/SpencerFletcherWithRob.reduced.gpx")
+});
+```
+
+
+<script>
+  document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+      document.querySelector('#container').style.height = '75vh';
+      document.querySelector('#map').style.height = '75vh';
+    }
+  });
+</script>
+
+::: 

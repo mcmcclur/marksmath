@@ -1,0 +1,66 @@
+---
+title: Long term population projections
+---
+
+A rough reproduction of the projections for world wide long term population growth (and decline) as described in [this NYTimes article](https://www.nytimes.com/interactive/2023/09/18/opinion/human-population-global-growth.html) and [this academic paper](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4534047). I guess it's all a little ...bleak.
+
+```{ojs}
+Plot.plot({
+  marginLeft: 70,
+  width: 1100,
+  r: { type: "linear", domain: [0, 1100], range: [0, 5000] },
+  x: { tickFormat: d3.format("d") },
+  y: { tickFormat: (p) => d3.format("d")(p / 10 ** 9) + " Billion" },
+  marks: [
+    Plot.line(data, {
+      x: "year",
+      y: "population",
+      z: "tfr_scenario",
+      strokeWidth: (d) => (d.tfr_scenario == 1.66 ? 3 : 0.5),
+      tip: true,
+      title: (d) =>
+        d.tfr_scenario && d.tfr_scenario == 1.66
+          ? `Pop: ${d3.format("0.2f")(d.population / 10 ** 9) + " B"}
+Year: ${d.year}
+TFR: ${d.tfr_scenario} (Where US is now)`
+          : `Pop: ${d3.format("0.2f")(d.population / 10 ** 9) + " B"}
+Year: ${d.year}
+TFR: ${d.tfr_scenario}`
+    }),
+    Plot.dot(
+      [
+        { y: 2023, p: 8100000000, r: 1 },
+        { y: 2085, p: 10400000000, r: 1 }
+      ],
+      {
+        x: "y",
+        y: "p",
+        r: "r",
+        fill: (d) => (d.y == 2023 ? "#393" : "#933"),
+        stroke: (d) => (d.y == 2023 ? "#161" : "#611")
+      }
+    ),
+    Plot.ruleX([-1000]),
+    Plot.ruleY([0])
+  ]
+})
+```
+```{ojs}
+data = {
+  let pop_history = await FileAttachment("population_history.csv").csv({
+    typed: true
+  });
+  pop_history = pop_history.filter((o) => o.population).slice(9);
+  pop_history.forEach(function (o) {
+    o.tfr_scenario = "N/A";
+  });
+  let pop_projections = await FileAttachment("pop_projections.csv").csv({
+    typed: true
+  });
+  pop_projections = d3
+    .groups(pop_projections, (o) => o.tfr_scenario)
+    .map((a) => a[1]);
+  const data = [pop_history].concat(pop_projections).slice(0, 13).flat()
+  return data;
+}
+```

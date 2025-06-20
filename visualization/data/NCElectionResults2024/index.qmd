@@ -1,0 +1,160 @@
+---
+title: NC Legislative Election Results 2024
+css: style.css
+---
+
+Wanna know what the legislative election results look like throughout North Carolina? Just pick the chamber you want to view, pan and zoom the map to take a look around, and/or click on the map to get the results for all the districts at that point.
+
+Curious what the results are in your neighborhood? Just enter an address or place in the search box and hit <q>submit</q>.
+
+```{ojs}
+viewof Chamber = Inputs.radio(
+  ["US Congress", "NC Senate", "NC House"],
+  {label: "Chamber", value: "US Congress"}
+)
+```
+
+::: {.inline-block}
+```{ojs}
+viewof address = {
+  clear;
+  map.clear();
+  const address = Inputs.text({
+    label: "Address:",
+    submit: true
+  });
+  return address;
+}
+```
+:::
+::: {.inline-block}
+```{ojs}
+viewof clear = Inputs.button("Clear")
+```
+:::
+
+<div class="ui-hint">
+  Click on a district or enter an address above for info
+</div>
+<div id="map_container" style="max-width: 960px; height: 600px;"></div>
+
+
+::: {.spacer}
+
+:::
+
+## Overall results
+
+The table below displays the overall results for the three legislative elections. For each chamber, we see
+
+- The total number of seats available,
+- The total number of votes for each party, and
+- The total number of seats won by each party.
+
+In addition, the table shows the cumulative total.
+
+::: {.tally-table}
+```{ojs}
+Inputs.table(processed.tallies, {
+  header: {
+    chamber: "Chamber",
+    seats: "Seats",
+    rep_votes: "Rep votes",
+    dem_votes: "Dem votes",
+    rep_seats: "Rep seats",
+    dem_seats: "Dem seats"
+  }
+});
+```
+:::
+
+We can clearly see the effects of gerrymandering on the election. This is most stark in the state legislative elections where Democrats received slightly more votes in each chamber, yet Republicans won 59% of the seats in the House and 62% of the seats in the Senate. With 60% required for a super-majority, the legislature is one seat in the state House away from that super-majority.
+
+There's a similar effect in the US Congress where Republicans received 55% of the votes but 71% of the seats. This is in particular contrast to the 2022 Congress which was a 7/7 split. The districts were court ordered that year but that court order was rescinded after the State Supreme Court flipped.
+
+### Source
+
+These results were processed from the precinct level results released shortly after the election and available on [this webpage from the NC SBE](https://www.ncsbe.gov/results-data/election-results/historical-election-results-data#by-precinct). 
+
+
+::: {.hidden}
+```{ojs}
+// detailed_districts and detailed_year are defined
+// by the radio buttons.
+// When they change, this block responds by updating
+// the map.
+
+// Chamber has the form "US Congress", "NC House", or "NC Senate".
+// chamber has the form us_congress, nc_house, or nc_senate.
+// Chamber is specified by the radio at the top of the page.
+// chamber is more convenient in code.
+{
+  const chamber = Chamber
+    .replace(" ", "_")
+    .toLowerCase();
+
+  if(map.popup_up) {
+    map.redo_popup(Chamber);
+    map.popup_up = true;
+  }
+
+  // Add the districts specified by chamber on load.
+  try {
+    // Within a try block, since a style error
+    // is expected on first load.
+    // Thus, the initial districts are added in
+    // the map.on("load", ...) block.
+    map.add_path(chamber);
+    let container = d3.select("#map_container").node();
+  }
+  catch(err) {
+    // And we catch the error produced on the
+    // first load.
+    "pass";
+  }
+}
+```
+```{ojs}
+{
+  if(address) {
+    nominatim({q: address}).then(function(response) {
+      if(response.length > 0) {
+        const json_result = response[0];
+        if(json_result.display_name.includes("North Carolina")) {
+          // map.current_address_result = json_result;
+          map.add_nominatim_marker(json_result);
+        }
+      }
+    })
+  }
+}
+```
+```{ojs}
+// Process the data and make the map
+// {
+//  processed_map_data,
+//  data_by_district,
+//  tallies
+// } = process_data(raw_map_data, results);
+processed = process_data(raw_map_data, results)
+```
+
+```{ojs}
+map = make_map(processed.processed_map_data);
+```
+ 
+```{ojs}
+// Import functions and data
+import {process_data} from './components/process_data.js';
+import {make_map} from './components/make_map.js'; 
+import {point_to_districts} from './components/point_to_districts.js';
+import {nominatim} from './components/nominatim.js'; 
+
+raw_map_data = await
+  FileAttachment("./data/districts.json")
+  .json();
+results = await
+  FileAttachment('./data/nc_legislative_results_2024.csv')
+  .csv({typed: true});
+```
+:::

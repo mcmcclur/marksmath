@@ -1,0 +1,13 @@
+.quarto-light .positions {
+  border: solid 3px #ddd;
+  background-color: #eee;
+}
+.quarto-dark .positions {
+  border: solid 3px #eee;
+  background-color: #333;
+}
+
+.main-container {
+  overflow-y: hidden;
+  border: solid 1px #aaa;
+}

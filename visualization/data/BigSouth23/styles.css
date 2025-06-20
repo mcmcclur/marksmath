@@ -1,0 +1,93 @@
+
+/* Light / Dark */
+.quarto-dark .chord-container {
+  background-color: #666;
+  border: solid 2px #aaa;
+  max-width: 750px;
+  padding: 25px;
+}
+.quarto-light .chord-container {
+  background-color: #fafafa;
+  border: solid 2px #ccc;
+  max-width: 750px;
+  padding: 25px;
+}
+.quarto-dark .tourney-container {
+  background-color: #666;
+  border: solid 2px #aaa;
+  max-width: 1100px;
+  padding: 25px;
+}
+.quarto-light .tourney-container {
+  background-color: #fafafa;
+  border: solid 2px #ccc;
+  max-width: 1100px;
+  padding: 25px;
+}
+
+.quarto-light .responsive-stroke {
+  stroke: black;
+}
+.quarto-dark .responsive-stroke {
+  stroke: white;
+}
+.quarto-light .responsive-border {
+  border: solid 1px #222
+}
+.quarto-dark .responsive-border {
+  border: solid 1px #eee
+}
+
+
+/* For the tournament bracket */
+text {
+  cursor: default
+}
+.team {
+  cursor: default;
+  /* width: ${size.team_width}px;
+  height: ${size.game_height / 2}px; */
+  white-space: nowrap;
+  overflow: hidden;
+  font: 14px sans-serif;
+}
+.team span {
+    /* line-height: ${size.game_height / 2}px; */
+}
+.championship {
+  cursor: default;
+  /* width: ${1.4 * size.team_width}px;
+  height: ${(1.4 * size.game_height) / 2}px;
+  line-height: ${size.game_height / 2}px; */
+  white-space: nowrap;
+  overflow: hidden;
+  font: 16px sans-serif;
+}
+.score {
+  display: inline-block;
+  position: absolute;
+  right: 0px;
+  color: white;
+  background-color: #333333;
+  /* height: ${size.game_height / 2}px; */
+}
+.championship > .score {
+  display: inline-block;
+  position: absolute;
+  right: 0px;
+  color: white;
+  background-color: #333333;
+  /* height: ${(1.4 * size.game_height) / 2}px; */
+}
+.top_team {
+  background-color: #efefef
+}
+.bot_team {
+  background-color: #dedede
+}
+.upset {
+  background-color: #dd9999
+}
+.champion {
+  background-color: #ffd700
+}

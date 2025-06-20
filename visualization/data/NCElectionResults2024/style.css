@@ -1,0 +1,35 @@
+@import url('https://cdn.jsdelivr.net/npm/maplibre-gl@5.5.0/dist/maplibre-gl.css');
+.swatch span::before {
+  opacity: 0.5;
+  border: solid 1px black;
+}
+.ui-hint {
+  font-size: 0.7em;
+}
+.quarto-light .maplibregl-popup {
+  opacity: 0.85;
+  /* background: white; */
+}
+.quarto-dark .maplibregl-popup {
+  opacity: 0.8;
+  background: #222;
+}
+.quarto-dark .maplibregl-popup-content {
+  opacity: 0.8;
+  background: #222;
+}
+.quarto-dark .maplibregl-popup-tip {
+  opacity: 0.8;
+  background: #222;
+}
+
+.inline-block {
+  display: inline-block;
+}
+
+.table {
+  max-width: 640px
+}
+.tally-table input {
+  display: none;
+}

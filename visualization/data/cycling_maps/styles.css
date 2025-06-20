@@ -1,0 +1,57 @@
+@import url("https://api.mapbox.com/mapbox-gl-js/v3.12.0/mapbox-gl.css");
+
+#map {
+  max-width:100%; 
+  /* height: 75vh;  */
+  height: 600px;
+}
+
+#container {
+  position: relative;
+  /* max-width:100%; 
+  height: 75vh;  */
+  width: 960px;
+  height: 600px;
+}
+#menu_container {
+  position: absolute;
+  left: 8px;
+  top: 8px;
+}
+#elevation_chart_container {
+  position: absolute;
+  left: 8px;
+  bottom: 8px;
+}
+#full_screen_container {
+  display: flex;
+  align-items: top; 
+  justify-content: center;
+  position: absolute;
+  right: 8px;
+  bottom: 35px;
+  background: white;
+  border-radius: 4px;
+  box-shadow: 0 0 0 2px #0000001a;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+}
+#full_screen_container i {
+  font-size: 20px;           /* adjust icon size */
+  color: #333;               /* or any color you prefer */
+}
+#full_screen_container:hover {
+  background-color: #f0f0f0; /* light gray on hover */
+}
+
+.quarto-light .responsive-container {
+  fill: white;
+  stroke: black;
+  /* color: #444; */
+}
+.quarto-dark .responsive-container {
+  fill: #222;
+  stroke: #bbb;
+  /* color: #ccc; */
+}

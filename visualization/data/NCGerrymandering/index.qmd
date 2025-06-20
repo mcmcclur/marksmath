@@ -1,0 +1,181 @@
+---
+title: The Evolution of NC's Congressional Map
+format:
+  html:
+    include-in-header:
+      - text: <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tippy.js/6.3.2/themes/material.min.css" integrity="sha512-R8oUfFYCO11afzYKUhovrP+cajy9JF0iRRHbuk16gPYstVj9McxsE/D8wnH2l0aBKuhnkAd6VMLiTFV1Bp+zKA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+---
+
+North Carolina has been at the center of the gerrymandering controversy in the US since the 2010 census. While congressional districts are meant to be redrawn after each census (thus, every 10 years), North Carolina's districts have been redrawn and redrawn much more frequently. This visualization takes a look at the five maps that have been used in elections since 2010. It does not consider several maps that were drawn, then enacted but then thrown out by court order.
+
+The map data here comes from [NC's state legislature redistricting page](https://www.ncleg.gov/redistricting) and the analysis comes from [the Princeton Gerrymandering Project](https://gerrymander.princeton.edu/).
+
+```{ojs} 
+viewof year = Inputs.radio(["2011", '2016', '2019', '2022', '2024'], {
+  value: '2011',
+  label: "Year:"
+})
+```
+
+```{ojs}
+// Add the color swatch
+{
+  let div = d3.create('div')
+  div.append('span').text('Lean: ');
+  let swatch_container = div.append('div')
+    .style('display', 'inline-block')
+    .style('padding-left', '20px')
+  swatch_container.append(() => Swatches(
+  d3.scaleOrdinal(
+    ["Democratic", "Republican", "Competitive"],
+    [d3.interpolateRdBu(0.75), d3.interpolateRdBu(0.25), d3.interpolateRdBu(0.5)]
+  ),html))
+  return div.node()
+}
+```
+
+```{ojs}
+map = make_map(
+  map_data, year, grades, threshold, w, h, projection, path, cities, md
+)
+```
+
+### Comments on this map
+
+```{ojs}
+
+md`${year == 2011 ? 
+  
+`The map drawn in 2011 is one of the craziest from a geographic perspective. District 12 snakes from Charlotte to Greensboro with a spur to Winston-Salem to achieve a Democratic vote share of 77%. My own city of Asheville is split in two by districts 10 and 11 diluting the liberal population there and forming two strongly Republican districts.
+
+The two "competitive" districts still lean Republican by just over 2.5% so the final district split was 10-3 in favor of the Republican party, in spite of the fact that the state wide Democratic vote share was over 48%.` : 
+
+year == 2016 ? 
+
+`The State Supreme Court ordered the State Legislature to redraw the districts in 2016. While the gerrymandering is more subtle from a geographic perspective, it's actually more sophisticated yielding *no* competitive districts at all and a guaranteed 10-3 Republican majority.` :
+
+year == 2019 ?
+
+`In 2019, the State Supreme Court ordered the State Legislature to redraw the districts a second time in the cycle, resulting in this slightly improved map. There are still *no* competitive districts and a guaranteed Republican majority, though it's been reduced to 8-5.` :
+
+year == 2022 ?
+
+`When the State Legislature produced only highly partisan maps after the 2020 Census, the State Supreme Court ordered this map that was used in the 2022 election cycle. North Carolina also gained another seat in the US House brining us to 14 seats. This map actually yielded 7 Democrats and 7 Republicans in Congress. It would still be nice to see a competitive seat.` :
+
+`After the 2022 election, the State Supreme Court reversed its opinions on most matters involving voting. In particular, the Supreme Court and State legislature are largely aligned on voting matters so we are likely stuck with the following highly gerrymandered map for the foreseeable future.`
+
+}
+
+#### Princeton Analysis
+
+- Estimated statewide vote shares:
+  - Dem: ${d3.format('0.1%')(grades.get(year).plan.DemVoteshare)}
+  - Rep: ${d3.format('0.1%')(1-grades.get(year).plan.DemVoteshare)}
+- Competitive analysis of seats:
+  - ${Object.values(grades.get(year).plan.CompetitiveElections).filter(
+  (p) => p > 0.5 + threshold
+).length} strongly Democratic,
+  - ${Object.values(grades.get(year).plan.CompetitiveElections).filter(
+  (p) => p < 0.5 - threshold
+).length} strongly Republican, and
+  - ${Object.values(grades.get(year).plan.CompetitiveElections).filter(
+  (p) => 0.5 - threshold < p && p < 0.5 + threshold
+).length} competitive.
+- Actual results:
+  - Democratic wins: ${grades.get(year).plan.ActualWins}
+  - Republican wins: ${grades.get(year).plan.numDists - grades.get(year).plan.ActualWins}
+- Scorecard:geographicScore
+  - Geographic grade: ${grades.get(year).report_card.geographicScore}
+  - Competitiveness grade: ${grades.get(year).report_card.competitivenessScore}
+  - Partisan grade: ${grades.get(year).report_card.partisanScore}
+  - Overall grade: ${grades.get(year).report_card.overallGrade}`
+
+```
+
+## The gerrymandering state?
+
+In June of 2023, the [US Supreme Court rejected a case](https://thearp.org/litigation/moore-v-harper/) brought by North Carolina that would have given the state legislature unsupervised control of the way elections are run within in each state. While this case is most famous as a repudiation of Donald Trump's attempt overturn the 2020 election by effectively allowing state legislature's to decide the election, NC's original assertion was the that the state legislature had unbridled control over the redistricting process.
+
+Unfortunately, the US Supreme Court decision had no impact on North Carolina since the *State* Supreme Court had [already decided](https://ncnewsline.com/2023/04/28/breaking-nc-supreme-court-sides-with-gop-lawmakers-on-elections-and-voting/) that it had no authority over partisan gerrymandering in a more narrow decision. Thus, as it stands now, gerrymandering is effectively accepted practice in the state of North Carolina.
+
+
+<!-- Code -->
+
+```{ojs}
+// This cell places the rect backgrounds of the city labels. Since we call the
+// svg:text.getBBox() method, this needs to run *after* the labels have been
+// generated; thus, it's odd placement here.
+outline_cities = {
+  let container = d3.select(map).select("#city_background_container");
+  d3.select(map)
+    .selectAll("text")
+    .each(function (o) {
+      let bbox = this.getBBox();
+      container
+        .append("rect")
+        .attr("x", bbox.x - 2)
+        .attr("y", bbox.y - 2)
+        .attr("width", bbox.width + 4)
+        .attr("height", bbox.height + 4)
+        .attr("fill", "white")
+        .attr("fill-opacity", 0.4)
+        .attr("stroke", "black")
+        .attr("stroke-width", 0.4)
+        .style("pointer-events", "none");
+    });
+}
+```
+
+```{ojs}
+// Set the map projection and associated parameters
+w = 1100;
+h = w/2;
+threshold = 0.035;
+projection = d3
+  .geoConicEqualArea()
+  .parallels([35.64305, 34.69796])
+  .rotate([79.86097, 0])
+  .fitSize([w - 10, h], map_data.get("boundary"));
+path = d3.geoPath().projection(projection)
+```
+
+```{ojs}
+// Import data
+map_data = {
+  const nc = await FileAttachment("./data/nc_all.json").json();
+  const map_data = new Map();
+  Object.keys(nc.objects).forEach(function (key) {
+    map_data.set(key, topojson.feature(nc, nc.objects[key]));
+  });
+  return map_data;
+}
+grades = {
+  const grades = await Promise.all([
+    FileAttachment("./data/grades11.json").json(),
+    FileAttachment("./data/grades16.json").json(),
+    FileAttachment("./data/grades19.json").json(),
+    FileAttachment("./data/grades22.json").json(),
+    FileAttachment("./data/grades24.json").json()
+  ]);
+  return d3.rollup(
+    grades,
+    (a) => a[0],
+    (o) => "20" + o.plan.planName.match(/\d{2}/)[0]
+  );
+}
+cities = {
+  let cities = await FileAttachment("./data/ncCities.csv").csv({ typed: true });
+  cities.forEach(function (o) {
+    let [x, y] = projection([o.lon, o.lat]);
+    o.x = x;
+    o.y = y;
+  });
+  return cities;
+}
+```
+```{ojs}
+// import components
+import {make_map} from './components/make_map.js';
+import {Swatches} from '/visualization/common_components/color_legends.js'
+```

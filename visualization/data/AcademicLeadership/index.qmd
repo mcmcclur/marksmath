@@ -1,0 +1,164 @@
+---
+title: Timeline of Academic Leadership at UNCA
+css: styles.css
+---
+
+The colorful timeline below is scrollable so you can stroll through time to review our academic leadership back to 1990/1991. By *academic leadership*, we mean the provosts, the deans, and the chancellors under which they served.
+
+```{ojs}
+{
+  let w = width < 1135 ? width : 1135;
+  let h = 420;
+  let item_height = 30;
+  let years = d3.sort(_.uniq(leadership_data.map((o) => o.year))).reverse();
+  let position_width = 260;
+  let year_width = 300;
+  let element_pad = 8;
+  let div = d3
+    .create("div")
+    .style("width", `${w}px`)
+    .style("height", `${h}px`)
+    .attr('class', 'main-container')
+
+  // Assign colors to names
+  let color_map = new Map();
+  _.uniq(leadership_data.map((o) => o.name)).forEach(function (name, i) {
+    color_map.set(
+      name,
+      d3
+        .color(d3.schemeCategory10[i % 10])
+        .darker(0.4)
+        .toString()
+    );
+  });
+
+  // Set up the positions displayed on the left
+  let positions = [
+    "Chancellor",
+    "Provost",
+    "Associate Provost",
+    "Assistant Provost",
+    "Dean of Natural Sciences",
+    "Dean of Social Sciences",
+    "Dean of Humanities"
+  ];
+  let position_container = div
+    .append("div")
+    .style("display", "inline-block")
+    .style("width", `${position_width}px`)
+    .style("height", `${h}px`)
+    .style("vertical-align", "top")
+    .style("border-right", "solid 0.5px #555");
+  position_container
+    .append("div")
+    .style("height", `${item_height}px`)
+    .style('padding-left', '4px') 
+    .append("h3")
+    .html("Position");
+  positions.forEach(function (p) {
+    position_container
+      .append("div")
+      .style("padding", `${element_pad}px`)
+      .style("height", `${item_height}px`)
+      .style("font-size", "16px")
+      .attr('class', 'positions')
+      .style("font-weight", "bold")
+      .style('box-sizing', 'content-box')
+      .html(p);
+  });
+
+  // Set up the timeline display
+  let data_container = div
+    .append("div")
+    .style("display", "inline-block")
+    .style("overflow", "auto")
+    .style("overflow-y", "hidden")
+    .style("white-space", "nowrap")
+    .style("width", `${w - position_width - 5}px`)
+    .style("height", `${h}px`)
+    .style("vertical-align", "top");
+
+  // Setup a column of names for each academic year
+  years.forEach(function (year) {
+    let this_year_div = data_container
+      .append("div")
+      .style("display", "inline-block")
+      .style("width", `${year_width}px`);
+    this_year_div
+      .append("div")
+      .style("width", `${year_width}px`)
+      .append("div")
+      .style("height", `${item_height}px`)
+      .append("h3")
+      .text(`${year}/${year + 1}`);
+
+    let this_year_data = leadership_data.filter((o) => o.year == year);
+    positions.forEach(function (position) {
+      let this_data = this_year_data.filter((o) => o.position == position);
+      let name_display;
+      if(this_data.length > 0) {
+        if(this_data[0].name && this_data[0].status == "regular") {
+          name_display = this_data[0].name
+        }
+        else if(this_data[0].name && this_data[0].status) {
+          name_display = `${this_data[0].name} (${this_data[0].status})`
+        }
+        else if(this_data[0].status) {
+          name_display = `(${this_data[0].status})`
+        }
+      }
+      else {
+        name_display = "AEM";
+      }
+      let name_display0 = this_data.length > 0
+        ? this_data[0].status == "regular"
+          ? this_data[0].name
+          : `${this_data[0].name} (${this_data[0].status})`
+        : "AEM" // Just a place holder
+      console.log([this_data, name_display, name_display0])
+      this_year_div
+        .append("div")
+        .style("font-size", "16px")
+        .style("padding", `${element_pad}px`)
+        .style('box-sizing', 'content-box')
+        .style("opacity", this_data.length == 0 ? 0 : 1)
+        .style("color", "white")
+        .style("border-top", "solid 3px white")
+        .style("border-bottom", "solid 3px white")
+        .style("height", `${item_height}px`)
+        .style(
+          "background-color",
+          this_data.length > 0 && this_data[0].name ? color_map.get(this_data[0].name) : "lightgray"
+        )
+        .html(name_display)
+      });
+  });
+
+  return div.node();
+}
+```
+
+
+## The data
+
+The data all comes from past course catalogs. Thus, it doesn't really capture changes that might have happened during the academic year. For example:
+  - Chancellor Grant left mid-year,
+  - Doug Orr served as interim chancellor while Chancellor Grant was Chancellor Elect, and
+  - Sam Schuman and Brian Butler each served as Interim Provosts
+
+It's also worth mentioning that the overall structure has changed substantially over the years - expanding over quite some time and contracting a bit more recently. The timeline does not include, for example, Dean of Programs whose responsibilities were distributed amongst other Deans around the beginning of the current administration
+
+## Other comments
+
+  - I've equated the Vice Chancellor of Academic Affairs of old with the Provost of today.
+  - The current dean structure began in 2003/2004. I believe they were the invention of Mark Padilla.
+  - Kai Campbell's three years as Provost is the shortest duration of any non-interim Provost.
+  - There have been at least seven interim Provosts (including Sam Schuman and Brian Butler) in the past 30+ years. Kimberly van Noort is the first to come from outside of UNCA.
+
+
+
+```{ojs}
+leadership_data = FileAttachment("./data/UNCAAcademicLeadership.csv").csv({
+  typed: true
+})
+```

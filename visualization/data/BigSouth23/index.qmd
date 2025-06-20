@@ -1,0 +1,36 @@
+---
+title: Big South 2023 
+css: styles.css
+resources:
+  - ./components/big_south_games.csv
+---
+
+The 2022/2023 Big South basketball season was a good one for UNCA's Men's team. They won the regular season at 16-2 and then won the Big South tournament. Here are a couple of visualizations of that Season.
+
+## A chord diagram 
+
+Here's a chord diagram at of the end of the regular season. The beginning and ending width of a ribbon connecting team A and team B form a measure of how well team A performed against team B, as described below. The color of a ribbon is determined by the stronger team. The total width of an arc for a team is a measure of how well the school did in the conference.
+
+You can hover over one of those ribbons or a team logo to get a bit more information about the games played between the teams. You could find, for example, that UNC Asheville leads the conference at 16-2. All the arcs emanating from UNC Asheville are blue, since they've scored at least as many points as all of their opponents.
+
+::: {style="margin: 0 auto; max-width: 750px"}
+```{ojs}
+chord_diagram() 
+```
+:::
+
+
+## The tournament
+
+Here's how the tournament panned out.
+
+::: {.tourney-container}
+```{ojs} 
+draw_tourney(0.9*width)
+```
+:::
+
+```{ojs}
+import {chord_diagram} from './components/chord_diagram.js';
+import {draw_tourney} from './components/tournament.js';
+```
