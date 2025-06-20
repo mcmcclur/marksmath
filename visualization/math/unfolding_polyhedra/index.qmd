@@ -1,0 +1,71 @@
+---
+title: Unfolding polyhedra
+css: styles.css
+page-layout: full
+---
+
+[Polyhedron unfolding](https://mathworld.wolfram.com/Unfolding.html) is the action of cutting a polyhedron along its edges so that it can unfold to a flat plane without distorting the faces. The resulting 2D configuration is called a [net](https://en.wikipedia.org/wiki/Net_(polyhedron)). This webpage presents a couple of visualizations to illustrate this idea.
+
+
+## Lot's of polyhedra
+
+This first visualization illustrates the unfoldings of 154 different polyhedra chosen from six different classes. Once you've selected a class and a polyhedron, you can use the slider to visualize the unfolding. You can also hit the "Play" button, if using the slider is too much work.
+
+
+::: {.plain-controls}
+```{ojs}
+//| panel: input
+viewof class_name;
+```
+:::
+```{ojs}
+dynamic_comment
+```
+::: {.plain-controls} 
+```{ojs}
+//| panel: input
+//| layout-ncol: 2
+viewof polyhedron_data;
+viewof t;
+```
+:::
+
+```{ojs}
+pic
+```
+
+## The eleven unfoldings of a cube
+
+When a polyhedron can be unfolded, it's rare for the resulting net to be unique. There 43380 essentially different unfoldings of a dodecahedron. There are only eleven different unfoldings of a cube, though, which makes it a bit easier to wrap your head around. This visualization allows you to explore those eleven. Simply click one of the shapes below and use the slider to see the cube unfold into that planar shape.
+
+```{ojs}
+viewof pic_selector
+```
+
+::: {.plain-controls style="max-width: 350px;"}
+```{ojs}
+//| panel: input
+viewof t2
+```
+:::
+
+```{ojs}
+pic2
+```
+
+```{ojs}
+import {
+  viewof class_name, 
+  viewof polyhedron_data,
+  viewof t,
+  pic,
+  dynamic_comment
+} from '@mcmcclur/unfolding-polyhedra';
+```
+```{ojs}
+import {
+  viewof pic_selector,
+  viewof t2,
+  pic2 
+} from '@mcmcclur/the-eleven-unfoldings-of-the-cube'
+```

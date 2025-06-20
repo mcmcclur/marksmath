@@ -1,0 +1,59 @@
+---
+title: Fractal Typesetting
+css: styles.css
+format:
+  html:
+    page-layout: article
+    include-in-header:
+      - text: |
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css" integrity="sha512-fHwaWebuwA7NSF5Qg/af4UeDx9XqUpYpOGgubo3yWu+b2IQR4UeQwbb42Ti7gVAjNtVoI/I9TEoYeu9omwcC6g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+---
+
+<div id="splashville"></div>
+
+## Recursive constructions
+
+Fractals are complicated geometric objects that are often described using a recursive procedure. One of the simplest examples is the Sierpinski triangle, which starts with a single equilateral triangle, replaces it with three more equilateral triangles each scaled by the factor $1/2$, and proceeds recursively from there. You can use the slider below to see this in action:
+
+```{ojs}
+import {viewof sierp_steps, sierp_approx} from '@mcmcclur/construction-of-the-serpinski-triangle';
+viewof sierp_steps
+sierp_approx
+```
+
+## Typeset fractals??
+
+Now, suppose we start with the symbol $x$, replace it with $x_x^x$, and continue recursively. 
+Thus, we might get 
+$$x \to x_x^x \to {x_x^x}_{x_x^x}^{x_x^x} \to 
+{{x_x^x}_{x_x^x}^{x_x^x}}_{{x_x^x}_{x_x^x}^{x_x^x}}^{{x_x^x}_{x_x^x}^{x_x^x}}.$$
+
+I guess you can already start to see what might happen. You can use the slider below to generate the next few levels.
+
+```{ojs}
+viewof n = Inputs.range([0,7], {step: 1, value: 3})
+```
+<div id="sierpinski"></div>
+
+## Other comments
+
+
+- The animation at the top of the page was produced using the substitution
+$$x \to {{}_{x}^{x}x_x^x}.$$
+- It's been a while but I believe I learned of this idea from [Robert Dickau's webpage](https://www.robertdickau.com/typefrac.html)
+
+
+
+
+```{ojs}
+sierp_pic = typeset_sierpinski("#sierpinski", n)
+```
+
+```{ojs} 
+splash_pic = splash("#splashville");
+```
+
+
+```{ojs}
+import {splash, typeset_sierpinski} from './components/typeset_animation.js';
+```

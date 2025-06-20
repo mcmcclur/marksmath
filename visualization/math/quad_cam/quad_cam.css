@@ -1,0 +1,10 @@
+canvas {
+  margin: 20px;
+  border: solid black 2px;
+}
+.hide {
+  display: none;
+}
+img {
+	border: solid black 2px;
+}

@@ -1,0 +1,70 @@
+---
+title: The inverse quadratic camera
+css: quad_cam.css
+page-layout: article 
+---
+
+Essentially, this page generates Julia sets via video feedback. If you allow the page to have access to your camera, the video below should show the inverse image of your camera's view under the complex square function. If you then point the camera back at the image using either a mirror or an external camera, you will essentially iterate that process via video feedback. 
+   
+Exactly what you see depends on where you point the camera. If you point the camera directly at the center of the image, you should generate inverse iterates of the square function; the result is a circle. If you translate the camera so that it points at another point, you've essentially added a +c to the process so you'll be computing inverse iterates of z^2+c. The results looks eerily like quadratic Julia sets!
+
+<video id="video" class="hide" autoplay></video> 
+<canvas id="c1" class="hide"></canvas>
+<div id="video_container">
+  <canvas id="c2"></canvas>
+  <button class="btn btn-primary" onclick="qc_processor.goFull()">
+    Fullscreen
+  </button>
+</div>
+
+If you'd like more mathematical details, take a look at <a href="https://marksmath.org/scholarship/QuadraticCamera.pdf">this article</a> from <a href="https://link.springer.com/journal/283/34/3/"> The Mathematical Intelligencer</a>.
+
+## Screenshots
+
+Here are a few sample screenshots obtained from my laptop.
+
+:::: {.grid}
+::::: {.g-col-12 .g-col-sm-6}
+<a href="./components/SS0.png">
+<div class="card-body">
+  <img class="card-img-top" src="./components/SS0.png" />
+</div>
+</a>
+:::::
+::::: {.g-col-12 .g-col-sm-6}
+<a href="./components/SS1.png">
+<div class="card-body">
+  <img class="card-img-top" src="./components/SS1.png" />
+</div>
+</a>
+:::::
+::::: {.g-col-12 .g-col-sm-6}
+<a href="./components/SS2.png">
+<div class="card-body">
+  <img class="card-img-top" src="./components/SS2.png" />
+</div>
+</a>
+:::::
+::::: {.g-col-12 .g-col-sm-6}
+<a href="./components/SS3.png">
+<div class="card-body">
+  <img class="card-img-top" src="./components/SS3.png" />
+</div>
+</a>
+:::::
+::::: {.g-col-12 .g-col-sm-6}
+<a href="./components/SS4.png">
+<div class="card-body">
+  <img class="card-img-top" src="./components/SS4.png" />
+</div>
+</a>
+:::::
+::::: {.g-col-12 .g-col-sm-6}
+<a href="./components/SS5.png">
+<div class="card-body">
+  <img class="card-img-top" src="./components/SS5.png" />
+</div>
+</a>
+:::::
+:::
+<script type="text/javascript" src="./components/quad_cam.js"></script>

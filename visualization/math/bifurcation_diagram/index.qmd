@@ -1,0 +1,44 @@
+---
+title: The logistic bifurcation diagram
+css: styles.css
+page-layout: article
+format:
+  html:
+    include-in-header:
+      - text: |
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tippy.js/6.3.7/themes/material.min.css" integrity="sha512-R8oUfFYCO11afzYKUhovrP+cajy9JF0iRRHbuk16gPYstVj9McxsE/D8wnH2l0aBKuhnkAd6VMLiTFV1Bp+zKA==" crossorigin="anonymous" referrerpolicy="no-referrer" /> <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tippy.js/6.3.7/themes/light-border.min.css" integrity="sha512-DiG+GczLaoJczcpFjhVy4sWA1rheh0I6zmlEc+ax7vrq2y/qTg80RtxDOueLcwBrC80IsiQapIgTi++lcGHPLg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+---
+
+::: {.light-content}
+::::: {.panel-input}
+<div id="observablehq-curve_cnt"></div>
+<div id="observablehq-viewof-show_critial_parameters"></div>
+:::::
+<div id="observablehq-bif_pic"></div>
+<script type="module">
+import {Runtime, Inspector} from "https://cdn.jsdelivr.net/npm/@observablehq/runtime@5/dist/runtime.js";
+import define from "https://api.observablehq.com/@mcmcclur/bifurcation-diagram-with-critical-curves.js?v=4";
+new Runtime().module(define, name => {
+  if (name === "curve_cnt") return new Inspector(document.querySelector("#observablehq-curve_cnt"));
+  if (name === "viewof show_critial_parameters") return new Inspector(document.querySelector("#observablehq-viewof-show_critial_parameters"));
+  if (name === "bif_pic") return new Inspector(document.querySelector("#observablehq-bif_pic"));
+});
+</script>
+:::
+
+::: {.dark-content}
+::::: {.panel-input}
+<div id="observablehq-curve_cnt-5c291325"></div>
+<div id="observablehq-viewof-show_critial_parameters-5c291325"></div>
+:::::
+<div id="observablehq-bif_pic-5c291325"></div>
+<script type="module">
+import {Runtime, Inspector} from "https://cdn.jsdelivr.net/npm/@observablehq/runtime@5/dist/runtime.js";
+import define from "https://api.observablehq.com/d/33d5cb391be6cf27.js?v=4";
+new Runtime().module(define, name => {
+  if (name === "curve_cnt") return new Inspector(document.querySelector("#observablehq-curve_cnt-5c291325"));
+  if (name === "viewof show_critial_parameters") return new Inspector(document.querySelector("#observablehq-viewof-show_critial_parameters-5c291325"));
+  if (name === "bif_pic") return new Inspector(document.querySelector("#observablehq-bif_pic-5c291325"));
+});
+</script>
+:::

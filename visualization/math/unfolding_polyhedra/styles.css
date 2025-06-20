@@ -1,0 +1,12 @@
+.callout, .sourceCode {
+  display: none
+}
+
+div {
+  overflow: hidden;
+}
+
+main {
+  max-width: 850px;
+  margin: 0 auto;
+}

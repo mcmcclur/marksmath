@@ -1,0 +1,11 @@
+#splashville {
+  max-width: 100%;
+  margin-top: 20px;
+  text-align: center;
+} 
+
+
+.callout, .sourceCode {
+  display: none
+}
+ 

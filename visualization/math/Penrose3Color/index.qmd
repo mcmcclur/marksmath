@@ -1,0 +1,46 @@
+---
+title: Three coloring Penrose rhombs
+page-layout: article
+---
+
+According to page 27 of  Martin Gardner's [Penrose Tiles to Trapdoor Ciphers](https://books.google.com/books/about/Penrose_Tiles_to_Trapdoor_Ciphers.html), John Conway wondered if Penrose tiles could always be colored using only three colors in such a way that adjacent tiles never had the same color. This was [proved affirmative for Penrose Rhombs in 2000](https://www.jstor.org/stable/2589317). In 2002, I [published a stochastic algorithm](https://www.sciencedirect.com/science/article/abs/pii/S0097849302000948) that appears to do the job. This webpage illustrates that algorithm.
+
+<div class="controls">
+  <div id="observablehq-viewof-n-60d50a71"></div>
+  <div id="observablehq-viewof-b-60d50a71"></div>
+  <div id="observablehq-buttons-60d50a71"></div>
+</div>
+<div id="observablehq-tiling-60d50a71"></div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@observablehq/inspector@5/dist/inspector.css">
+<script type="module">
+import {Runtime, Inspector} from "https://cdn.jsdelivr.net/npm/@observablehq/runtime@5/dist/runtime.js";
+import define from "https://api.observablehq.com/@mcmcclur/penrose-three-coloring@1029.js?v=4";
+new Runtime().module(define, name => {
+  if (name === "viewof n") return new Inspector(document.querySelector("#observablehq-viewof-n-60d50a71"));
+  if (name === "viewof b") return new Inspector(document.querySelector("#observablehq-viewof-b-60d50a71"));
+  if (name === "buttons") return new Inspector(document.querySelector("#observablehq-buttons-60d50a71"));
+  if (name === "tiling") return new Inspector(document.querySelector("#observablehq-tiling-60d50a71"));
+  return ["triangles","rhombs","recolor","check_three_color"].includes(name);
+});
+</script>
+
+
+The algorithm is based on a so-called [stochastic cellular automaton](https://en.wikipedia.org/wiki/Stochastic_cellular_automaton).  To begin, we assign one of three possible colors to each 
+tile randomly.  Then, we allow the cellular automaton to evolve according 
+to the following set of rules:
+
+  - If the value of a cell (or tile) equals the value of a 
+	bordering cell that is closer to the origin (as measured by some 
+	arbitrary point chosen within each tile), then with 90\%
+	probability, the cell changes value randomly to one of the other 
+	two colors.
+  - If the value of a cell does not equal the value of a 
+	bordering cell that is closer to the origin, but does equal the 
+	value of a cell farther away from the origin, then with 10\% 
+	probability, the cell changes value.
+  - If the value of the cell does not equal the value of any 
+	bordering cell, the cell does not change value.
+
+Note that three-colorings are stable under these rules.  The hope is 
+that three-colorings are attractive equilibria.

@@ -1,0 +1,30 @@
+---
+title: Julia sets and the Mandelbrot set 
+---
+
+Click on or drag in the Mandelbrot set on the left to generate the corresponding Julia set. Hover over the Julia set on the right to see the orbit of the corresponding point.
+
+::: {.d-flex .justify-content-center}
+::::: {.light-content}
+<div id="observablehq-widget-a77c17f1"></div>
+<script type="module">
+import {Runtime, Inspector} from "https://cdn.jsdelivr.net/npm/@observablehq/runtime@5/dist/runtime.js";
+import define from "https://api.observablehq.com/@mcmcclur/julia-sets-and-the-mandelbrot-set.js?v=4";
+new Runtime().module(define, name => {
+  if (name === "widget") return new Inspector(document.querySelector("#observablehq-widget-a77c17f1"));
+});
+</script>
+:::::
+::::: {.dark-content}
+<div id="observablehq-widget-2f47f98d"></div>
+<script type="module">
+import {Runtime, Inspector} from "https://cdn.jsdelivr.net/npm/@observablehq/runtime@5/dist/runtime.js";
+import define from "https://api.observablehq.com/d/a64ac203e73a11b5.js?v=4";
+new Runtime().module(define, name => {
+  if (name === "widget") return new Inspector(document.querySelector("#observablehq-widget-2f47f98d"));
+});
+</script>
+:::::
+:::
+
+The Mandelbrot set is a famous fractal object that has probably been generated on computers millions of times since its appearance in [Scientific American's computer recreations column](http://miriam-english.org/files/Dewdney_Mandelbrot/Dewdney_Mandelbrot.html) in 1985. Often, the emphasis is on interactive exploration of the set by panning and zooming. The Mandelbrot set arose, though, as an attempt to understand more fundamental objects called Julia sets. This little app explores the relationship between the Mandelbrot set and Julia sets.
