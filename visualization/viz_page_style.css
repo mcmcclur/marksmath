@@ -1,0 +1,10 @@
+@media (max-width: 1130px) {
+  .card a.btn {
+    font-size: 1.2vw;
+  }
+}
+@media (max-width: 576px) {
+  .card a.btn {
+    font-size: 3vw;
+  }
+}

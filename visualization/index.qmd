@@ -1,0 +1,228 @@
+---
+title: Visualization
+css: viz_page_style.css
+layout: article
+---
+
+::: {.panel-tabset}
+## Data 
+
+:::: {.grid}
+::::: {.g-col-12 .g-col-sm-4}
+<div class="card text-bg-light mb-3">
+ <img class="light-content" src="data/BigSouth23/BigSouth23Light.png" class="card-img-top" alt="Chord diagram for the Big South 2023 basketball season">
+ <img class="dark-content" src="data/BigSouth23/BigSouth23Dark.png" class="card-img-top" alt="Chord diagram for the Big South 2023 basketball season">
+ <div class="card-body text-center">
+  <a href="./data/BigSouth23/" class="btn btn-primary">
+    Big South 23
+  </a>
+ </div>
+</div>
+:::::
+
+::::: {.g-col-12 .g-col-sm-4}
+<div class="card text-bg-light mb-3">
+ <img class="light-content" src="data/AcademicLeadership/AcademicLeadershipLight.png" class="card-img-top" alt="A timeline of academic leadership at UNCA">
+ <img class="dark-content" src="data/AcademicLeadership/AcademicLeadershipDark.png" class="card-img-top" alt="A timeline of academic leadership at UNCA">
+ <div class="card-body text-center">
+  <a href="./data/AcademicLeadership/" class="btn btn-primary">
+    UNCA's Leadership
+  </a>
+ </div>
+</div>
+:::::
+
+::::: {.g-col-12 .g-col-sm-4}
+<div class="card text-bg-light mb-3">
+ <img class="light-content" src="data/population_projections/population_projections_light.png" class="card-img-top" alt="Longterm population projections">
+ <img class="dark-content" src="data/population_projections/population_projections_dark.png" class="card-img-top" alt="Longterm population projections">
+ <div class="card-body text-center">
+  <a href="./data/population_projections/" class="btn btn-primary">
+    Population projections
+  </a>
+ </div>
+</div>
+:::::
+
+::::: {.g-col-12 .g-col-sm-4}
+<div class="card text-bg-light mb-3">
+ <img class="light-content" src="data/NCGerrymandering/NCGerrymanderingLight.png" class="card-img-top" alt="The Evolution of NC's Congressional Map through Gerrymandering">
+ <img class="dark-content" src="data/NCGerrymandering/NCGerrymanderingDark.png" class="card-img-top" alt="The Evolution of NC's Congressional Map through Gerrymandering">
+ <div class="card-body text-center">
+  <a href="./data/NCGerrymandering/" class="btn btn-primary">
+    NC Gerrymandering
+  </a>
+ </div>
+</div>
+:::::
+
+::::: {.g-col-12 .g-col-sm-4}
+<div class="card text-bg-light mb-3">
+ <img class="light-content" src="data/NCElectionResults2024/NCElectionResults2024Light.png" class="card-img-top" alt="NC Legislative Election Results">
+ <img class="dark-content" src="data/NCElectionResults2024/NCElectionResults2024Dark.png" class="card-img-top" alt="NC Legislative Election Results">
+ <div class="card-body text-center">
+  <a href="./data/NCElectionResults2024/" class="btn btn-primary">
+    NC Elections 2024
+  </a>
+ </div>
+</div>
+:::::
+
+::::: {.g-col-12 .g-col-sm-4}
+<div class="card text-bg-light mb-3">
+ <img class="light-content" src="data/cycling_maps/cycling_maps_light.png" class="card-img-top" alt="Cycling maps around Asheville">
+ <img class="dark-content" src="data/cycling_maps/cycling_maps_dark.png" class="card-img-top" alt="Cycling maps around Asheville">
+ <div class="card-body text-center">
+  <a href="./data/cycling_maps/" class="btn btn-primary">
+    Cycling maps
+  </a>
+ </div>
+</div>
+:::::
+:::
+
+
+## Math
+
+:::: {.grid}
+::::: {.g-col-12 .g-col-sm-4}
+<div class="card text-bg-light mb-3">
+ <img class="light-content" src="math/JuliaSetsAndMandelbrotSet/JuliaSetsAndMandelbrotSetLight.png" class="card-img-top" alt="Image of the Mandelbrot set and an associated Julia Set">
+ <img class="dark-content" src="math/JuliaSetsAndMandelbrotSet/JuliaSetsAndMandelbrotSetDark.png" class="card-img-top" alt="Image of the Mandelbrot set and an associated Julia Set">
+ <div class="card-body text-center">
+  <a href="./math/JuliaSetsAndMandelbrotSet/" class="btn btn-primary">
+    Julia Mandelbrot
+  </a>
+ </div>
+</div>
+:::::
+::::: {.g-col-12 .g-col-sm-4}
+<div class="card text-bg-light mb-3">
+ <img class="light-content" src="math/Penrose3Color/Penrose3ColorLight.png" class="card-img-top" alt="A three-colored Penrose rhomb tiling">
+ <img class="dark-content" src="math/Penrose3Color/Penrose3ColorDark.png" class="card-img-top" alt="A three-colored Penrose rhomb tiling">
+ <div class="card-body text-center">
+  <a href="./math/Penrose3Color/" class="btn btn-primary">
+    Penrose Three Color
+  </a>
+ </div>
+</div>
+:::::
+::::: {.g-col-12 .g-col-sm-4}
+<div class="card text-bg-light mb-3">
+ <img class="light-content" src="math/unfolding_polyhedra/unfolding_polyhedra_light.png" class="card-img-top" alt="Picture of an unfolding polyhedron">
+ <img class="dark-content" src="math/unfolding_polyhedra/unfolding_polyhedra_dark.png" class="card-img-top" alt="Picture of an unfolding polyhedron">
+ <div class="card-body text-center">
+  <a href="./math/unfolding_polyhedra/" class="btn btn-primary">
+    Unfolding polyhedra
+  </a>
+ </div>
+</div>
+:::::
+::::: {.g-col-12 .g-col-sm-4}
+<div class="card text-bg-light mb-3">
+ <img class="light-content" src="math/bifurcation_diagram/bifurcation_diagram_light.png" class="card-img-top" alt="Picture of the logistic bifurcation diagram">
+ <img class="dark-content" src="math/bifurcation_diagram/bifurcation_diagram_dark.png" class="card-img-top" alt="Picture of the logistic bifurcation diagram">
+ <div class="card-body text-center">
+  <a href="./math/bifurcation_diagram/" class="btn btn-primary">
+    Bifurcation diagram
+  </a>
+ </div>
+</div>
+:::::
+::::: {.g-col-12 .g-col-sm-4}
+<div class="card text-bg-light mb-3">
+ <img class="light-content" src="math/fractal_typesetting/fractal_typesetting_light.png" class="card-img-top" alt="Groovy typeset fractal image">
+ <img class="dark-content" src="math/fractal_typesetting/fractal_typesetting_dark.png" class="card-img-top" alt="Groovy typeset fractal image">
+ <div class="card-body text-center">
+  <a href="./math/fractal_typesetting/" class="btn btn-primary">
+    Fractal typesetting
+  </a>
+ </div>
+</div>
+:::::
+::::: {.g-col-12 .g-col-sm-4}
+<div class="card text-bg-light mb-3">
+ <img class="light-content" src="math/quad_cam/quad_cam_light.png" class="card-img-top" alt="The inverse quadratic camera in action">
+ <img class="dark-content" src="math/quad_cam/quad_cam_dark.png" class="card-img-top" alt="The inverse quadratic camera in action">
+ <div class="card-body text-center">
+  <a href="./math/quad_cam/" class="btn btn-primary">
+    Inverse quad cam
+  </a>
+ </div>
+</div>
+:::::
+:::
+
+## Class
+
+
+
+:::: {.grid}
+::::: {.g-col-12 .g-col-sm-4} 
+<div class="card text-bg-light mb-3">
+ <img class="light-content" src="class/unit_circle/unit_ circle_light.png" class="card-img-top" alt="Static image of the unit circle">
+ <img class="dark-content" src="class/unit_circle/unit_ circle_dark.png" class="card-img-top" alt="Static image of the unit circle">
+ <div class="card-body text-center">
+  <a href="./class/unit_circle/" class="btn btn-primary">The unit circle</a>
+ </div>
+</div>
+:::::
+
+::::: {.g-col-12 .g-col-sm-4}
+<div class="card text-bg-light mb-3">
+ <img class="light-content" src="class/water_waves/water_waves_light.png" class="card-img-top" alt="Static image of the water wave animation">
+ <img class="dark-content" src="class/water_waves/water_waves_dark.png" class="card-img-top" alt="Static image of the water wave animation">
+ <div class="card-body text-center">
+  <a href="./class/water_waves/" class="btn btn-primary">Water waves</a>
+ </div>
+</div>
+:::::
+
+::::: {.g-col-12 .g-col-sm-4}
+<div class="card text-bg-light mb-3">
+ <img class="light-content" src="class/trig_sums/trig_sums_light.png" class="card-img-top" alt="Illustration of the proof of the trig sum formulae">
+ <img class="dark-content" src="class/trig_sums/trig_sums_dark.png" class="card-img-top" alt="Illustration of the proof of the trig sum formulae">
+ <div class="card-body text-center">
+  <a href="./class/trig_sums/" class="btn btn-primary">
+    Trig sums
+  </a>
+ </div>
+</div>
+:::::
+
+::::: {.g-col-12 .g-col-sm-4}
+<div class="card text-bg-light mb-3">
+ <img class="light-content" src="class/orbits/orbits_light.png" class="card-img-top" alt="An elliptical orbit in a gravitational field">
+ <img class="dark-content" src="class/orbits/orbits_dark.png" class="card-img-top" alt="An elliptical orbit in a gravitational field">
+ <div class="card-body text-center">
+  <a href="./class/orbits/" class="btn btn-primary">
+    Gravitational orbit 
+  </a>
+ </div>
+</div>
+:::::
+
+::::: {.g-col-12 .g-col-sm-4}
+<div class="card text-bg-light mb-3">
+ <img class="light-content" src="class/tangency/tangency_light.png" class="card-img-top" alt="Approximation of a tangent line by a secant line">
+ <img class="dark-content" src="class/tangency/tangency_dark.png" class="card-img-top" alt="Approximation of a tangent line by a secant line">
+ <div class="card-body text-center">
+  <a href="./class/tangency/" class="btn btn-primary">
+    Tangency
+  </a>
+ </div>
+</div>
+:::::
+::::: {.g-col-12 .g-col-sm-4}
+<div class="card text-bg-light mb-3">
+ <img class="light-content" src="class/numerical_integration/numerical_integration_light.png" class="card-img-top" alt="Numerical approximation of an integral">
+ <img class="dark-content" src="class/numerical_integration/numerical_integration_dark.png" class="card-img-top" alt="numerical_integration">
+ <div class="card-body text-center">
+  <a href="./class/numerical_integration/" class="btn btn-primary">
+    Numerical Integration
+  </a>
+ </div>
+</div>
+:::::
+::::
+:::
