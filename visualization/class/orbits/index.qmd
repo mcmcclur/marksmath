@@ -1,0 +1,127 @@
+---
+title: Motion in a central field
+css: orbit_style.css 
+---
+
+Isaac Newton's primary motivation to develop calculus in 1665/1666 was to explain Kepler's observations that 
+
+::: {.p} 
+- each planet travels around the sun in an ellipse with the sun located at one of the focii of the ellipse and that 
+- the line segment from the planet to the sun sweeps through the same area that it sweeps out over any other time interval of equal duration.
+:::
+
+Thus, you might say that the description of the motions of the heavens was the first application of calculus!
+
+The visualization below illustrates a very simple model of planetary motion. More precisely, it illustrates motion of a single planet through a gravitational field induced by a massive sun. Note that the orbit looks elliptical with the sun at one focus and the planet moves more quickly when it's closer to the sun.
+
+::: {.viz-container}
+::::: {.controls}
+```{ojs} 
+viewof start_slider = Inputs.range(
+ [0, 3000],
+ {value: 400, label: "Start time:", 
+  step: 1, disabled: true}
+);
+viewof stop_slider = Inputs.range(
+ [0, 3000],
+ {value: 1200, label: "Stop time:", 
+  step: 1, disabled: true}
+);
+viewof running = Inputs.toggle({
+ label: "Running:",
+ value: true
+});
+```
+::::: 
+::::: {.centered} 
+```{ojs}
+import {draw_orbit} from './components/draw_orbit.js';
+orbit_drawing = draw_orbit(orbit_data)
+```
+:::::
+
+```{ojs}
+{
+  orbit_drawing.show_hide_pts(!running);
+  if(!running) {
+    const info = orbit_drawing.get_info(
+      start_slider,
+      stop_slider
+    );
+    const format = d3.format('0.4f');
+    const table = html`
+    <div class="table-container">
+     <table>
+      <tr>
+        <th>Inst speed</th>
+        <th>Dist</th>
+        <th>Duration</th>
+        <th>Avg speed</th>
+      </tr>
+      <tr>
+        <td>${format(info.inst_vel)}</td>
+        <td>${format(info.dist)}</td>
+        <td>${format(info.dt)}</td>
+        <td>${format(info.avg_vel)}</td>
+      </tr>
+     </table>
+    </div>`; 
+    return table;
+  }
+}
+```
+:::
+
+You can use the "Running" checkbox to stop the motion. When you do so, a table indicating the current instantaneous speed of the planet appears. In addtion, a green "start" position and a red "stop" position also appear on the orbit. You can use the start and stop sliders to set the postitions of those points and read the corresponding average speed over that time interval. The objective is to approximate instantaneous speed with approximate speed - a fundamental idea at the root of calculus.
+
+---
+
+From a somewhat more advanced perspective, the motion is described by a two-dimensional system of differential equations:
+$$\begin{align}
+x''(t) &= -G \frac{x(t)}{(x(t)^2 + y(t)^2)^{3/2}} \\
+y''(t) &= -G \frac{y(t)}{(x(t)^2 + y(t)^2)^{3/2}}.
+\end{align}$$
+with $G=3$ and initial conditions $x(0)=1$, $y(0)=0$, $x'(0)=0$, and $y'(0)=1$. 
+
+This system can be solved using any good numerical differential equation solver. You can check out [this solution in Colab](https://colab.research.google.com/drive/1b9eMxaZJTgngjoSbTFGwQvYv89cL_FnO?usp=sharing#forceEdit=true&sandboxMode=true), if you like.
+
+
+
+<!-- Code -->
+
+```{ojs}
+orbit_drawing.move_point(1, start_slider)
+```
+```{ojs}
+orbit_drawing.move_point(2, stop_slider)
+```
+```{ojs}
+orbit_drawing.startstop(running)
+```
+
+```{ojs}
+{
+  if(running) { 
+    d3
+      .select(viewof start_slider)
+      .selectAll('input').property('disabled', true)
+    d3
+      .select(viewof stop_slider)
+      .selectAll('input').property('disabled', true)
+  }
+  else {
+    d3
+      .select(viewof start_slider)
+      .selectAll('input').property('disabled', false)
+    d3
+      .select(viewof stop_slider)
+      .selectAll('input').property('disabled', false)
+  }
+}
+```
+
+```{python}
+#| echo: false
+from components.build_orbit import data
+ojs_define(orbit_data = data)
+```

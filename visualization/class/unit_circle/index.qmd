@@ -1,0 +1,25 @@
+---
+title: The unit circle
+page-layout: article
+---
+
+Hover over the points, to get information on the corresponing angles and trig values. Check the "More angles" box to get more information that even most mathematicians want to know.
+
+::: {.viz-container} 
+
+```{ojs}
+import {make_unit_circle} from './components/make_unit_circle.js';
+viewof more_angles = Inputs.toggle({
+  label: "More angles:", value: false 
+});
+angle_data = FileAttachment(
+  './components/angle_data.json').json();
+make_unit_circle(angle_data, more_angles)
+```
+
+:::
+
+The image of the (extended) unit circle shown above is an interactive version of the one shown in many Calculus and Precalculus texts and much like the one shown in [this Wikipedia image](https://en.wikipedia.org/wiki/Unit_circle#/media/File:Unit_circle_angles_color.svg). On this one, though, you can hover your mouse over any of the points to reveal the corresponding angle $\theta$ as well as the coordinates of the point, which are $(\cos(\theta),\sin(\theta))$. A geometric understanding of this circle makes it easier to remember formulae such as 
+$$\sin\left(\frac{\pi}{3}\right) = \frac{\sqrt{3}}{2}.$$
+
+If you ever felt like your trig teacher didn't make you memorize quite enough trig formulae, you can check the "More angles" box to see even more.

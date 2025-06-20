@@ -1,0 +1,101 @@
+---
+title: The trig summation formulae
+css: scrolly_styles.css 
+---
+
+::: {.top}
+
+The summation formulae for the sine and cosine state that
+$$\begin{aligned}
+\sin(\alpha+\beta) &= \sin(\alpha)\cos(\beta) + \sin(\beta)\cos(\alpha), \: \text{ and } \\
+\cos(\alpha+\beta) &= \cos(\alpha)\cos(\beta) - \sin(\alpha)\sin(\beta).
+\end{aligned}$$
+While these formulae aren't used nearly so often as the Pythagorean identity
+$$\cos^2(\theta) + \sin^2(\theta) = 1,$$
+they are, nonetheless, of central importance for the development of calculus, since the derivation of the derivative of the sine requires us to expand $\sin(x+h)$.
+
+Unfortunately, the proofs of the summation formulae aren't nearly so obvious as the proof the Pythagorean identity. 
+
+This wepage scrollytells a proof.
+
+:::
+
+---
+
+
+<section id="scroll_container"> 
+ <figure> 
+ ```{ojs}
+  sticky_viz = make_sticky_viz();
+  set_scrollama(sticky_viz);
+```
+ </figure> 
+
+<article>
+<div class="step">
+  <p>
+    Scroll further to start proof.
+  </p>
+</div> 
+<div class="step">
+<p>
+  We start with a single right triangle containing the angle $\alpha$.
+</p>
+</div>
+<div class="step">
+<p>
+  We then place a second right triangle with angle $\beta$ whose base lies along the hypotenuse of the first.
+</p>
+</div>
+<div class="step">
+<p>
+  We can enclose the whole figure inside a rectangle.
+</p>
+</div>
+<div class="step">
+<p>
+  And we can assume that the whole thing is scaled so that the hypotenuse of the second right triangle has length $1$.
+</p>
+</div>
+
+<div class="step"> 
+<p>
+  Now, note that the new triangle in the upper right has another angle whose measure is also $\alpha$ since it, too, is complementary to the angle $\alpha'$.
+</p>
+</div>
+<div class="step">
+<p>
+  Similarly, the new triangle in the upper left has an angle whose measure is $\alpha+\beta$ since it's complementary to the angle $\gamma$.
+</p>
+</div>
+<div class="step">
+<p>
+  Now, we can use the basic definitions of the trig functions to express the lengths of the legs of the second triangle as $\cos(\beta)$ and $\sin(\beta)$.
+</p>
+</div>
+<div class="step">
+<p>
+  And, in fact, we can do the same thing to find the lengths of all the other unlabeled sides.
+</p>
+</div>
+<div class="step">
+<p>
+  Finally, simply comparing the total lengths of the left and right sides of the rectangle, we see that 
+  $$\begin{aligned}\sin(\alpha+\beta) = & \,\sin(\alpha)\cos(\beta) + \\ &\,\cos(\alpha)\sin(\beta).\end{aligned}$$
+</p>
+</div>
+<div class="step">
+<p>
+  Similarly, we can compare the lengths of the top and bottom of the rectangle, to see that 
+  $$\begin{aligned}\cos(\alpha+\beta) = & \,\cos(\alpha)\cos(\beta) - \\ & \, \sin(\alpha)\sin(\beta).\end{aligned}$$
+</p>
+</div>
+
+</article>
+</section>
+
+
+```{ojs}
+import {set_scrollama} from './components/set_scrollama.js';
+import {make_sticky_viz} from './components/make_sticky_viz.js';
+```

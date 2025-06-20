@@ -1,0 +1,97 @@
+---
+title: Riemann Sums
+css: riemann.css
+---
+
+Numerical estimates to definite integrals can be obtained via various types of summations. This demo allows you to choose a function, partition size, and sum type (from Left, Right, Midpoint, or Trapezoidal) to compute and visualize the corresponding numerical integration approximation. 
+
+::: {.viz-container} 
+```{ojs}
+viewof example = Inputs.select(
+  [
+    {
+      label: "quadratic",
+      a: 0,
+      b: 2,
+      f: x => 2 - x**2/2,
+      f_tex: String.raw`\left(2 - \frac{1}{2}x^2\right)`,
+      actual: 2.666666666
+    },
+    {
+      label: "cubic",
+      a: -3,
+      b: 4,
+      f_tex: "(x^3 - 5x - 2)",
+      f: x => x**3 - 5*x - 2,
+      actual: 12.25
+    },
+    {
+      label: "exponential",
+      a: 0,
+      b: 3,
+      f_tex: "e^{-x}",
+      f: x => Math.exp(-x),
+      actual: 0.950212931632137
+    },
+    {
+      label: "normal",
+      a: -2,
+      b: 2,
+      f_tex: String.raw`\frac{1}{\sqrt{2\pi}} e^{-x^2/2}`,
+      f: x => Math.exp(-x*x/2)/Math.sqrt(2*Math.PI),
+      actual: 0.9544997361036
+    },
+    {
+      label: "crazy sine",
+      a: 0,
+      b: 3,
+      f_tex: String.raw`\sin(x^3)`,
+      f: x => Math.sin(x**3),
+      actual: 0.45642404618707
+    }
+  ],
+  {format: o => o.label, label: "Example:"});
+```
+```{ojs}
+viewof type = Inputs.radio(
+  ["Left", "Right", "Midpoint", "Trapezoidal"],
+  {label: "Sum type:", value: "Left"}
+)
+```
+::::: {.small-label}
+```{ojs}
+viewof N = Inputs.range([1,100], {label: tex`N:`, value: 10, step:1})
+```
+:::::
+
+```{ojs}
+tex.block`${
+  String.raw`\int_{${example.a}}^{${example.b}} ${example.f_tex} \, dx 
+  \approx ${d3.format('0.5f')(estimate)}`
+}`
+```
+```{ojs}
+tex.block`\text{error} \approx ${
+  d3.format("0.5f")(Math.abs(example.actual - estimate))
+}`
+```
+::::: {.centered}
+```{ojs}
+riemann_plot = plot(example);
+```
+:::::
+:::
+
+```{ojs}
+update = riemann_plot.update_rects(type, N)
+```
+
+```{ojs}
+estimate = compute_sum(example, N, type);
+```
+
+
+```{ojs}
+import {plot} from './components/plot.js'
+import {compute_sum} from './components/estimate_integral.js'
+```

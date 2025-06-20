@@ -1,0 +1,36 @@
+---
+title: Approximation of the tangent line
+page-layout: article
+css: desmos-dark.css
+---
+
+One overly simplistic way to characterize calculus might be as that part of mathematics that's amenable to the following approach:
+
+> *Approximate* and then take a *limit*.
+
+A common early example is the computation of the slope of a tangent line. Can you use a slider in the image below to take a guess at the slope of the tangent line?
+
+::: {.mask}
+<iframe src="https://www.desmos.com/calculator/whhfmmx5ig?embed" style="border: 1px solid #ccc; width: 100%; height: 80vh" frameborder=0></iframe>
+::: 
+
+## Details
+
+The figure shows the graph of a cubic polynomial, which we'll call $f$. The blue line is the line that's tangent to the graph of $f$ at the point $x=4$; it's defined by the properties that it passes through the point $(4,f(4))$ and has the same slope as the graph of the function does at that point. The question is - what is that slope?
+
+The *would be* an easy question if we knew two points on the tangent line, since we could use $\frac{\Delta y}{\Delta x}$ between the two points. We have just the one point, though - that's where the secant line comes in.
+
+The secant line is defined in terms of the parameter $h$. Given $h$, the secant line is defined to be the line that goes through the points
+$$(4,f(4)) \text{ and } (4+h,f(4+h)).$$
+Thus, its slope is 
+$$
+\frac{f(4+h) - f(4)}{h}.
+$$
+While the slope of the secant line isn't really what we're looking for, it *is* a good estimate of the slope we want. That's where the *approximation* part of calculus enters in this example.
+
+Furthermore, there's a clear way to improve the approximation - just take the parameter $h$ to be closer to zero. Ideally, we'd like to set $h=0$ but that doesn't quite work. That's where the take a *limit* aspect of calculus enters in this example. Ultimately, we compute the limit as $h\to0$ to get the exact slope.
+
+Of course, there's nothing special about the point $x=4$; you can do this at any point in the domain of the function. Thus, we define a new function $f'$ called the derivative of $f$ defined by
+$$
+f'(x) = \lim_{h\to0} \frac{f(x+h) - f(x)}{h}.
+$$

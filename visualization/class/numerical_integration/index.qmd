@@ -1,0 +1,200 @@
+---
+title: Numerical integration
+---
+
+In US Calc I, we learn the Fundamental Theorem of Calculus, which tells us that 
+$$\int_a^b f(x) \, dx = F(b) - F(a),$$
+*provided* that $F'(x) = f(x)$. In reality, though, most functions that we write down have no elementary antiderivative. Typically, though, we can find a numerical *estimate* fairly easily. 
+
+This web page provides a numerical integrator that computes such estimates and illustrates the results. You can choose from several examples from the menu to learn the syntax to input your own functions.
+
+::: {.viz-container}
+```{ojs}
+viewof example = Inputs.select(
+  [
+    {
+      label: "cubic polynomial",
+      a: -3,
+      b: 4,
+      f: "x^3 - 5x - 2",
+      comment: md`It's pretty easy to enter a polynomial and integer bounds of integration. For this problem the exact value is ${tex`25\,1/4`}, so the numerical integrator is quite close.`
+    },
+    {
+      label: "sine wave",
+      a: "-pi/2",
+      b: "4pi",
+      f: "sin(x)",
+      comment: md`The parser understands a lot of mathematical input, like \`pi\` for the famous numerical constant. The exact answer here is ${tex`-1`} and the integrator is again very close.`
+    },
+    {
+      label: "standard normal distribution",
+      a: -4,
+      b: 4,
+      f: "e^(-x^2/2)/sqrt(2pi)",
+      comment: md`The formula for the standard normal is a bit complicated but the parser understands all the necessary mathematical notation. The true value of the integral should, of course, be just a tiny bit less than 1.`
+    },
+    {
+      label: "piecewise function",
+      a: -1,
+      b: 1,
+      f: "x<0 ? -(x+1) : x^2",
+      comment: md`We can use the \`?:\` conditional operator to specify piecewise functions. Not surprisingly, this is a challenge for the numerical integrator; the exact answer here is ${tex`-\frac{1}{6}=-0.1\overline{6}`} so we're off in the ten-thousandths place.`
+    },
+    {
+      label: "multi-step function",
+      a: -2,
+      b: 2,
+      f: "x < 0 ? 1 : x < 1 ? 2 : 3",
+      comment: md`We can chain conditionals to generate a multi-step function.`
+    },
+    {
+      label: "removable discontinuity",
+      a: 0,
+      b: "5pi",
+      f: "x==0 ? 1 : sin(x)/x",
+      comment: md`We can also use the \`?:\` conditional operator to specify a value in the event of a removable discontinuity. The integral, in this example, defines a special function known as the *sine-integral* denoted ${tex`\text{Si}(x)`}. Thus the exact value of the integral is ${tex.block`\text{Si}(5\pi) \approx 1.633964846102835.`} As we can see, the integrator does very well.`
+    },
+    {
+      label: "infinite oscillation",
+      a: 0,
+      b: "1/pi",
+      f: "x==0 ? 0 : sin(1/x)",
+      comment: md`This example shows that the graph is reasonably nice in this rather complicated case. The numerical integrator is off in thousandths place.`
+    }
+  ],
+  {
+    format: (o) => o.label,
+    label: "Example:"
+  }
+)
+```
+```{ojs}
+viewof input_form = {
+  let div = d3.create("div").style("max-width", "800px");
+
+  let a_container = div.append("div").style("display", "inline-block");
+  let a_input = Inputs.text({ label: tex`a:`, value: example.a });
+  d3.select(a_input)
+    .style("width", "90px")
+    .on("input", (e) => e.stopPropagation())
+    .select("label")
+    .style("width", "15px");
+  a_container.append(() => a_input);
+
+  let b_container = div
+    .append("div")
+    .style("display", "inline-block")
+    .style("margin-left", "10px");
+  let b_input = Inputs.text({ label: tex`b:`, value: example.b });
+  d3.select(b_input)
+    .style("width", "90px")
+    .on("input", (e) => e.stopPropagation())
+    .select("label")
+    .style("width", "15px");
+  b_container.append(() => b_input);
+
+  let f_container = div
+    .append("div")
+    .style("display", "inline-block")
+    .style("margin-left", "10px");
+  let f_input = Inputs.text({
+    label: tex`f(x):`,
+    value: example.f
+  });
+  d3.select(f_input)
+    .style("width", "360px")
+    .on("input", (e) => e.stopPropagation())
+    .select("label")
+    .style("width", "45px");
+  f_container.append(() => f_input);
+
+  let button_container = div
+    .append("div")
+    .style("display", "inline-block")
+    .style("margin-left", "10px");
+  let button = Inputs.button("submit");
+  d3.select(button).style("width", "50px");
+  button_container.append(() => button);
+
+  let div_node = div.node();
+  div_node.value = example;
+
+  function update(e) {
+    div_node.value = {
+      a: a_input.value,
+      b: b_input.value,
+      f: f_input.value,
+      label: false
+    };
+    div_node.dispatchEvent(new CustomEvent("input"));
+  }
+  d3.select(button).on("click", update);
+  div.selectAll("input[type=text]").on("keypress", function (evt) {
+    if (evt.key == "Enter") {
+      update();
+    }
+  });
+
+  return div.node();
+}
+```
+::::: {.give-space}
+```{ojs}
+comment = input_form.comment || md``;
+```
+:::::
+
+```{ojs}
+{
+  let div = d3
+    .create("div");
+  if (
+    parsing_info.f_ready &&
+    parsing_info.f_success &&
+    parsing_info.a_success &&
+    parsing_info.a != undefined &&
+    parsing_info.b_success &&
+    parsing_info.b != undefined
+  ) {
+    let f_int;
+    let f_int_success = true;
+    try {
+      f_int = adaptiveSimpson(parsing_info.f, parsing_info.a, parsing_info.b, {
+        minDepth: 4
+      });
+      if (isNaN(f_int)) {
+        f_int_success = false;
+      }
+    } catch (e) {
+      f_int_success = false;
+    }
+    if (f_int_success) {
+      div.append(
+        () =>
+          tex.block`\int_{${parsing_info.a_tex}}^{${parsing_info.b_tex}} \left(${parsing_info.f_tex}\right)\, dx \approx ${f_int}`
+      );
+    } else {
+      div.html(`<span style="color: red">Error computing the integral</span>`);
+    }
+  }
+  return div.node();
+}
+```
+
+::::: {.centered}
+```{ojs}
+plot(parsing_info)
+```
+:::::
+:::
+
+
+```{ojs}
+parsing_info = parse_form(input_form)
+```
+
+```{ojs}
+import {adaptiveSimpson} from './components/adaptiveSimpson.js';
+import {parse_form} from './components/parse.js';
+import {plot} from './components/plot.js'
+```

@@ -1,0 +1,6 @@
+.small-label label {
+  max-width: 25px;
+}
+.small-label input[type="number"] {
+  max-width: 66px;
+}

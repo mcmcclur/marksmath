@@ -1,0 +1,28 @@
+div.demo_container {
+  background-color: #f1f1f1;
+  border: solid 1px darkslategray;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+div.slider_container {
+  padding: 5px;
+  width: 320px;
+}
+.observablehq--undefined {
+  display: none
+}
+
+
+div.svg_container {
+  width: 96%;
+  margin: 2%;
+}
+svg.demo {
+  border: solid 1px lightslategray;
+}
+.quarto-light div.svg_container svg {
+  background: linear-gradient(0.5turn, #3f87a6, #ebf8e1, #f69d3c);
+}
+.quarto-dark div.svg_container svg {
+  background: linear-gradient(0.5turn, #191970, #AFAFED, #fafafa);
+}

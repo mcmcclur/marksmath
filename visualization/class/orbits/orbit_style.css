@@ -1,0 +1,51 @@
+/* .centered-orbit {
+  max-width: 800px;
+  margin: 0 auto;
+} */
+.observablehq--undefined {
+  display: none;
+}
+input[type="number"] {
+  display: none
+}
+p, .p {
+  max-width: 850px;
+}
+
+.controls {
+  background-color: #f1f1f1;
+  border: solid 1px black;
+  text-align: center;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+.controls .cell-output {
+  display: inline-block;
+  margin-right: 8px;
+  max-width: 260px;
+}
+.controls .cell-output:last-child {
+  max-width: 180px;
+}
+
+
+.table-container {
+  overflow-x: auto;
+  margin: 1em auto;
+  max-width: 100%;
+}
+
+/* Center the table and style it */
+table {
+  margin: 0 auto;
+  border-collapse: collapse;
+  width: 100%;
+  max-width: 800px;
+  text-align: center;
+}
+
+/* Borders and padding */
+th {
+  border-bottom: 1px solid #ccc;
+  padding: 0.6em 1em;
+}

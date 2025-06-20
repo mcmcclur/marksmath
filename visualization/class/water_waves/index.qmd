@@ -1,0 +1,53 @@
+---
+title: Water waves
+css: ww_style.css
+---
+
+The graph of a sine or cosine certainly doesn't look like like a wave travelling through water. Nonetheless, we can use the trig functions to model water waves. In one overly simplified model, we assume that a body of water is composed of a collection of individual particles. A wave propogating through the water induces circular motion of each particle in the water. Each particle moves about a center ${tex`(x_0,y_0)`}, the amplitude of the circular motion decreases exponentially with the depth, and the phase shifts as we move horizontally through the water. A model that captures these ideas looks like so:
+
+$$\begin{array}{cc}
+  x(t) & = & x_0 + A e^{\alpha y_0} \cos(\alpha x_0 - \beta t) \\
+  y(t) & = & y_0 + A e^{\alpha y_0} \sin(\alpha x_0 - \beta t).
+\end{array}$$
+
+In this model $A$, represents the radius of the circular motion at the surface, $\alpha$ is the reciprocal of the wave length, and $\beta$ is the reciprocal of the period of the motion. You can fiddle with these parameters in the demo below. You can also choose to highlight two points to emphasize the circular motion of the individual particles.`
+
+```{ojs}
+import {do_it} from './do_it.js';
+div = html`<div id="demo_container" class="viz-container" style="max-width: 1000px; margin: 0 auto;">
+  <div class="panel-input">
+    <div class="slider_container">
+      <span class="slider_label">
+        <span class="slider_tex">${tex`A=`}</span>
+        <span id='A_value'></span>
+      </span>
+      <input class="slider" type="range" id="A" name="A"
+        min="0" max="1" step="0.01">
+    </div>
+    <div class="slider_container">
+      <span class="slider_label">
+        <span class="slider_tex">${tex`\alpha=`}</span>
+        <span id='alpha_value'></span>
+      </span>
+      <input class="slider" type="range" id="alpha" name="alpha" min="0" max="1" step="0.01">
+    </div>
+    <div class="slider_container">
+      <span class="slider_label">
+        <span class="slider_tex">${tex`\beta=`}</span>
+        <span id='beta_value'></span>
+      </span>
+      <input class="slider" type="range" id="beta" name="beta" min="0" max="5" step="0.01">
+    </div>
+    <div class="slider_container">
+      <label>
+        <input style="width:30px" type="checkbox" id="toggle_circles">Highlight two circles</input>
+      </label>
+    </div>
+  </div>
+
+    <div id="water" class="svg_container"> 
+      <svg id="water" class="demo" width=${width < 1000 ? 0.96 * width : 0.96*1000}></svg>
+    </div>
+  </div>`
+  do_it(div, width);
+  ```
