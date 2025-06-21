@@ -1,5 +1,5 @@
 ::: {.grid}
-::::: {.g-col-8}
+::::: {.g-col-12 .g-col-md-8}
 ## [Mark McClure]{.h1}
 
 Professor of [Mathematics](https://math.unca.edu/)  
@@ -12,7 +12,7 @@ Professor of [Mathematics](https://math.unca.edu/)
 - Writing
 - Developing
 :::::
-::::: {.g-col-4 .d-none .d-sm-block transform="translate(0,-25px)"}
+::::: {.g-col-4 .d-none .d-md-block transform="translate(0,-25px)"}
 ```{ojs}
 import {animate_network} from './components/neural_multiplier.js';
 model = await FileAttachment("./components/multiplication_model.json").json();
