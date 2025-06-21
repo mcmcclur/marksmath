@@ -1,0 +1,115 @@
+references:
+  - id: spica_paper
+    type: article-journal
+    author:
+      - family: Spica
+        given: Elizabeth
+    title: "Inclusive Access: A multi-institutional study of academic outcomes from a statewide community college automatic billing eTextbook pilot"
+    container-title: "Community College Journal of Research and Practice"
+    publisher: Community College Journal of Research and Practice
+    issued:
+      year: 2021
+    URL: "https://trace.tennessee.edu/utk_edleadpubs/3/"
+
+  - id: spica_dissertation
+    type: thesis
+    genre: "PhD Dissertation"
+    publisher: "University of Tennessee"
+    title: "Through the Lens of Equity: Impacts of Course Material Costs for Tennessee Community College Students"
+    author:
+      - family: Spica
+        given: Elizabeth
+    URL: "https://trace.tennessee.edu/utk_graddiss/6750/"
+
+  - id: cuillier
+    type: chapter
+    author:
+      - family: Cuillier
+        given: Cheryl
+    editor:
+      - family: Jensen
+        given: Kristi
+      - family: Nackerud
+        given: Shane
+    title: "Inclusive Access: Who, What, When, Where, How, and Why?"
+    container-title: "Book Title: The Evolution of Affordable Content Efforts in the Higher Education Environment: Programs, Case Studies, and Examples "
+    publisher: "University of Minnesota Libraries"
+    page: 186-202
+    URL: https://open.lib.umn.edu/affordablecontent/chapter/inclusive-access-who-what-when-where-how-and-why/
+    issued:
+      year: 2018
+
+  - id: follett-faq
+    author: Follett
+    type: webpage
+    URL: "https://support.follett.com/hc/en-us/articles/33300449146004-Inclusive-Access-Frequently-Asked-Questions-FAQ"
+    accessed:
+      year: 2025
+      month: 01
+
+  - id: contracts
+    type: webpage
+    URL: "https://sparcopen.org/our-work/automatic-textbook-billing/contract-library/"
+    accessed:
+      year: 2024
+      month: 12
+      day: 20
+
+  - id: smith
+    type: webpage
+    author:
+      - family: Smith
+        given: Nathan
+    title: "Thinking Critically About Inclusive and Equitable Access Programs"
+    URL: "https://openoregon.org/thinking-critically-about-inclusive-and-equitable-access-programs/"
+    accessed:
+      year: 2024
+      month: 12
+      day: 20
+    issued:
+      year: 2024
+      month: 6
+
+  - id: keep_affordable
+    author: "National Association of College Stores"
+    type: webpage
+    title: "Keep Textbooks Affordable"
+    URL: "https://keeptextbooksaffordable.org/"
+    accessed:
+      year: 2024
+      month: 12
+
+  - id: doe_regulations
+    type: webpage
+    author: Dept of Education
+    URL: "https://www.ecfr.gov/current/title-34/subtitle-B/chapter-VI/part-668/subpart-K/section-668.164"
+    accessed:
+      year: 2024
+      month: 12
+
+  - id: inclusiveaccess
+    author: InclusiveAccess
+    type: webpage
+    URL: "https://www.inclusiveaccess.org/"
+    accessed:
+      year: 2024
+      month: 12
+      day: 20
+
+  - id: mikemoore
+    type: webpage
+    author: Mike Moore
+    URL: "https://drmichaelrmoore.com/"
+    accessed:
+      year: 2024
+      month: 12
+
+  - id: moore_paper
+    type: preprint
+    title: "Equitable Access: A Participant v. Non-Participant Course Completion Rate Analysis from 2-Year Institutions"
+    issued:
+      year: 2023
+    author:
+      - family: Moore
+        given: Mike
+    URL: "https://osf.io/preprints/edarxiv/drqz9"
