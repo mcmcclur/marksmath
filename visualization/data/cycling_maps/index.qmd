@@ -50,12 +50,6 @@ ride_menu = {
       // d3.select(webpage_text).style("opacity", 0);
     }
   });
-  // if (
-  //  Object.keys(other_files).indexOf(params.get("gpx")) > -1 &&
-  //  !params.get("menu")
-  // ) {
-  //  d3.select(ride_menu).style("display", "none");
-  // }
   return ride_menu;
 }
 ```
