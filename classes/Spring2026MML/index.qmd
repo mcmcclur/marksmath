@@ -1,0 +1,16 @@
+---
+title: Math for Machine Learning
+---
+
+::: {.grid}
+::::: {.g-col-8}
+Math 295 in Spring 2026  
+with professor [Mark McClure](https://marksmath.org/)
+:::::
+::::: {.g-col-4 .hide-small}
+```{ojs}
+import {regression_animation} from './components/regression_animation.js'
+regression_animation();
+```
+:::::
+:::
