@@ -1,0 +1,103 @@
+---
+title: Course Calendar
+subtitle: "Math 295 - Spring 2026"
+css: calendar_style.css
+---
+
+<div id="cal"></div>
+
+
+```{ojs}
+{
+  const events = [
+    {
+      title  : 'MLK Day',
+      start  : '2026-01-19',
+      color: 'gray',
+    },
+    {
+      title  : 'Spring break',
+      start  : '2026-03-09',
+      end: '2026-03-14',
+      color: 'gray',
+    },
+    {
+      title  : 'UG Research Day',
+      classNames: ['no_class'],
+      start  : '2026-04-21',
+      color: 'gray',
+    },
+    {
+      title  : 'Last day of class',
+      // classNames: ['no_class'],
+      start  : '2026-04-28',
+      color: '#880000',
+    },
+  ]; 
+  const outline = await FileAttachment('outline.yml')
+    .text();
+  const parsed_outline = YAML.parse(outline);
+  
+  
+  const date_parser = d3.utcParse("%a, %b %e - %Y:%H:%M");
+  const date_formatter = d3.timeFormat("%Y-%m-%d");
+  
+  const outline_data = parsed_outline
+    .forEach(function(o) {
+      const this_week = Object.values(o).flat();
+      this_week.forEach(function(oo) {
+        if(oo) {
+          let [date, data] = Object.entries(oo)[0];
+          date = date + ' - 2026:17:30';
+          date = date_formatter(date_parser(date));
+          data = data.split(' - ');
+          const event = {
+              title: data[0],
+              start: date
+          };
+          if(data[0].slice(0,5) == "Intro") {
+            event.color = 'green'
+          } else if(data[0].slice(0,4) == "Exam") {
+            event.color = d3.color("purple").darker().toString()
+          } else if(data[0].slice(0,3) == "Lab") {
+            event.color = d3.color("purple").brighter().toString();
+          }
+          if(data.length > 1) {
+            event.extendedProps = {hover: data[1]};
+          }
+          events.push(event);
+        }
+      })
+    });
+  const calendar = new FullCalendar.
+    Calendar(document.getElementById('cal'), {
+    initialView: 'dayGridMonth',
+    fixedWeekCount: false,
+    showNonCurrentDates: false,
+    initialDate: '2026-01-01',
+    hiddenDays: [0,6],
+    height: 'auto',
+    events,
+    eventDidMount: function(arg) {
+      if(arg.event.extendedProps.hover) {
+        tippy(arg.el, {
+          content: arg.event.extendedProps.hover
+        })
+      }
+      else if(arg.event.backgroundColor == 'gray') {
+        tippy(arg.el, {
+          content: 'No class'
+        })
+      }
+    },
+  });
+  calendar.render();
+  return md``;
+}
+```
+
+```{ojs}
+FullCalendar = import("https://cdn.skypack.dev/fullcalendar");
+YAML = import("https://cdn.skypack.dev/yaml");
+tippy = require("tippy.js@6")
+```
