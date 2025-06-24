@@ -1,9 +1,39 @@
 ---
 title: Data 
+page-layout: article
 ---
 
 Sample datasets
 
+- College Football 2024
+  - Description: Lists team stats for all 135 D1 College Football teams for the Fall 2024 season. I assembled this summary data from more detailed data obtained from [Massey Ratings](https://masseyratings.com/).
+  - [CSV](./CFBStats/CFB2024.csv)
+- Colors
+  - Description: This is a small, manufactured data set of RGB values that are *close* to primary colors; there are also a few missing values values. The intention is to illustrate imputation with, for example, a KNN imputer.
+  - [CSV](./colors.csv)
+- NCAA Basketball data (multiple files for sports analytics)
+  - The Big South 2025 Regular Season 
+    - Description: Game by game results of the Mens's 2025 Big South regular season.
+    - [CSV](BigSouth2025RegularSeason.csv)
+  - Big South Games with Eigen ratings 
+    - Big South games with score differences and Eigen ratings for the 2023/24 Season 
+    - [CSV](big_south_games_with_ratings.csv)
+  - Big South Games with Massey ratings 
+    - Big South games with score differences and Massey ratings for the 2023/24 Season 
+    - [CSV](big_south_games_with_massey_ratings.csv)
+  - Paired Tournament Games
+    - Lists all Men's NCAA Tournament games from 2010 through 2023. Each game lists the difference of the Massey ratings between Team 1 and Team 2, as well as the seed difference between the teams. There's also a Boolean label indicating whether Team 1 defeated Team 2. The intention is illustrate a machine learning approach to sports prediction and each game appears twice to maximize the data set.
+    - [CSV](./paired_tourney_games.csv)
+  - Processed Kaggle data.
+    - There are four files here - two for the men's tournament and two for women. *Prior* tournament games record actual past tournament games dating back to 2010 up through the 2024 tournament. Each game has a slew of team stats and a label indicating who won the game. *Potential* tournament games lists all possible pairs of tournament games from the 2025 tournament with the data but no labels. The idea was to generate a Kaggle submission file [the 2025 submission](https://www.kaggle.com/competitions/march-machine-learning-mania-2025/overview).
+    - [Men's priors](Mprior_tourney_games2025.csv)
+    - [Men's potentials](Mpotential_tourney_games2025.csv)
+    - [Women's priors](Wprior_tourney_games2025.csv)
+    - [Women's potentials](Wpotential_tourney_games2025.csv)
 - Palmer Penguins
   - [Reference](https://allisonhorst.github.io/palmerpenguins/)
   - [CSV](./penguins.csv)
+
+- Wine
+  - Description: This is a modified version of the data obtained from SciKit Learn's `sklearn.datasets.load_wine` function. I simply renamed the "target" variable to "variety" and placed it all in one CSV file to obtain a nice classification example.
+  - [CSV](./wine.csv)
