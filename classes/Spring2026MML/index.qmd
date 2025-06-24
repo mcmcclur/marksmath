@@ -1,0 +1,32 @@
+---
+title: Math for Machine Learning
+---
+
+::: {.grid}
+::::: {.g-col-8}
+Math 295 in Spring 2026  
+with professor [Mark McClure](https://marksmath.org/)
+
+<details>
+  <summary><span class='ahead'>Handy links</span></summary>
+  
+- [Syllabus](syllabus.qmd)
+- Schedule
+  - [Outline](schedule/outline.qmd)
+  - [Calendar](schedule/calendar.qmd)
+- The textbook
+  - [Full text](https://mml-book.github.io/book/mml-book.pdf)
+  - [Website](https://mml-book.github.io/)
+- [Colab](https://colab.research.google.com/)
+- [MyOpenMath](https://myopenmath.com)
+- [The Math Lab!](https://math.unca.edu/learn/math-lab/)
+</details>
+
+:::::
+::::: {.g-col-4 .hide-small}
+```{ojs}
+import {regression_animation} from './components/regression_animation.js'
+regression_animation();
+```
+:::::
+:::

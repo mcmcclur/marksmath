@@ -1,0 +1,58 @@
+- Week 1:
+    - Mon, Jan 12: Intro - Overview and KNN
+    - Wed, Jan 14: Review of Calc I - Functions, derivatives, and optimization
+    - Fri, Jan 16: Overview of Calc III - Functions of two variables and their visualization. Partial derivatives and optimization.
+- Week 2:
+    - Wed, Jan 21: Systems and Matrices - General systems and equation operations, matrix representation and row operation, Reduced Row Echelon Form and nonsingular matrices
+    - Fri, Jan 23: Matrix algebra - Matrix multiplication, inverses, determinants, and transposes
+- Week 3: 
+    - Mon, Jan 26: Linear Algebra I - Abstract vector spaces, linear transformations and their matrix representation
+    - Wed, Jan 28: Review 
+    - Fri, Jan 30: Exam I
+- Week 4:
+    - Mon, Feb 2: Linear Algebra II - Subspaces, column space, null space, and range
+    - Wed, Feb 4: Linear Algebra III - Geometry of linear transformations and determinants
+    - Fri, Feb 6: Linear Algebra IV - Norms and inner products
+- Week 5:
+    - Mon, Feb 9: Data Intro - Data tables and data frames, types of data, images of data.
+    - Wed, Feb 11: Measures of data - Mean, variance, covariance, and correlation.
+    - Fri, Feb 13: Linear Regression - Normal equations, simple examples, and Massey ratings
+- Week 6:
+    - Mon, Feb 16: Practical issues - Encoding variables and regularization for linear regression.
+    - Wed, Feb 18: Review
+    - Fri, Feb 20: Exam II
+- Week 7: 
+    - Mon, Feb 23: Integration - Review of integration and the area problem; u-substitution
+    - Wed, Feb 25: Lab 1 - Linear regression on the computer
+    - Fri, Feb 27: Numerical integration - The normal and logistic functions
+- Week 8:
+    - Mon, Mar 2: Discrete probability - Discrete distributions, random variables, and binomial coefficients.
+    - Wed, Mar 4: Continuous probability - Continuous distributions, random variables, and the normal distribution.
+    - Fri, Mar 6: More probability - Modeling data, the central limit theorem, and maximum likelihood.
+- Week 9:
+   - Mon, Mar 16: Logistic regression - Probability and classification
+   - Wed, Mar 18: Lab 2 - Logistic regression for Kaggle's NCAA competition.
+   - Fri, Mar 20: Eigenspaces - Definition, computation, and interpretation of eigenvalues and eigenvectors.
+- Week 10:
+    - Mon, Mar 23: Diagonalization - Application of eigenspaces to understand geometric action 
+    - Wed, Mar 25: Review
+    - Fri, Mar 27: Exam III
+- Week 11:
+    - Mon, Mar 30: Eigenrating - Dominant eigenvectors, Google Pagerank, and another sports rating algorithm.
+    - Wed, Apr 1: PCA - Principal Component Analysis
+    - Fri, Apr 3: More optimization - Gradient descent and Lagrange multipliers
+- Week 12:
+    - Mon, Apr 6: SVM 1 - Support vector machines (With potential classification review)
+    - Wed, Apr 8: SVM 2 - Support vector machines II
+    - Fri, Apr 10: Lab 3 - SVM Lab 
+
+- Week 13:
+    - Mon, Apr 13: Networks - Definitions and algorithms
+    - Wed, Apr 15: Review
+    - Fri, Apr 17: Exam IV
+- Week 14:
+    - Mon, Apr 20: Expression graphs - Representing algebraic expressions as networks.
+    - Wed, Apr 22: Neural networks - The basics of neural networks.
+    - Fri, Apr 24: Convolution - Convolutional neural networks 
+- Week 15:
+    - Mon, Apr 27: Review

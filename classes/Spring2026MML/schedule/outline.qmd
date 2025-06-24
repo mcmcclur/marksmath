@@ -1,0 +1,14 @@
+---
+title: Class Outline
+format-links: false
+---
+
+Here's the *tentative* outline for MML:
+
+```{python}
+from IPython.display import Markdown
+f = open("./outline.yml", 'r')
+contents = f.read()
+f.close()
+Markdown(contents)
+```
