@@ -1,0 +1,489 @@
+---
+title: "Follett Access at UNCA"
+subtitle: "Its true cost and other issues"
+date: 2025-01-28
+date-format: "MMMM YYYY"
+abstract: "A discussion of the many issues surrounding Follett Access as proposed to UNCA for Academic Year 2024/25, with a particularly deep dive into its cost."
+author:
+  - family: McClure
+    given: Mark
+    email: mcmcclur@unca.edu
+format:
+  html:
+    css: styles.css
+    toc: true
+    toc-depth: 3
+    minimal: false
+    format-links: [pdf]
+    execute:
+      echo: false
+  pdf:
+    mainfont: "Times New Roman"
+    output-file: "FollettAccess2024-2025"
+    execute:
+      echo: false
+    include-in-header:
+      text: |
+        \usepackage{sectsty}
+        \subsectionfont{\fontsize{16}{12}\selectfont\underline}
+        \subsubsectionfont{\fontsize{12}{12}\selectfont}
+bibliography: ./data/references.yml
+---
+
+## Introduction
+
+Follett Access is a fee based program for textbook and courseware distribution run by Follett - the company that has run UNCA's campus bookstore since the fall of 2011. The key feature that distinguishes Follett Access from the current mode, where students purchase their textbooks individually, is that the books are paid for via a fee that is collected along with their tuition. All students would be automatically enrolled in Follett Access under the plan and pay for every credit hour or pay a flat rate per semester, depending on plan specifics.
+
+### Benefits according to Follett
+
+- Savings of 20-60% as compared to "equivalent pricing",
+- Promotes academic freedom, by making all materials available,
+- Improved student learning outcomes, due to simple day one readiness.
+
+These statements have been made on many of Follett's webpages. Their pages seem to constantly shift, but you can find a current example of a page with those claims here:  
+[https://shorturl.at/mX91m](https://shorturl.at/mX91m){target="_blank"}.
+
+### However
+
+- My data indicates that UNCA students would spend *more* money on Follett provided materials under Follett Access than they would under the current plan.
+
+::: {.callout-note appearance="minimal"}
+\large
+Student payments to Follett could very well *increase* over 70%.
+:::
+
+- Any single vendor necessarily restricts choice and, therefore, academic freedom. Worse,
+
+::: {.callout-note appearance="minimal"}
+\large
+Follett Access undermines the academic work of faculty and staff aimed at providing *free* materials.
+:::
+
+- While Follett points to the work of one researcher on student outcomes in particular, there's certainly evidence indicating no statistical impact of inclusive access programs on student learning.
+
+::: {.callout-note appearance="minimal"}
+\large
+Data on student learning outcomes are *mixed at best*.
+:::
+
+
+Perhaps, all this is why less than one third of all UNCA course sections use Follett Supplied materials.
+
+---
+
+In this document, we survey some of the critical writings on inclusive access in general and take a close look at the cost of Inclusive Follett Access as it's been offered to UNCA in the Fall of 2024.
+
+## Survey of material on inclusive access
+
+Follett Access is just one example of a broader business model known as *inclusive access*. There has been a fair amount written on these types of programs already, including
+
+- [Inclusive Access: Who, What, When, Where, How, and Why?](https://open.lib.umn.edu/affordablecontent/chapter/inclusive-access-who-what-when-where-how-and-why/){target="_blank"} [@cuillier]  
+A book chapter that surveys the history of inclusive access, together with its challenges and promises.
+- [Thinking Critically About Inclusive and Equitable Access Programs](https://openoregon.org/thinking-critically-about-inclusive-and-equitable-access-programs/){target="_blank"} [@smith]  
+A blog post with a critical view of inclusive access.
+- [Inclusive Access: A multi-institutional study of academic outcomes from a statewide community college automatic billing eTextbook pilot](https://trace.tennessee.edu/utk_edleadpubs/3/){target="_blank"} [@spica_paper]  
+A journal article that investigates the impact of inclusive access on student learning
+- [InclusiveAccess.org](https://inclusiveaccess.org/){target="_blank"} [@inclusiveaccess]  
+A webpage and community-driven initiative to raise awareness of the facts about automatic textbook billing.
+- [Mike Moore's pages](https://drmichaelrmoore.com/){target="_blank"} [@mikemoore]  
+One researcher's webpage with a large number of blog posts and preprints that speak of inclusive access in somewhat glowing terms.
+
+The primary motivation of this current work is to layout the facts that are relevant to UNCA as it considers whether to incorporate the all inclusive version of Follett Access as offered during academic year 2024/2025. Thus, we'll survey some of the results from the references above before taking a deep dive into the cost issue. First, we establish some basic terminology.
+
+### Definitions
+
+Terminology and specifics vary but the salient features of inclusive access are
+
+- Course materials are delivered to students by the first day of class,
+- students are charged a fee by the school to pay for these materials, and
+- students are automatically enrolled in the program, though they typically have an opportunity to opt out by semester.
+
+Again, some details vary. Charges might be per credit hour or a flat fee per semester, for example. Terminology varies as well and is not completely consistent between authors or companies. Follett, for example, distinguishes between
+
+- *Course-by-course Follett Access*, in which individual instructors sign up for their course to be covered and
+- *Inclusive Follett Access*, which is the main topic here.
+
+Course-by-course Follett Access is already in use here at UNCA. There are some positive aspects of the course-by-course model, in no small part, because it is instructor driven. It causes considerable administrative work on UNCA's end, though, and does not appear to be sustainable in it's current form.
+
+This current work, though, focuses on *Inclusive* Follett Access as it's been offered to UNCA academic year 2024/2025. The work on cost, in particular, is built on data specific to that place and time.
+
+### Cost
+
+Relatively little has been written on the costs of Follett Access or the cost of inclusive access in general. The material that has been written is generally data free and takes company assertions for granted while maintaining concern for how the costs might evolve.
+
+[@cuillier], for example, mentions that
+
+- pricing is not transparent,
+- is compared to "competitive market rates",
+- depends on the negotiations of school, and
+- may creep up or shift to a digital-only model over time.
+
+At the same time, the chapter asserts that there might be potential financial benefits for both the students and the school. It's unclear, though, what data supports this statement.
+
+[@smith], on the other hand, writes that
+
+> in the aggregate, students will probably spend more on textbooks under an Inclusive or Equitable Access model than under a traditional textbook model.
+
+He too offers no data to back this statement up, though. Again, a primary objective here is to solidify this claim in the context of Follett's current offer to UNCA.
+
+### Student outcomes
+
+There have been a few statistical studies examining the impact of inclusive access programs on student outcomes. The results have been mixed, however.
+
+Mike Moore's homepage [@mikemoore] is cited widely across Follett's website. He writes specifically on the question of outcomes in [@moore_paper] showing that students who participated in inclusive access programs at two community colleges tended to have somewhat better outcomes than those who opted out. [@smith], though, points out that this is a different question than one might consider when choosing whether to migrate to such a program.
+
+[@spica_paper], by contrast, studied the before and after impacts of an inclusive access program launched in Fall 2019 across Tennessee's 13 community colleges. The study found no statistically significant impact on student learning.
+
+Additionally, the purported improvement that might result from inclusive access would seem to arise from it's advertised benefits of
+
+- lower cost,
+- day one readiness,
+- hassle free acquisition, and
+- management of digital course materials.
+
+But, all of these things are already achieved in many classes at UNCA using freely available materials OER, teacher provided materials, and library resources.
+
+### Academic freedom
+
+Follett asserts that inclusive access promotes academic freedom by allowing faculty to choose whatever course materials they want, disregarding costs. [@cuillier], however, points out that any single vendor is bound to limit choices and could ultimately lead to higher prices.
+
+Additionally, Follett and other vendors indicate that they can support OER by distributing it digitally. While this is no doubt true, a major point behind OER is that this already easy to do at little to no cost. Given this motivation, what incentive does inclusive access truly offer to a developer of OER?
+
+
+## Cost analysis
+
+Follett advertises that their inclusive access plan offers significant savings - "20-60% lower than equivalent pricing for course materials" according to [@follett-faq].  It's not immediately clear, though, what "equivalent pricing" means. [@keep_affordable] refers to "prevailing market pricing", which is in line with Department of Education regulations [@doe_regulations]. Thus, depending on "prevailing" conditions, the 20-60% estimate might very well be true.
+
+When considering whether to move from one plan to another, though, it seems to me that the logical thing to compare the new plan to would be the current plan. Thus, in this section, we focus on the details of that analysis
+
+### Delivery modes
+
+To be clear, when we say
+
+- *Standard plan*, we mean:
+  - Students purchase their materials directly from the bookstore either online or in person. They are responsible for finding paying for the required materials.
+- *Inclusive Follett Access* or just *Follett Access*, we mean:
+  - All students are charged fees for all classes and Follett provides all materials.
+  - Students are automatically opted in but have the option to opt out. Opt out is per semester, not per class.
+
+We are not considering Course-by-course Follett Access in this analysis.
+
+### Financial details of the plans
+
+There are actually three versions of the financial specifics of Follett's offer:
+
+- $17 per student per credit hour,
+- $20 per student per credit hour capped at 12 hours per student, and
+- $222 per student per semester; $70 in the summer.
+
+A key feature of "*Inclusive* Access" is that it is, indeed, inclusive. That is all students are signed up for the program by default. The charge is for all classes, regardless of whether those classes receive Follett provided materials or not. Students can opt out of this fee and, then, purchase materials on their own. Opt out is by *semester*; students cannot opt out course by course.
+
+### Cost of proposed plans
+
+It's not hard to compute the total amount that Follett would have made in Fall of 2024 from these plans.
+
+#### Per semester
+
+UNCA's [Fall Enrollment at a Glance for Fall 2024](https://drive.google.com/file/d/1Mbw7v_j7V2FN5gAmxquJvZ89cEwAUGCx/view), for example, indicates a day 10 head count of 3055. That would yield a total of
+$$
+\$222\times3055 = \$678,210
+$$
+paid to Follett by UNCA students under the flat rate per semester plan.
+
+Of course, some students will opt-out. [@smith] states that opt-out rates are typically 2%-10%. [@cuillier] refers to a University of Arizona study indicating opt-out rates of 4$-7.6%. Follett does not seem to publish opt-out rates.
+
+If we make the possibly generous assumption, though, that 7% of students opt out, the we estimate the amount of money paid to Follett by UNCA students in Fall of 2024 would have been
+$$
+0.93\times\$222\times3055 = \$630,735.
+$$
+
+#### Per credit hour
+
+It's only a little bit more work to estimate the amount that Follett would make per credit hour. We can download [UNCA's Fall 2204 class schedule](https://meteor.unca.edu/registrar/class-schedules/api/v1/csv/2024/fall) as a CSV file. Then, for each course, we compute
+$$
+\$17 \times \text{enrollment} \times \text{credit hours}
+$$
+and finally add that all up. We get a grand total of $720,222.
+
+Unfortunately, it's difficult to account for students opting out of this plan. It's not a matter of simply multiplying by $0.93$, since different students pay different amounts according to the number of credit hours they are taking. Similarly, it's more challenging to estimate the cost using the capped plan, since I don't have easy access to all students' schedules.
+
+Given that the $720,222 per credit hour estimate is significantly larger than the $678,210 per semester estimate, it seems reasonable to guess that 93% of that smaller number would be a lower bound for the per credit hour model. That lower bound probably still persists for the capped version.
+
+#### Conclusion
+
+\mbox{ }
+
+::: {.callout-note icon=false title="Inclusive Access estimates for Fall 2024"}
+
+\large
+In Fall of 2024, UNCA Students would probably have spent between
+$$
+\$630,000 \text{ and } \$720,000
+$$
+in total using a Follett Access plan. Exactly where that number is depends on the plan and opt-outs.
+
+:::
+
+### Cost of the current plan
+
+Obtaining precise estimates on how much our students are paying under the current plan is significantly more challenging and less reliable. This is mainly because, while we know what materials are *assigned* to how many students, we don't know who many students actually *obtain* those materials from Follett, we don't know if they rent or buy new or used materials, and we we don't how students treat recommended materials vs required materials.
+
+Follett of course has this data but, as far as I know, hasn't shared it with us. We can, however, obtain bounds and rough estimates.
+
+#### Estimates
+
+Let's get right to the current plan estimates:
+
+::: {.callout-note icon=false title="Current plan estimates for Fall 2024"}
+
+\large
+- $628,000 is an absolute max and gross overestimate of the amount that our students would have spent on Follett provided materials in aggregate in Fall of 2024 and
+- it's quite possible that our students could have spent as little as $350,000 or even less.
+
+:::
+
+To be clear, the first estimate is obtained by assuming that every student purchases the most expensive version of every text that's either required or just recommended. Thus, it is certainly an upper bound on the total amount that our students spent on Follett provided materials and, probably, a gross *over*estimate.
+
+The second estimate is obtained by assuming that every student buys the least expensive version of the required texts but none of the recommended texts. It still does not account for those students who obtain their textbooks by other means - of which there are could very likely be many.
+
+Taking into account the fact that the second estimate underestimates by assuming no one purchases recommended texts but also over estimates since we don't know how many students get their texts elsewhere, we might suppose that it's a much better estimate than the first, which is known to be a gross overestimate.
+
+#### Data and methodology
+
+The most time consuming and tedious portion of this analysis is obtaining the pricing data, which we can get from the links to bkstr.com as linked from UNCA's class schedule. There's no quick way to get this data; you've just got to follow the links and record the information.
+
+This process is not completely automatic and is somewhat error-prone. Thus, there might be a few errors in the data. I've done this several years, though, and the results are consistent with what I've seen in the past. Thus, I'm fairly confident in the overall implications of the results. I would also be happy to hear of any errors.
+
+::: {.callout-note icon=false}
+
+\large
+Correct, complete, and more precise data should absolutely be provided by Follett. It is really impossible to adequately asses the offer without it.
+
+:::
+
+Working with what we have, though, you can merge the data from UNCA's class schedule together with the pricing data into a single tabular file. [@tbl-textbookdata] shows a simplified sample of this data.
+
+\begingroup
+\tiny
+```{python}
+#| label: tbl-textbookdata
+#| tbl-cap: Sample textbook data at UNCA, Fall 2024
+import pandas as pd
+from IPython.display import Markdown
+data = pd.read_csv("./data/textbookDataFall2024.csv")
+
+sorted_data =  data.groupby('crn').first()
+sorted_data['length_sum'] = sorted_data['course_title'].str.len() + sorted_data['instructor'].str.len()
+sorted_data = sorted_data.sort_values(
+  by='length_sum',
+  ascending=True
+)
+sorted_data = sorted_data \
+  .drop(columns=['length_sum']) \
+  .reset_index().head(6)
+optioned_data = data.required.apply(
+  lambda r: type(r) == str and r[0] == "O"
+)
+optioned_data = data[optioned_data].head()
+
+display_data = pd.concat([sorted_data, optioned_data])
+
+columns = ['course_code', 'course_title', 'hours', 'enrollment', 'isbn',  'required', 'purchase_type', 'format', 'purchase_price']
+display_data = display_data[columns]
+markdown_table = display_data.to_markdown(index=False)
+Markdown(markdown_table)
+```
+\endgroup
+
+Note that each row is determined four values - `course_code`, `isbn`, `purchase_type`, and `format`. We can then do things like group by `course_code` and `isbn` and determine maximum and minimum costs for each course section. We can sum those up to get the upper and lower bounds for the amount our students would have spent in the Fall of 2024. In particular:
+
+  - If we sum maximum possible costs of required and recommended texts over all courses, we obtain $627,855.05.
+  - If we sum minimum possible costs of just required texts over all courses, we obtain $330,028.04.
+
+These are the precise values of the bounds I've obtained for the amount of money that UNCA spent on Follett provided course materials.
+
+### Addendum for Spring 2025
+
+As of late January 2025, I've updated this document to include some information for the Spring semester of 2025. The numbers appear to have shifted a bit so that the difference is not as pronounced but is still probably quite significant.
+
+#### Estimates 
+
+Using the Spring 2025 data, I've obtained the following cost estimates for Inclusive Access as compared to the current plan.
+
+For Inclusive Access:
+
+::: {.callout-note icon=false title="Inclusive Access estimates for Spring 2025"}
+
+\large
+In Spring of 2025, UNCA Students would probably spend between
+$$
+\$585,000 \text{ and } \$660,000
+$$
+in total using a Follett Access plan. Exactly where that number is depends on the plan and opt-outs.
+
+:::
+
+And for the current plan:
+
+::: {.callout-note icon=false title="Current plan estimates for Spring 2025"}
+
+\large
+- $647,000 is an absolute max and gross overestimate of the amount that our students would have spent on Follett provided materials in aggregate in Spring of 2025 and
+- it's quite possible that our students could have spent as little as $316,000 or even less.
+
+:::
+
+Keeping in mind that the upper bound for current plan estimates makes some pretty ridiculous assumptions on student purchasing and that the lower bound probably much closer to reality, it becomes clear that Follett Access almost certainly amounts to a huge *increase* in the cost of textbooks for UNCA students.
+
+#### Why the shift?
+
+It's pretty clear that, while Follett Access is still much more expensive than the current plan, the gap between the two narrowed from Fall of 2024 to Spring of 2025. I suppose it's natural to ask why that might happen - particularly considering that I've never noticed this pattern before.
+
+I suspect that the reason is due to the shifting emphasis of the school towards the sciences and away from the Humanities. Indeed, I have significant data indicating to be the case and, of course, text books in the sciences tend to be much more expensive than in the humanities. That's another topic, though.
+
+## Other data based observations
+
+We can do a few other interesting things with the data from the previous section. We can, for example, determine how much costs vary between disciplines and we can estimate how much students spend for course materials on average.
+
+### Variability
+
+There were 874 course sections at UNCA in Fall of 2024 but only 279 of those have any Follett provided materials. That's less than 1/3 of the classes at 32%. Perhaps, it not surprising, then, that the cost of Follett provided materials can vary tremendously, by division, discipline, course, and even by sections within a single course. [@fig-prefixes_by_costs], for example, shows the average cost for course materials for a few selected prefixes from the high end to the low.
+
+
+```{python}
+#| label: fig-prefixes_by_costs
+#| fig-cap: Selected prefixes by average cost
+import matplotlib.pyplot as plt
+import pandas as pd
+pd.options.mode.chained_assignment = None
+
+prefixes_by_costs = pd.read_csv('./data/prefixes_by_costs.csv')
+prefixes = ['PHYS', 'ACCT', 'EDUC', 'CSCI', 'HUM', 'HIST', 'SOC', 'MATH', 'FREN', 'STAT']
+select_prefixes = prefixes_by_costs[
+  prefixes_by_costs.Department.apply(
+    lambda d: d in prefixes
+  )
+]
+
+fig = plt.figure(figsize=(9,3))
+ax = plt.gca()
+ax.bar(
+  select_prefixes.Department,
+  select_prefixes.costs,
+  label=select_prefixes.Department
+)
+ax.set_ylabel('Costs')
+
+plt.show()
+```
+
+To be clear, these are averaged over *all* course sections that share a particular prefix. The average cost of a Physics course is very high partly because physics textbooks are relatively expensive but also because 10 of the 16 course sections use Follett provided materials. The average cost of a Math course is relatively low partly because only 4 of the 26 sections use Follett provided materials. The average cost of course materials for a Statistics class is zero because none of them use Follett provided materials at all.
+
+Unsurprisingly, there's a big difference in the average costs by division, as shown in [@fig-divisions_by_costs].
+
+```{python}
+#| label: fig-divisions_by_costs
+#| fig-cap: Divisions by average cost
+import matplotlib.pyplot as plt
+pd.options.mode.chained_assignment = None
+
+# fig, ax = plt.subplots()
+fig = plt.figure(figsize=(9,3))
+ax = plt.gca()
+ax.bar(
+  ["Natural Sciences", "Social Sciences", "Humanities"],
+  [53.95, 47.24, 20.48]
+)
+ax.set_ylabel('Costs')
+plt.show()
+```
+
+Perhaps more surprising is the variation between sections of a single course. In fact, there are 29 different courses at UNCA that have course materials that differ between those sections.  To illustrate, consider the following plausible first semester schedule:
+
+- FYS 178, First year seminar
+- HUM 124, Ancient Worlds
+- SOC 100, Introduction to Sociology
+- Math 191, Calculus I
+
+All of these courses have at least one section with no Follett provided materials and, therefore, zero dollars going to Follett. They also all have at least one section with Follett provided materials. If a student signs up for the wrong sections, their course materials could range from at least \$175.95 up to \$367.43.
+
+Taking all this into account, it's hard to justify treating each credit hour the same under inclusive access plans. We would literally find our Humanities students subsidizing the cost of course materials for our engineers and scientists.
+
+### Average cost of textbooks
+
+Like all colleges and universities, public and private, UNCA is required by the Higher Education Act of 2008 to provide clear and transparent cost of attendance and, specifically, the cost of textbooks and related course material. Unfortunately, we've done a lousy job of doing so.
+
+UNCA's webpage currently lists on its [Tuition & Fees page](https://new.unca.edu/admission/financial-aid/tuition/) an average cost of $600 per semester for books and materials. We've reported an equivalent amount of $1200 per year to the Department of Education every academic year since 2014/2015. That indicates to me that no real thought has gone into the process for a decade.
+
+We can use the data we have for this past semester to estimate the average cost for course materials. To do so, simply add up $\text{enrollment}\times\text{credit hours}$ to get the total number of hours taken. Then divide one of our estimates for the total amount spent by the total hours to get the average cost per hour. Finally, multiply by 15 to obtain the cost for a full time semester. That is,
+
+$$\begin{aligned}\text{avg cost} &\approx \text{full time}\times\frac{\text{total spent}}{\text{total hours}} \\ &= 15 \text{ hrs} \times\frac{\text{total spent}}{42366\text{ hrs}}\end{aligned}$$
+
+If we assume that total spent is our absurd upper bound of $627,855.05, we obtain the absurd upper bound for the average cost of textbooks of $222.30. Perhaps that's about where the flat $222 per semester Follett offer comes from?
+
+To be clear, this number is a gross overestimate of the average amount that students would have spent on *Follett provided materials*. It's very likely that most classes that don't use Follett materials use either free material or no material. There might be a few sections expecting students to purchase from amazon or some other source and this computation misses that. Since we've used the gross overestimate, though, we can feel confident that the actual amount is well under $222.
+
+Of course, we can use our possible lower bound on the total amount spent of $330,028.04, we obtain the estimate of only $116.84. This is probably a much better estimate than the $222.
+
+
+## Components of a reasonable agreement
+
+The campus bookstore plays an important role in the community at any school and I think that Follett has done a good job of projecting UNCA's image on campus. It's clear that Follett's presence is an overall valuable asset for UNCA.
+
+There are serious issues, though, with the structure of the Follett Access offer and of inclusive access agreements in general. Key among those are
+
+- Lack of virtually any data on the current plan makes the agreement difficult to assess.
+- Wide variation of real costs between disciplines makes the charges unfair.
+- Charging across all courses undermines faculty and staff work on alternatives.
+
+Thus, it seems reasonable to ask - what characteristics would an equitable contract have?
+
+It seems to me that there are two simple adjustments that would address these issues.
+
+::: {.callout-note icon=false title="Fair components of an agreement"}
+
+\large
+
+- Detailed data should be shared and
+- Courses with no Follett provided materials should automatically be opted out.
+
+:::
+
+### Data sharing
+
+In this age of data tracking and customer analytics, Follett must certainly have very detailed data on course material sales. Indeed, [@cuillier] states that an inclusive access CEO in 2017 stated "We can tell you everything to a super creepy level".
+
+We don't need and shouldn't have data to a super creepy level. We should have, though, the kind of data that I've presented here but with correct and precise figures indicating exactly how many versions of each text book were actually purchased. We should have that data going back several years and continuing into the future for those students who choose opt out. We need that data
+
+1. To meet our legal obligation to accurately report the cost of student supplies and
+2. To adequately assess any changes that might be made to the contract in the future.
+
+Furthermore, there's all kinds of other useful information that might be gleaned from that data. What textbooks work, for example, vs what textbooks are ignored by our students.
+
+### Opting out
+
+The opt-out process seems to be difficult by design. UNCA students have already reported confusion and difficulty with the opt-out process as currently implemented for the Course-by-course Follett Access program.
+
+These problems would be magnified many times by an inclusive access model. Students would need to consider their entire schedule weighing the cost of the fee vs the cost of purchasing individually. They cannot opt out course by course; it's all in or all out every semester. Of course, many wouldn't bother, which is exactly why the program is so successful for the textbook providers.
+
+Opting out also comes with administrative overhead. When students opt out, real people in the Student Accounts office process those requests. The director of Student Accounts indicates that even the small course-by-course version is already unsustainable.
+
+These administrative challenges would also increase with inclusive access. In the Fall of 2024, there were 23 course sections with 448 students enrolled using Course-by-course Follett Access. Those students are probably not unique, since the program is more heavily utilized by just a few departments. Now we consider a more complicated inclusive version applied to all 874 course sections with a total enrollment of 12,338. If the course-by-course version is unsustainable, then how could this new version work at all?
+
+This process should be seamless and automatic. Enrollment data should be sent to Follett and they should automate the process of assessing fees for the materials that are actually used. They should then send those charges back with supporting data. There should be minimal work for our staff and there's simply no excuse for charging students for materials they aren't using.
+
+In addition to being fair and administratively manageable, this process would also correctly address the issue of academic choice. Instructors would no longer need to worry about the use of free materials in classes where many of the students have paid for textbooks.
+
+<!-- Application outside UNCA
+
+**Dropped due to inconsistent data from other Universities**
+
+I'd like to emphasize that the discussion of costs in this document specific to Fall Semester of 2024 at UNCA. Furthermore, the data is incomplete, since I don't know how many texts were actually purchased; I can only estimate based on course enrollment. In addition, the cost data was obtained via a fairly tedious process and probably has some errors.
+
+Having said that, I've gone through this process several times and the results are consistent with what I've seen in past runs. Going through this process in Spring of 2022 and confronting Follett with the analysis, they came back with an offer that cut the price exactly in half.
+
+Thus, while I can't say with absolute certainty, I do feel fairly confident in the overall assessment that this new offer of Follett Access would significantly increase the flow of money from our students to Follett.
+
+While a lot has been written on the negative impacts of inclusive access, I know of no other data-based assessments of the true cost. Thus, it's reasonable to ask to what extent might these results apply to other schools. -->
+
+## References

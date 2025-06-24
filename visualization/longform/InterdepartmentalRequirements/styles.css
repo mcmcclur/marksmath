@@ -1,0 +1,6 @@
+.quarto-alternate-formats > h2 {
+  display: none;
+}
+.quarto-alternate-formats:before {
+  content: "Print version:"
+}
