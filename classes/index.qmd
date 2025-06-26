@@ -1,0 +1,15 @@
+---
+title: Classes
+page-layout: article
+format:
+    html:
+        css: styles.css
+---
+
+```{ojs}
+import {make_force_animation} from './components/make_force_animation.js';
+courses = await FileAttachment("./components/courses.csv")
+    .csv({typed: true});
+make_force_animation(courses)
+```
+ 
