@@ -1,9 +1,9 @@
 ---
 title: Classes
-page-layout: article
 format:
     html:
         css: styles.css
+        page-layout: article
 ---
 
 ```{ojs}
@@ -12,4 +12,3 @@ courses = await FileAttachment("./components/courses.csv")
     .csv({typed: true});
 make_force_animation(courses)
 ```
- 
