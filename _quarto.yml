@@ -17,8 +17,8 @@ website:
       - href: classes/index.qmd
         text: Class
     right:
-      - href: https://blog.marksmath.org/
-        text: <i class="bi bi-chat-left-text"></i>
+      # - href: https://blog.marksmath.org/
+      #   text: <i class="bi bi-chat-left-text"></i>
       - href: https://bsky.app/profile/mark-mcclure.bsky.social
         text: <i class="fa fa-brands fa-bluesky"></i>
       - href: https://www.linkedin.com/in/mark-mcclure-6739911a9/
