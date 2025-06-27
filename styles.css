@@ -93,3 +93,25 @@ p {
 .hidden {
   display: none;
 }
+
+
+.quarto-dark {
+  --bs-secondary-bg: #2b3035;
+  --bs-secondary-color: #dee2e6;  
+  --graph-bg: #2b3035;
+  --graph-border: #495057;
+  --graph-stroke: #dee2e6;
+  --graph-fill: #212529;
+}
+/* .quarto-dark path {
+  stroke: white
+} */
+
+.quarto-light {
+  --bs-secondary-bg: #f8f9fa;
+  --bs-secondary-color: #495057;  
+  --graph-bg: #f8f9fa;
+  --graph-border: #dee2e6;
+  --graph-stroke: #212529;
+  --graph-fill: #ffffff;
+}
