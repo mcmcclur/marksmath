@@ -16,6 +16,7 @@ export function make_force_animation(courses) {
         return {
           title: a[0].Title,
           count: a.length,
+          student_count: d3.sum(a, o => o.Enrollment),
           code: a[0].Code.split(".")[0],
           x0,
           y0,
@@ -26,6 +27,11 @@ export function make_force_animation(courses) {
       (o) => o.Title
     )
     .map((a) => a[1]);
+
+    // Examine some summary data
+    // console.log(data)
+    // console.log( d3.sum(data, o => o.count))
+    // console.log( d3.sum(data, o => o.student_count))
 
     const width = 800;
     const height = 300;
@@ -61,8 +67,13 @@ export function make_force_animation(courses) {
         .attr("cy", (c) => c.y)
         .attr("r", (c) => 0.95 * Math.sqrt(c.count))
         .attr("fill", "steelblue")
-        .attr("stroke", "black")
-        .attr("stroke-width", 0.1);
+        .attr("stroke-width", 0.1)
+        .style("stroke", "currentColor")
+        .each(function (d) {
+            tippy(this, {
+                content: `${d.code}: ${d.title}`
+            })
+        })
 
     simulation.on("tick", function () {
         circs.attr("cx", (c) => c.x).attr("cy", (c) => c.y);

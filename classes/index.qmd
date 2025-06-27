@@ -6,9 +6,21 @@ format:
         page-layout: article
 ---
 
+According to [UNCA's Class Schedules](https://www.unca.edu/schedules/), I've taught 36 different courses spread over 161 distinct course sections to 2861 students since the Fall of 2006. Each circle below corresponds to one of those courses; the area of each circle is proportional to the number of times I've taught that course and you can hover over the circles to get a bit more information.
+
 ```{ojs}
 import {make_force_animation} from './components/make_force_animation.js';
 courses = await FileAttachment("./components/courses.csv")
     .csv({typed: true});
 make_force_animation(courses)
 ```
+
+## Upcoming courses 
+
+### Fall 2025
+
+- Calculus I - MWF 11:00-12:15 and 12:30-1:45
+- Linear Algebra - MW 8:00-9:15
+
+
+## Grade flow??
