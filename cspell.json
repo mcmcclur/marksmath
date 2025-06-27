@@ -1,0 +1,16 @@
+{
+  "version": "0.2",
+  "language": "en",
+  "enabled": true,
+  "files": ["**/*.qmd", "**/*.md"],
+  "languageSettings": [
+    {
+      "languageId": "markdown",
+      "dictionaries": ["en_US"]
+    },
+    {
+      "languageId": "quarto",
+      "dictionaries": ["en_US"]
+    }
+  ]
+}
