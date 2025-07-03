@@ -1,0 +1,31 @@
+---
+title: "MNIST"
+resources:
+  - ./components/cnn-model.json
+  - ./components/cnn-model.weights.bin
+format:
+  html:
+    include-in-header:
+      - text: |
+          <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.14.0/dist/tf.min.js"></script>
+---
+
+```{ojs}
+{
+  const input = tf.tensor([digits.correct_digits[5]], [1, 784]);  // batch of 1
+  const prediction = model.predict(input);
+  const predictedDigit = (await prediction.argMax(-1).data())[0];
+  return predictedDigit
+}
+```
+
+```{ojs}
+digits 
+model
+```
+
+
+```{ojs}
+model = await tf.loadLayersModel('./components/cnn-model.json');
+digits = await FileAttachment("./components/sample_test_data.json").json();
+```
