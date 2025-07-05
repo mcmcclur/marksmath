@@ -1,0 +1,15 @@
+.digit-display {
+    display: inline-block;
+    text-align: center;
+    margin: 10px;
+}
+
+.drawing_container canvas {
+    border: solid 1px #999;
+}
+
+/* .digit-display h2 {
+    font-size: 0.8rem;
+    font-weight: normal;
+    margin: 0;
+} */

@@ -3,5 +3,6 @@ _site
 _freeze
 **/.DS_Store
 _git_graphs
+*.pyc
 
 /.quarto/

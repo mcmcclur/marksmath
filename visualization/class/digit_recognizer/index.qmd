@@ -1,5 +1,6 @@
 ---
 title: "MNIST"
+css: styles.css 
 resources:
   - ./components/cnn-model.json
   - ./components/cnn-model.weights.bin
@@ -10,18 +11,59 @@ format:
           <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.14.0/dist/tf.min.js"></script>
 ---
 
+::: {.drawing_container}
+```{ojs}
+import {Drawer} from './components/Drawer.js'
+viewof clear = Inputs.button("Clear")
+viewof drawing_pad = {
+  clear;
+  return Drawer({
+    width: 8 * 28,
+    height: 8 * 28
+  });
+}
+```
+:::
+
 ```{ojs}
 {
-  const input = tf.tensor([digits.correct_digits[5]], [1, 784]);  // batch of 1
+  const input = tf.tensor([drawing_pad], [1, 784]);
   const prediction = model.predict(input);
   const predictedDigit = (await prediction.argMax(-1).data())[0];
   return predictedDigit
 }
 ```
 
+
 ```{ojs}
-digits 
-model
+{
+  const samples_container = 
+  d3.create('div').attr('class', 'dark-content')
+  digits.incorrect_digits.forEach(async function(digit_data) {
+    const input = tf.tensor([digit_data], [1, 784]);
+    const prediction = model.predict(input);
+    const predictedDigit = (await prediction.argMax(-1).data())[0];
+    const plot = Plot.plot({
+      caption: `Prediction: ${predictedDigit}`,
+      color: { scheme: "Greys", reverse: true },
+      width: 4 * 28,
+      height: 4 * 28,
+      margin: 0,
+      y: { reverse: true },
+      marks: [
+        Plot.raster(digit_data, { width: 28, height: 28 }),
+        Plot.frame()
+      ]
+    });
+    const div = samples_container
+      .append('div')
+      .attr('class', 'digit-display')
+    div.append(() => plot);
+  });
+
+  return samples_container.node()
+}
+
 ```
 
 
