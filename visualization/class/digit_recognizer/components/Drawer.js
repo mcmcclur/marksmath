@@ -51,11 +51,11 @@ export function Drawer({
 
   function broadcast() {
     const targetSize = 28;
+    const innerSize = 20;
     const inputSize = 8 * targetSize;
 
     // const context = canvas.getContext("2d");
     const inputImageData = context.getImageData(0, 0, inputSize, inputSize);
-    // console.log(["inputImageData is", d3.group(inputImageData.data, (x) => x)]);
     let minX = inputSize,
       maxX = 0,
       minY = inputSize,
@@ -71,14 +71,11 @@ export function Drawer({
           if (x > maxX) maxX = x;
           if (y < minY) minY = y;
           if (y > maxY) maxY = y;
-          console.log(["set min/max with", minX, maxX, minY, maxY]);
         }
       }
     }
     const boxWidth = maxX - minX + 1;
     const boxHeight = maxY - minY + 1;
-
-    console.log(["dims are", minX, maxX, minY, maxY, boxWidth, boxHeight]);
 
     const cropCanvas = document.createElement("canvas");
     cropCanvas.width = boxWidth;
@@ -96,42 +93,63 @@ export function Drawer({
       0
     );
 
-    downscaleCtx.clearRect(0, 0, 28, 28);
-    downscaleCtx.imageSmoothingEnabled = true;
+    // Step 3: Resize to fit in 20x20 box
+      const scale = Math.min(innerSize / boxWidth, innerSize / boxHeight);
+      const drawWidth = boxWidth * scale;
+      const drawHeight = boxHeight * scale;
 
-    const scale = Math.min(20 / boxWidth, 20 / boxHeight);
-    const drawWidth = boxWidth * scale;
-    const drawHeight = boxHeight * scale;
+      const scaleCanvas = document.createElement("canvas");
+      scaleCanvas.width = innerSize;
+      scaleCanvas.height = innerSize;
+      const scaleCtx = scaleCanvas.getContext("2d");
+      scaleCtx.imageSmoothingEnabled = true;
+      scaleCtx.clearRect(0, 0, innerSize, innerSize);
+      scaleCtx.drawImage(
+        cropCanvas,
+        0, 0, boxWidth, boxHeight,
+        (innerSize - drawWidth) / 2,
+        (innerSize - drawHeight) / 2,
+        drawWidth,
+        drawHeight
+      );
 
-    const offsetX = (28 - drawWidth) / 2;
-    const offsetY = (28 - drawHeight) / 2;
+      // Step 4: Center based on centroid
+      const innerImage = scaleCtx.getImageData(0, 0, innerSize, innerSize);
+      const grayscaleInner = new Float32Array(innerSize * innerSize);
+      let totalMass = 0, cx = 0, cy = 0;
+      for (let y = 0; y < innerSize; y++) {
+        for (let x = 0; x < innerSize; x++) {
+          const i = (y * innerSize + x) * 4;
+          const alpha = innerImage.data[i + 3];
+          const value = alpha / 255;
+          grayscaleInner[y * innerSize + x] = value;
+          totalMass += value;
+          cx += x * value;
+          cy += y * value;
+        }
+      }
+      cx /= totalMass;
+      cy /= totalMass;
 
-    downscaleCtx.drawImage(
-      cropCanvas,
-      0,
-      0,
-      boxWidth,
-      boxHeight,
-      offsetX,
-      offsetY,
-      drawWidth,
-      drawHeight
-    );
+      const shiftX = Math.round(targetSize / 2 - cx);
+      const shiftY = Math.round(targetSize / 2 - cy);
 
-    // downscaleCtx.drawImage(canvas, 0, 0, targetSize, targetSize);
-    const imageData = downscaleCtx.getImageData(0, 0, targetSize, targetSize);
-    const downscaleData = imageData.data;
+      // Step 5: Draw into final 28x28 canvas with translation
+      const finalCanvas = document.createElement("canvas");
+      finalCanvas.width = targetSize;
+      finalCanvas.height = targetSize;
+      const finalCtx = finalCanvas.getContext("2d");
+      finalCtx.clearRect(0, 0, targetSize, targetSize);
+      finalCtx.setTransform(1, 0, 0, 1, shiftX, shiftY);
+      finalCtx.drawImage(scaleCanvas, 0, 0);
+      finalCtx.setTransform(1, 0, 0, 1, 0, 0); // reset
 
-    const grayscaleData = new Float32Array(targetSize * targetSize);
-    for (let i = 0; i < targetSize * targetSize; i++) {
-      const r = downscaleData[i * 4];
-      const g = downscaleData[i * 4 + 1];
-      const b = downscaleData[i * 4 + 2];
-      const a = downscaleData[i * 4 + 3];
-      const gray = (r + g + b) / 3;
-      grayscaleData[i] = a / 255;
-    }
-    context.canvas.value = grayscaleData;
+      const finalImageData = finalCtx.getImageData(0, 0, targetSize, targetSize);
+      const finalPixels = new Float32Array(targetSize * targetSize);
+      for (let i = 0; i < targetSize * targetSize; i++) {
+        finalPixels[i] = finalImageData.data[i * 4 + 3] / 255;
+      }   
+    context.canvas.value = finalPixels;
     context.canvas.dispatchEvent(new CustomEvent("input"));
   }
 
