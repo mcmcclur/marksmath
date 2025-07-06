@@ -9,6 +9,7 @@ format:
     include-in-header:
       - text: |
           <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.14.0/dist/tf.min.js"></script>
+          <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/knn-classifier"></script>
 ---
 
 ::: {.drawing_container}
@@ -63,9 +64,11 @@ viewof drawing_pad = {
 
   return samples_container.node()
 }
-
 ```
 
+```{ojs}
+digits
+```
 
 ```{ojs}
 model = await tf.loadLayersModel('./components/cnn-model.json');
