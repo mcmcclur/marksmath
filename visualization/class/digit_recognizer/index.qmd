@@ -1,6 +1,7 @@
 ---
 title: "MNIST"
 css: styles.css 
+page-layout: article
 resources:
   - ./components/cnn-model.json
   - ./components/cnn-model.weights.bin
@@ -30,47 +31,93 @@ viewof drawing_pad = {
 {
   const input = tf.tensor([drawing_pad], [1, 784]);
   const prediction = model.predict(input);
-  const predictedDigit = (await prediction.argMax(-1).data())[0];
-  return predictedDigit
+  const predictedProbabilities = await prediction.data();
+  const probs =  d3.sort(Array.from(predictedProbabilities)
+    .map((p,digit) => ({p,digit})), o => -o.p);
+  const display = d3.create('div')
+  display.append('div')
+    .text("CNN Says")
+    .style('font-weight', 'bold')
+  if(probs[0].p > 0.99) {
+    if(probs[0].digit == 8) {
+      display.append('div')
+        .text("That's an 8!")
+    }
+    else {
+      display.append('div')
+        .text(`That's a ${probs[0].digit}!`)
+    }
+    return display.node();
+  }
+  else {
+    const results = probs.filter(o => o.p > 0.01);
+    display.append('div')
+      .text("Test inconclusive; probabilities are:");
+    const table = display.append('table')
+    const digit_row = table.append('tr');
+    digit_row.append('th')
+      .text('d')
+      .style('background-color', '#aaa')
+      .style('border', 'solid 1px currentcolor')
+      .style('padding', '1px 5px 1px 5px');
+    const prob_row = table.append('tr')
+    prob_row.append('th')
+      .text('p')
+      .style('background-color', '#aaa')
+      .style('border', 'solid 1px currentcolor')
+      .style('padding', '1px 5px 1px 5px');
+    results.forEach(function(o) {
+      digit_row.append('td')
+        .text(o.digit)
+        .style('border', 'solid 1px currentcolor')
+        .style('text-align', 'center')
+      prob_row.append('td')
+        .text(d3.format('0.3f')(o.p))
+        .style('border', 'solid 1px currentcolor')
+        .style('padding', '1px 3px 1px 3px');
+    })
+  }
+
+  display.append('div')
+    .text("KNN Loading")
+    .style('font-weight', 'bold')
+    .style('opacity', 0.5) 
+
+  return display.node();
 }
 ```
-
 
 ```{ojs}
 {
-  const samples_container = 
-  d3.create('div').attr('class', 'dark-content')
-  digits.incorrect_digits.forEach(async function(digit_data) {
-    const input = tf.tensor([digit_data], [1, 784]);
-    const prediction = model.predict(input);
-    const predictedDigit = (await prediction.argMax(-1).data())[0];
-    const plot = Plot.plot({
-      caption: `Prediction: ${predictedDigit}`,
-      color: { scheme: "Greys", reverse: true },
-      width: 4 * 28,
-      height: 4 * 28,
-      margin: 0,
-      y: { reverse: true },
-      marks: [
-        Plot.raster(digit_data, { width: 28, height: 28 }),
-        Plot.frame()
-      ]
-    });
-    const div = samples_container
-      .append('div')
-      .attr('class', 'digit-display')
-    div.append(() => plot);
-  });
-
-  return samples_container.node()
+  const inputTensor = tf.tensor(drawing_pad, [784]);
+  const prediction = await classifier.predictClass(inputTensor, 20);
+  return prediction;
 }
-```
-
-```{ojs}
-digits
 ```
 
 ```{ojs}
 model = await tf.loadLayersModel('./components/cnn-model.json');
-digits = await FileAttachment("./components/sample_test_data.json").json();
+classifier = {
+  const classifier = knnClassifier.create();
+  for (let i = 0; i < mnistData.X.length; i++) {
+    const inputTensor = tf.tensor(mnistData.X[i], [784]);
+    const label = mnistData.y[i];
+    classifier.addExample(inputTensor, label);
+    inputTensor.dispose();
+    if(i%10 == 0 ) {
+      await Promises.delay(0);
+    }
+  }
+ return classifier;
+};
+mnistData = await (
+  await (
+    await FileAttachment("./components/mnist_train_data.json.zip").zip()
+  ).file("mnist_train_data.json")
+).json();
+```
+
+```{ojs}
+t = Date.now()
+classifier ? (Date.now()-t)/1000 : "Loading"
 ```
