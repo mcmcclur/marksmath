@@ -2,6 +2,7 @@
 title: Digit recognition
 css: styles.css 
 page-layout: article
+toc: true
 resources:
   - ./components/cnn-model.json
   - ./components/cnn-model.weights.bin
@@ -12,6 +13,8 @@ format:
           <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.14.0/dist/tf.min.js"></script>
           <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/knn-classifier"></script>
 ---
+
+Draw a digit in the box below. Machine learning will attempt to assess what digits you've drawn.
 
 
 <div class="grid"> 
@@ -59,15 +62,74 @@ viewof clear = Inputs.button("Clear")
 
 </div>
 
-dlskfjdslkfj 
-ds;lkjdslk;fj
+## What's going on?
 
-sdaljflkds 
+This demo is meant to illustrate the application of two machine learning algorithms:
+
+- A CNN or Convolutional Neural Network and 
+- a KNN or K-Nearest Neighbors algorithm.
+
+Classification by CNN is the go to approach for image recognition. While not as strong, KNN can do surprisingly well and is simple enough to explain to an introductory class in machine learning on day one.
+
+Both these models were built with the [Javascript version of Tensorflow](https://www.tensorflow.org/js).
+
+## Why does KNN take so much longer to load than CNN?
+
+A Convolutional Neural Network is a *parametric model*. This means that the model defines a function that performs the classification. That model depends on a number of parameters and, once those parameters are determined, classification can proceed. Importantly, once the model function is generated, that's all you need to perform classification. Tensorflow provides a tool to export the model in a standardized form.
+
+The K-Nearest Neighbors algorithm, by contrast, is *nonparametric*. With no model function, this technique requires access to the actual data. In addition, Tensorflow packs that data into an internal format for efficient access. There's no standard export tool so loading and packing that data takes a few moments. 
+
+The KNN takes about 10 seconds to load on my laptop with a good connection.
+
+```{ojs}
+t = Date.now();
+classifier ? md`*KNN took ${(Date.now()-t)/1000} seconds to load on this page.*` : "Loading";
+```
+
+## What's machine learning?
+
+Machine learning is a class of algorithms that consumes data to produce a function to perform a desired task. Often, the data is labeled into classes and the objective is to classify similar data into those same classes.
+
+Colloquially, we say that the algorithm "learns" from data.
+
+## What does the data look like in this case?
+
+The data for the task on this page is known at the [MNIST Digit Dataset](https://en.wikipedia.org/wiki/MNIST_database) and consists of two key components:
+
+- A list of $70,000$ vectors of length $784$. Each vector can be partitioned into a $28\times28$ matrix. The entries are all floating point numbers in $[0,1]$ and can be interpreted as gray scale values that determines an image.
+- A list of $70,000$ labels each of which is an integer from $0$ to $9$ indicating what digit the corresponding matrix represents.
+
+The slider below allows you to peruse the $10,000$ images used to build the KNN classifier, together with their labels. This is the exact dataset used to construct the KNN classifier.
+
+::: {.data-display}
+```{ojs}
+viewof datapoint = Inputs.range([0, mnistData.y.length - 1], { value: 0, step: 1 });
+Plot.plot({
+  color: { scheme: "Greys" },
+  caption: `Label says ${mnistData.y[datapoint]}`,
+  width: 8 * 28,
+  height: 8 * 28,
+  margin: 0,
+  y: { reverse: true },
+  marks: [
+    Plot.raster(mnistData.X[datapoint], { width: 28, height: 28 }),
+    Plot.frame()
+  ]
+})
+```
+:::
 
 
-l;dksfj daslkj dsaflkjdf dslkj fdslkdsj ldksj fdslkdsj
+## Where can I learn more??
 
-ldskfjdlskjfdslkj fdl;jsf;lkdfsj fdsalk;jdf lkdafsj dlskfj sadlkfj sadlkfj dsalkfj adslkfj asdlkfj asdlfkj asdlkfj asdlkfj asdflkj asdlfkj adsflkasdj flkasdfj asdlkf jasdlkfj asdlkf jsadlkfj asdlkfj asdlkfj asdklfj adslkjf sakldfj sadlk fadslkj lsdk fsdafj 
+- Like all the demos on Mark's Math, the full code can be found in [my GitHub repo](https://github.com/mcmcclur/marksmath/tree/main/visualization/class/digit_recognizer).
+- The code defining the KNN algorithm is quite simple and can be found in [the index.qmd file for this page](https://github.com/mcmcclur/marksmath/blob/main/visualization/class/digit_recognizer/index.qmd).
+- The CNN model is much deeper and was trained with [this Observable notebook](https://github.com/mcmcclur/marksmath/tree/main/visualization/class/digit_recognizer).
+- If you want to learn all the mathematics, statistics, and theory behind this stuff, you should take my Math for Machine Learning Course!
+
+
+
+
 
 <!-- Load data and models -->
 
@@ -99,9 +161,4 @@ mnistData = await (
     await FileAttachment("./components/mnist_train_data.json.zip").zip()
   ).file("mnist_train_data.json")
 ).json();
-```
-
-```{ojs}
-t = Date.now()
-classifier ? (Date.now()-t)/1000 : "Loading"
 ```

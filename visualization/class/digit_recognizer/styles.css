@@ -4,12 +4,12 @@
     margin: 10px;
 }
 
-.quarto-dark .drawing_container canvas {
+.quarto-dark canvas {
     border: solid 1px #999;
     background-color: #666;
 }
 
-.quarto-light .drawing_container canvas {
+.quarto-light canvas {
     border: solid 1px #999;
 }
 
@@ -20,4 +20,13 @@
     max-width: 650px; 
     margin: 0 auto; 
     padding: 10px; 
+}
+.data-display figcaption {
+    text-align: center;
+    font-size: 2em;
+
+}
+.data-display figure {
+    max-width: 226px !important;
+    margin: 10px;
 }
