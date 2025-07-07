@@ -2,7 +2,6 @@ import * as d3 from 'https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm';
 
 export async function run_cnn(input, model) {
 if(input) {
-    // const input = tf.tensor([drawing_pad], [1, 784]);
     const prediction = model.predict(input);
     const predictedProbabilities = await prediction.data();
     const probs =  d3.sort(Array.from(predictedProbabilities)

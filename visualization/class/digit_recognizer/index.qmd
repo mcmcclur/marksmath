@@ -1,5 +1,5 @@
 ---
-title: "MNIST" 
+title: Digit recognition
 css: styles.css 
 page-layout: article
 resources:
@@ -13,10 +13,12 @@ format:
           <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/knn-classifier"></script>
 ---
 
-::: {.drawing_container}
+
+<div class="grid"> 
+
+::: {.drawing_container .g-col-12 .g-col-sm-4} 
 ```{ojs}
 import {Drawer} from './components/Drawer.js'
-viewof clear = Inputs.button("Clear")
 viewof drawing_pad = {
   clear;
   return Drawer({
@@ -25,26 +27,55 @@ viewof drawing_pad = {
   });
 }
 ```
+::::: {style = "width: 80px; margin: 0 auto;"}
+```{ojs}
+viewof clear = Inputs.button("Clear")
+```
+:::::
 :::
 
+
+::: {.results-container .g-col-12 .g-col-sm-8}
 ```{ojs}
-import {run_cnn} from './components/run_cnn.js';
 {
-  const input = drawing_pad.length > 0 ? tf.tensor([drawing_pad], [1, 784]): null;
+  const input = drawing_pad.length > 0 
+    ? tf.tensor([drawing_pad], [1, 784])
+    : null;
   return run_cnn(input, model)
 }
 ```
 
-```{ojs}
-{
-  const inputTensor = tf.tensor(drawing_pad, [784]);
-  const prediction = await classifier.predictClass(inputTensor, 20);
-  return prediction;
-}
-```
+<hr style="margin: 0" />
 
 ```{ojs}
-model = await tf.loadLayersModel('./components/cnn-model.json');
+{
+  const input = drawing_pad.length > 0
+    ? tf.tensor(drawing_pad, [784]):
+    null;
+  return run_knn(input, classifier)
+}
+```
+:::
+
+</div>
+
+dlskfjdslkfj 
+ds;lkjdslk;fj
+
+sdaljflkds 
+
+
+l;dksfj daslkj dsaflkjdf dslkj fdslkdsj ldksj fdslkdsj
+
+ldskfjdlskjfdslkj fdl;jsf;lkdfsj fdsalk;jdf lkdafsj dlskfj sadlkfj sadlkfj dsalkfj adslkfj asdlkfj asdlfkj asdlkfj asdlkfj asdflkj asdlfkj adsflkasdj flkasdfj asdlkf jasdlkfj asdlkf jsadlkfj asdlkfj asdlkfj asdklfj adslkjf sakldfj sadlk fadslkj lsdk fsdafj 
+
+<!-- Load data and models -->
+
+```{ojs}
+import {run_cnn} from './components/run_cnn.js';
+import {run_knn} from './components/run_knn.js';
+```
+```{ojs}
 classifier = {
   const classifier = knnClassifier.create();
   for (let i = 0; i < mnistData.X.length; i++) {
@@ -58,6 +89,11 @@ classifier = {
   }
  return classifier;
 };
+```
+```{ojs}
+model = await tf.loadLayersModel('./components/cnn-model.json');
+```
+```{ojs}
 mnistData = await (
   await (
     await FileAttachment("./components/mnist_train_data.json.zip").zip()

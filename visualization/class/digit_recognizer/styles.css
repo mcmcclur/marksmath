@@ -13,3 +13,11 @@
     border: solid 1px #999;
 }
 
+.drawing_container {
+    width: 226px;
+}
+.grid {
+    max-width: 650px; 
+    margin: 0 auto; 
+    padding: 10px; 
+}
