@@ -256,5 +256,63 @@ In that classification plot, the algorithm
 As we can see, the algorithm can easily distinguish between Gentoo and the other two species. It doesn't distinguish between Adelie and Chinstrap very well.  We can use more variables to improve it, though!
 
 
-# The MNIST dataset
+# The MNIST Digits
 
+We can now describe how KNN works for digit recognition. The algorithm is built on the now classic [MNIST Digit Dataset](https://en.wikipedia.org/wiki/MNIST_database). This data consists of two key components:
+
+- A list of $70,000$ vectors of length $784$. Each vector can be partitioned into a $28\times28$ matrix. The entries are all floating point numbers in $[0,1]$ and can be interpreted as gray scale values that determines an image.
+- A list of $70,000$ labels each of which is an integer from $0$ to $9$ indicating what digit the corresponding matrix represents.
+
+## A look at the data 
+
+Again, the data consists of a list of 784 dimensional vectors of grayscale values with labels. It's easy to render those vectors as grayscale images and display them with their labels. Here's a short subset of the results:
+
+![](digits.png)
+
+## The algorithm
+
+Once we understand both KNN and the MNIST dataset, it's pretty easy to describe digit classification by KNN. There are two essential steps:
+
+- The data is in the form of a set of 784 dimensional vectors. Thus
+  - Given another image represented as a 784 dimensional vector, we can 
+  - Find the 20 vectors from the data that are closest to the given vector, 
+  - Determine which labels are most common amongst those 20 vectors, and
+  - Classify the given vector as the most common label among those 20 nearest neighbors.
+- Before that, though, the input vector should be scaled and centered using the same techniques used to generate the MNIST data.
+
+## Summary
+
+That's really all there is to it.
+
+There might be some further questions, though.
+
+# Further questions
+
+We've got *plenty* to address this semester when it comes to machine learning algorithms.
+
+- What does 784 dimensional space look like? How do we measure distance there?
+- What is a *parametric model*? 
+  - How do we optimize parametric models?
+  - What is *overfitting* and *regularization* to avoid it?
+- How do we deal with categorical data?
+- How do we assess our models and how confident can we be in our predictions?
+- What does this all look like on the computer?
+
+## Mathematics 
+
+Of course, this is a *math* class and, in fact, the answers to those most of those questions really lie in that domain.
+
+- Optimization is one of the major applications of calculus.
+- High dimensional vector spaces can be treated efficiently using linear algebra.
+- An geometric understanding of high dimensional space will help us regulate our models.
+- An understanding of probability theory will help us assess our models.
+
+## Algorithms 
+
+Here are a few of the algorithms that we'll take a look at this semester:
+
+- K-nearest neighbor classification (as you already know)
+- Regression - Linear and Logistic
+- Google pagerank and Eigenrating
+- Support vector machines
+- Neural Networks
