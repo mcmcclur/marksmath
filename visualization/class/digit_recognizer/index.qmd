@@ -86,9 +86,9 @@ t = Date.now();
 classifier ? md`*KNN took ${(Date.now()-t)/1000} seconds to load on this page.*` : "Loading";
 ```
 
-## What's machine learning?
+## What's machine learning, anyway?
 
-Machine learning is a class of algorithms that consumes data to produce a function to perform a desired task. Often, the data is labeled into classes and the objective is to classify similar data into those same classes.
+Machine learning consists of a class of algorithms that consumes data to produce a function to perform a desired task. Often, the data is labeled into classes and the objective is to classify similar data into those same classes.
 
 Colloquially, we say that the algorithm "learns" from data.
 
