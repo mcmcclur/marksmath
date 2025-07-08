@@ -1,7 +1,17 @@
 ---
 title: Intro to MML
 subtitle: And K-Nearest Neighbors
-date: 2026-01-18 
+date: 2026-01-18
+format:
+  revealjs:
+    css: ../classnote-style.css
+    controls: true
+    controls-layout: bottom-right
+    navigation-mode: vertical
+    smaller: true
+    history: false
+    transition: slide
+    date-format: ddd, MMM DD, YYYY
 ---
 
 
