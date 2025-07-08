@@ -1,10 +1,15 @@
 .ahead {
   font-weight: 600;
   font-size: 1.4rem;
-  color: #444;
   text-decoration: none
 }
 .ahead:hover {
-  color: #000;
   text-decoration: underline;
+}
+
+.quarto-dark .ahead {
+  color: #eee;
+}
+.quarto-light .ahead {
+  color: #111;
 }

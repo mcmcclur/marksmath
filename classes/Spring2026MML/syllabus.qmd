@@ -1,6 +1,161 @@
 ---
 title: Syllabus 
-subtitle: For MML 
+sidebar: MML2026
+background: "light"
+format:
+  html:
+    page-layout: article
+    toc: true
+  pdf:
+    mainfont: "Times New Roman"
+    include-in-header:
+      text: |
+        \pagenumbering{gobble}
 ---
 
-This will be the syllabus.
+Math 295: Math for Machine Learning  
+Spring 2026  
+MWF ??? in ZEI ???
+
+Professor: Mark McClure  
+Office: 325 Robinson Hall  
+email: mcmcclur@unca.edu  
+Office hours: ???
+
+## Course description
+
+Machine learning is a fun topic that is currently of tremendous
+importance and widespread use. Writing software to implement machine
+learning involves not just sophisticated programming techniques but,
+also, a high level of mathematical knowledge. Even the *use* of machine
+learning libraries in your programming requires a mathematical
+understanding of the algorithms in the background.
+
+Thus, in this course, we will
+
+-   Learn some important algorithms used in machine learning today, such
+    as
+    -   K-nearest neighbor classification
+    -   Linear and logistic regression,
+    -   Principal Component Analysis,
+    -   Support vector machines, and 
+    -   Neural networks.
+-   Learn the basics of the mathematics behind these algorithms, such as
+    -   Single variable calculus,
+    -   Linear algebra,
+    -   The geometry of
+        <span class="math inline">\\n\\</span>-dimensional space,
+    -   Multivariable calculus
+    -   Probability theory and statistics.
+-   Use these tools within Python programs.
+
+## Materials
+
+There are a few things you’ll need to succeed in this course.
+
+### Computer and internet connectivity
+
+I will mostly coordinate the course through our class webpage:  
+<https://marksmath.org/classes/Spring2026MML/>
+
+The course schedule, presentations, handouts, and assignments will all
+be posted there. There will also be some online HW and computer labs
+that you’ll need a computer for.
+
+-   Homework will be done via MyOpenMath:  
+    <https://myopenmath.com/>
+-   We’ll use Google Colab for computer labs:  
+    <https://colab.research.google.com/>
+
+### Textbooks
+
+You are not required to purchase any textbook for this class. There are
+several references that I’ll use and refer to regularly, though. All
+references are copyrighted and published but also freely available via
+downloadable PDF.
+
+The selection of topics and overall presentation is largely influenced
+by *Math for Machine Learning* by Marc Peter Deisenroth, A. Aldo Faisal,
+and Cheng Soon Ong and published by Cambridge University Press.  
+Download: <https://mml-book.github.io/>
+
+When discussing neural networks, we’ll borrow heavily from the following
+texts:
+
+*The Elements of Statistical Learning* by Trevor Hastie, Robert
+Tibshirani, Jerome Friedman.  
+Download: <https://hastie.su.domains/ElemStatLearn/>
+
+*An Introduction to Statistical Learning with Python* by Gareth James,
+Daniela Whitman, Trevor Hastie, and Robert Tibshirani.  
+Download: <https://www.statlearning.com/>
+
+## Course schedule
+
+There is a detailed course schedule in both outline and calendar form:
+
+-   Outline:
+    -   HTML:
+        <https://marksmath.org/classes/Spring2026MML/schedule/outline.html>
+    -   PDF:
+        <https://marksmath.org/classes/Spring2026MML/schedule/outline.pdf>
+-   Calendar:
+    <https://marksmath.org/classes/Spring2026MML/schedule/calendar.html>
+
+As detailed as that is, it is certainly subject to change.
+
+Note that there are currently 3 computer labs, 4 midterm exams and a final exam on the schedule.
+
+## Grades
+
+### Components contributing to your grade
+
+Your grades will be based on the following components:
+
+-   **Exams**: There are 4 exams scheduled during the term each worth about 50 points. There will also be a final exam worth around 80 points. Calculators and/or computers will not be allowed on exams.
+-   **Labs**: There are 3 computer labs scheduled worth 20-30 points
+    apiece. You should be able to complete most labs during class time.
+-   **HW**: Most of the purely mathematical material will have homework
+    assigned via MyOpenMath. You will receive login instructions in
+    class.
+-   **Participation**: You’ll accumulate 50 points throughout the
+    semester just by coming to class and participating in class
+    activities regularly.
+
+### How grades are determined
+
+Your grade will be determined by a scale not harder than 90-80-70-60.
+That is,
+
+-   90% will guarantee an A-,
+-   80% will guarantee an B-,
+-   70% will guarantee an C-,
+-   60% will guarantee an passing grade.
+
+I will also take a look at the overall class distribution and determine
+if I feel the need to adjust the scale down. I’ll go through that
+process after each exam and notify you of your status after each exam.
+
+## Course policies
+
+### Attendance
+
+I don’t take daily attendance. Missing class with any regularity,
+however, will affect your course grade directly through the class
+participation grade and indirectly through its impact on your
+performance.
+
+### Academic integrity
+
+You are expressly permitted to discuss questions and problems arising
+from homework or lab assignments with your classmates.
+
+Exams are expected to be your work and yours alone. In addition, the
+expectation is that there will be no computational assistance, unless
+expressly permitted in limited situations. Please don’t cheat; I simply
+refer such cases to the administration.
+
+### Further information
+
+You can find more information on dealing with special challenges here:  
+<https://marksmath.org/OfficialPolicies/>

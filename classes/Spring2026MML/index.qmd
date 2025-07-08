@@ -1,5 +1,6 @@
 ---
 title: Math for Machine Learning
+sidebar: false
 css: styles.css
 ---
 
@@ -15,9 +16,6 @@ with professor [Mark McClure](https://marksmath.org/)
 - Schedule
   - [Outline](schedule/outline.qmd)
   - [Calendar](schedule/calendar.qmd)
-- The textbook
-  - [Full text](https://mml-book.github.io/book/mml-book.pdf)
-  - [Website](https://mml-book.github.io/)
 - [Colab](https://colab.research.google.com/)
 - [MyOpenMath](https://myopenmath.com)
 - [The Math Lab!](https://math.unca.edu/learn/math-lab/)
