@@ -11,9 +11,9 @@ format:
     history: false
     transition: slide
     echo: true
+    code-fold: true
     eval: true
     output: true
-    code-fold: false
     date-format: ddd, MMM DD, YYYY
 ---
 
@@ -124,12 +124,38 @@ The basic question, how can we best model that data with a line?
 
 :::
 
-## Model setup
+## A *parametric* model 
 
-The figure below plots some very simple data:  
-[[0, 0],[1, 0],[1, 1],[2, 1],[2, 2],[3, 2]]
+Well, the line has the form $f(x) = ax+b$.
 
-The parameters defining the function $f(x)=ax+b$ are controlled by the sliders. The question is - "how small can we make the total squared error?"
+The symbols $a$ and $b$ are examples of *parameters*. The question then becomes, can we measure how "good" the approximation is as a function of those two parameters?
+ 
+
+## Total squared error
+
+In general, we've got data represented as a list of points:
+$$
+\{(x_i,y_i)\}_{i=1}^N = \{(x_1,y_1),(x_2,y_2),(x_3,y_3),\ldots,(x_N,y_N)\}.
+$$
+
+If we model that data with a function $y=f(x)$, then the *total squared error* is defined by
+$$
+E = \sum_{i=1}^N \left(y_i - f(x_i)\right)^2.
+$$
+The objective is to choose the parameters defining $f$ to minimize $E$.
+
+## More specifically
+
+In the current example, we model the data with a first order polynomial $f(x) = ax+b$. Thus, our formula takes on the more specific form 
+$$
+E(a,b) = \sum_{i=1}^N \left(y_i - (a\,x_i + b)\right)^2.
+$$
+Note that the data is fixed but we have control over the parameters. Thus, we can treat $E$ as a function of the two variables $a$ and $b$ and use the techniques of multivariable calculus to perform the minimization.
+
+
+## Visualization
+
+Here's a visualization of the situation. The parameters defining the function $f(x)=ax+b$ are controlled by the sliders. You can see how the total squared error changes in response to changes in the values of the parameters.
 
 ::: {.small-label}
 
@@ -207,30 +233,6 @@ viewof reset = Inputs.button("reset")
 ```
 
 :::
- 
-
-## Total squared error
-
-In general, we've got data represented as a list of points:
-$$
-\{(x_i,y_i)\}_{i=1}^N = \{(x_1,y_1),(x_2,y_2),(x_3,y_3),\ldots,(x_N,y_N)\}.
-$$
-
-If we model that data with a function $y=f(x)$, then the *total squared error* is defined by
-$$
-E = \sum_{i=1}^N \left(y_i - f(x_i)\right)^2.
-$$
-The objective is to choose the parameters defining $f$ to minimize $E$.
-
-## More specifically
-
-In the current example, we model the data with a first order polynomial $f(x) = ax+b$. Thus, our formula takes on the more specific form 
-$$
-E(a,b) = \sum_{i=1}^N \left(y_i - (a\,x_i + b)\right)^2.
-$$
-Note that the data is fixed but we have control over the parameters. Thus, we can treat $E$ as a function of the two variables $a$ and $b$ and use the techniques of multivariable calculus to perform the minimization.
-
-
 
 
 # Functions
@@ -630,3 +632,99 @@ $$x^2 = 8/9 \text{ or } x = \sqrt{8/9}.$$
 We can plug back into $f$ to get the absolute minimum value of
 $$y = \frac{3}{4}\left(\sqrt{8/9}\right)^3 - 2\sqrt{8/9}.$$
 
+# The numerical perspective
+
+One important distinction between this class an many other math classes that you might take is that a lot of the math we do has been implemented as numerical algorithms on the computer. We'll take a quick look at that perspective in this column of slides.
+
+**Code**
+
+This column of slides contains code that you can expand and view. 
+
+There's also some executable code in [this Colab notebook](https://colab.research.google.com/drive/17KrBz-jvkM3OP5lPP1k56QRa7R2ABb-r?usp=sharing#forceEdit=true&sandboxMode=true).
+
+## Example 
+
+The figure below shows the graph of $f(x) = x\cos(x)$ with a maximum value indicated near $x=1$.
+
+*Question:* What's a precise estimate for the $x$-coordinate of that maximum?
+
+```{python}
+import numpy as np
+import matplotlib.pyplot as plt
+
+def f(x):
+    return x * np.cos(x)
+x = np.linspace(0, 5*np.pi/2, 1000)
+y = f(x)
+
+fig, ax = plt.subplots()
+ax.plot(x, y)
+ax.plot([0.8603], [f(0.8603)], 'ok')
+
+ax.spines['left'].set_position('zero')
+ax.spines['bottom'].set_position('zero')
+ax.spines['top'].set_visible(False)
+ax.spines['right'].set_visible(False)
+ax.set_aspect(0.3)
+```
+
+## Attempted analytic solution 
+
+As we know, the $x$-coordinate of the maximum must satisfy 
+
+$$
+f'(x) = \cos(x) - x\sin(x) = 0.
+$$
+
+Good luck finding an [exact analytic solution](https://www.wolframalpha.com/input?i=solve+cos%28x%29-x*sin%28x%29%3D0){target=_blank} to that equation, though!
+
+## A numerical solver
+
+There are plenty of tools that can *numerically estimate* the solution, though. Here's how to do so with SciPy's `fsolve` function.
+
+```{python}
+#| code-fold: false
+from scipy.optimize import fsolve
+def fp(x):
+  return np.cos(x) - x * np.sin(x)
+[x] = fsolve(fp,[1])
+print(f"Solution: x={x}")
+```
+
+## Newton's method
+
+Note that `fsolve` requires an initial guess near the root that you're looking for, in addition to the function itself. The reason for this is that `fsolve` uses an algorithm like Newton's method.
+
+Newton's method tells us that, if $x_0$ is a number near a root of a function $F(x)$, then
+
+$$x_1 = x_1 - \frac{F(x_0)}{F'(x_0)}$$
+
+will be even closer to that root. If we then define
+
+$$x_n = x_{n-1} - \frac{F(x_{n-1})}{F'(x_{n-1})},$$
+
+we can generate a sequence of points that converge to a root of $F$. *Which* root of $F$ depends cruicially on the choice of $x_0$.
+
+## Application
+
+In the case at hand, we are trying to find an extreme of $f$, which is a root of $f'$. Thus,
+
+$$
+\begin{aligned}F(x) &= f'(x) = \cos(x) - x\sin(x), \text{ and} \\
+F'(x) &= f''(x) = -2\sin(x) - x\cos(x).
+\end{aligned}
+$$
+
+## Implementation
+
+We can implement this iteration as follows:
+
+```{python}
+#| code-fold: false
+def fpp(x):
+  return -2*np.sin(x) - x*np.cos(x)
+x = 1
+for i in range(8):
+  x = x - fp(x) / fpp(x)
+  print(x)
+```
