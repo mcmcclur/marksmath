@@ -1,0 +1,1222 @@
+---
+title: Multivariable Calculus
+date: 2026-01-16
+format:  
+  revealjs:
+    css: ../classnote-style.css
+    controls: true
+    controls-layout: bottom-right
+    navigation-mode: vertical
+    smaller: true
+    history: true
+    transition: slide
+    keyboard: true
+    date-format: ddd, MMM DD, YYYY
+    # echo: true
+    # eval: true
+    # output: true
+    # code-fold: true
+---
+
+
+
+# Why multivariable calculus?
+
+Last week, we discussed single variable calculus that we all know from Calc I emphasizing the specific elements that are of particular importance in machine learning. In part, that includes *optimizing* functions using *numerical* techniques.
+
+In the context of machine learning, though, the functions that we wish to optimize often have *many* inputs and optimizing those kinds of functions lies in the domain of *multivariable* calculus.
+
+In this presentation, we'll survey just enough of Calc III to discuss optimization of functions in more than one variable. For now, that boils down to solving systems of equations produced by partial derivatives. There's plenty more multivariable calculus to come, though!
+
+# 3D coordinates
+
+The 3D coordinate system is a lot like the 2D system with an extra axis. There are three axes meeting at the origin at right angles.
+
+```{ojs}
+show_x3d([], {width: 800, height: 400, class_name: "X3D"})
+```
+
+::: {.fragment}
+Note that the axes must obey the right hand rule.
+:::
+
+## Plotting points
+
+Plotting points is very similar to the way we plot points in 2D - just follow the specified distances along the axes.
+
+```{ojs}
+show_x3d([
+  create_indexedLineSet([
+    [
+      [0, 0, 0],
+      [3, 0, 0],
+      [3, 2, 0],
+      [3, 2, 2]
+    ]
+  ]),
+  create_sphere([3, 2, 2], 0.05),
+  create_text("(3,2,2)", [3, 2, 2], {
+    rotation:
+      "0.39187780531182387 0.5437017298844263 0.7421726312824201,2.1591999999999993"
+  })
+], {class_name: "X3D"})
+```
+
+## Constant planes
+
+If we set one of the variables equal to a constant, we determine a plane perpendicular to the axis for that variable.
+
+```{ojs}
+show_x3d(
+  [
+    create_indexedFaceSet(
+      [
+        [
+          [-2, 1, -2],
+          [2, 1, -2],
+          [2, 1, 2],
+          [-2, 1, 2]
+        ]
+      ],
+      { transparency: 0.1 }
+    ),
+    create_text("y = 1", [0, 0.5, 2.2], {
+      rotation:
+        "0.39187780531182387 0.5437017298844263 0.7421726312824201,2.1591999999999993"
+    })
+  ],
+  { class_name: "X3D" }
+)
+```
+
+## More general planes
+
+We can use more general equations to determine other planes. The plane below has the equation 
+$$x+y+3z=3.$$
+
+```{ojs}
+show_x3d([
+  create_surface((x, y) => [x, y, 1 - (x + y) / 3], [-2, 2], [-2, 2], {
+    transparency: 0.1
+  })
+], {class_name: "X3D", width: 800, height: 400})
+```
+
+## The distance formula
+
+The distance between two points $(x_1,y_1,z_1)$ and $(x_2,y_2,z_2)$ in three-dimensional  space is 
+$$d = \sqrt{(x_1-x_2)^2 + (y_1-y_2)^2 + (z_1-z_2)^2}.$$
+Thus, the equation of a sphere with center $(x_0,y_0,z_0)$ and radius $r$ is
+$$(x-x_0)^2 + (y-y_0)^2 + (z-z_0)^2 = r^2.
+$$
+
+## A sphere 
+
+The sphere below has has center $(3,2,2)$ and radius $r=2$. Thus, an equation for the sphere is
+$$(x-3)^2 + (y-2)^2 + (z-2)^2 = 4.$$
+
+```{ojs}
+show_x3d([
+  create_sphere([3, 2, 2], 2)
+], {class_name: "X3D", extent: [[-6,6],[-6,6],[-1,6]]})
+```
+
+# Multivariable functions
+
+We are often interested real valued functions of several or even many variables. In general, our functions may have $n$ variables and we write
+$$f:\mathbb R^n \to \mathbb R.$$
+
+For example,
+$$f(w,x,y,z) = w + x^2 + y^3 + z^4 - 5 \sin(w + x^2 + y^3 + z^4)$$
+has four variables and maps $\mathbb R^4 \to \mathbb R.$
+
+For the time being, we'll stick with $n=2$; such functions are often called *bivariate*.
+
+## Graphs of bivariate functions
+
+The graph of a function $f:\mathbb R^2 \to \mathbb R$ is the set 
+$$
+\{(x,y,z)\subset\mathbb R^3: z = f(x,y)\}.
+$$
+In general, this looks like a surface:
+
+```{ojs}
+{
+  const f = (x, y) =>
+    3 - (x ** 2 + y ** 2 + Math.sin(5 * x) * Math.cos(3 * y)) / 25;
+  const pic = show_x3d(
+    [
+      create_surface((x, y) => [x, y, f(x, y)], [1, 4], [1, 4]),
+      create_surface((x, y) => [x, y, 0], [1, 4], [1, 4]),
+      create_sphere([3.7, 3.7, 0], 0.05, { color: "black" }),
+      create_sphere([3.7, 3.7, f(3.7, 3.7)], 0.05, { color: "black" }),
+      create_indexedLineSet([
+        [
+          [3.7, 3.7, 0],
+          [3.7, 3.7, f(3.7, 3.7)]
+        ]
+      ]),
+      create_text("(x,y,0)", [3.7, 3.8, 0.1], {
+        rotation:
+          "0.39187780531182387 0.5437017298844263 0.7421726312824201,2.1591999999999993"
+      }),
+      create_text("(x,y,f(x,y))", [3.7, 3.8, f(3.7, 3.7)], {
+        rotation:
+          "0.39187780531182387 0.5437017298844263 0.7421726312824201,2.1591999999999993"
+      })
+    ],
+    {
+      viewpoint: {
+        position: "10.435857181568185 4.145282681212699 3.5995341598716357",
+        orientation:
+          "0.3918778053118238 0.5437017298844263 0.7421726312824201,2.1591999999999993"
+      },
+      class_name: "X3D"
+    }
+  );
+  return pic
+}
+```
+
+## Paraboloids
+
+A good family of functions to know is $f(x,y) = ax^2 + by^2$. In the figure below, for example, $a=b=1$ so we see the graph of $f(x,y) = x^2 + y^2$.
+
+```{ojs}
+show_x3d([create_surface(
+  (x, y) => [x, y, x ** 2 + y ** 2], [-1, 1], [-1, 1]
+)], {class_name: "X3D"})
+```
+
+## Another paraboloid 
+
+If $a=1$ and $b = -1$, we get a somewhat different paraboloid.
+
+```{ojs}
+show_x3d([create_surface(
+  (x, y) => [x, y, x ** 2 - y ** 2], [-1, 1], [-1, 1]
+)], {class_name: "X3D"})
+```
+
+## Cross-sections
+
+These are called "paraboloids" because their *cross-sections* are parabolas. A cross-section of a 3D object is a slice by a vertical plane. We can create one by setting either $x$ or $y$ constant.
+
+```{ojs}
+{
+  let s = Inputs.range([-1,1], {
+    value: 0.6,
+    label: "slice:",
+    step: 0.01
+  });
+  let slice = d3.select(slice_pic).selectAll(".slice");
+  let wrap = d3.select(slice_pic).selectAll("#wrap");
+  d3.select(s).on("input", function () {
+    slice.attr('translation', [0,this.value,0])
+    wrap.attr("translation", [0,this.value, this.value**2]);
+  })
+  .select('input').remove()
+  return s;
+}
+```
+
+```{ojs}
+slice_pic = show_x3d(
+  [
+    create_surface(
+      (x,y) => [
+        x,y, x**2 + y**2
+      ],
+      [-1,1],
+      [-1,1]
+    ),
+    create_tube(
+      d3
+        .range(-1,1,0.01)
+        .map((t) => [t, 0, t**2]),
+      0.03,
+      {
+        class: "slice",
+        id: "wrap",
+        // Be sure to set the translation and scale to agree
+        // with those set by the initial slider setting.
+        translation: [0,0.6,0.36],
+      }
+    ),
+    create_indexedFaceSet(
+      [
+        [
+          [-1, 0, 0],
+          [1, 0, 0],
+          [1, 0, 2],
+          [-1, 0, 2]
+        ]
+      ],
+      {
+        color: "#fff",
+        transparency: 0.1,
+        class: "slice",
+        id: "knife",
+        // Be sure to set the translation to agree with
+        // that set by the inital slider setting.
+        translation: "0 0.6 0"
+      }
+    )
+  ],
+  {
+    class_name: "X3D",
+    viewpoint: {position: '3.959775442026974 2.1359677212156725 1.3639391790563125', orientation: '0.32323526920530377 0.6264371822553392 0.7092921946770356,2.431056728974597'}
+  }
+)
+```
+
+## The other paraboloid
+
+The $f(x,y) = y^2 - x^2$ function is also a paraboloid because its cross-sections are also parabolas. When $y$ is a constant, we get parabolas opening down. The origin is often called a *saddle point* for this example.
+
+```{ojs}
+{
+  let s = Inputs.range([-1,1], {
+    value: 0.6,
+    label: "slice:",
+    step: 0.01
+  });
+  let slice = d3.select(slice_pic2).selectAll(".slice");
+  let wrap = d3.select(slice_pic2).selectAll("#wrap");
+  d3.select(s).on("input", function () {
+    slice.attr('translation', [0,this.value,0])
+    wrap.attr("translation", [0,this.value, this.value**2]);
+  })
+  .select('input').remove()
+  return s;
+}
+```
+
+::: {.centered-x3d}
+
+```{ojs}
+slice_pic2 = show_x3d(
+  [
+    create_surface(
+      (x,y) => [
+        x,y, -(x**2) + y**2
+      ],
+      [-1,1],
+      [-1,1]
+    ),
+    create_tube(
+      d3
+        .range(-1,1,0.01)
+        .map((t) => [t, 0, -(t**2)]),
+      0.03,
+      {
+        class: "slice",
+        id: "wrap",
+        // Be sure to set the translation and scale to agree
+        // with those set by the initial slider setting.
+        translation: [0,0.6,0.36],
+      }
+    ),
+    create_indexedFaceSet(
+      [
+        [
+          [-1, 0, -1],
+          [1, 0, -1],
+          [1, 0, 1],
+          [-1, 0, 1]
+        ]
+      ],
+      {
+        color: "#fff",
+        transparency: 0.1,
+        class: "slice",
+        id: "knife",
+        // Be sure to set the translation to agree with
+        // that set by the inital slider setting.
+        translation: "0 0.6 0"
+      }
+    )
+  ],
+  {
+    class_name: "X3D", width: 400, height: 400
+  }
+)
+```
+
+:::
+
+
+## Contours
+
+Another way to slice a 3D graph is with a horizontal plane. These slices are called *contours*.
+
+```{ojs}
+{
+  let s = Inputs.range([0,2], {
+    value: 1,
+    label: "slice:",
+    step: 0.01
+  });
+  let slice = d3.select(contour_slices).selectAll(".slice");
+  let wrap = d3.select(contour_slices).selectAll("#wrap");
+  d3.select(s).on("input", function () {
+    slice.attr('translation', [0, 0,this.value])
+    wrap
+      .attr("translation", [0, 0, this.value])
+      .attr('scale', [Math.sqrt(this.value), Math.sqrt(this.value), 1])
+  })
+  .select('input').remove()
+  return s;
+}
+```
+
+```{ojs} 
+contour_slices = show_x3d([
+  create_surface((r,t) => [r*Math.cos(t), r*Math.sin(t), r**2],
+    [0,Math.sqrt(2)],[0,2*Math.PI]),
+  create_tube(
+    d3
+      .range(-Math.PI/100,2*Math.PI + 2*Math.PI/100,Math.PI/100)
+      .map((t) => [Math.cos(t), Math.sin(t), 0]),
+    0.05,
+    {
+      class: "slice",
+      id: "wrap",
+      // Be sure to set the translation and scale to agree
+      // with those set by the initial slider setting.
+      translation: [0,0,1],
+    }
+  ),
+  create_indexedFaceSet(
+    [
+      [
+        [-1.5, -1.5, 0],
+        [1.5, -1.5, 0],
+        [1.5, 1.5, 0],
+        [-1.5, 1.5, 0]
+      ]
+    ],
+    {
+      color: "#fff",
+      transparency: 0.1,
+      class: "slice",
+      id: "knife",
+      // Be sure to set the translation to agree with
+      // that set by the inital slider setting.
+      translation: [0,0,1]
+    }
+  )  
+], {class_name: "X3D"})
+```
+
+## Contour diagrams
+
+We can draw a collection of contours in the plane to generate the contour digram of the function. Here's the contour diagram of $f(x,y) = x^2 + 4y^2$. Note that *lighter* colors imply *higher* values.
+
+::: {.centered style="width: 800px"}
+
+```{ojs}
+contour_gradient_plot(
+  (x, y) => x ** 2 + 4 * y ** 2,
+  {ydomain: [-2,2], width: 800, height: 400}
+)
+```
+
+:::
+
+
+## Hyperbolic contours
+
+The previous contour diagram displays an *elliptic paraboloid* because its contours are elliptic. The function $f(x,y) = x^2 - 4y^2$ yields a *hyperbolic paraboloid*.
+
+::: {.centered style="width: 800px"}
+
+```{ojs}
+contour_gradient_plot(
+  (x, y) => x ** 2 - 4 * y ** 2,
+  {ydomain: [-2,2], width: 800, height: 400}
+)
+```
+
+:::
+
+
+## Peaks contours 
+
+Matlab's Peaks function has three peaks, three valleys and three saddle points.
+
+$$f(x,y) = 3 \, (1-x)^2 e^{-x^2-(y+1)^2}-10 \, e^{-x^2-y^2} \left(-x^3+\frac{x}{5}-y^5\right)-\frac{1}{3} \, e^{-(x+1)^2-y^2}.$$
+
+::: {.centered style="width: 450px"} 
+
+```{ojs}
+{
+  function f(x, y) {
+    return (
+      3 * Math.exp(-(x ** 2 + (y + 1) ** 2)) * (1 - x) ** 2 -
+      Math.exp(-((x + 1) ** 2 + y ** 2)) / 3 -
+      10 * Math.exp(-(x ** 2 + y ** 2)) * (x / 5 - x ** 3 - y ** 5)
+    );
+  }
+  return contour_gradient_plot(f,
+    {
+      xdomain: [-3,3], ydomain: [-3,3], 
+      width: 450, height: 450, legend: false
+    }
+  )
+}
+```
+
+:::
+
+## Peaks 3D
+
+Here's the Peaks function in 3D:
+
+```{ojs}
+show_x3d([
+  create_surface(
+    function (x, y) {
+      return [
+        x,
+        y,
+        (3 * Math.exp(-(x ** 2 + (y + 1) ** 2)) * (1 - x) ** 2 -
+          Math.exp(-((x + 1) ** 2 + y ** 2)) / 3 -
+          10 * Math.exp(-(x ** 2 + y ** 2)) * (x / 5 - x ** 3 - y ** 5)) /
+          5
+      ];
+    },
+
+    [-3, 3],
+    [-3, 3]
+  )
+  ], {class_name: "X3D", 
+    viewpoint: {position: '7.292796402277962 2.8966247532675995 3.870223943991394', orientation: '0.3494397088101544 0.4882107334955308 0.7997138048117153,2.1138983900240937'}
+})
+```
+
+## Maxima, minima, and saddle points
+
+Note that it's easy to see the locations of maxima and minima in a 3D plot. It might be even easier to see them in a contour plot.
+
+It's pretty easy to see saddle points, as well! Can you see the saddle points in the <a href="#/peaks-contours">peaks contour diagram</a>?
+
+# Partial derivatives
+
+The simplest analog to the derivative of a single variable function but for bivariate functions is the *partial derivative*.
+
+To compute a partial derivative of a $f(x,y)$ with respect to one variable, we simply hold the other variable constant. For example, if $f(x,y) = y^2 - x^2$, then
+$$
+\frac{\partial f}{\partial x} = f_x(x,y) = -2x.
+$$
+
+
+## Partial pic
+
+Geometrically, the partial derivative represents the rate of change of $f$ in the positive direction of the variable.
+
+```{ojs}
+show_x3d(
+  [
+    create_surface((x, y) => [x, y, -(x ** 2) + y ** 2], [-1, 1], [-1, 1]),
+    create_tube(
+      d3.range(-1, 1, 0.01).map((t) => [t, -0.6, -(t ** 2) + 0.36]),
+      0.03
+      // {
+      //   class: "slice",
+      //   id: "wrap"
+      // }
+    ),
+    create_tube(
+      d3.range(-0.5, 1.5, 0.01).map((t) => [t, -0.6, -t + 0.61]),
+      0.03
+    ),
+    create_indexedFaceSet(
+      [
+        [
+          [-1, 0, -1],
+          [1, 0, -1],
+          [1, 0, 1],
+          [-1, 0, 1]
+        ]
+      ],
+      {
+        color: "#fff",
+        transparency: 0.1,
+        class: "slice",
+        id: "knife",
+        // Be sure to set the translation to agree with
+        // that set by the inital slider setting.
+        translation: "0 -0.6 0"
+      }
+    )
+  ],
+  {
+    class_name: "X3D",
+    viewpoint: {
+      position: "3.9494780538839764 2.659744939618762 1.4083722258526874",
+      orientation:
+        "0.2863660676084588 0.578511458815328 0.7637532110189973,2.3704867543606456"
+    }
+  }
+)
+```
+
+
+## Critical points
+
+Given a function of two variables, a *critical point* is a point $(x_0,y_0)$ such that
+$$f_x(x_0,y_0) = 0 \text{ and } f_y(x_0,y_0) = 0.$$
+
+If, for example, $f(x,y) = a x^2 + b xy + c y^2$, then 
+
+$$\begin{aligned} 
+f_x(x,y) &= 2ax + by \text{ and } \\ 
+f_y(x,y) &= bx + 2cy.
+\end{aligned}$$
+
+Thus $f_x(0,0) = f_y(0,0) = 0$ so $(0,0)$ is a critical point of $f$.
+
+Critical points can be maxima, minima or saddles and, we've seen, they're pretty easy to spot in contour diagrams
+
+## Finding critical points
+
+Let's consider $f(x,y) = x^2 - xy + y^2 - 3 y$. It's pretty easy to see from a contour plot that there's a minimum:
+
+::: {.centered}
+
+```{ojs}
+contour_gradient_plot(
+  (x, y) => x**2 - x*y + y**2 - 3*y,
+  {xdomain: [-2,3], ydomain: [-1,4], legend: false}
+)
+```
+
+:::
+
+## Setting up and solving a system
+
+If $f(x,y) = x^2 - xy + y^2 - 3 y$, then
+
+$$\begin{aligned}
+\frac{\partial f}{\partial x} &= 2x - y \stackrel{?}{=} 0 \text{ and} \\ 
+\frac{\partial f}{\partial y} &= -x + 2y - 3 \stackrel{?}{=} 0. \\ 
+\end{aligned}$$
+
+If I multiply the second equation by $2$ and add the result to the first, I get $3y-6=0$ so that $y=2$. I can then see that $x=1$.
+
+Once I know that $x=1$, it's easy to see that $y=2$. That appears to agree with what we see in the figure and our knowledge from that figure indicates that we have found a minimum.
+
+
+# Gradients and optimization
+
+Even if you do a little casual reading about machine learning and how it works, you're likely to find the term *gradient descent*.
+
+Gradient descent is a minimization technique that's easy to implement and works well in high dimensional spaces, which is perfect for machine learning.
+
+Let's check out the basic theory explaining gradient descent and why it works.
+
+## The gradient vector 
+
+Given a function $f$ of two variables, the *gradient* is a new function $\nabla f$ that returns a two-dimensional *vector*. The components are exactly the two partial derivatives of the function.
+
+Thus, 
+$$\nabla f(x,y) = \left\langle \frac{\partial f}{\partial x}, \frac{\partial f}{\partial y} \right\rangle.$$
+
+For example, if $f(x,y) = x^2 + y^2$, then 
+$$\nabla f = \langle 2x, 2y \rangle = 2\langle x,y \rangle.$$
+
+
+## The gradient field
+
+If we plot a collection of gradient vectors of a function emanating from a grid of points in the plane, we obtain the *gradient field* of the function.  Here's the gradient field of $f(x,y) = x^2 + y^2$:
+
+::: {.centered}
+
+```{ojs}
+Plot.plot({
+  width: 520,
+  height: 500,
+  marks: [
+    Plot.arrow(
+      d3
+        .range(-4, 4, 1.1)
+        .map((y) =>
+          d3.range(-4, 4, 1.1).map(function (x) {
+            const s = 0.15;
+            const dx = 2 * x * s;
+            const dy = 2 * y * s;
+            return {
+              x1: x,
+              x2: x + dx,
+              y1: y,
+              y2: y + dy
+            };
+          })
+        )
+        .flat(),
+      {
+        width: 80,
+        height: 80,
+        x1: "x1",
+        x2: "x2",
+        y1: "y1",
+        y2: "y2",
+        clip: true
+      }
+    )
+  ]
+})
+```
+
+:::
+
+
+## The geometry of the gradient
+
+Geometrically, vectors are typically represented as arrows and there are two main features that you need to understand it:
+
+- *Direction*: The gradient points in the direction of greatest increase of the function. 
+- *Magnitude*: The magnitude of the gradient is the rate of change in that direction.
+
+## Gradients and contours 
+
+If you've ever gone hiking, you know that if you want to move as steeply as possible uphill, then your path should be perpendicular to the contours. You can see this by plotting a gradient field over the corresponding contour diagram.
+
+::: {.centered}
+
+```{ojs}
+contour_gradient_plot((x,y) => x**2 + y**2,
+  {
+    g: (x,y) => [2*x,2*y], 
+    xdomain: [-3,3], ydomain: [-3,3], 
+    width: 450, height: 450, legend: false
+  }
+)
+```
+
+:::
+
+## Contours and gradients for peaks 
+
+It's pretty easy to see that the previous figure is correct, since $f(x,y) = x^2 + y^2$ is pretty simple. The contour/gradient relationship is held for more complicated functions, too - like the peaks function.
+
+::: {.centered}
+
+```{ojs}
+{
+  function f(x, y) {
+    return (
+      3 * Math.exp(-(x ** 2 + (y + 1) ** 2)) * (1 - x) ** 2 -
+      Math.exp(-((x + 1) ** 2 + y ** 2)) / 3 -
+      10 * Math.exp(-(x ** 2 + y ** 2)) * (x / 5 - x ** 3 - y ** 5)
+    );
+  }
+  function g(x,y) {
+    return [-6*x*(1 - x)**2*Math.exp(-(x**2) - (y + 1)**2) + 20*x*(-(x**3) + x/5 - y**5)*Math.exp(-(x**2) - (y**2)) - 10*(1/5 - 3*(x**2))*Math.exp(-(x**2) - (y**2)) - (-2*x - 2)*Math.exp(-(y**2) - (x + 1)**2)/3 + 3*(2*x - 2)*Math.exp(-(x**2) - (y + 1)**2), 50*y**4*Math.exp(-(x**2) - (y**2)) + 20*y*(-(x**3) + x/5 - (y**5))*Math.exp(-(x**2) - (y**2)) + 2*y*Math.exp(-(y**2) - (x + 1)**2)/3 + 3*(1 - x)**2*(-2*y - 2)*Math.exp(-(x**2) - (y + 1)**2)]
+  }
+  return contour_gradient_plot(f,
+    {
+      g, s: 0.05, xdomain: [-3,3], ydomain: [-3,3], 
+      width: 450, height: 450, legend: false
+    }
+  )
+}
+```
+
+:::
+
+
+## Gradient ascent
+
+Note that gradient vectors generally point *away* from minima and *towards* maxima. Thus, if you follow gradient vectors, then you will either 
+
+- diverge to infinity or
+- eventually find yourself at a local maximum.
+
+That leads to a maximization technique called *gradient ascent*.
+
+## Illustration
+
+Hover over or touch the figure below to see gradient ascent in action!
+
+::: {.centered}
+
+```{ojs}
+gradient_ascent_pic
+```
+
+:::
+
+## Gradient *descent*
+
+Gradient descent is just the opposite:
+
+::: {.centered}
+
+```{ojs}
+gradient_descent_pic
+```
+
+:::
+
+## *Local* minimizer
+
+It's worth repeating that gradient descent finds *local* minima. It comes with no guarantee concerning the global behavior.
+
+# Linear regression
+
+With an understanding of optimization in two variables, we are now in a position to discuss our first truly serious application, namely linear regression.
+
+::: {.spacer}
+
+:::
+
+**The basic question:**
+
+Suppose we've got data with two numeric variables that we suspect have a close to linear relationship. How can we best model that relationship?
+
+::: {.fragment .callout-note}
+## Comment
+
+This column of slides is hugely important. It's our first fully explained example of minimization of error in a model, which is a fundamental technique of machine learning.
+
+:::
+
+## Example (revisited)
+
+Recall our plot of the very simple data:  
+$$\{(0, 0),(1, 0),(1, 1),(2, 1),(2, 2),(3, 2)\}.$$
+We try to fit that data with the function $f(x)=ax+b$, where the parameters $a$ and $b$ are controlled by the sliders. The question is - "how small can we make the total squared error?"
+
+::: {.small-label}
+
+<style>
+  .small-label label {
+    width: 30px !important
+  }
+  .quarto-layout-cell {
+    max-width: 30%;
+  }
+</style>
+
+```{ojs}
+//| panel: input
+//| layout-ncol: 3
+viewof a = (reset, Inputs.range([0, 2], {
+  step: 0.01, label: "a:", value: 0.73 
+}));
+viewof b = (reset, Inputs.range([-2, 2], { 
+  step: 0.01, label: "b:", value: -0.09
+}));
+viewof reset = Inputs.button("reset")
+```
+
+:::
+
+::: {.centered style = "width: 800px; border: solid 1px slategray; border-radius: 4px; background-color: #f8f9fa; margin-top: 10px;"}
+
+```{ojs}
+{
+  let l = (x) => a * x + b;
+
+  let pts = [
+    [0, 0],
+    [1, 0],
+    [1, 1],
+    [2, 1],
+    [2, 2],
+    [3, 2]
+  ]
+
+  let error = d3.sum(pts.map(([x, y]) => (y - l(x)) ** 2));
+
+  return Plot.plot({
+    width: 800,
+    height: 300,
+    x: { domain: [-0.05, 3.2] },
+    y: { domain: [-0.05, 2.2] },
+    marks: [
+      Plot.dot(pts, { fill: "black" }),
+      Plot.line([
+        [-0.2, l(-0.2)],
+        [3.2, l(3.2)]
+      ], {strokeWidth: 3}),
+      Plot.text([{ x: 0.1, y: 1.65 }], {
+        x: "x",
+        y: "y",
+        textAnchor: "start",
+        fontSize: 14,
+        text: () => `f(x) = ${a == 1 ? '' : a}x ${b<0 ? '-' : b==0 ? '' : '+'} ${b == 0 ? '' : Math.abs(b)}`
+      }),
+      Plot.text([{ x: 0.1, y: 1.5 }], {
+        x: "x",
+        y: "y",
+        textAnchor: "start",
+        fontSize: 14,
+        text: () => `Total squared error = ${d3.format("0.5f")(error)}`
+      }),
+      Plot.ruleX([0]), Plot.ruleY([0])
+    ]
+  });
+}
+```
+
+:::
+ 
+
+## Total squared error
+
+In general, we've got data represented as a list of points:
+$$
+\{(x_i,y_i)\}_{i=1}^N = \{(x_1,y_1),(x_2,y_2),(x_3,y_3),\ldots,(x_N,y_N)\}.
+$$
+
+If we model that data with a function $y=f(x)$, then the *total squared error* is defined by
+$$
+E = \sum_{i=1}^N \left(y_i - f(x_i)\right)^2.
+$$
+The objective is to choose the parameters defining $f$ to minimize $E$.
+
+## More specifically
+
+In the current example, we model the data with a first order polynomial $f(x) = ax+b$. Thus, our formula takes on the more specific form 
+$$
+E(a,b) = \sum_{i=1}^N \left(y_i - (a\,x_i + b)\right)^2.
+$$
+Note that the data is fixed but we have control over the parameters. Thus, we can treat $E$ as a function of the two variables $a$ and $b$ and use the techniques of multivariable calculus to perform the minimization.
+
+## Even more specifically
+
+Recall that the data consists of these points:
+
+```{python} 
+pts = [[0, 0],[1, 0],[1, 1],[2, 1],[2, 2],[3, 2]]
+pts
+```
+
+and the error $E$ as a function of $a$ and $b$ is
+
+$$
+E(a,b) = \sum_{i=1}^6 \left(y_i - f(x_i)\right)^2.
+$$
+
+Writing that out in full, we get:
+
+```{python}
+from IPython.display import Math
+import matplotlib.pyplot as plt
+import numpy as np
+from sympy import symbols, latex, S, solve
+a,b,x = symbols('a,b,x')
+
+sympy_expr = S(0)
+latex_expr = r'\begin{aligned} E(a,b) &='
+da_expr = r'\begin{aligned} \frac{\partial E}{\partial a} &='
+db_expr = r'\begin{aligned} \frac{\partial E}{\partial b} &='
+for i, pt in enumerate(pts):
+  latex_expr = latex_expr + f'({pt[1]} - (a\\times{pt[0]} + b))^2'
+  current_sympy_expr = (pt[1] - (pt[0]*a + b))**2
+  sympy_expr = sympy_expr + current_sympy_expr
+  da_expr = da_expr + '(' + latex(current_sympy_expr.diff(a)) + ')'
+  db_expr = db_expr + '(' + latex(current_sympy_expr.diff(b)) + ')'
+  if (i+1)%3 == 0 and i < len(pts)-1:
+    latex_expr = latex_expr + r'\\ &+'
+    da_expr = da_expr + r'\\ &+'
+    db_expr = db_expr + r'\\ &+'
+  elif i<len(pts)-1:
+    latex_expr = latex_expr + '+'
+    da_expr = da_expr + '+'
+    db_expr = db_expr + '+'
+latex_expr = latex_expr + r'\end{aligned}$$'
+da_expr = da_expr + r'\\ &='
+da_expr = da_expr + latex(sympy_expr.diff(a))
+da_expr = da_expr + r'\end{aligned}$$'
+db_expr = db_expr + r'\\ &='
+db_expr = db_expr + latex(sympy_expr.diff(b))
+db_expr = db_expr + r'\end{aligned}$$'
+
+Math(latex_expr)
+```
+
+## Setting up the system
+
+We can differentiate with respect to $a$ to get
+
+```{python}
+Math(da_expr)
+```
+
+And with respect to $b$ to get
+
+```{python}
+Math(db_expr)
+```
+
+## Solving the system
+
+Setting $\partial E/\partial a = \partial E/\partial b$ = 0, we get the system
+
+$$\begin{aligned}
+38a + 18b &= 26 \\ 
+18a + 12b &= 12.
+\end{aligned}$$
+
+Multiply the second by 3/2 to get the new system
+$$\begin{aligned}
+38a + 18b &= 26 \\ 
+27a + 18b &= 18.
+\end{aligned}$$
+
+Subtract the first minus the second to get 
+$$11a = 8 \text{ or } a = 8/11.$$
+
+Plug that back into either of the others to get $b=-1/11$
+
+## Solution wrap up
+
+The formula for the line with the *least* total squared error is thus 
+$$f(x) = \frac{8}{11} x - \frac{1}{11} = 0.\overline{72}x - 0.\overline{09}.$$
+
+That appears to be in line with our <a href="#/example">dynamic illustration</a>.
+
+Note that the geometric nature of the problem guarantees that we've found a minimum, rather than a local max or saddle point.
+
+# Variations on regression 
+
+Regression is a *huge* topic for us and we'll spend plenty more time on it throughout the semester. Just about all of the linear algebra and higher dimensional calculus we learn can be applied to linear regression in some way as well.
+
+In this column of slides, we're going to take a look at a few variations on the basic idea we've just seen.
+
+## Extending the basis functions 
+
+*Linear* regression is so-called because we fit data with a linear combination of basis functions - i.e. a sum of constants times the functions. Often, the basis is chosen to be $\{1,x\}$, which leads to approximations using functions of the form 
+$$f(x) = a\times x + b\times 1.$$
+In that case the graph is a line.
+
+There are other possibilities for the basis, though. For example, we might choose the basis to be $\{1,x,x^2,x^3\}$. In this case, we'll approximate the data with a cubic function - i.e. one of the form 
+$$f(x) = ax^3 + bx^2 + cx + d.$$
+
+## Example 
+
+Suppose we wish to the fit points $\{n, \sin(n)\}_{n=1}^6$, as shown below:
+
+::: {.centered style="width: 810px"}
+
+```{python}
+#| echo: true 
+#| code-fold: true
+import numpy as np
+import matplotlib.pyplot as plt
+
+xs = np.arange(1,7)
+ys = np.sin(xs)
+p = plt.plot(xs,ys,'o')
+
+plt.show()
+```
+
+:::
+
+It looks like a cubic might fit fairly well.
+
+
+## Using SciPy's `least_squares`
+
+Here's a cubic fit produced by SciPy's `least_squares` function.
+
+```{python}
+#| echo: true 
+#| code-fold: true
+import numpy as np
+from scipy.optimize import least_squares
+from IPython.display import Math, display
+import matplotlib.pyplot as plt
+
+xs = np.arange(1,7)
+ys = np.sin(xs)
+f = lambda x, a,b,c,d: a*x**3 + b*x**2 + c*x + d
+e = lambda coeffs, x,y: f(x, *coeffs) - y
+res = least_squares(e, [0,0,0,0], args=(xs, ys))
+
+a, b, c, d = res.x
+xx = np.linspace(0.5, 6.2, 500)
+yy = f(xx, a, b, c, d)
+
+plt.plot(xx, yy)
+plt.plot(xs, ys, 'o')
+plt.show()
+```
+
+```{python}
+latex_expr = "\\text{Fit: } \: f(x) = "
+for i,c in enumerate(res.x):
+  latex_expr = latex_expr + "{:0.4f}".format(round(c, 4))
+  if i < len(res.x) - 2:
+    latex_expr = latex_expr + f'x^{3-i}'
+  elif i == len(res.x) - 2:
+    latex_expr = latex_expr + 'x'
+  if i < len(res.x) - 1 and np.sign(res.x[i+1]) > 0:
+    latex_expr = latex_expr + '+'
+
+display(Math(latex_expr))
+```
+
+## Data 
+
+Typically we apply these ideas to actual *data*. Here, for example, is a small slice of a data table stored on my website. Each row corresponds to a college football team taken from the 2024 season:
+
+::: {.hide-scroll-input}
+
+```{ojs}
+fetch('https://marksmath.org/data/CFBStats/CFB2024.csv')
+  .then(async function(r) {
+    const t = await r.text();
+    let d = d3.csvParse(t, d3.autoType)
+    d = d3.sort(d, o => -o.Wins, o => o.Team);
+    return Inputs.table(d);
+  })
+```
+
+:::
+
+## The scatter plot with regression line 
+
+Here's a scatter plot of that data where the horizontal variable is represents total points scored and the vertical variable is win/loss percentage. The dark line, of course, is the regression line.
+
+```{python}
+import pandas as pd
+import plotly.express as px
+
+cfb2024 = pd.read_csv(
+  'https://marksmath.org/data/CFBStats/CFB2024.csv'
+)
+cfb_scatter2 = px.scatter(cfb2024,
+  x = 'TEAM Total Points', y = 'WL%',
+  hover_name = "Team",
+  trendline='ols', trendline_color_override = 'black',
+  width = 800, height = 500
+)
+cfb_scatter2.show(config={'displayModeBar': False})
+```
+
+## Logistic regression
+
+In the plot below, each dot corresponds to a game from an NCAA basketball tournament played between 2010 and 2023. You can hover over the dots to get specific information on the individual games.
+
+The horizontal axis effectively corresponds to the number of points that the first team is predicted to beat the second team by. That prediction was obtained by a linear regression technique. The vertical axis is a Boolean flag indicating whether team 1 actually beat team 2 or not.
+
+
+```{python}
+import plotly.express as px
+paired_games = pd.read_csv('https://www.marksmath.org/data/paired_tourney_games.csv')
+logistic_scatter = px.scatter(paired_games,
+  x = 'massey_diff', y = 'label',
+  width = 900, height = 300,
+  hover_data = {
+    'team1_name': True,
+    'team2_name': True,
+    'season': True,
+    'label': False
+  },
+  opacity=0.2
+)
+logistic_scatter.show(config={'displayModeBar': False})
+```
+
+## Fit with the logistic curve
+
+The objective is to make probabilistic predictions for future NCAA tournaments. We do so by fitting a curve like the one shown below to the data. That curve takes on values between zero and one and generally increases as the projected score difference increases. Thus, it makes sense to interpret these values as probabilities.
+
+```{python}
+import plotly.graph_objects as go
+import numpy as np
+import statsmodels.api as sm
+train = paired_games
+Xtrain = train[['massey_diff']]
+Xtrain = sm.add_constant(Xtrain)
+ytrain = train[['label']]
+log_reg = sm.Logit(ytrain, Xtrain).fit(disp=False)
+
+x_pts = np.linspace(-40,40,400)
+X = pd.DataFrame([{'massey_diff': x} for x in x_pts])
+X = sm.add_constant(X)
+y_pts = log_reg.predict(X)
+line_plot = px.line(
+  x = x_pts,
+  y = y_pts,
+)
+line_plot.update_traces(line_color='black')
+
+logistic_scatter = px.scatter(paired_games,
+  x = 'massey_diff', y = 'label',
+  hover_data = {
+    'team1_name': True,
+    'team2_name': True,
+    'season': True,
+    'label': False
+  },
+  opacity=0.2
+)
+
+combined_fig = go.Figure(
+  data=line_plot.data + logistic_scatter.data,
+)
+combined_fig.update_layout(
+  width = 900,
+  height = 300,
+  xaxis_title="massey_diff",
+  yaxis_title="label"
+)
+combined_fig.show(config={
+  'x': 'massey_diff', 'y': 'label',
+  'displayModeBar': False,
+})
+```
+
+## Formulae
+
+The curve on the previous slide is called the *logistic* curve and also the *sigmoid*. A formula for the sigmoid is
+$$
+\hat{p} = \frac{1}{1+e^{ax+b}}.
+$$
+That formula is definitely *not* a linear combination of basis functions. We can solve for the $ax+b$ inside the exponential, though, to get 
+$$
+-\log_e\left(\frac{\hat{p}}{1-\hat{p}}\right) = ax+b.
+$$
+In this way, the logistic regression that we want can be translated to a linear regression that we know how to solve.
+
+
+
+<!-- Just code below here -->
+<!--  -->
+<!--  -->
+
+
+```{ojs}
+import {
+  show_x3d,
+  create_surface,
+  create_indexedLineSet,
+  create_indexedFaceSet,
+  create_sphere,
+  create_text,
+  create_tube,
+  style
+} from "@mcmcclur/plotx3d"
+```
+
+```{ojs}
+import {
+  gradient_ascent_pic, 
+  gradient_descent_pic
+} from 'ec5aa7100cf0c5e7'
+```
+
+```{ojs}
+import { contour_gradient_plot } from "../../components/contour_gradient_plot.js"
+```
+
+```{ojs}
+style
+```
