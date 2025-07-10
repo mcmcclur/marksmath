@@ -1,0 +1,39 @@
+---
+title: Linear Algebra
+css: styles.css
+---
+
+::: {.grid}
+::::: {.g-col-12 .g-col-md-8}
+Math 365  
+Fall 2025  
+with professor [Mark McClure](https://marksmath.org/)
+
+## Handy links
+
+- Syllabus
+- [Course Calendar](calendar.qmd)
+- Textbook
+- [MyOpenMath](https://myopenmath.com){target=_blank}
+- [The Math Lab!](https://math.unca.edu/learn/math-lab/){target=_blank}
+
+
+
+:::::
+::::: {.g-col-md-4 .d-none .d-md-block}
+```{ojs}
+import {eigen_pic} from './components/linear-side_pic.js'
+eigen_pic(
+    [
+      [1, 1],
+      [1/2, 3/2]
+    ],
+    [
+      [1, 1],
+      [-2, 1]
+    ],
+    { dd: 0.2 }
+  )
+```
+:::::
+:::
