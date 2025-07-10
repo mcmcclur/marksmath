@@ -82,10 +82,29 @@ export function eigen_pic(M, arrows, opts = {}) {
     .attr("transform", `translate(0, ${y_scale(0)})`)
     .call(d3.axisBottom(x_scale).ticks(5).tickSizeOuter(0));
 
-  svg.on("mousemove", mouse_move);
+  svg.on("pointermove", pointermove);
+  svg.on("pointerleave", pointerleave);
   return svg.node();
 
-  function mouse_move(evt) {
+  function pointerleave() {
+	pt_group
+	  .selectAll("circle")
+	  .transition()
+	  .duration(400)
+	  .attr("cx", (d) => x_scale(d[0]))
+	  .attr("cy", (d) => y_scale(d[1]));
+	arrow_group
+	  .selectAll("polyline")
+	  .transition()
+	  .duration(400)
+	  .attr("points", function(d,i) {
+		const a = arrows[i];
+		const polypts = arrow_pts(x_scale(0), y_scale(0), x_scale(a[0]), y_scale(a[1]));
+		return polypts;
+		// return arrow_pts(x_scale(0), y_scale(0), x_scale(a[0]), y_scale(a[1]));
+	  });
+  }
+  function pointermove(evt) {
 	const [x, y] = d3.pointer(evt);
 	const v = v_scale(x);
 	arrow_group
@@ -102,7 +121,6 @@ export function eigen_pic(M, arrows, opts = {}) {
 	pt_group
 	  .selectAll("circle")
 	  .attr("cx", function(d) {
-
 		const [xx,yy] = T(v)(d[0], d[1]);
 		return x_scale(xx);
 	  })
@@ -112,6 +130,7 @@ export function eigen_pic(M, arrows, opts = {}) {
 	  })
   }
 }
+
 
 
 // Convenience functions to make some arrows.
