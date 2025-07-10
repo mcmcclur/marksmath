@@ -5,7 +5,7 @@ css: styles.css
 ---
 
 ::: {.grid}
-::::: {.g-col-8}
+::::: {.g-col-12 .g-col-md-8}
 Math 295 in Spring 2026  
 with professor [Mark McClure](https://marksmath.org/)
 
@@ -25,7 +25,7 @@ with professor [Mark McClure](https://marksmath.org/)
 
 
 :::::
-::::: {.g-col-4 .hide-small}
+::::: {.g-col-md-4 .d-none .d-md-block}
 ```{ojs}
 import {regression_animation} from './components/regression_animation.js'
 regression_animation();

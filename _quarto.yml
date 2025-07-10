@@ -26,25 +26,6 @@ website:
         text: <i class="fa fa-brands fa-github"></i>
       - href: mailto:mcmcclur@unca.edu
         text: <i class="fa fa-regular fa-envelope"></i>
-  sidebar:
-    id: MML2026
-    title: "Math for Machine Learning"
-    style: docked
-    background: "light"
-    search: false
-    contents: 
-      - text: "MML Spring 2026"
-        href: classes/Spring2026MML/index.qmd
-      - text: "Syllabus"
-        href: classes/Spring2026MML/syllabus.qmd
-      - text: "Calendar"
-        href: classes/Spring2026MML/schedule/calendar.qmd
-      - text: "Outline"
-        href: classes/Spring2026MML/schedule/outline.qmd
-      - text: "Colab"
-        href: https://colab.research.google.com/
-      - text: "MyOpenMath"
-        href: https://myopenmath.com/
 
 format:
   html:

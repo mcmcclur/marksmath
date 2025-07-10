@@ -1,0 +1,109 @@
+---
+title: Syllabus 
+background: "light"
+format:
+  html:
+    page-layout: article
+    toc: true
+  pdf:
+    mainfont: "Times New Roman"
+    include-in-header:
+      text: |
+        \pagenumbering{gobble}
+---
+
+Math 191: Calculus I  
+Fall 2025  
+MWF 11:00-12:15 and 12:30-1:45  
+RRO 212
+
+Professor: Mark McClure  
+Office: 325 Robinson Hall  
+email: mcmcclur@unca.edu  
+Office hours: MWF 10:00-10:45
+
+## Course purpose
+
+Calculus was first developed in the late 17th century by Isaac Newton. Newton developed calculus as a tool to understand Kepler's laws of planetary motion. In the process, he answered questions dating literally past the edge of recorded history, ushered in the modern scientific era, and created mathematical tools with applications to sciences still being discovered today. In this course we will:
+
+- Develop a stronger understanding of infinity and infinitesimal (infinitely small) using the notion of limits.
+- Use the limit to define derivatives, which will help us quantify instantaneous rates of change.
+- Learn how to compute derivatives efficiently and apply them to problems including optimization and dynamics.
+- Use the limit to define integrals, which will help us compute areas of complicated regions bound by curves.
+- Improve algebraic skill
+
+
+## Materials
+
+- **The text**: We will use the APEX Calculus textbook by Gregory Hartman et al. This is an outstanding, freely available, open source text that you can browse online. It is available in several formats:
+    - [HTML](https://opentext.uleth.ca/apex-calculus/apex-calculus.html){target=_blank}[: https://opentext.uleth.ca/apex-calculus/apex-calculus.html]{.content-visible when-format="pdf"}
+    - [PDF](../open_downloads/APEXCalculusV4.pdf){target=_blank}[: https://marksmath.org/classes/open_downloads/APEXCalculusV4.pdf]{.content-visible when-format="pdf"}
+    - [Print ($16 from Amazon)](https://www.amazon.com/APEX-Calculus-v4-0/dp/1719219591){target=_blank}[: https://www.amazon.com/APEX-Calculus-v4-0/dp/1719219591]{.content-visible when-format="pdf"}  
+  
+  The text is also available in the Math Lab so you certainly don't need to purchase the Print version. You may, though, if you like having a book in your hand. The HTML and PDF versions are free and we might occasionally refer to the HTML version in class. We hope to get through most of chapter 1-5 of the text.
+- **MyOpenMath**: We will have regular auto-graded homework using MyOpenMath. You should receive login credentials directly from me.
+- **Computers**: In addition to accessing course materials, like the text, homework, we'll use computers for their originally intended purpose: computing. More on this below.
+
+There are some tools that we will not use:
+
+- **Calculators**: While we will use computers for visualization and serious computation, the use of hand held calculators generally obscure the main conceptual points of mathematics. We will not use them on exams.
+- **Moodle**: All material will be disseminated via our class web page.
+
+
+## Grades
+
+### Components contributing to your grade
+
+Your grades will be based on the following components:
+
+- **Exams**: There are 3 exams scheduled during the term each worth about 100 points. There will also be a final exam worth around 150 points. While subject to change, these are are listed on [our course calendar](calendar.qmd) and currently scheduled for 
+  - Friday, September 12,
+  - Friday, October 17, 
+  - Friday, November 14, and
+  - The final exam will be scheduled during finals week.
+
+  Note that calculators and/or computers will not be allowed on exams.
+- **Quizzes**: We will have three quizzes that will be worth anywhere from 15 to 25 points. Like the exams, these are also listed on [our course calendar](calendar.qmd) and currently scheduled for 
+  - Friday, August 29,
+  - Friday, October 3,  and
+  - Friday, October 31.
+- **HW**: We will have regular, online HW assignments via [MyOpenMath](https://myopenmath.com) that's automatically graded. I anticipate that this will contribute around another 100 points to your overall grade.
+- **Participation**: You’ll accumulate 40 points throughout the semester just by coming to class and participating in class activities regularly.
+
+### How grades are determined
+
+Your grade will be determined by a scale not harder than 90-80-70-60.
+That is,
+
+-   90% will guarantee an A-,
+-   80% will guarantee an B-,
+-   70% will guarantee an C-,
+-   60% will guarantee an passing grade.
+
+I will also take a look at the overall class distribution and determine
+if I feel the need to adjust the scale down. I’ll go through that
+process after each exam and notify you of your status after each exam.
+
+## Course policies
+
+### Attendance
+
+I don’t take daily attendance. Missing class with any regularity,
+however, will affect your course grade directly through the class
+participation grade and indirectly through its impact on your
+performance.
+
+### Academic integrity
+
+You are expressly permitted to discuss questions and problems arising
+from homework or lab assignments with your classmates.
+
+Exams are expected to be your work and yours alone. In addition, the
+expectation is that there will be no computational assistance, unless
+expressly permitted in limited situations. Please don’t cheat; I simply
+refer such cases to the administration.
+
+### Further information
+
+You can find more information on dealing with special challenges here:  
+<https://marksmath.org/OfficialPolicies/>

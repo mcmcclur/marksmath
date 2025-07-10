@@ -4,5 +4,8 @@ _freeze
 **/.DS_Store
 _git_graphs
 *.pyc
+**/libs/
+**/site_libs/
+**/_site/
 
 /.quarto/
