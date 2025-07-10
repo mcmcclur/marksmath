@@ -24,8 +24,7 @@ export function eigen_pic(M, arrows, opts = {}) {
     .create("svg")
     .attr("width", "100%")
     .attr("viewBox", [0, 0, w, h])
-    .style("max-width", `${w}px`)
-    .style("border", "solid 1px black");
+    .style("max-width", `${w}px`);
   const [xmin, xmax] = domain[0];
   const [ymin, ymax] = domain[1];
   const xrange = xmax - xmin;
@@ -40,10 +39,10 @@ export function eigen_pic(M, arrows, opts = {}) {
     .domain([ymin, ymax])
     .range([h - pad, pad]);
   const r_scale = d3.scaleLinear().domain([0, xrange]).range([0, w]);
-  const path = d3
-    .line()
-    .x((d) => x_scale(d[0]))
-    .y((d) => y_scale(d[1]));
+  const v_scale = d3
+    .scaleLinear()
+    .domain([0, w])
+    .range([-2,2])
 
   const pts = d3
     .range(xmin, xmax + dd / 2, dd)
@@ -83,50 +82,34 @@ export function eigen_pic(M, arrows, opts = {}) {
     .attr("transform", `translate(0, ${y_scale(0)})`)
     .call(d3.axisBottom(x_scale).ticks(5).tickSizeOuter(0));
 
-  svg.node().step = step;
+  svg.on("mousemove", mouse_move);
   return svg.node();
 
-  function step(forward = true) {
-    let M;
-    if (!forward) {
-      M = MInv;
-    } else {
-      M = MM;
-    }
-    arrow_group
-      .selectAll("polyline")
-      .transition()
-      .duration(800)
-      .attr("points", function () {
-        const d3Node = d3.select(this);
-        let current_pts = d3Node.attr("data-info");
-        current_pts = current_pts.split(",").map(parseFloat);
-        const new_pts = math.multiply(M, current_pts).toArray();
-        d3Node.attr("data-info", new_pts);
-        const new_polyline = arrow_pts(
-          x_scale(0),
-          y_scale(0),
-          x_scale(new_pts[0]),
-          y_scale(new_pts[1])
-        );
-        return new_polyline;
-      });
-    pt_group
-      .selectAll("circle")
-      .transition()
-      .duration(800)
-      .attr("cx", function () {
-        const d3Node = d3.select(this);
-        let current_pt = d3Node.attr("data-pt");
-        current_pt = current_pt.split(",").map(parseFloat);
-        const [x, y] = math.multiply(M, current_pt).toArray();
-        d3Node.attr("data-pt", [x, y]);
-        d3Node.attr("data-y", y_scale(y));
-        return x_scale(x);
-      })
-      .attr("cy", function () {
-        return this.getAttribute("data-y");
-      });
+  function mouse_move(evt) {
+	const [x, y] = d3.pointer(evt);
+	const v = v_scale(x);
+	arrow_group
+	  .selectAll("polyline")
+	  .remove();
+	arrows.forEach(function (a, i) {
+		const s = i == 0 ? 2 : 1/2;
+		arrow_group
+		.append("polyline")
+		.call(arrow, x_scale(0), y_scale(0), x_scale(s**v * a[0]), y_scale(s**v * a[1]))
+		.attr("stroke", "black")
+		.attr("stroke-width", 3);
+	});
+	pt_group
+	  .selectAll("circle")
+	  .attr("cx", function(d) {
+
+		const [xx,yy] = T(v)(d[0], d[1]);
+		return x_scale(xx);
+	  })
+	  .attr("cy", function(d) {
+		const [xx,yy] = T(v)(d[0], d[1]);
+		return y_scale(yy);
+	  })
   }
 }
 
@@ -168,4 +151,11 @@ function arrow_pts(ax, ay, bx, by, options = {}) {
   const ry = my + (ny * w) / 2;
 
   return [ax, ay, mx, my, lx, ly, bx, by, rx, ry, mx, my];
+}
+
+function T(s) {
+	return (x,y) => [
+		(2**(1 - s)/3 + 2**s/3)*x + (-1/3*2**(1 - s) + 2**(1 + s)/3)*y,
+		(-1/3*1/2**s + 2**s/3)*x + (1/(3*2**s) + 2**(1 + s)/3)*y
+	]
 }

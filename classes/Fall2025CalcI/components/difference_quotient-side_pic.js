@@ -23,13 +23,6 @@ export function side_pic() {
   const rScale = d3.scaleLinear()
     .domain([0,xrange])
     .range([0, width - pad]);
-  const xScaleInverse = d3.scaleLinear()
-    .range([xmin,xmax])
-    .domain([pad,width-pad]);
-  const yScaleInverse = d3.scaleLinear()
-    .range([ymin,ymax])
-    .domain([height - pad, pad]);
-  // A convenience function for drawing lines
   const pts_to_path = d3.line()
     .x(function(d) { return xScale(d[0]); })
     .y(function(d) { return yScale(d[1]); });
@@ -110,10 +103,9 @@ export function side_pic() {
   return svg.node();
 
   function update(xy) {
-		const x = xy[0];
-		// var h_in = x_to_h(x);
+	const x = xy[0];
     h_current = x_to_h(x);
-		draw_tan_sec(x00, h_current)
+	draw_tan_sec(x00, h_current)
 	}
   function trans() {
     var rate = 0.9;
