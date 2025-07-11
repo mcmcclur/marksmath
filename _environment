@@ -18,5 +18,10 @@
 #
 # You'll need your own key, if you want this to work on your 
 # webspace; here's mine, which works only on marksmath.org:
+# 
+# Also, don't forget to run 
+# quarto render path/to/map_page/ --profile level 
+# and **only then** will that page work correctly after
+# quarto preview 
 
 MAPBOX_CYCLING_TOKEN=pk.eyJ1IjoibWNtY2NsdXIiLCJhIjoiY21jNHc5ZGs0MGtuZjJsb2ZvaGViaHk4NyJ9.0L5GNVfSTjDI953Akivffw

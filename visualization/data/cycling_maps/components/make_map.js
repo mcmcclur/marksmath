@@ -1,19 +1,20 @@
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
-import mapboxgl from "https://esm.sh/mapbox-gl@3.12.0";
+// import mapboxgl from "https://esm.sh/mapbox-gl@3.12.0";
+import mapboxgl from "https://cdn.skypack.dev/mapbox-gl@3.13.0";
 
-// mapboxgl.accessToken = window.MAPBOX_CYCLING_TOKEN;
 mapboxgl.accessToken = MAPBOX_CYCLING_TOKEN;
 
 
 ////////////////////////////
 // The main function.
 
-export function make_map(MAPBOX_CYCLING_TOKEN) {
+export function make_map() {
   const map = new mapboxgl.Map({
     container: 'map',
     zoom: 11, 
     center: [-82.5599, 35.5753],
     style: "mapbox://styles/mapbox/outdoors-v12"
+    // style: "mapbox://styles/mapbox/standard-satellite"
   });
 
   // Add standard controls to the map on load.
