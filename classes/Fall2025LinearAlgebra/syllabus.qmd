@@ -12,35 +12,50 @@ format:
         \pagenumbering{gobble}
 ---
 
-Math 191: Calculus I  
+Math 365: Linear Algebra  
 Fall 2025  
-MWF 11:00-12:15 and 12:30-1:45  
-RRO 212
+MW 8:00-9:15  
+RRO 213
 
 Professor: Mark McClure  
 Office: 325 Robinson Hall  
 email: mcmcclur@unca.edu  
 Office hours: MWF 10:00-10:45
 
+---
+
+**Note**: This is a first draft and still requires grant and Runestone information.
+
+---
+
 ## Course purpose
 
-Calculus was first developed in the late 17th century by Isaac Newton. Newton developed calculus as a tool to understand Kepler's laws of planetary motion. In the process, he answered questions dating literally past the edge of recorded history, ushered in the modern scientific era, and created mathematical tools with applications to sciences still being discovered today. In this course we will:
+From the perspective of calculus, the linear functions are about the
+simplest imaginable; they are literally the functions of the form
+$f(x)=mx$, where $f:\mathbb R \to \mathbb R$. In the more
+advanced study of linear algebra, however, we focus on functions mapping
+$\mathbb R^n \to \mathbb R^m$ or, more generally from one
+vector space to another. While the motivation for moving to higher
+dimensions like this is mostly application, the subject also provides a
+nice opportunity to carefully study the power of abstraction.
 
-- Develop a stronger understanding of infinity and infinitesimal (infinitely small) using the notion of limits.
-- Use the limit to define derivatives, which will help us quantify instantaneous rates of change.
-- Learn how to compute derivatives efficiently and apply them to problems including optimization and dynamics.
-- Use the limit to define integrals, which will help us compute areas of complicated regions bound by curves.
-- Improve algebraic skill
+In this class we will:
+
+- Begin with applied systems of equations,
+- express those systems using the algebra of matrices,
+- generalize that work to encompass abstract vector spaces, and
+- bring that all back to the concrete geometrical realm.
+
 
 
 ## Materials
 
-- **The text**: We will use the APEX Calculus textbook by Gregory Hartman et al. This is an outstanding, freely available, open source text that you can browse online. It is available in several formats:
-    - [HTML](https://opentext.uleth.ca/apex-calculus/apex-calculus.html){target=_blank}[: https://opentext.uleth.ca/apex-calculus/apex-calculus.html]{.content-visible when-format="pdf"}
-    - [PDF](../open_downloads/APEXCalculusV4.pdf){target=_blank}[: https://marksmath.org/classes/open_downloads/APEXCalculusV4.pdf]{.content-visible when-format="pdf"}
-    - [Print ($16 from Amazon)](https://www.amazon.com/APEX-Calculus-v4-0/dp/1719219591){target=_blank}[: https://www.amazon.com/APEX-Calculus-v4-0/dp/1719219591]{.content-visible when-format="pdf"}  
+- **The textbook**: We will follow the text **Understanding Linear Algebra** by David Austin. This is an outstanding, freely available, open source text that you can browse online. It is available in several formats:
+    - [HTML](https://understandinglinearalgebra.org/ula.html){target=_blank}[: https://understandinglinearalgebra.org/ula.html]{.content-visible when-format="pdf"}
+    - [PDF](../open_downloads/UnderstandingLinearAlgebra.pdf){target=_blank}[: https://marksmath.org/classes/open_downloads/UnderstandingLinearAlgebra.pdf]{.content-visible when-format="pdf"}
+    - [Low cost print version](https://www.619wreath.com/ula.html){target=_blank}[: https://www.619wreath.com/ula.html]{.content-visible when-format="pdf"}  
   
-  The text is also available in the Math Lab so you certainly don't need to purchase the Print version. You may, though, if you like having a book in your hand. The HTML and PDF versions are free and we might occasionally refer to the HTML version in class. We hope to get through most of chapter 1-5 of the text.
+  The text is also available in the Math Lab so you certainly don't need to purchase the Print version. You may, though, if you like having a book in your hand. The HTML and PDF versions are free and we might occasionally refer to the HTML version in class. We hope to get through most of the text.
 - **MyOpenMath**: We will have regular auto-graded homework using MyOpenMath. You should receive login credentials directly from me.
 - **Computers**: In addition to accessing course materials, like the text, homework, we'll use computers for their originally intended purpose: computing. More on this below.
 
@@ -57,17 +72,13 @@ There are some tools that we will not use:
 Your grades will be based on the following components:
 
 - **Exams**: There are 3 exams scheduled during the term each worth about 100 points. There will also be a final exam worth around 150 points. While subject to change, these are are listed on [our course calendar](calendar.qmd) and currently scheduled for 
-  - Friday, September 12,
-  - Friday, October 17, 
-  - Friday, November 14, and
+  - Wednesday, September 10,
+  - Wednesday, October 15, 
+  - Wednesday, November 12, and
   - The final exam will be scheduled during finals week.
 
   Note that calculators and/or computers will not be allowed on exams.
-- **Quizzes**: We will have three quizzes that will be worth anywhere from 15 to 25 points. Like the exams, these are also listed on [our course calendar](calendar.qmd) and currently scheduled for 
-  - Friday, August 29,
-  - Friday, October 3,  and
-  - Friday, October 31.
-- **HW**: We will have regular, online HW assignments via [MyOpenMath](https://myopenmath.com) that's automatically graded. I anticipate that this will contribute around another 100 points to your overall grade.
+- **HW**: We will have regular, online HW assignments via [MyOpenMath](https://myopenmath.com) that's automatically graded. I anticipate that this will contribute around another 90 points to your overall grade.
 - **Participation**: You’ll accumulate 40 points throughout the semester just by coming to class and participating in class activities regularly.
 
 ### How grades are determined
@@ -86,7 +97,7 @@ process after each exam and notify you of your status after each exam.
 
 ## Advice
 
-- **Learning mathematics**: I expect that you wouldn't be in calculus if you didn't already know that mathematical study is a challenging, yet worthwhile endeavor. Mathematics is the most natural language with which we describe the world around us and, I believe, this this helps us better comprehend and enjoy the world. However, understanding this deep language has a price - it's hard and takes loads of work! I suggest that you spend at least 1.5 hours between classes and at least 3 hours over the weekend studying each math class. Remember that college is a full time job!
+- **Learning mathematics**: I expect that you wouldn't be in a 300 level math class if you didn't already know that mathematical study is a challenging, yet worthwhile endeavor. Mathematics is the most natural language with which we describe the world around us and, I believe, this this helps us better comprehend and enjoy the world. However, understanding this deep language has a price - it's hard and takes loads of work! I suggest that you spend at least 1.5 hours between classes and at least 3 hours over the weekend studying each math class. Remember that college is a full time job!
 - **The typical day**: Class is 75 minutes long and will often focus lecture, though, there will be occasional in class problem sessions.
 - **Exam week**: Problems for the exams will be taken from homework, in class sheets, quizzes, and a small collection of review problems. The review problems will typically be available the five days before an exam and we will discuss them the period before the exam. You will have plenty of material to study and I can't overemphasize how important it is to do so!
 - **Help**: You are not undertaking this challenging task alone. Here are a few sources of assistance:
