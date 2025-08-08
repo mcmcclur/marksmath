@@ -1,0 +1,59 @@
+---
+title: "Embed Discourse"
+page-layout: article
+format:
+  html:
+    include-in-header: 
+      text: |
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css" integrity="sha384-5TcZemv2l/9On385z///+d7MSYlvIEw9FuZTIdZ14vJLqWphw7e7ZPuOiCHJcFCP" crossorigin="anonymous">
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.js" integrity="sha384-cMkvdD8LoxVzGF/RPUKAcvmm49FQ0oxwDF3BGKtDXcEc+T1b2N+teh/OJfpU0jr6" crossorigin="anonymous"></script>
+---
+
+Trying to get some math.
+
+```{ojs}
+fetchData()
+```
+
+```{ojs}
+async function fetchData() {
+  try {
+    const response = await fetch('https://discourse.marksmath.org/t/13.json');
+
+    // Check if the response status is within the success range (200-299)
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const json = await response.json();
+    const posts = json.post_stream.posts;
+    const replies_container = d3.create('div');
+    posts.forEach(function(post) {
+      const div = replies_container
+        .append('div')
+        .style('border-top', 'solid 0.5px black')
+        .style('border-bottom', 'solid 0.5px black');
+      div.html(post.cooked);
+      div.selectAll('span.math')
+        .nodes()
+        .forEach(function(span) {
+          const d3Span = d3.select(span);
+          const new_content = katex.render(d3Span.html(), d3Span.node())
+        });
+      div.selectAll('div.math')
+        .nodes()
+        .forEach(function(Div) {
+          const d3Div = d3.select(Div);
+          const new_content = katex.render(
+            d3Div.html(), 
+            d3Div.node(),
+            {displayMode: true}
+          )
+        });
+    }) 
+    return replies_container.node()
+  } catch (error) {
+    console.error('Error fetching data:', error);
+  }
+}
+```
