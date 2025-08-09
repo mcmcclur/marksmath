@@ -50,7 +50,7 @@ async function fetchData() {
             {displayMode: true}
           )
         });
-    }) 
+    })
     return replies_container.node()
   } catch (error) {
     console.error('Error fetching data:', error);

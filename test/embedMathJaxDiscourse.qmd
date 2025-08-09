@@ -1,0 +1,14 @@
+---
+title: "Embed MathJax Discourse"
+page-layout: article
+---
+
+A more full-fledged embedder
+
+```{ojs}
+embedDiscourseMathTopic(13)
+```
+
+```{ojs}
+import {embedDiscourseMathTopic} from '/EmbedDiscourseMathTopics/embedDiscourseMathTopic.js';
+```
