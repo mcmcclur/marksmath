@@ -48,8 +48,54 @@ export async function embedDiscourseMathTopic(topicId) {
           .style('border-top', 'solid 0.5px black')
           // .style('border-bottom', 'solid 0.5px black');
         
-        // Next step is to an info div with the author, date, 
-        // and potentially reply to whom info.  
+
+        // Info div with avatar, username, and formatted timestamp
+        const info_div = reply_container
+          .append('div')
+          .attr('class', 'info-div')
+          .style('display', 'flex')
+          .style('align-items', 'center')
+          .style('gap', '10px')
+          .style('margin', '5px 0');
+
+        // Avatar image
+        const avatar_url = `https://discourse.marksmath.org${post.avatar_template.replace('{size}', '42')}`;
+        const avatar_img = info_div
+          .append('img')
+          .attr('src', avatar_url)
+          .attr('alt', `${post.username}'s avatar`)
+          .style('width', '42px')
+          .style('height', '42px')
+          .style('border-radius', '50%')
+          .style('border', '1px solid #ccc');
+
+        // Username label (below avatar)
+        const user_div = info_div
+          .append('div')
+          .style('display', 'flex')
+          .style('flex-direction', 'column')
+          .style('align-items', 'center');
+        user_div
+          .append('span')
+          .text(post.username)
+          .style('font-size', '0.9em')
+          .style('font-weight', 'bold');
+
+        // Format timestamp as M/D h:mm AM/PM
+        const date = new Date(post.created_at);
+        const month = date.getMonth() + 1;
+        const day = date.getDate();
+        let hours = date.getHours();
+        const minutes = date.getMinutes().toString().padStart(2, '0');
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12;
+        hours = hours ? hours : 12;
+        const formatted = `${month}/${day} ${hours}:${minutes} ${ampm}`;
+        user_div
+          .append('span')
+          .text(formatted)
+          .style('font-size', '0.8em')
+          .style('color', '#666');
 
         const post_container = reply_container
           .append('div')
@@ -59,7 +105,6 @@ export async function embedDiscourseMathTopic(topicId) {
           .nodes()
           .forEach(function(span) {
             const d3Span = d3.select(span);
-            // const new_content = katex.render(d3Span.html(), d3Span.node())
             const new_content = MathJax.tex2svg(
               d3Span.html(), 
               {display: false}
