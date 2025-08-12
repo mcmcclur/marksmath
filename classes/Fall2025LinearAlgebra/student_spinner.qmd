@@ -9,7 +9,7 @@ viewof spin_it = {
 ```
 
 ```{ojs}
-wheel = make_wheel(names)
+wheel = make_wheel(names) 
 ```
  
 ```{ojs}

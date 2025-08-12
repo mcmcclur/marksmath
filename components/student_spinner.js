@@ -187,6 +187,7 @@ export function make_wheel(names) {
 
   // Spin so that slice i ends centered at the top (12 o'clock)
   // extraRotations adds full turns before stopping (for drama).
+
   svg.node().spinToIndex = function(i, {
     extraRotations = 4,
     duration = 4500,
@@ -200,6 +201,7 @@ export function make_wheel(names) {
     const end = start + ((target - start) % 360 + 360) % 360 + 360 * extraRotations;
     return node.animate_to(end, { duration, ease });
   };
+
 
   return svg.node()
 }
