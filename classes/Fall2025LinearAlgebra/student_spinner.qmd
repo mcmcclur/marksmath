@@ -1,0 +1,31 @@
+---
+title: The student spinner!
+---
+
+```{ojs}
+viewof spin_it = {
+    return Inputs.button('Spin it!')
+}
+```
+
+```{ojs}
+wheel = make_wheel(names)
+```
+ 
+```{ojs}
+names = ['Amina','Bryan M','Bryan PC','Carlos','Collin','David','Doug','Estelle','Fin','Gabriel','Isabel','Jacob C','Jacob S','James','Jordan','Leo','Lexi','Lilia','Miranda','Sal','William','Zachary']
+```
+
+```{ojs}
+{
+  if(spin_it > 0) {
+    const idx = Math.floor(names.length*Math.random());
+    wheel.spinToIndex(idx, { extraRotations: 2, duration: 2000*(Math.random() + 1) });
+    return idx;
+  }
+}
+```
+
+```{ojs}
+import {make_wheel} from '/components/student_spinner.js'; 
+```
