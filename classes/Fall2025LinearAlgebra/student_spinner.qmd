@@ -1,11 +1,17 @@
 ---
 title: The student spinner!
+page-layout: article
 ---
+
+The grooviest way to choose the lucky contributor!!
 
 ```{ojs}
 viewof spin_it = {
     return Inputs.button('Spin it!')
 }
+```
+```{ojs}
+viewof reset_it = Inputs.button('Reset')
 ```
 
 ```{ojs}
@@ -17,12 +23,23 @@ names = ['Amina','Bryan M','Bryan PC','Carlos','Collin','David','Doug','Estelle'
 ```
 
 ```{ojs}
-{
+idx = {
   if(spin_it > 0) {
     const idx = Math.floor(names.length*Math.random());
     wheel.spinToIndex(idx, { extraRotations: 2, duration: 2000*(Math.random() + 1) });
     return idx;
   }
+}
+```
+```{ojs}
+reset = {
+    if(reset_it > 0) {
+        wheel.spinToIndex(0, {
+            extraRotations: 0,
+            duration: 500,
+            ease: d3.easeSin
+        })
+    }
 }
 ```
 
