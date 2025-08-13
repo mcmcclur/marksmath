@@ -9,19 +9,10 @@ The grooviest way to choose the lucky contributor!!
 viewof spin_it = {
     return Inputs.button('Spin it!')
 }
-```
-```{ojs}
-viewof reset_it = Inputs.button('Reset')
-```
-
-```{ojs}
 wheel = make_wheel(names) 
 ```
- 
-```{ojs}
-names = ['Amina','Bryan M','Bryan PC','Carlos','Collin','David','Doug','Estelle','Fin','Gabriel','Isabel','Jacob C','Jacob S','James','Jordan','Leo','Lexi','Lilia','Miranda','Sal','William','Zachary']
-```
 
+ 
 ```{ojs}
 idx = {
   if(spin_it > 0) {
@@ -31,18 +22,8 @@ idx = {
   }
 }
 ```
-```{ojs}
-reset = {
-    if(reset_it > 0) {
-        wheel.spinToIndex(0, {
-            extraRotations: 0,
-            duration: 500,
-            ease: d3.easeSin
-        })
-    }
-}
-```
 
 ```{ojs}
 import {make_wheel} from '/components/student_spinner.js'; 
+names = ['Amina','Bryan M','Bryan PC','Carlos','Collin','David','Doug','Estelle','Fin','Gabriel','Isabel','Jacob C','Jacob S','James','Jordan','Leo','Lexi','Lilia','Miranda','Sal','William','Zachary']
 ```
