@@ -1,0 +1,14 @@
+/* Supress scrollbar around X3D.
+Use .threeD to target 3D, since 
+otherwise the sidebar gets wonky. */
+
+.threeD div:has(x3d) {
+    overflow: hidden
+}
+.threeD .observablehq--undefined, 
+.threeD .observablehq--error, 
+.threeD .observablehq--loading,
+.sourceCode.cell-code.hidden,
+.threeD pre {
+  display: none !important;
+}
