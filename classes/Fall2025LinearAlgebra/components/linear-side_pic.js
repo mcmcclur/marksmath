@@ -59,7 +59,7 @@ export function eigen_pic(M, arrows, opts = {}) {
     .attr("cy", (d) => y_scale(d[1]))
     .attr("data-pt", (d) => d)
     .attr("r", r_scale(xrange / 500))
-    .attr("fill", "black");
+    .attr("fill", "currentColor");
 
   const arrow_group = image.append("g").attr("id", "arrows");
   arrows.forEach(function (a) {
@@ -68,7 +68,7 @@ export function eigen_pic(M, arrows, opts = {}) {
       .call(arrow, x_scale(0), y_scale(0), x_scale(a[0]), y_scale(a[1]), {
         data_info: a
       })
-      .attr("stroke", "black")
+      .attr("stroke", "currentColor")
       .attr("stroke-width", 3);
   });
 
@@ -115,7 +115,7 @@ export function eigen_pic(M, arrows, opts = {}) {
 		arrow_group
 		.append("polyline")
 		.call(arrow, x_scale(0), y_scale(0), x_scale(s**v * a[0]), y_scale(s**v * a[1]))
-		.attr("stroke", "black")
+		.attr("stroke", "currentColor")
 		.attr("stroke-width", 3);
 	});
 	pt_group

@@ -30,12 +30,12 @@ export function side_pic() {
 	// Draw the axes
 	svg.append("g").append("path")
 		.attr("d", pts_to_path([[xmin,0],[xmax,0]]))
-		.attr("stroke", "#333")
+		.attr("stroke", "currentColor")
 		.attr("stroke-width", 0.5)
 		.attr("fill", "none");
 	svg.append("g").append("path")
 		.attr("d", pts_to_path([[0,ymin],[0,0.8*ymax]]))
-		.attr("stroke", "#333")
+		.attr("stroke", "currentColor")
 		.attr("stroke-width", 0.5)
 		.attr("fill", "none");
 	// And the tick marks
@@ -46,8 +46,8 @@ export function side_pic() {
 		.data(x_ticks)
 		.enter().append("path")
 		.attr("d", function(d) {return pts_to_path(d)})
-		.attr("stroke", "black")
-		.attr("stroke-width", 0.5)
+		.attr("stroke", "currentColor")
+		.attr("stroke-width", 0.6)
 		.attr("class", "ticks");
 	const y_ticks = d3.ticks(ymin,ymax,4)
 		.map(function(y) {return [[-xrange/80,y],[0,y]]})
@@ -56,8 +56,8 @@ export function side_pic() {
 		.data(y_ticks)
 		.enter().append("path")
 		.attr("d", function(d) {return pts_to_path(d)})
-		.attr("stroke", "black")
-		.attr("stroke-width", 0.5)
+		.attr("stroke", "currentColor")
+		.attr("stroke-width", 0.6)
 		.attr("class", "ticks");
 
   // Draw the function
@@ -73,7 +73,7 @@ export function side_pic() {
 		.map(function(x) {return [x,f(x)]});
 	svg.append("path")
 		.attr("d", pts_to_path(graph_pts))
-		.attr("stroke", "#333")
+		.attr("stroke", "currentColor")
 		.attr("stroke-width", 2)
 		.attr("fill", "none");
 
@@ -134,12 +134,12 @@ export function side_pic() {
 		}
 		g.append("path")
 			.attr("d", pts_to_path([[xmin,tan_line_f(xmin)],[xmax,tan_line_f(xmax)]]))
-			.attr("stroke", "#333")
+			.attr("stroke", "currentColor")
 			.attr("stroke-width", 1)
 			.attr("fill", "none");
 		g.append("path")
 			.attr("d", pts_to_path([[xmin,sec_line_f(xmin)],[xmax,sec_line_f(xmax)]]))
-			.attr("stroke", "#333")
+			.attr("stroke", "currentColor")
 			.attr("stroke-width", 1)
 			.attr("fill", "none");
 		g.append("circle")
@@ -148,7 +148,7 @@ export function side_pic() {
 				.attr("cy", yScale(f(x0)))
 				.attr("r", rScale(0.025))
 				.attr("fill", "lightgreen")
-				.attr("stroke", "black")
+				.attr("stroke", "currentColor")
 				.attr("stroke-width", 1);
 		g.append("circle")
 				.attr("class", "temp")
@@ -156,7 +156,7 @@ export function side_pic() {
 				.attr("cy", yScale(f(x0+h)))
 				.attr("r", rScale(0.025))
 				.attr("fill", "red")
-				.attr("stroke", "black")
+				.attr("stroke", "currentColor")
 				.attr("stroke-width", 1);
 	}
 }
