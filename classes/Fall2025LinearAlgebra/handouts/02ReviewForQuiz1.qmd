@@ -1,0 +1,51 @@
+---
+title: Review for quiz 1
+date: 2025-08-20
+format:
+  html:
+    page-layout: article
+    toc: true
+  pdf:
+    mainfont: "Times New Roman"
+    include-in-header:
+      text: |
+        \pagenumbering{gobble}
+---
+
+We have our first quiz next Wednesday, August 27th. They will be a lot like the things you see on this problem sheet so do be sure to work these out to the best of your ability!
+
+1. Write down the definition of Reduced Row Echelon Form of a matrix.  
+Note: Don't paraphrase. You can find the exact definition in [Section 1.2](https://understandinglinearalgebra.org/sec-finding-solutions.html){target=_blank} of our textbook.
+
+2. Here's an augmented matrix:
+    \begin{equation*}
+    \left[
+    \begin{array}{rrrr|r}
+    1 & 0 & 0 & 0 & 0 \\
+    0 & 2 & 0 & 0 & 0 \\
+    0 & 0 & -3 & 0 & 0 \\
+    0 & 0 & 0 & 1 & 0 \\
+    0 & 0 & 0 & 0 & 1 \\
+    \end{array}
+    \right]
+    \end{equation*}
+   a) What system does the matrix represent?
+   b) What is the solution of the system?
+   c) The matrix is not quite in RREF; why? How do you put it into RREF and what is the result?  
+   
+   Note: This is taken from [Exercise 2b](https://understandinglinearalgebra.org/sec-finding-solutions.html#sec-finding-solutions-7-2-1-1-1-2){target=_blank} of section 1.2.5 of our textbook.
+
+3. Consider the following system:  
+    $$
+    \begin{aligned}
+    - x - 2y + 2z &= -1 \\
+    2x + 4y - z   &= 5  \\
+    x + 2y        &= 3
+    \end{aligned}
+    $$
+
+   a) Write the system as an augmented matrix.
+   b) Find the RREF of the matrix.
+   c) Use the RREF to find the solution of the system. Keep in mind that there may be one, none, or infinitely many solutions.  
+   
+   Note: This is taken from [Activity 1.2.2.b](https://understandinglinearalgebra.org/sec-finding-solutions.html#sec-finding-solutions-3-12-2-1-1-2){target=_blank} of section 1.2 of our textbook.
