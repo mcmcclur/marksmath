@@ -67,6 +67,16 @@ sidebar: CalcIFall2025
       title  : 'Quiz 3',
       start  : '2025-10-31',
       color: '#9a4eae',
+    },
+    {
+      title  : 'Final Exam AM',
+      start  : '2025-12-05T11:30',
+      color: '#9a4eae',
+    },
+    {
+      title  : 'Final Exam PM',
+      start  : '2025-12-08T11:30',
+      color: '#9a4eae',
     }
   ]; 
   
