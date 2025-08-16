@@ -5,14 +5,15 @@ css: styles.css
 
 ::: {.grid}
 ::::: {.g-col-12 .g-col-md-8}
-Math 365  
-Fall 2025  
+Math 365, Fall 2025  
 with professor [Mark McClure](https://marksmath.org/)
 
 ## Handy links
 
 - [Syllabus](syllabus.qmd)
-- [Course Calendar](calendar.qmd)
+- Course schedule 
+  - [Outline](schedule/outline.qmd)
+  - [Calendar](schedule/calendar.qmd)
 - [The textbook](https://understandinglinearalgebra.org/ula.html){target=_blank}
 - [MyOpenMath](https://myopenmath.com){target=_blank}
 - [The Math Lab!](https://math.unca.edu/learn/math-lab/){target=_blank}
