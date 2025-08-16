@@ -1,0 +1,15 @@
+---
+title: Class Outline
+subtitle: "Math 365 - Fall 2025"
+format-links: false
+--- 
+
+Here's this semester's *tentative* outline for Linear Algebra:
+
+```{python}
+from IPython.display import Markdown
+f = open("./outline.yml", 'r')
+contents = f.read()
+f.close()
+Markdown(contents)
+```
