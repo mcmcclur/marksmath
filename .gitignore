@@ -8,5 +8,7 @@ _git_graphs
 **/site_libs/
 **/_site/
 classes/*/_courseData/
+classes/*/MyOpenMath.qmd
+classes/_todo.txt
 
 /.quarto/
