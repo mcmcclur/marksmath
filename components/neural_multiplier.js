@@ -1,3 +1,4 @@
+import tippy from 'https://cdn.jsdelivr.net/npm/tippy.js@6/+esm';
 import {
   select,
   interpolateRdBu,
@@ -58,8 +59,12 @@ export function animate_network(model) {
     .attr("r", 8)
     .attr("fill", fill_color)
     .classed('responsive-stroke', true)
+    .each(function(d) {
+      tippy(this, {
+        content: d3.format('0.3f')(d),
+      });
+    });
 
-  let node_cnt = 0;
   result.forEach(function ({ z, a }, j) {
     const layer = nodes.append("g");
     layer
@@ -75,10 +80,14 @@ export function animate_network(model) {
       })
       .attr("r", 8)
       .attr("fill", "black")
-      // .attr('class', 'delay')
       .classed('delay', true)
       .classed('responsive-stroke', true)
-      .attr("data-value", (d) => d);
+      .attr("data-value", (d) => d)
+      .each(function(d) {
+        tippy(this, {
+          content: d3.format('0.3f')(d),
+        });
+      })
   });
 
   nodes
