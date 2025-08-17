@@ -1,0 +1,13 @@
+.quarto-alternate-formats > h2 {
+  display: none;
+}
+.quarto-alternate-formats:before {
+  content: "Print version:"
+}
+table {
+  border-collapse: collapse;
+}
+td,th {
+  border: 1px solid #ccc; /* thin light gray border */
+  padding: 4px;            /* optional: adds a bit of spacing inside each cell */
+}

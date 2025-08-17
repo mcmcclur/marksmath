@@ -1,0 +1,22 @@
+---
+title: "Circle area"
+echo: false
+css: styles.css
+---
+
+For the most part, we know that the area of a circle of radius $r$ is $\pi r^2$ - do we know *why*, though?
+
+The little demo below illustrates how it is that we can decompose a circle into an even number of wedges and then reassemble those wedges into something that looks kinda close to a rectangle. Can you see what the width and height of the limiting rectangle are?
+
+
+```{ojs}
+viewof n = Inputs.range([1,32], {step: 1, value: 2})
+```
+
+```{ojs}
+assemble(n)
+```
+
+```{ojs}
+import {w, h, assemble} from './generation_functions.js';
+```
