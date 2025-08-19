@@ -104,8 +104,12 @@ export async function embedDiscourseMathTopic(topicId) {
           .nodes()
           .forEach(function(span) {
             const d3Span = d3.select(span);
+            const coded_content = d3Span.html();
+            console.log(['coded is', coded_content]);
+            const decoded = decodeEntities(coded_content);
+            console.log(['decoded is', decoded]);            
             const new_content = MathJax.tex2svg(
-              d3Span.html(), 
+              decoded, 
               {display: false}
             );
             d3Span.html('');
@@ -116,8 +120,12 @@ export async function embedDiscourseMathTopic(topicId) {
           .nodes()
           .forEach(function(Div) {
             const d3Div = d3.select(Div);
+            const coded_content = d3Div.html();
+            console.log(['coded is', coded_content]);
+            const decoded = decodeEntities(coded_content);
+            console.log(['decoded is', decoded]);   
             const new_content = MathJax.tex2svg(
-              d3Div.html(), 
+              decoded, 
               {display: true}
             );
             d3Div.html('');
@@ -187,4 +195,11 @@ export async function embedDiscourseMathTopic(topicId) {
     }
     return node;
   }
+}
+
+
+function decodeEntities(str) {
+  const textarea = document.createElement("textarea");
+  textarea.innerHTML = str;
+  return textarea.value;
 }
