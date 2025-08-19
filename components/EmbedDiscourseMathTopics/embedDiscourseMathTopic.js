@@ -27,7 +27,6 @@ export async function embedDiscourseMathTopic(topicId) {
       }
       
       const json = await response.json();
-      console.log(json);
 
       let posts = json.post_stream.posts;
       if (posts.length <= 1) {
@@ -105,9 +104,7 @@ export async function embedDiscourseMathTopic(topicId) {
           .forEach(function(span) {
             const d3Span = d3.select(span);
             const coded_content = d3Span.html();
-            console.log(['coded is', coded_content]);
             const decoded = decodeEntities(coded_content);
-            console.log(['decoded is', decoded]);            
             const new_content = MathJax.tex2svg(
               decoded, 
               {display: false}
@@ -121,9 +118,7 @@ export async function embedDiscourseMathTopic(topicId) {
           .forEach(function(Div) {
             const d3Div = d3.select(Div);
             const coded_content = d3Div.html();
-            console.log(['coded is', coded_content]);
             const decoded = decodeEntities(coded_content);
-            console.log(['decoded is', decoded]);   
             const new_content = MathJax.tex2svg(
               decoded, 
               {display: true}
