@@ -7,6 +7,8 @@ format:
     css: styles.css
   pdf:
     toc: false
+    mainfont: "Times New Roman"
+    output-file: RowReduction
 ---
 
 Here's a bit of info and examples on Reduced Row Echelon Form (RREF).
