@@ -12,30 +12,18 @@ format:
         \pagenumbering{gobble}
 ---
 
-We have our first quiz next Wednesday, August 27th. They will be a lot like the things you see on this problem sheet so do be sure to work these out to the best of your ability!
+We have our first quiz next Wednesday, August 27th. You can expect that problem #1 will appear on the quiz exactly and that there will also be a problem very much like #2. There will very likely be a third problem that's a shorter version of something else you see on here. 
+
+This is review sheet is *longer* than the quiz will be to give you practice! It is representative of what you'll see, though, so please work it out to the best of your ability!
+
+There is also a MyOpenMath HW over this material due on Monday, August 25.
+
+## Quiz type questions
 
 1. Write down the definition of Reduced Row Echelon Form of a matrix.  
 Note: Don't paraphrase. You can find the exact definition in [Section 1.2](https://understandinglinearalgebra.org/sec-finding-solutions.html){target=_blank} of our textbook.
 
-2. Here's an augmented matrix:
-    \begin{equation*}
-    \left[
-    \begin{array}{rrrr|r}
-    1 & 0 & 0 & 0 & 0 \\
-    0 & 2 & 0 & 0 & 0 \\
-    0 & 0 & -3 & 0 & 0 \\
-    0 & 0 & 0 & 1 & 0 \\
-    0 & 0 & 0 & 0 & 1 \\
-    \end{array}
-    \right]
-    \end{equation*}
-   a) What system does the matrix represent?
-   b) What is the solution of the system?
-   c) The matrix is not quite in RREF; why? How do you put it into RREF and what is the result?  
-   
-   Note: This is taken from [Exercise 2b](https://understandinglinearalgebra.org/sec-finding-solutions.html#sec-finding-solutions-7-2-1-1-1-2){target=_blank} of section 1.2.5 of our textbook.
-
-3. Consider the following system:  
+2. Consider the following system:  
     $$
     \begin{aligned}
     - x - 2y + 2z &= -1 \\
@@ -50,10 +38,68 @@ Note: Don't paraphrase. You can find the exact definition in [Section 1.2](https
    
    Note: This is taken from [Activity 1.2.2.b](https://understandinglinearalgebra.org/sec-finding-solutions.html#sec-finding-solutions-3-12-2-1-1-2){target=_blank} of section 1.2 of our textbook.
 
+3. Row reduce the following matrix:
+$$
+\begin{bmatrix}
+1 & 1 & 1 \\
+1 & 2 & 1 \\
+1 & 1 & 2
+\end{bmatrix}
+$$
+
+4. Determine if each of the following matrices is in RREF or not. For those that aren't, indicate why not.
+
+$$
+A_1=\begin{bmatrix}
+1&0&0&0&3\\
+0&1&0&0&-2\\
+0&0&1&0&0\\
+0&2&0&1&5
+\end{bmatrix}
+$$
+
+$$
+A_2=\begin{bmatrix}
+1&0&0&0&3\\
+0&1&0&0&-2\\
+0&0&1&0&0\\
+0&0&0&1&5
+\end{bmatrix}
+$$
+
+$$
+A_3=\begin{bmatrix}
+1&2&0&0&1\\
+0&1&0&0&-3\\
+0&0&1&0&4\\
+0&0&0&1&0
+\end{bmatrix}
+$$
+
+$$
+A_4=\begin{bmatrix}
+0&1&0&0&-3\\
+2&0&0&0&6\\
+0&0&1&0&4\\
+0&0&0&1&0
+\end{bmatrix}
+$$
+
+
+$$
+A_5=\begin{bmatrix}
+1&0&2&0&0\\
+0&1&-1&0&0\\
+0&0&0&1&4\\
+0&0&0&0&0
+\end{bmatrix}
+$$
+
+5. Exactly two of the the matrices in problem 5, it turns out, *are* in reduced row echelon form. Assume that both of those matrices are the augmented matrices of a $5\times5$ system and use the matrix to write down the solution of the corresponding system.
 
 ::: {.content-visible when-format="html"}
 
----
+## Your questions and solutions
 
 If you'd like to ask a question about or reply a question on this sheet, you can do so by pressing the "Reply on Discourse" button below.
 
