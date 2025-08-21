@@ -1,0 +1,165 @@
+---
+title: Review for quiz 1
+date: 2025-08-22
+draft: true 
+draft-mode: unlinked
+echo: false
+format:
+  html:
+    page-layout: article
+    toc: true
+  pdf:
+    mainfont: "Times New Roman"
+    include-in-header:
+      text: |
+        \pagenumbering{gobble}
+---
+
+We have our first quiz next Friday, August 29th. This problem sheet represents most of the problems that will be on the quiz, though, I might add a problem after Monday's class.
+
+## Problems 
+
+1. Curious about the following limit,
+   $$
+   \lim_{x\to0} (1+x)^{3/x},
+   $$
+   I used my computer to plug in several values of $x$ that are *close* to $0$ but not equal to $0$. The results are shown in @tbl-funvalues below.  
+
+```{python}
+#| label: tbl-funvalues
+#| tbl-cap: Values of $f(x)=(1+x)^{3/x}$ near $x=0$.
+
+from IPython.display import Markdown
+
+x_vals = [10**(-n) for n in range(1,6)]
+def f(x):
+    return (1+x)**(3/x)
+
+# header row: first col is empty, then the x values
+header = "   |   | " + " | ".join(" " for x in x_vals) + " |"
+
+# separator row: one "---" per column
+sep = "|" + "---|" * (len(x_vals) + 1)
+
+# data rows: first cell is math header
+row_x  = "| $x$   | " + " | ".join(f"{x:.6f}" for x in x_vals) + " |"
+row_fx = "| $f(x)$ | " + " | ".join(f"{f(x):.6f}" for x in x_vals) + " |  "
+
+md_table = "\n   ".join([header, sep, row_x, row_fx]) + "  "
+
+indented_table = "\n".join("    " + line for line in md_table.splitlines())
+
+Markdown(md_table)
+```
+
+   Based on those computations, can you make a conjecture as to the approximate value of the limit?  
+   Be sure to indicate how many digits you believe to be correct and why.
+
+2. The graph of 
+$$
+f(x) = \frac{x-1}{x^3-x^2+x-1}
+$$
+is shown in @fig-hole.
+
+   a) Judging from the figure, what do you suppose is the value of $\lim_{x\to1} f(x)$?
+   b) Use a little algebra together with the limit laws to prove that your guess is correct.
+
+3. The Complete graph of a function $f$ is shown in @fig-limits. At each of the points $a = −1$, $a = 1$, $a = 2$ and $a = 4$, find the value of
+   
+   a) $f(a)$,
+   b) $\lim_{x\to a^-}f(x)$,
+   c) $\lim_{x\to a^+}f(x)$, and
+   d) $\lim_{x\to a}f(x)$.
+
+4. Compute the following limits.
+
+   a) $\displaystyle \lim_{x\to2}\frac{2x^2-3x-2}{x-2}$
+   b) $\displaystyle \lim_{x\to1}\frac{x-1}{x^3+x-2}$
+
+## Figures
+
+```{python}
+#| label: fig-hole
+#| fig-cap: "The graph of $f(x)=(x-1)/(x^3-x^2+x-1)$"
+
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+import numpy as np
+
+def set_spines(ax):
+    ax.spines['left'].set_position('zero')
+    ax.spines['right'].set_color('none')
+    ax.spines['bottom'].set_position('zero')
+    ax.spines['top'].set_color('none')
+
+    xaxis,yaxis = ax.findobj(mpl.axis.Axis)
+    xticks = xaxis.get_major_ticks()
+    for tick in xticks:
+        tick.get_children()[1].set_color('w')
+    yticks = yaxis.get_major_ticks()
+    for tick in yticks:
+        tick.get_children()[1].set_color('w')
+
+def f(x):
+    return 1/(x**2+1)
+
+x = np.linspace(-3, 3, 1000)
+y = f(x)
+
+plt.plot(x, y, 'k')
+plt.plot([1], [0.5], 'wo', markeredgecolor='k', markersize=6)
+
+ax = plt.gca()
+ax.set_xticks([-3,-2,-1,1,2,3])
+ax.set_yticks(np.arange(0.2,1.3,0.2))
+ax.set_ylim(-0.2, 1.3)
+
+fig = plt.gcf()
+fig.set_size_inches(8,3)
+
+set_spines(ax)
+```
+
+```{python}
+#| label: fig-limits
+#| fig-cap: "A graph for limits"
+
+def f(x): return np.sin(np.pi*x/2)
+x = np.linspace(-2,2,100)
+plt.plot(x,f(x), 'k')
+plt.plot([2,4],[1,1], 'k')
+
+ax=plt.gca()
+set_spines(ax)
+ax.set_aspect(1)
+ax.set_xticks([-2,-1,1,2,4])
+ax.set_yticks([-1,1])
+
+plt.plot([-2,-1,1,1,2,2,4],[0,-1,1,0,0,1,1], 'ok', markersize = 6)
+plt.plot([-1,1,2],[-1,1,1], 'ow', markersize = 4, zorder = 3)
+
+fig = plt.gcf()
+fig.set_figwidth(8)
+# fig.savefig('quizzes_and_exams/in_class082523.pdf')
+```
+
+
+
+::: {.content-visible when-format="html"}
+
+## Questions
+
+If you'd like to ask a question about or reply to a question on this sheet, you can do so by pressing the "Reply on Discourse" button below.
+
+```{ojs}
+embedDiscourseMathTopic(23)
+```
+
+```{ojs}
+import {embedDiscourseMathTopic} from '/components/EmbedDiscourseMathTopics/embedDiscourseMathTopic.js';
+```
+
+:::
+
+
+
