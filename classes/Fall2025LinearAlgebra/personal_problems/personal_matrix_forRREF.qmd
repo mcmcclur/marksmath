@@ -1,0 +1,20 @@
+---
+title: Personal matrix for RREF
+format:
+  html:
+    template: raw.html
+---
+
+<div style="margin: 10px">  
+  <div id="observablehq-viewof-system-8d0b54a9"></div>
+  <div id="observablehq-your_system-8d0b54a9"></div>
+</div>
+
+<script type="module">
+import {Runtime, Inspector} from "https://cdn.jsdelivr.net/npm/@observablehq/runtime@5/dist/runtime.js";
+import define from "https://api.observablehq.com/d/2857aebc34edef3f.js?v=4";
+new Runtime().module(define, name => {
+  if (name === "viewof system") return new Inspector(document.querySelector("#observablehq-viewof-system-8d0b54a9"));
+  if (name === "your_system") return new Inspector(document.querySelector("#observablehq-your_system-8d0b54a9"));
+});
+</script>

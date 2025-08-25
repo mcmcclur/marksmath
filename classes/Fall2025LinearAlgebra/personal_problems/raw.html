@@ -1,0 +1,29 @@
+$-- minimal.html --$
+<!DOCTYPE html>
+<html$if(lang)$ lang="$lang$"$endif$>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>$if(title-prefix)$$title-prefix$ – $endif$$pagetitle$</title>
+  $for(header-includes)$
+  $header-includes$
+  $endfor$
+  $if(css)$
+  $for(css)$<link rel="stylesheet" href="$css$" />$endfor$
+  $endif$
+  $if(include-in-header)$
+  $include-in-header$
+  $endif$
+</head>
+<body>
+$if(include-before-body)$
+$include-before-body$
+$endif$
+
+$body$
+
+$if(include-after-body)$
+$include-after-body$
+$endif$
+</body>
+</html>

@@ -25,5 +25,5 @@ idx = {
 
 ```{ojs}
 import {make_wheel} from '/components/student_spinner.js'; 
-names = ['Amina','Bryan M','Bryan PC','Carlos','Collin','David','Doug','Estelle','Fin','Gabriel','Isabel','Jacob C','Jacob S','James','Jordan','Leo','Lexi','Lilia','Miranda','Sal','William','Zachary']
+names = ['Amina','Bryan M','Bryan PC','Carlos','Collin','David','Doug','Estelle','Fin','Gabriel','Isabel','Jacob C','Jacob S','James','Jordan','Lauren','Leo','Lexi','Lilia','Miranda','Sal','William','Zachary']
 ```
