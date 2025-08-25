@@ -4,6 +4,7 @@ format:
     html:
         page-layout: article
         toc: true
+        css: styles.css
         include-in-header: 
             text: |
                 <script src="https://sagecell.sagemath.org/static/embedded_sagecell.js"></script>
@@ -20,15 +21,6 @@ SageMath (or just Sage) is free, open-source mathematical software built on top 
 There are several ways to use Sage. By far the easiest, though, is via the [Sage Cell Server](https://sagecell.sagemath.org/){target=_blank}. If you navigate to that webpage, you'll find a code input box where you can just type code and press "Evaluate".
 
 Even better, it's easy to embed those code boxes into any webpage. So, for example, you can press the evaluate button below to add 2 and 3:
-
-Note that I'm working within an "Edit Code" box within my Discourse forum. I'm not developing on my local machine. There's a specific spot in that code box where I can edit Javascript that looks like so:
-
-import { apiInitializer } from "discourse/lib/api";
-export default apiInitializer((api) => {
-  // Your code here
-});
-
-So, I guess I need to be working with an apiInitializer.
 
 
 <div class="sage">
@@ -96,4 +88,4 @@ From there, of course, it's easy to see that there's an infinite family of solut
 
 ### Give it a try!
 
-I've set up a [10 point problem on our forum](https://discourse.marksmath.org/t/solving-your-personal-system/28){target=_blank} so that everyone can try their hand at this. Give it a try!
+I've set up a [10 point problem on our forum](https://discourse.marksmath.org/t/solving-your-personal-system-with-sage/30){target=_blank} so that everyone can try their hand at this. Give it a try!
