@@ -1,8 +1,6 @@
 ---
 title: Review for quiz 1
 date: 2025-08-22
-draft: true 
-draft-mode: unlinked
 echo: false
 format:
   html:
@@ -75,6 +73,11 @@ is shown in @fig-hole.
 
    a) $\displaystyle \lim_{x\to2}\frac{2x^2-3x-2}{x-2}$
    b) $\displaystyle \lim_{x\to1}\frac{x-1}{x^3+x-2}$
+   c) $\displaystyle \lim_{x\to3}\frac{x^2-9}{x-3}$
+   d) $\displaystyle \lim_{x\to3}\frac{x^2-6}{x-3}$
+   e) $\displaystyle \lim_{x\to3}\frac{x^2-6}{(x-3)^2}$
+   f) $\displaystyle \lim_{x\to\infty}\frac{x^2-6}{x-3}$
+   g) $\displaystyle \lim_{x\to\infty}\frac{x^2-6}{(x-3)^2}$
 
 ## Figures
 
