@@ -100,6 +100,17 @@ $$
 
 5. Exactly two of the the matrices in problem 5, it turns out, *are* in reduced row echelon form. Assume that both of those matrices are the augmented matrices of a $5\times5$ system and use the matrix to write down the solution of the corresponding system.
 
+6. The matrix below is the reduced row echelon form of an augmented matrix for a systems of four linear equations in six unknowns $x_1,x_2,x_3,x_4,x_5,x_6$. Find the solution of the system.
+
+$$
+\left(\begin{array}{rrrrrr|r}
+1 & 0 & -3 & 0 & 0 & -2 & 1 \\
+0 & 1 & 2 & 0 & 0 & 3 & 0 \\
+0 & 0 & 0 & 1 & 0 & 1 & 1 \\
+0 & 0 & 0 & 0 & 1 & 0 & 0
+\end{array}\right)
+$$
+
 ::: {.content-visible when-format="html"}
 
 ## Your questions and solutions
