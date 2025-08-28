@@ -1,0 +1,22 @@
+---
+title: Calc I in class problems
+date: 2025-08-27
+format:
+  html:
+    page-layout: article
+  pdf:
+    mainfont: "Times New Roman"
+    include-in-header:
+      text: |
+        \pagenumbering{gobble}
+---
+
+We'll have problems on our quiz this Friday that are pretty similar to the following. Let's take this opportunity for you to give practice solving these problems *and* writing their solutions clearly.
+
+The problems are simply to compute the following limits:
+
+a) $\displaystyle \lim_{x\to\,27} \frac{x - 2}{x^2 + x - 6}$
+\vspace{1mm}
+b) $\displaystyle \lim_{x\to\,2} \frac{x - 2}{x^2 + x - 6}$
+\vspace{1mm}
+c) $\displaystyle\lim_{x\to\,-3} \frac{x - 2}{x^2 + x - 6}$

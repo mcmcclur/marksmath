@@ -35,8 +35,7 @@ export async function embedDiscourseMathTopic(topicId) {
       if(page == 1) {
         posts = posts.slice(1);
       }
-      
-    
+
       posts.forEach(function(post) {
         if (!post.cooked) {
           throw new Error('Post content is missing.');
