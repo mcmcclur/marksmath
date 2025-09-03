@@ -41,8 +41,10 @@ We've already talked a bit about vector addition and scalar multiplication, even
 
 
 ::: {.callout-note appearance="minimal"}
+
 **Definitions of the algebraic operations for vectors**:  
 If $\lambda\in\mathbb R$ is a scalar and $\mathbf{u}$ and $\mathbf{v}$ are vectors written
+
 $$
 \mathbf{u} = 
 \begin{bmatrix}
@@ -53,9 +55,10 @@ $$
 \begin{bmatrix}
   v_1 \\ \vdots \\ u_n
 \end{bmatrix},
-
 $$
+
 then
+
 $$
 \lambda\mathbf{u} = 
 \begin{bmatrix}
@@ -67,6 +70,7 @@ $$
   u_1 + v_1 \\ \vdots \\ u_n + v_n
 \end{bmatrix}.
 $$
+
 :::
 
 ### Properties
@@ -98,6 +102,7 @@ $$
 
 Then,
 
+$$
 \begin{aligned}
 \mathbf{u} + \mathbf{v} &= 
 \begin{bmatrix}
@@ -121,6 +126,7 @@ Then,
    u_1 \\ \vdots \\ u_n
 \end{bmatrix} = \mathbf{v} + \mathbf{u}.\Box
 \end{aligned}
+$$
 
 **[Reading proofs]{#reading}**: In a proof like this, you should be able to attribute every equals sign something very simple - typically, either
 
@@ -159,7 +165,10 @@ $$
    v_1 \\ \vdots \\ v_n
 \end{bmatrix}. 
 $$
-Then
+
+Then,
+
+$$
 \begin{aligned}
 \lambda (\mathbf{u} + \mathbf{v}) &=
 \lambda\left(\begin{bmatrix}
@@ -187,6 +196,7 @@ Then
 \end{bmatrix}
 = \lambda \mathbf{u} + \lambda\mathbf{v}.\Box
 \end{aligned}
+$$
 
 It's worth mentioning that Prop 2 has a natural counterpart where the roles of the scalar and the vector flip. We might call this Prop 2a.
 
@@ -255,7 +265,7 @@ a_{m1} & \cdots & a_{mn}
 $$
 
 ::: {.callout-note appearance="minimal"}
-**Prop 3** (Componentwise formula for matrix$\times$\vector multiplication): Referring back to the componentwise formulations of $A$ and $\mathbf{x}$, we have
+**Prop 3** (Componentwise formula for matrix$\times$vector multiplication): Referring back to the componentwise formulations of $A$ and $\mathbf{x}$, we have
 $$
 A\mathbf{x} = \begin{bmatrix}
 a_{11} x_1 + \cdots + a_{1n} x_n \\
@@ -268,6 +278,7 @@ In words, the $i^{\text{th}}$ entry in the vector $A\mathbf{x}$ is exactly the d
 
 *Proof*: The proof is a simple matter of writing out the definition of matrix$\times$vector multiplication, well, componentwise:
 
+$$
 \begin{aligned}
 A\mathbf{x} &= x_1A_1 + \cdots + x_nA_n = 
 x_1\begin{bmatrix}a_{11} \\ \vdots \\ a_{m1}\end{bmatrix} + \cdots +
@@ -280,6 +291,7 @@ a_{11} x_1 + \cdots + a_{1n} x_n \\
 a_{m1} x_1 + \cdots + a_{mn} x_n
 \end{bmatrix}.\Box
 \end{aligned}
+$$
 
 ### Algebraic properties
 
@@ -308,7 +320,10 @@ A = \begin{bmatrix} A_1 & \cdots & A_n\end{bmatrix}, \;
    v_1 \\ \vdots \\ v_n
 \end{bmatrix}.
 $$
+
 Thus,
+
+$$
 \begin{aligned}
 A(\mathbf{u} + \mathbf{v}) &= 
 \begin{bmatrix} A_1 & \cdots & A_n\end{bmatrix}\left(
@@ -329,7 +344,7 @@ A(\mathbf{u} + \mathbf{v}) &=
 &= \begin{bmatrix} u_1A_1 & \cdots & u_nA_n \end{bmatrix} +
 \begin{bmatrix} v_1A_1 & \cdots & v_nA_n\end{bmatrix} = A\mathbf{u} + A\mathbf{v}.\Box
 \end{aligned}
-
+$$
 
 **A final comment**: As already mentioned in our [comment on reading](#reading), you should always be able to attribute every equals sign something very simple when reading these proofs. Can you see, for example, where we used [Prop 2a](#prop-2a)?
 
