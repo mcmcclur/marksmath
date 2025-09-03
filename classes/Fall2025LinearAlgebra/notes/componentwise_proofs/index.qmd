@@ -1,0 +1,350 @@
+---
+title: Componentwise proofs
+page-layout: article
+date: 2025-09-03
+format:
+  html:
+    toc: true
+    css: styles.css
+  pdf:
+    toc: false
+    mainfont: "Times New Roman"
+    output-file: ComponentwiseProofs.pdf
+---
+
+Our textbook is a very *concrete* text relying on examples, computation, and geometric intuition to develop students' understanding. The objective is to develop understanding that's strong enough to use confidently in applications, with a particular emphasis on computer applications. The author views this is an alternative to a more traditional proof based approach and clearly points out in the text's front matter that it is not "the intention of this book to develop students' formal proof-writing abilities".
+
+As much as I like the text and share the computational and geometric vision, I still think that a bit of practice writing proofs is essential at this level. More generally, *writing* is one of the most important skills you'll develop throughout college and *mathematical writing*, in particular, incorporates a high level of logical precision.
+
+As such, I'm going to supplement our text here and there just a bit.
+
+In this particular set of class notes, we're going to focus on the most basic proof technique in linear algebra, one which you might even see in Calc III, namely - a *componentwise proof*.
+
+## Vectors in $\mathbb R^n$
+
+I guess the very simplest componentwise proofs involve vectors in $\mathbb R^n$, which we might think of as simple lists of $n$ numbers. Sometimes you might hear $\mathbb R^n$ referred to as *Euclidean space*; we'll think of $\mathbb R^n$ as the simplest example of what we'll ultimately call a *vector space*.
+
+### The definitions
+
+We might think of the very definition of a vector in $\mathbb R^n$ as componentwise, since it's stated in terms of components. We say that a vector $\mathbf{u}$ in $\mathbb R^n$ is a list of real numbers of length $n$; we often arrange such a list vertically in a column:
+
+$$
+\mathbf{u} = 
+\begin{bmatrix} 
+    u_1 \\ \vdots \\ u_n
+\end{bmatrix}
+$$
+
+Note that all the examples on this page are written abstractly like this; rather than examples with specific numbers like $1,2,\text{ and }3$, we'll have examples with symbols $u_1,u_2,\ldots,u_n$. Even the number of those symbols $n$ will be arbitrary, since we want our notation to work in any dimension.
+
+We've already talked a bit about vector addition and scalar multiplication, even their definitions are componentwise as well:
+
+
+::: {.callout-note appearance="minimal"}
+**Definitions of the algebraic operations for vectors**:  
+If $\lambda\in\mathbb R$ is a scalar and $\mathbf{u}$ and $\mathbf{v}$ are vectors written
+$$
+\mathbf{u} = 
+\begin{bmatrix}
+  u_1 \\ \vdots \\ u_n
+\end{bmatrix}
+\text{ and } 
+\mathbf{v} = 
+\begin{bmatrix}
+  v_1 \\ \vdots \\ u_n
+\end{bmatrix},
+
+$$
+then
+$$
+\lambda\mathbf{u} = 
+\begin{bmatrix}
+  \lambda u_1 \\ \vdots \\ \lambda u_n
+\end{bmatrix}
+\text{ and }
+\mathbf{u} + \mathbf{v} = 
+\begin{bmatrix}
+  u_1 + v_1 \\ \vdots \\ u_n + v_n
+\end{bmatrix}.
+$$
+:::
+
+### Properties
+
+Two key facts about these operations are that they obey some basic algebraic rules we're familiar with. Furthermore, we can *prove* these rules by examining them at the component level and use the corresponding facts for real numbers.
+
+The following is listed as [Observation 2.1.8](https://understandinglinearalgebra.org/sec-vectors-lin-combs.html#sec-vectors-lin-combs-3-14){target=_blank} in our text.
+
+::: {.callout-note appearance="minimal"}
+**Prop 1**: Vector addition is commutative; that is, if $\mathbf{u}$ and $\mathbf{v}$ are vectors in $\mathbb R^n$, then
+
+$$
+\mathbf{u} + \mathbf{v} = \mathbf{v} + \mathbf{u}
+$$
+:::
+
+*Proof*: Since $\mathbf{u},\mathbf{v}\in\mathbb R^n$, we can write 
+$$
+\mathbf{u} = 
+\begin{bmatrix}
+  u_1 \\ \vdots \\ u_n
+\end{bmatrix}
+\text {and }
+\mathbf{v} = 
+\begin{bmatrix}
+   v_1 \\ \vdots \\ v_n
+\end{bmatrix}. 
+$$
+
+Then,
+
+\begin{aligned}
+\mathbf{u} + \mathbf{v} &= 
+\begin{bmatrix}
+  u_1 \\ \vdots \\ u_n
+\end{bmatrix}
++
+\begin{bmatrix}
+   v_1 \\ \vdots \\ v_n
+\end{bmatrix} = 
+\begin{bmatrix}
+  u_1+v_1 \\ \vdots \\ u_n+v_n
+\end{bmatrix} \\
+&= \begin{bmatrix}
+  v_1+u_1 \\ \vdots \\ v_n+u_n
+\end{bmatrix} = 
+\begin{bmatrix}
+  v_1 \\ \vdots \\ v_n
+\end{bmatrix}
++
+\begin{bmatrix}
+   u_1 \\ \vdots \\ u_n
+\end{bmatrix} = \mathbf{v} + \mathbf{u}.\Box
+\end{aligned}
+
+**[Reading proofs]{#reading}**: In a proof like this, you should be able to attribute every equals sign something very simple - typically, either
+
+ - A definition,
+ - An algebraic property of the *real numbers*, or
+ - A previously proven proposition. 
+
+In the proof we just saw, for example, the five equals signs in order can be attributed to
+
+1. The notational definitions of $\mathbf{u}$ and $\mathbf{v}$,
+2. The definition of vector addition,
+3. The commutative property of *real* addition,
+4. The definition of vector addition, and
+5. The notational definitions of $\mathbf{u}$ and $\mathbf{v}$.
+
+In a componentwise proof, it's often the case that we apply definitions to expand a compact notation to a more detailed form allowing to see directly how the real numbers interact with each other. Ideally, we can then apply the properties of real numbers to modify that detailed form to another detailed form that collapses back down to the compact version that we're looking for.
+
+In a componentwise proof, it's often the case that we apply definitions to expand a compact notation to a more detailed form, allowing you to see directly how the real numbers interact with each other. Ideally, we can then apply the properties of real numbers to modify that detailed form to another detailed form that collapses back down to the compact version that we're looking for.
+
+::: {.callout-note appearance="minimal"}
+**Prop 2**: Scalar multiplication is distributive over vector addition; that is, if $\mathbf{u}$ and $\mathbf{v}$ are vectors in $\mathbb R^n$ and $\lambda\in\mathbb R$ is a scalar, then
+$$
+\lambda (\mathbf{u} + \mathbf{v}) = \lambda\mathbf{u} + \lambda\mathbf{v}. 
+$$
+::: 
+
+**Proof:** Since $\mathbf{u},\mathbf{v}\in\mathbb R^n$, we can write 
+$$
+\mathbf{u} = 
+\begin{bmatrix}
+  u_1 \\ \vdots \\ u_n
+\end{bmatrix}
+\text {and }
+\mathbf{v} = 
+\begin{bmatrix}
+   v_1 \\ \vdots \\ v_n
+\end{bmatrix}. 
+$$
+Then
+\begin{aligned}
+\lambda (\mathbf{u} + \mathbf{v}) &=
+\lambda\left(\begin{bmatrix}
+  u_1 \\ \vdots \\ u_n
+\end{bmatrix}
++
+\begin{bmatrix}
+   v_1 \\ \vdots \\ v_n
+\end{bmatrix}\right)
+= \lambda \begin{bmatrix}
+   u_1+v_1 \\ \vdots \\ u_n+v_n
+\end{bmatrix} \\
+&= \begin{bmatrix}
+   \lambda(u_1+v_1) \\ \vdots \\ \lambda(u_n+v_n)
+\end{bmatrix} =
+\begin{bmatrix}
+   \lambda u_1+\lambda v_1 \\ \vdots \\ \lambda u_n+\lambda v_n
+\end{bmatrix} \\
+&= \begin{bmatrix}
+  \lambda u_1 \\ \vdots \\ \lambda u_n
+\end{bmatrix}
++
+\begin{bmatrix}
+   \lambda v_1 \\ \vdots \\ \lambda v_n
+\end{bmatrix}
+= \lambda \mathbf{u} + \lambda\mathbf{v}.\Box
+\end{aligned}
+
+It's worth mentioning that Prop 2 has a natural counterpart where the roles of the scalar and the vector flip. We might call this Prop 2a.
+
+It's worth mentioning that Prop 2 has a natural counterpart in which the roles of the scalar and the vector are reversed. We might call this Prop 2a.
+
+::: {.callout-note appearance="minimal"}
+**[Prop 2a]{#prop-2a}**: Scalar multiplication is distributive over *scalar* addition; that is, if $\mathbf{u}$ is a vector in $\mathbb R^n$ and $\alpha,\beta\in\mathbb R$ are scalars, then
+$$
+(\alpha +\beta)\mathbf{u} = \alpha\mathbf{u} +\beta\mathbf{u}. 
+$$
+::: 
+Let's leave the proof of this as an exercise.
+
+## Matrix$\times$vector multiplication
+
+### The definition
+
+Generally, we think of an $m\times n$ matrix as a rectangular array of numbers:
+$$
+A = [a_{ij}]_{i,j=1}^{m,n} = 
+\begin{bmatrix}
+a_{11} & \cdots & a_{1n} \\
+\vdots & \ddots & \vdots \\
+a_{m1} & \cdots & a_{mn}
+\end{bmatrix}. 
+$$
+As we begin with matrix multiplication, though, we might also think of a matrix as a list of its columns:
+$$
+A = \begin{bmatrix} A_1 & \cdots & A_n\end{bmatrix},
+$$
+where
+$$
+A_j = \begin{bmatrix}
+a_{1j} \\ \vdots \\ a_{mj}
+\end{bmatrix}. 
+$$
+This gives us a natural way to think of matrix$\times$vector multiplication.
+
+::: {.callout-note appearance="minimal"} 
+**Def** (of matrix$\times$vector multiplication): Let $A\in\mathbb{R^{m\times n}}$ denote the $m\times n$ matrix
+$$
+A = \begin{bmatrix} A_1 & \cdots & A_n\end{bmatrix}
+$$
+and let $\mathbf{x}\in\mathbb{R^n}$ denote the $n$-dimensional vector 
+$$
+\mathbf{x} = \begin{bmatrix} x_1 \\ \vdots \\ x_n \end{bmatrix}. 
+$$
+Then, the matrix$\times$vector product $A\mathbf{x}$ is defined by 
+$$A\mathbf x = x_1A_1 + \cdots + x_nA_n.$$
+In words, $A\mathbf{x}$ is the linear combination of the columns of $A$ using coefficients determined by $\mathbf{x}$.
+:::
+
+
+### Componentwise formulation
+
+There's a componentwise formulation of matrix$\times$vector multiplication that makes explicit reference to the components of the matrix and vector, which (again) are
+$$
+A = 
+\begin{bmatrix}
+a_{11} & \cdots & a_{1n} \\
+\vdots & \ddots & \vdots \\
+a_{m1} & \cdots & a_{mn}
+\end{bmatrix}
+\text{ and } 
+\mathbf{x} = \begin{bmatrix} x_1 \\ \vdots \\ x_n \end{bmatrix}.
+$$
+
+::: {.callout-note appearance="minimal"}
+**Prop 3** (Componentwise formula for matrix$\times$\vector multiplication): Referring back to the componentwise formulations of $A$ and $\mathbf{x}$, we have
+$$
+A\mathbf{x} = \begin{bmatrix}
+a_{11} x_1 + \cdots + a_{1n} x_n \\
+\vdots \\
+a_{m1} x_1 + \cdots + a_{mn} x_n
+\end{bmatrix}. 
+$$
+In words, the $i^{\text{th}}$ entry in the vector $A\mathbf{x}$ is exactly the dot product of the $i^{\text{th}}$ row of $A$ with the vector $\mathbf{x}$.
+:::
+
+*Proof*: The proof is a simple matter of writing out the definition of matrix$\times$vector multiplication, well, componentwise:
+
+\begin{aligned}
+A\mathbf{x} &= x_1A_1 + \cdots + x_nA_n = 
+x_1\begin{bmatrix}a_{11} \\ \vdots \\ a_{m1}\end{bmatrix} + \cdots +
+x_n\begin{bmatrix}a_{1n} \\ \vdots \\ a_{mn}\end{bmatrix} \\
+&= \begin{bmatrix}x_1a_{11} \\ \vdots \\ x_1a_{m1}\end{bmatrix} + \cdots +
+\begin{bmatrix}x_na_{1n} \\ \vdots \\ x_na_{mn}\end{bmatrix} 
+= \begin{bmatrix}
+a_{11} x_1 + \cdots + a_{1n} x_n \\
+\vdots \\
+a_{m1} x_1 + \cdots + a_{mn} x_n
+\end{bmatrix}.\Box
+\end{aligned}
+
+### Algebraic properties
+
+The fundamental algebraic properties of matrix$\times$vector multiplication are stated as [Proposition 2.2.3](https://understandinglinearalgebra.org/sec-matrices-lin-combs.html#prop-matrix-mult-prop) of our text:
+
+:::{.callout-note appearance="minimal"}
+**[Prop 4]{#prop-4}**: Let $A\in\mathbf R^{m\times n}$ be an $m\times n$ dimensional matrix, let $\mathbf{u},\mathbf{v}\in\mathbb{R}^n$ be $n$ dimensional vectors, and let $\lambda \in \mathbb R$. Then,
+
+  - $A\mathbf{0} = \mathbf{0}$
+  - $A(c\mathbf{v}) = cA(\mathbf{v})$
+  - $A(\mathbf{u} + \mathbf{v}) = A\mathbf{u} + A\mathbf{v}$.
+:::
+
+*Proof*: We'll prove just the third, leaving the others as exercises.
+
+As usual, we set notation by writing 
+$$
+A = \begin{bmatrix} A_1 & \cdots & A_n\end{bmatrix}, \;
+\mathbf{u} =
+\begin{bmatrix}
+  u_1 \\ \vdots \\ u_n
+\end{bmatrix}
+\text {and }
+\mathbf{v} =
+\begin{bmatrix}
+   v_1 \\ \vdots \\ v_n
+\end{bmatrix}.
+$$
+Thus,
+\begin{aligned}
+A(\mathbf{u} + \mathbf{v}) &= 
+\begin{bmatrix} A_1 & \cdots & A_n\end{bmatrix}\left(
+\begin{bmatrix}
+  u_1 \\ \vdots \\ u_n
+\end{bmatrix} 
++
+\begin{bmatrix}
+  v_1 \\ \vdots \\ v_n
+\end{bmatrix} 
+\right) \\
+&= \begin{bmatrix} A_1 & \cdots & A_n\end{bmatrix}
+\begin{bmatrix}
+  u_1 + v_1 \\ \vdots \\ u_n + v_n
+\end{bmatrix} \\
+&= \begin{bmatrix} (u_1 + v_1)A_1 & \cdots & (u_n + v_n)A_n\end{bmatrix} \\
+&= \begin{bmatrix} u_1A_1 + v_1A_1 & \cdots & u_nA_n + v_nA_n\end{bmatrix} \\
+&= \begin{bmatrix} u_1A_1 & \cdots & u_nA_n \end{bmatrix} +
+\begin{bmatrix} v_1A_1 & \cdots & v_nA_n\end{bmatrix} = A\mathbf{u} + A\mathbf{v}.\Box
+\end{aligned}
+
+
+**A final comment**: As already mentioned in our [comment on reading](#reading), you should always be able to attribute every equals sign something very simple when reading these proofs. Can you see, for example, where we used [Prop 2a](#prop-2a)?
+
+
+## Exercises
+
+Here are a few proof writing exercises. You should emulate the style that you see here while writing a careful proof of each of the following.
+
+1. Prove that vector addition is associative. That is, if $\mathbf{u}$, $\mathbf{v}$, and $\mathbf{w}$ are vectors in $\mathbb{R}^n$, then 
+$$(\mathbf{u} + \mathbf{v}) + \mathbf{w} = 
+  \mathbf{u} + (\mathbf{v} + \mathbf{w}).$$
+2. Prove [Prop 2a](#prop-2a)
+3. Prove the second part of [Prop 4](#prop-4)
+4. Section 2.2 of our text ends [with a Caution](https://understandinglinearalgebra.org/sec-matrices-lin-combs.html#sec-matrices-lin-combs-6-10) that not all properties of real numbers always extend to matrix and vector operations. In particular, the texts points out that
+   a) It's not generally true that $AB=BA$ and that 
+   c) It's not generally true that $AB=0$ implies that $A=0$ or $B=0$.  
+
+   Find a counterexample for each of those statements.
