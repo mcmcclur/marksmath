@@ -1,0 +1,72 @@
+---
+title: Geometry of linear transformations
+page-layout: article
+date: 2025-09-10
+format:
+  html:
+    toc: true
+    css: styles.css
+  pdf:
+    toc: false
+    mainfont: "Times New Roman"
+    output-file: GeometryOfLinearTransformations.pdf
+---
+
+## Graphs??
+
+```{ojs}
+import {just_graph} from './components/graphs.js'
+just_graph()
+```
+
+```{ojs}
+import {graph_with_points} from './components/graphs.js'
+graph_with_points()
+```
+
+```{ojs}
+viewof update_lineland = Inputs.button('')
+```
+
+```{ojs}
+import {make_lineland} from './components/graphs.js'
+lineland = make_lineland()
+```
+
+## 2D Linear tranformations
+
+```{ojs}
+pic1.update(update1)
+```
+```{ojs}
+viewof update1 = Inputs.button('')
+```
+
+
+```{ojs}
+pic1 = make_one_step_transition_pic([[2,1],[1,0]])
+```
+
+```{ojs}
+import {make_one_step_transition_pic} from './components/transitionPics2D.js';
+```
+
+
+
+<!-- Reactions -->
+
+```{ojs}
+{
+  lineland.update(update_lineland);
+  if(update_lineland%2 == 1) {
+    d3.select(viewof update_lineland)
+      .select('button')
+      .text('Unsquare it!');
+  } else {
+      d3.select(viewof update_lineland)
+        .select('button')
+        .text('Square it!')
+  }
+}
+```
+
