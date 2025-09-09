@@ -25,7 +25,7 @@ graph_with_points()
 ```
 
 ```{ojs}
-viewof update_lineland = Inputs.button('')
+viewof update_lineland = Inputs.button('Square')
 ```
 
 ```{ojs}
@@ -35,38 +35,47 @@ lineland = make_lineland()
 
 ## 2D Linear tranformations
 
-```{ojs}
-pic1.update(update1)
-```
-```{ojs}
-viewof update1 = Inputs.button('')
-```
 
+```{ojs}
+viewof update1 = Inputs.button('Pic 1')
+```
 
 ```{ojs}
 pic1 = make_one_step_transition_pic([[2,1],[1,0]])
 ```
 
+---
+
+```{ojs}
+viewof update2 = Inputs.button('Pic 2')
+```
+
+```{ojs}
+pic2 = make_one_step_transition_pic([[1,1],[1/2,3/2]])
+```
+
+---
+
 ```{ojs}
 import {make_one_step_transition_pic} from './components/transitionPics2D.js';
 ```
 
+---
+
+---
 
 
 <!-- Reactions -->
 
 ```{ojs}
-{
   lineland.update(update_lineland);
-  if(update_lineland%2 == 1) {
-    d3.select(viewof update_lineland)
-      .select('button')
-      .text('Unsquare it!');
-  } else {
-      d3.select(viewof update_lineland)
-        .select('button')
-        .text('Square it!')
-  }
-}
+```
+
+```{ojs}
+pic1.update(update1)
+```
+
+```{ojs}
+pic2.update(update2)
 ```
 
