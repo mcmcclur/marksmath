@@ -5,8 +5,8 @@ export function make_one_step_transition_pic(M) {
   let [x0, y0] = [M[0][0], M[1][0]];
   let [x1, y1] = [M[0][1], M[1][1]];
 
-  let [xmin, xmax] = d3.extent([0, x0, x1, x0 + x1]);
-  let [ymin, ymax] = d3.extent([0, y0, y1, y0 + y1]);
+  let [xmin, xmax] = d3.extent([0, x0, x1, x0 + x1, 1]);
+  let [ymin, ymax] = d3.extent([0, y0, y1, y0 + y1, 1]);
 
   let xrange = xmax - xmin;
   let s = 0.4;

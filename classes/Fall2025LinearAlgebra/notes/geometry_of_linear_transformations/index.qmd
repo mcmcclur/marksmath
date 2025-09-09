@@ -12,53 +12,214 @@ format:
     output-file: GeometryOfLinearTransformations.pdf
 ---
 
-## Graphs??
+In this set of class notes, we're going to take a look at some ways to visualize linear transformations to, hopefully, generate some intuition about how they operate.
+
+
+## Why not graphs??
+
+I guess the most basic way to visualize functions via *graph*. We're certainly all familiar with the graph of $f(x)=x^2$:
 
 ```{ojs}
-import {just_graph} from './components/graphs.js'
 just_graph()
 ```
 
+Note that this function, like most of the functions that you study in calculus, maps $\mathbb R \to \mathbb R$. We say that the point $(x,y)$ is on the graph of $y=f(x)$. Thus, the graph lives in $\mathbb R^2$.
+
+### Graphs of bivariate functions
+
+In Calc III you study functions mapping $\mathbb R^2 \to \mathbb R$, which are called *bivariate*. Thus, $(x,y,z)$ is on the graph if $z=f(x,y)$ so that the graph lives in three dimensional space:
+
+
+::: {.plotX3D}
+
 ```{ojs}
-import {graph_with_points} from './components/graphs.js'
+{
+  const f = (x, y) =>
+    3 - (x ** 2 + y ** 2 + Math.sin(5 * x) * Math.cos(3 * y)) / 25;
+  const pic = show_x3d(
+    [
+      create_surface((x, y) => [x, y, f(x, y)], [1, 4], [1, 4]),
+      create_surface((x, y) => [x, y, 0], [1, 4], [1, 4]),
+      create_sphere([3.7, 3.7, 0], 0.05, { color: "black" }),
+      create_sphere([3.7, 3.7, f(3.7, 3.7)], 0.05, { color: "black" }),
+      create_indexedLineSet([
+        [
+          [3.7, 3.7, 0],
+          [3.7, 3.7, f(3.7, 3.7)]
+        ]
+      ]),
+      create_text("(x,y,0)", [3.7, 3.8, 0.1], {
+        rotation:
+          "0.39187780531182387 0.5437017298844263 0.7421726312824201,2.1591999999999993"
+      }),
+      create_text("(x,y,f(x,y))", [3.7, 3.8, f(3.7, 3.7)], {
+        rotation:
+          "0.39187780531182387 0.5437017298844263 0.7421726312824201,2.1591999999999993"
+      })
+    ],
+    {
+      viewpoint: {
+        position: "10.435857181568185 4.145282681212699 3.5995341598716357",
+        orientation:
+          "0.3918778053118238 0.5437017298844263 0.7421726312824201,2.1591999999999993"
+      },
+      class_name: "X3D"
+    }
+  );
+  return pic
+}
+```
+
+:::
+
+
+```{ojs}
 graph_with_points()
 ```
 
 ```{ojs}
-viewof update_lineland = Inputs.button('Square')
+viewof update_lineland = Inputs.toggle({label: "Apply:"})
 ```
 
 ```{ojs}
-import {make_lineland} from './components/graphs.js'
 lineland = make_lineland()
 ```
 
-## 2D Linear tranformations
+## 2D Linear transformations
 
+If we'd like to understand how linear transformation affect space geometrically, we can take a similar approach. For visualization purposes, the dimension of both the domain and range cannot exceed three so I suppose the natural place to start is with functions mapping $\mathbb R^2 \to \mathbb R^2$.
+
+### Stretch and squish
 
 ```{ojs}
-viewof update1 = Inputs.button('Pic 1')
+viewof updateStretchSquish = Inputs.toggle({label: "Apply:"})
 ```
 
 ```{ojs}
-pic1 = make_one_step_transition_pic([[2,1],[1,0]])
+picStretchSquish = make_one_step_transition_pic([[2,0],[0,1/2]])
 ```
 
 ---
 
+
+### Reflect
+
 ```{ojs}
-viewof update2 = Inputs.button('Pic 2')
+viewof updateReflect = Inputs.toggle({label: "Apply:"})
+```
+
+```{ojs}
+picReflect = make_one_step_transition_pic([[-1,0],[0,1]])
+```
+
+---
+
+
+### Reflect diagonally
+
+```{ojs}
+viewof updateReflect2 = Inputs.toggle({label: "Apply:"})
+```
+
+```{ojs}
+picReflect2 = make_one_step_transition_pic([[0,1],[1,0]])
+```
+
+---
+
+### Skew 
+
+```{ojs}
+viewof updateSkew = Inputs.toggle({label: "Apply:"})
+```
+
+```{ojs}
+picSkew = make_one_step_transition_pic([[1,1],[0,1]])
+```
+
+---
+
+### Project 
+
+```{ojs}
+viewof updateProject = Inputs.toggle({label: "Apply:"})
+```
+
+```{ojs}
+picProject = make_one_step_transition_pic([[1,0],[0,0]])
+```
+
+---
+
+### Rotate??
+
+```{ojs}
+viewof updateRotate = Inputs.toggle({label: "Apply:"})
+```
+
+```{ojs}
+picRotate = make_one_step_transition_pic([[0,-1],[1,0]])
+```
+
+---
+
+### Stretch and rotate
+
+```{ojs}
+viewof updateStretchAndRotate = Inputs.toggle({label: "Apply:"})
+```
+
+```{ojs}
+picStretchAndRotate = make_one_step_transition_pic([[1,-1],[1,1]])
+```
+
+---
+
+### Flip and Stretch
+
+
+```{ojs}
+viewof updateFlipAndStretch = Inputs.toggle({label: "Apply:"})
+```
+
+```{ojs}
+picFlipAndStretch = make_one_step_transition_pic([[2,1],[1,0]])
+```
+
+---
+
+### Oblique projection
+
+```{ojs}
+viewof updateObliqueProjection = Inputs.toggle({label: "Apply:"})
+```
+
+```{ojs}
+picObliqueProjection = make_one_step_transition_pic(
+  [[3/4,Math.sqrt(3)/4],[Math.sqrt(3)/4,1/4]]
+)
+```
+
+### Eigenvectors??
+
+```{ojs}
+viewof update2 = Inputs.toggle({label: "Apply:"})
 ```
 
 ```{ojs}
 pic2 = make_one_step_transition_pic([[1,1],[1/2,3/2]])
 ```
 
+## Understanding Rotation
+
+
+
+
 ---
 
-```{ojs}
-import {make_one_step_transition_pic} from './components/transitionPics2D.js';
-```
+
+
+---
 
 ---
 
@@ -72,10 +233,75 @@ import {make_one_step_transition_pic} from './components/transitionPics2D.js';
 ```
 
 ```{ojs}
-pic1.update(update1)
+  picStretchSquish.update(updateStretchSquish);
 ```
+
+```{ojs}
+  picReflect.update(updateReflect);
+```
+
+```{ojs}
+  picReflect2.update(updateReflect2);
+```
+
+```{ojs}
+  picSkew.update(updateSkew);
+```
+
+```{ojs}
+  picProject.update(updateProject);
+```
+
+```{ojs}
+  picRotate.update(updateRotate);
+```
+
+```{ojs}
+  picStretchAndRotate.update(updateStretchAndRotate);
+```
+
+
+```{ojs}
+picFlipAndStretch.update(updateFlipAndStretch)
+```
+
+
+```{ojs}
+picObliqueProjection.update(updateObliqueProjection)
+```
+
+
+
+---
+
+
 
 ```{ojs}
 pic2.update(update2)
 ```
 
+
+
+<!-- Imports -->
+
+```{ojs}
+import {
+  just_graph, 
+  graph_with_points, 
+  make_lineland
+} from './components/graphs.js'
+import {
+  make_one_step_transition_pic
+} from './components/transitionPics2D.js';
+import {
+  show_x3d,
+  create_surface,
+  create_indexedLineSet,
+  create_indexedFaceSet,
+  create_sphere,
+  create_text,
+  create_tube,
+} from "@mcmcclur/plotx3d"
+```
+
+style

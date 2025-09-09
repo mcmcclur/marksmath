@@ -2,3 +2,18 @@ button {
     margin-left: 15px !important;
     margin-bottom: 15px !important;
 }
+canvas {
+    outline: none
+}
+div.X3D {
+    overflow: hidden;
+}
+
+/* Hides PlotX3D vanishing errors */
+.plotX3D .callout-important {
+    display: none !important;
+}
+.plotX3D pre.sourceCode {
+    display: none !important;
+}
+
