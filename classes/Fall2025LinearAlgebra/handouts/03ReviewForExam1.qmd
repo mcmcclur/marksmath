@@ -12,7 +12,9 @@ format:
         \pagenumbering{gobble}
 ---
 
-Our first exam is next Wednesday, September 17! Here's the review sheet.
+Our first exam is next Wednesday, September 17! Here's our first draft of a review sheet.
+
+## Problems
 
 1. State the following definitions:
 
@@ -115,3 +117,21 @@ as a linear combination of $\mathbf{x}$, $\mathbf{y}$, and $\mathbf{z}$ or expla
    b. Stretches by the factor 2 in the horizontal direction by the factor 3 in the vertical, and also reflects across the $x$-axis.
    c. Projects on the line $y=x$.
    d. Reflects across a line through the origin that makes an angle of $17^{\circ}$ with the $x$ axis. 
+
+
+
+::: {.content-visible when-format="html"}
+
+## Your questions and solutions
+
+If you'd like to ask a question about or reply to a question on this sheet, you can do so by pressing the "Reply on Discourse" button below.
+
+```{ojs}
+embedDiscourseMathTopic(39)
+```
+
+```{ojs}
+import {embedDiscourseMathTopic} from '/components/EmbedDiscourseMathTopics/embedDiscourseMathTopic.js';
+```
+
+:::
