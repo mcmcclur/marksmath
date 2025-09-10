@@ -206,11 +206,11 @@ $$\begin{bmatrix}1&1\\1/2&3/2\end{bmatrix}$$
 
 
 ```{ojs}
-viewof update2 = Inputs.toggle({label: "Apply away:"})
+viewof updateEigenstuff = Inputs.toggle({label: "Apply:"})
 ```
 
 ```{ojs}
-pic2 = make_one_step_transition_pic([[1,1],[1/2,3/2]])
+picEigenstuff = make_one_step_transition_pic([[1,1],[1/2,3/2]])
 ```
 
 ## More complicated examples
@@ -397,7 +397,7 @@ picObliqueProjection.update(updateObliqueProjection)
 
 
 ```{ojs}
-pic2.update(update2)
+picEigenstuff.update(updateEigenstuff)
 ```
 
 :::
