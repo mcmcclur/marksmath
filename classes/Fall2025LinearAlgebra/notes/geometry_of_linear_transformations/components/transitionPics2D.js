@@ -122,6 +122,79 @@ export function make_one_step_transition_pic(M) {
   }
 }
 
+export function make_rotated_square(theta) {
+  const [xmin,xmax, ymin, ymax] = [-2,2,-2,2];
+  const w = 500;
+  const h = w;
+  const svg = d3
+    .create("svg")
+    .attr("viewBox", [0, 0, w, h])
+    .attr("width", "100%")
+    .style("max-width", `${w}px`)
+    .style("border", "solid black 2px");
+
+  const pad = 10;
+  const x_scale = d3
+    .scaleLinear()
+    .domain([xmin, xmax])
+    .range([pad, w - pad]);
+  const y_scale = d3
+    .scaleLinear()
+    .domain([ymin, ymax])
+    .range([h - pad, pad]);
+  const r_scale = d3
+    .scaleLinear()
+    .domain([0, xmax-xmin])
+    .range([0, w]);  
+  const pointToPoint = ([x, y]) => [x_scale(x), y_scale(y)];
+
+  const configuration = svg.append("g");
+  const polygon = configuration
+    .append("polygon")
+    .attr(
+      "points",
+      [
+        [0, 0],
+        [Math.cos(theta), Math.sin(theta)],
+        [Math.cos(theta)-Math.sin(theta), Math.cos(theta)+Math.sin(theta)],
+        [-Math.sin(theta), Math.cos(theta)],
+        [0, 0]
+      ].map(pointToPoint)
+    )
+    .attr("fill", "lightgray")
+    .attr("stroke", "black")
+    .attr("stroke-width", 0.5);
+  const leg0 = configuration
+    .append("polyline")
+    .call(arrow, x_scale(0), y_scale(0), x_scale(Math.cos(theta)), y_scale(Math.sin(theta)))
+    .attr("stroke", "red")
+    .attr("stroke-width", 2);
+  const leg1 = configuration
+    .append("polyline")
+    .call(arrow, x_scale(0), y_scale(0), x_scale(-Math.sin(theta)), y_scale(Math.cos(theta)))
+    .attr("stroke", "blue")
+    .attr("stroke-width", 2);
+
+  svg
+    .append("g")
+    .style("font-size", "14px")
+    .attr("transform", `translate(0, ${y_scale(0)})`)
+    .call(d3.axisBottom(x_scale).ticks(4));
+  svg
+    .append("g")
+    .style("font-size", "14px")
+    .attr("transform", `translate(${x_scale(0)}, 0)`)
+    .call(d3.axisLeft(y_scale).ticks(4));
+  svg.append('circle')
+    .attr('cx', x_scale(0))
+    .attr('cy', y_scale(0))
+    .attr('r', r_scale(0.05))
+    .attr('fill', 'black')
+    .attr('stroke', 'white')
+    .attr('stroke-width', 2);
+  return svg.node();
+}
+
 
 
 // Arrows from https://observablehq.com/@oberbichler/arrow
