@@ -27,7 +27,6 @@ In Calc III you study functions mapping $\mathbb R^2 \to \mathbb R$, which are c
 
 
 ::: {.plotX3D}
-
 ```{ojs}
 {
   const f = (x, y) =>
@@ -65,7 +64,6 @@ In Calc III you study functions mapping $\mathbb R^2 \to \mathbb R$, which are c
   return pic
 }
 ```
-
 :::
 
 More generally, if $f:\mathbb R^n \to \mathbb R^m$, then it's graph consists of those points $(\mathbf{x}, \mathbf{y})$ such that $\mathbf x \in \mathbb R^n$ and $\mathbf y \in \mathbb R^m$. Thus, the graph lives in $(m+n)$-dimensional space. If both are at least two, we have a a problem!
@@ -91,7 +89,7 @@ graph_with_points()
 
 ## 2D Linear transformations
 
-If we'd like to understand how linear transformation affect space geometrically, we can take a similar approach. For visualization purposes, the dimension of both the domain and range cannot exceed three so I suppose the natural place to start is with functions mapping $\mathbb R^2 \to \mathbb R^2$. In this section, we'll examine the effect of several matrices on the unit square and, by extention, on the whole plane.
+If we'd like to understand how linear transformation affect space geometrically, we can take an approach that's similar to Lineland's approach to univariate functions. For visualization purposes, the dimension of both the domain and range cannot exceed three so I suppose the natural place to start is with functions mapping $\mathbb R^2 \to \mathbb R^2$. In this section, we'll examine the effect of several matrices on the unit square and, by extention, on the whole plane.
 
 ### Stretch and squish
 
@@ -152,7 +150,7 @@ viewof updateSkew = Inputs.toggle({label: "Apply:"})
 picSkew = make_one_step_transition_pic([[1,1],[0,1]])
 ```
 
-To understand the result, recall that *everytime* the legs of the image are exactly the columns of the matrix.
+To understand the result, recall that *everytime* we apply matrix multiplication to our image of the unit circle, the legs of the image are exactly the columns of the matrix.
 
 
 ### Project 
@@ -262,34 +260,18 @@ Thus, since multiplication by $R(\theta)$ rotates $[1 \: 0]^T$ and $[0 \: 1]^T$ 
 
 ### Oblique reflection
 
-Sometimes we can combine these things to powerful effect. Let's suppose, for example, that we'd like a linear transformation that reflects across a line through the origin:
+These simple transformations can be combined to powerful effect. Let's suppose, for example, that we'd like a linear transformation that reflects across a line through the origin. That's easy if the line is the $x$ or $y$ axis. It's trickier, though, if it's some other line making an angle $\theta$ with the $x$-axis, like so:
 
 ```{ojs}
-Plot.plot({
-  width: 640,
-  height: 640,
-  x: { domain: [-2, 2] },
-  y: { domain: [-2, 2] },
-  marks: [
-    Plot.line([
-      [-2, -1],
-      [2, 1]
-    ]),
-    Plot.axisX({ y: 0 }),
-    Plot.axisY({ x: 0 }),
-    Plot.ruleX([0]),
-    Plot.ruleY([0]),
-    Plot.line(
-      d3
-        .range(0, Math.atan(0.5), 0.01)
-        .map((t) => [0.3 * Math.cos(t), 0.3 * Math.sin(t)])
-    ),
-    Plot.text([1], { x: 0.3, y: 0.2, text: "t" })
-  ]
-})
+reflection_step_pic = make_reflection_step_pic(tex)
+```
+```{ojs}
+viewof takeReflectionStep = Inputs.button("Step")
 ```
 
-Well, if the angle we see there is $\theta$, then we can first rotate through the angle $-\theta$ so that the line maps to the $x$-axis. We then apply the matrix that flips over the $x$-axis. Finally, we rotate back through the angle theta. To find a matrix $M$ that accomplishes all this in one step, we simply compute the product
+One way to accomplish this reflection is to first rotate the image clockwise through the angle $\theta$, reflect across the $x$-axis, and then rotate back. You can hit the step button a few times to step through this process.
+
+Each of those operations is described by matrix multiplication and the composition of all three yields the reflection. Thus, we can find a single matrix $M$ that represents the reflection by matrix multiplication.
 $$
 M = \begin{bmatrix} 
   \cos(\theta) & -\sin(\theta) \\
@@ -303,13 +285,15 @@ M = \begin{bmatrix}
   \cos(\theta) & \sin(\theta) \\
   -\sin(\theta) & \cos(\theta)
 \end{bmatrix}
-$$
+$$ {#eq-reflection_steps}
 
 If, for example, we want to rotate accross the line $y=\frac{1}{2}x$, then the angle is $\theta = \arctan(1/2)$ and the matrix works out to be 
 $$
 M = \begin{bmatrix}3/5 & 4/5 \\ 4/5 & -3/5\end{bmatrix}.
 $$
-Here it is in action:
+I suppose that might be a bit of a pain to actually compute but here's a little [SageMath code](https://sagecell.sagemath.org/?q=icwpdh) that might persuade you.
+
+Better yet, here it is in action:
 
 
 ```{ojs}
@@ -325,7 +309,28 @@ picObliqueReflection = make_one_step_transition_pic(
 
 ### Oblique projection
 
-We can do something similar for projection:
+Of course, we can do something quite similar for oblique projection. All we have to do is change the reflection matrix to a projection matrix. Thus, in @eq-reflection_steps, we replace
+$$
+\begin{bmatrix} 
+  1 & 0 \\
+  0 & -1
+\end{bmatrix}
+\text{ with }
+\begin{bmatrix} 
+  1 & 0 \\
+  0 & 0
+\end{bmatrix}.
+$$
+
+If we want to project onto the line $y=\frac{1}{2}x$, this yields the matrix
+$$
+\begin{bmatrix}
+4/5 & 2/5 \\
+2/5 & 1/5
+\end{bmatrix}.
+$$
+
+You could probably edit the SageMath code from the oblique projection example to convince yourself of that and here it is in action:
 
 ```{ojs}
 viewof updateObliqueProjection = Inputs.toggle({label: "Apply:"})
@@ -333,16 +338,9 @@ viewof updateObliqueProjection = Inputs.toggle({label: "Apply:"})
 
 ```{ojs}
 picObliqueProjection = make_one_step_transition_pic(
-  [[3/4,Math.sqrt(3)/4],[Math.sqrt(3)/4,1/4]]
+  [[4/5,2/5],[2/5,1/5]]
 )
 ```
-
-## A couple of 3D examples??
-
-
-
-
-
 
 
 ::: {style="display: none"}
@@ -400,6 +398,10 @@ picObliqueProjection.update(updateObliqueProjection)
 picEigenstuff.update(updateEigenstuff)
 ```
 
+```{ojs}
+reflection_step_pic.take_step(takeReflectionStep)
+```
+
 :::
 
 
@@ -413,7 +415,8 @@ import {
 } from './components/graphs.js'
 import {
   make_one_step_transition_pic,
-  make_rotated_square
+  make_rotated_square,
+  make_reflection_step_pic
 } from './components/transitionPics2D.js';
 import {
   show_x3d,

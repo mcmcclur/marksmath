@@ -1,0 +1,188 @@
+<!doctype html>
+<notebook theme="air">
+  <title>Reflection animation</title>
+  <script id="1" type="text/markdown">
+    # Reflection animation
+    ## Development code
+  </script>
+  <script id="11" type="module">
+    const step = view(Inputs.button("Step"))
+  </script>
+  <script id="22" type="module">
+    const pic = display(make_reflection_step_pic())
+  </script>
+  <script id="20" type="text/markdown">
+    ## Code
+  </script>
+  <script id="23" type="module" pinned="">
+    // React
+    pic.take_step(step)
+  </script>
+  <script id="5" type="module" pinned="">
+    function make_reflection_step_pic() {
+      const [xmin, xmax, ymin, ymax] = [-0.8, 1.8, -1, 1.1];
+      const w = 640;
+      const h = w*(ymax-ymin)/(xmax-xmin);
+      const pad = 10;
+      const x_scale = d3
+        .scaleLinear()
+        .domain([xmin, xmax])
+        .range([pad, w - pad]);
+      const y_scale = d3
+        .scaleLinear()
+        .domain([ymin, ymax])
+        .range([h - pad, pad]);
+      const pointToPoint = ([x, y]) => [x_scale(x), y_scale(y)];
+      const pts_to_path = d3
+        .line()
+        .x(function (d) {
+          return x_scale(d[0]);
+        })
+        .y(function (d) {
+          return y_scale(d[1]);
+        });
+
+
+      const svg = d3.create('svg')
+        .attr('viewBox', [0,0,w,h])
+        .style('max-width', `${w}px`)
+        .style('border', 'solid 1px black');
+
+
+      svg
+        .append("g")
+        .style("font-size", "14px")
+        .attr("transform", `translate(0, ${y_scale(0)})`)
+        .call(d3.axisBottom(x_scale).ticks(5).tickSizeOuter(0));
+      svg
+        .append("g")
+        .style("font-size", "14px")
+        .attr("transform", `translate(${x_scale(0)}, 0)`)
+        .call(d3.axisLeft(y_scale).ticks(5).tickSizeOuter(0));
+
+
+      const configuration = svg.append("g")
+      const polygon = configuration
+        .append("polygon")
+        .attr(
+          "points",
+          [
+            [0, 0],
+            [1, 0],
+            [1, 1],
+            [0, 1],
+            [0, 0]
+          ].map(pointToPoint)
+        )
+        .attr("fill", "lightgray")
+        .attr("stroke", "black")
+        .attr("stroke-width", 0.5);
+      const leg0 = configuration
+        .append("polyline")
+        .call(arrow, x_scale(0), y_scale(0), x_scale(1), y_scale(0))
+        .attr("stroke", "red")
+        .attr("stroke-width", 2);
+      const leg1 = configuration
+        .append("polyline")
+        .call(arrow, x_scale(0), y_scale(0), x_scale(0), y_scale(1))
+        .attr("stroke", "blue")
+        .attr("stroke-width", 2);
+
+      const t = Math.PI/8;
+      const R = -2.2;
+      configuration.append('path')
+        .attr('d', pts_to_path([[-R*Math.cos(t), -R*Math.sin(t)], [R*Math.cos(t), R*Math.sin(t)]]))
+        .attr('stroke', 'black')
+
+      const cx = x_scale(0);
+      const cy = y_scale(0);
+      const T = t*180/Math.PI;
+
+      svg.node().take_step = take_step;
+      return svg.node();
+
+      function take_step(step) {
+        if(step % 4 == 0) {
+          configuration.attr('transform', null)
+        }
+        else if(step % 4 == 1) {
+          configuration
+            // .attr('transform', `rotate(0, ${cx}, ${cx})`)
+            .transition()
+            .duration(800)
+            .tween('rotateAroundOrigin', function () {
+                const sel = d3.select(this);
+                const interp = d3.interpolateNumber(0, T);
+                return function (u) {
+                  sel.attr('transform', `rotate(${interp(u)}, ${cx}, ${cy})`);
+                };
+              })
+            //.attr('transform', `rotate(${t*180/Math.PI}, ${x_scale(0)}, ${y_scale(0)})`)
+        } else if(step % 4 == 2) {
+          configuration
+            // .attr('transform', `translate(0,${cy}) scale(1,1}) translate(0,${-cy}) rotate(${T}, ${cy}, ${cy})`)
+            .transition()
+            .duration(800)
+            .tween('rotateAroundOrigin', function () {
+                const sel = d3.select(this);
+                const interp = d3.interpolateNumber(1,-1);
+                return function (u) {
+                  sel.attr('transform', `translate(0,${cy}) scale(1,${interp(u)}) translate(0,${-cy}) rotate(${T}, ${cx}, ${cy})`);
+                };
+              })
+        } else if(step % 4 == 3) {
+          configuration
+            // .attr('transform', `translate(0,${cy}) scale(1,-1) translate(0,${-cy}) rotate(${T}, ${cx}, ${cy})`)
+            .transition()
+            .duration(800)
+            // .attr('transform', `translate(0,${cy}) `)
+            .tween('rotateAroundOrigin', function () {
+                const sel = d3.select(this);
+                const interp = d3.interpolateNumber(0,-T);
+                return function (u) {
+                  sel.attr('transform', `rotate(${interp(u)}, ${cx}, ${cy}) translate(0,${cy}) scale(1,-1) translate(0,${-cy}) rotate(${T}, ${cx}, ${cy})`);
+                };
+              })
+        }
+      }
+    }
+  </script>
+  <script id="8" type="module" pinned="">
+    // Arrows from https://observablehq.com/@oberbichler/arrow
+    function arrow(selection, ax, ay, bx, by, options = {}) {
+      const points = arrowPoints(ax, ay, bx, by, options);
+
+      selection.attr("points", points).attr("stroke-linejoin", "round");
+
+      return selection;
+    }
+
+    function arrowPoints(ax, ay, bx, by, options = {}) {
+      const dx = bx - ax;
+      const dy = by - ay;
+
+      const length = Math.sqrt(dx ** 2 + dy ** 2);
+
+      const ux = dx / length;
+      const uy = dy / length;
+
+      const nx = -uy;
+      const ny = ux;
+
+      const h = options.arrowLength || 8;
+      const w = options.arrowWidth || 4;
+
+      const mx = bx - ux * h;
+      const my = by - uy * h;
+
+      const lx = mx - (nx * w) / 2;
+      const ly = my - (ny * w) / 2;
+
+      const rx = mx + (nx * w) / 2;
+      const ry = my + (ny * w) / 2;
+
+      return [ax, ay, mx, my, lx, ly, bx, by, rx, ry, mx, my];
+    }
+
+  </script>
+</notebook>
