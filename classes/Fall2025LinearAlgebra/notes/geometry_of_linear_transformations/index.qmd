@@ -66,7 +66,7 @@ In Calc III you study functions mapping $\mathbb R^2 \to \mathbb R$, which are c
 ```
 :::
 
-More generally, if $f:\mathbb R^n \to \mathbb R^m$, then it's graph consists of those points $(\mathbf{x}, \mathbf{y})$ such that $\mathbf x \in \mathbb R^n$ and $\mathbf y \in \mathbb R^m$. Thus, the graph lives in $(m+n)$-dimensional space. If both are at least two, we have a a problem!
+More generally, if $f:\mathbb R^n \to \mathbb R^m$, then its graph consists of those points $(\mathbf{x}, \mathbf{y})$ such that $\mathbf x \in \mathbb R^n$ and $\mathbf y \in \mathbb R^m$. Thus, the graph lives in $(m+n)$-dimensional space. If both are at least two, we have a problem!
 
 ### Lineland
 
@@ -80,7 +80,7 @@ viewof update_lineland = Inputs.toggle({label: "Apply:"})
 lineland = make_lineland()
 ```
 
-Back here in our universe, we might realize that what we are effectively doing is examining the image of the set on the $x$-axis after its been mapped to the $y$-axis.
+Back here in our universe, we might realize that what we are effectively doing is examining the image of the set on the $x$-axis after it's been mapped to the $y$-axis.
 
 ```{ojs}
 graph_with_points()
@@ -89,7 +89,7 @@ graph_with_points()
 
 ## 2D Linear transformations
 
-If we'd like to understand how linear transformation affect space geometrically, we can take an approach that's similar to Lineland's approach to univariate functions. For visualization purposes, the dimension of both the domain and range cannot exceed three so I suppose the natural place to start is with functions mapping $\mathbb R^2 \to \mathbb R^2$. In this section, we'll examine the effect of several matrices on the unit square and, by extention, on the whole plane.
+If we'd like to understand how linear transformation affect space geometrically, we can take an approach that's similar to Lineland's approach to univariate functions. For visualization purposes, the dimension of both the domain and range cannot exceed three so I suppose the natural place to start is with functions mapping $\mathbb R^2 \to \mathbb R^2$. In this section, we'll examine the effect of several matrices on the unit square and, by extension, on the whole plane.
 
 ### Stretch and squish
 
@@ -124,7 +124,7 @@ picReflect = make_one_step_transition_pic([[-1,0],[0,1]])
 
 ### Reflect diagonally
 
-Swapping two rows in identity matrix also induces a reflection but along a different axis.
+Swapping two rows in the identity matrix also induces a reflection but along a different axis.
 $$\begin{bmatrix}0&1\\1&0\end{bmatrix}$$
 
 
@@ -150,7 +150,7 @@ viewof updateSkew = Inputs.toggle({label: "Apply:"})
 picSkew = make_one_step_transition_pic([[1,1],[0,1]])
 ```
 
-To understand the result, recall that *everytime* we apply matrix multiplication to our image of the unit circle, the legs of the image are exactly the columns of the matrix.
+To understand the result, recall that *every time* we apply matrix multiplication to our image of the unit circle, the legs of the image are exactly the columns of the matrix.
 
 
 ### Project 
@@ -287,7 +287,7 @@ M = \begin{bmatrix}
 \end{bmatrix}
 $$ {#eq-reflection_steps}
 
-If, for example, we want to rotate accross the line $y=\frac{1}{2}x$, then the angle is $\theta = \arctan(1/2)$ and the matrix works out to be 
+If, for example, we want to rotate across the line $y=\frac{1}{2}x$, then the angle is $\theta = \arctan(1/2)$ and the matrix works out to be 
 $$
 M = \begin{bmatrix}3/5 & 4/5 \\ 4/5 & -3/5\end{bmatrix}.
 $$
