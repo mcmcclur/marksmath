@@ -5,7 +5,14 @@ resources:
     - grades.csv
 ---
 
-Let's make the grade flow vis!
+
+Since the Fall of 2014, I've taught calculus to []{#student_count}
+students enrolled across sections of Calculus I, II, or III (excluding sections forced online by the pandemic).
+Each of those classes has followed a similar pattern with three exams during the term and a final exam. I compute grades after each exam to let everyone know exactly where they stand. The visualization below shows how those flow throughout the semester. If you hover over the B under Grade 1, for example, you'll find that 
+[]{#b_count}
+students had earned a B after the first exam and that
+[]{#b_then_a_count}
+of those students went on to earn an A for their final grade, together with links illustrating how the grades flowed along the way.
 
 <div class="container">
   <svg></svg>
