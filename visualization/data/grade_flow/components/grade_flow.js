@@ -1,5 +1,13 @@
-import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
+// Grade flow
+// Mark McClure
+// Original version July, 2019
+// Updated September, 2025
 
+// A visualization illustrating how grades have flowed
+// through my classes.
+
+
+import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
 
 export function make_grade_flow() {
     setup();
@@ -65,13 +73,9 @@ function setup() {
         if(global_filter) {
             local_filters.push(global_filter);
         }
-        console.log(['filters are ', global_filter, local_filters, filters])
         local_filters.forEach(function(d) {
             var column_to_check = d.column_name;
             var grade_to_check_for = d.grade;
-            console.log(['cases are', cases])
-            console.log(['and column_to_check is ', column_to_check])
-            console.log(['since d is ', d])
             cases = cases.filter(function(dd) {
                 return (dd[column_to_check].slice(0,1) == grade_to_check_for)
             })
@@ -186,12 +190,13 @@ var button_info = grade_matrix.map(function(g,i) {
 
 // Set up the descriptive text with location based on just
 // the first four terms in button_info.
-d3.select('svg')
+svg
   .style('overflow', 'visible')
   .append('g')
   .selectAll('text')
   .data(button_info.slice(0,4))
   .enter().append('text')
+  .attr('fill', 'currentColor')
   .attr('text-anchor', 'middle')
   .attr('x', d => d.x-10)
   .attr('y', text_pad)
@@ -212,16 +217,18 @@ container
   .data(button_info)
   .enter().append('button')
   .attr('class', 'btn btn-secondary')
+  .style('position', 'absolute')
   .style('top', d => `${(d.y - button_height/2)}px`)
   .style('left', d => `${(d.x - button_width/2)}px`)
+//   .style('padding-left', '15px')
+//   .style('padding-right', '15px')
   .style('height', `${button_height}px`)
-  .style('width', `${button_width}px`)
+   .style('width', '44px')
   .text(d => d.grade)
   .attr('id', d => d.id)
 
   // Respone to mouseenter.
   .on('mouseenter', function(e, d) {
-    console.log(['e on mouseenter is', e])
     // Figure out which button we're on, use it to define the
     // global_filter, the total number of selected students, and
     // the button_info itself (for placing the tooltip).
@@ -296,11 +303,11 @@ container
       .data(link_data)
       .enter().append('path')
       .attr('d', link)
-      .attr("stroke", "black")
+      .attr("stroke", "currentColor")
       .attr("stroke-width", d=>d.width)
       .attr("fill",'none')
       .attr('class', 'link')
-      .style('opacity', 0.5);
+      .style('opacity', 0.8);
   })
   // Just remove some stuff on mouseleave.
   .on('mouseleave', function() {
