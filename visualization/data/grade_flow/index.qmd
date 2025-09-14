@@ -1,0 +1,17 @@
+---
+title: Grade flow 
+css: grade_flow.css
+resources:
+    - grades.csv
+---
+
+Let's make the grade flow vis!
+
+<div class="container">
+  <svg></svg>
+</div>
+
+```{ojs}
+import {make_grade_flow} from './components/grade_flow.js'
+flow = make_grade_flow()
+```
