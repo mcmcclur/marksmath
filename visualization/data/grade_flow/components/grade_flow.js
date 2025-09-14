@@ -30,6 +30,11 @@ function setup() {
         .style('width', `${width}px`)
         .style('height', `${height}px`)
         // .style('border', 'solid 1px black')
+
+    // Clean up
+    let link_data = [];
+    container.selectAll('.link').remove();
+    container.selectAll('div.tooltip').remove();
     container.selectAll("button").remove();
 
     const text_pad = 25;
@@ -47,7 +52,6 @@ function setup() {
     let total;
 
     // The list of links and the link generator
-    let link_data = [];
     const link = d3.linkHorizontal()
         .x(d => d.x)
         .y(d => d.y);
