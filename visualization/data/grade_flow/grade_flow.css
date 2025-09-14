@@ -1,7 +1,4 @@
-
-
 div.container {
-	border: 2px solid darkslategray;
 	position: relative;
 }
 button {
@@ -20,5 +17,5 @@ div.tooltip {
   border: 0px;
   border-radius: 8px;
   pointer-events: none;
-	opacity: 0.5;
+	opacity: 0.8;
 }

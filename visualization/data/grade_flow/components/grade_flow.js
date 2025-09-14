@@ -18,10 +18,11 @@ function setup() {
     // const width = main.node().clientWidth;
     const width = 0.9*window.innerWidth;
     const height = 0.9*window.innerHeight;
-    main.select('div#container')
+    const container = main.select('div.container')
         .style('width', `${width}px`)
         .style('height', `${height}px`)
-
+        // .style('border', 'solid 1px black')
+    container.selectAll("button").remove();
 
     const text_pad = 25;
     const tb_pad = 20;
@@ -137,13 +138,14 @@ function setup() {
 // The container will hold some buttons that are laid on
 // top of the SVG. All text and decorations will take place
 // within the SVG.
-var container = d3.select('div.container')
-  .style('width', width)
-  .style('height', height)
-  .style('justify-content', 'center')
+// var container = d3.select('div.container')
+//   .style('width', width)
+//   .style('height', height)
+//   .style('justify-content', 'center')
 var svg = d3.select("svg")
   .attr('width', width)
   .attr('height', height)
+svg.selectAll("*").remove()
 
 // Set up button_info which will hold placement and text
 // information for the buttons.
@@ -159,7 +161,7 @@ var grade_matrix = [
 ];
 var button_info = grade_matrix.map(function(g,i) {
   var result = {'grade': g};
-  var left_x = lr_pad + button_width/2;
+  var left_x = button_width/2;
   var dx = (width - (2*lr_pad + button_width))/3;
   var x = left_x + (i%4)*dx;
   result['x'] = x;
@@ -185,12 +187,13 @@ var button_info = grade_matrix.map(function(g,i) {
 // Set up the descriptive text with location based on just
 // the first four terms in button_info.
 d3.select('svg')
+  .style('overflow', 'visible')
   .append('g')
   .selectAll('text')
   .data(button_info.slice(0,4))
   .enter().append('text')
   .attr('text-anchor', 'middle')
-  .attr('x', d => d.x)
+  .attr('x', d => d.x-10)
   .attr('y', text_pad)
   .attr("text-decoration","underline")
   .text(function(o,i) {
