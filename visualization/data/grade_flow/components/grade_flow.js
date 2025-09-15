@@ -232,11 +232,13 @@ var button_info = grade_matrix.map(function(g,i) {
     .attr('id', d => d.id)
 
     // Respone to mouseenter.
-    .on('pointerenter', function(e, d) {
+    .on('pointerenter pointerdown', function(e, d) {
+
         // Clean up
         link_data = [];
         svg.selectAll('.link').remove();
         d3.selectAll('div.tooltip').remove();
+
 
         // Figure out which button we're on, use it to define the
         // global_filter, the total number of selected students, and
@@ -319,10 +321,12 @@ var button_info = grade_matrix.map(function(g,i) {
         .style('opacity', 0.8);
     })
     // Just remove some stuff on mouseleave.
-    .on('mouseleave', function() {
-        link_data = [];
-        svg.selectAll('.link').remove();
-        d3.selectAll('div.tooltip').remove();
+    .on('pointerout', function(e) {
+        if (e.pointerType === 'mouse') {
+            link_data = [];
+            svg.selectAll('.link').remove();
+            d3.selectAll('div.tooltip').remove();
+        }
     });
 }
 
