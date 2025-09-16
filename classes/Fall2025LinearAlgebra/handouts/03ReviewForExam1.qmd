@@ -111,7 +111,23 @@ as a linear combination of $\mathbf{x}$, $\mathbf{y}$, and $\mathbf{z}$ or expla
    a. $AB$ and 
    b. $BA$?
 
-7. Write down $2\times2$ matrices that perform the following actions. In some cases, you might want to express your answer as a product of matrices that perform simpler actions.
+7. Let $A$ and $B$ denote the matrices 
+$$
+A = \left(\begin{array}{rr}
+3 & 0 \\
+3 & -2 \\
+1 & 0
+\end{array}\right)
+\text{ and }
+B = \left(\begin{array}{rr}
+1 & 0 \\
+-3 & -3
+\end{array}\right).
+$$
+   a. Compute $AB$ or explain why that makes no sense.
+   b. Compute $BA$ or explain why that makes no sense.  
+
+8. Write down $2\times2$ matrices that perform the following actions. In some cases, you might want to express your answer as a product of matrices that perform simpler actions.
 
    a. Stretches by the factor 2 in the horizontal direction and by the factor 3 in the vertical.
    b. Stretches by the factor 2 in the horizontal direction by the factor 3 in the vertical, and also reflects across the $x$-axis.
