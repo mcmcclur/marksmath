@@ -1,0 +1,263 @@
+---
+title: The number $e$ and compound interest
+page-layout: article
+echo: false
+format:
+    html:
+        toc: true
+        include-in-header:
+            text: |
+                <script src="https://sagecell.sagemath.org/static/embedded_sagecell.js"></script>
+                <script>sagecell.makeSagecell({"inputLocation": ".sage"});</script>
+    pdf: 
+        toc: false
+---
+
+
+## Introduction 
+
+Investments left in an account that accrues interest at a regular rate grow exponentially. This document explores the effect of "compounding" that interest more regularly has on the effective rate of growth. This turns out to require a good understanding of exponential functions and the natural exponential base $e$. As such, this topic illustrates a nice application for beginning calculus students.
+
+## What is $e$?
+
+[Wikipedia defines $e$](https://en.wikipedia.org/wiki/E_(mathematical_constant)#Definitions){target=_blank} in terms of a limit:
+$$
+e = \lim _{n\to \infty }\left(1+{\frac {1}{n}}\right)^{n}.
+$$
+In fact, it is exactly this characterization of $e$ that makes it important in the theory of compound interest. For a beginning calculus student, though, the crucial thing about $e$ is that it is the natural choice as a base for exponential functions. The first thing we'll do here is reconcile those two perspectives.
+
+
+### The natural base of exponential functions
+
+When first considering the derivative of the general exponential function $f(x)=b^x$, where $b$ is a positive base, it's natural to apply the definition of the derivative in terms of the difference quotient:
+$$\begin{aligned}
+\frac{d}{dx} b^x &= \lim_{h\to0} \frac{b^{x+h}-b^x}{h} = \lim_{h\to0} \frac{b^xb^n-b^x}{h} \\
+&= b^x \lim_{h\to0}\frac{b^h-1}{h} = c_b \, b^x. 
+\end{aligned}$$
+The value of that limit $\lim_{h\to0}(b^h-1)/h$ is presumably *some* number, which I've chosen to denote with a $c_b$. Thus, this computation suggests that the derivative of any exponential function is simply a constant times that exponential function you started with.
+
+The limit that this leads to
+$$
+\lim_{h\to0}\frac{b^h-1}{h}
+$$ 
+is not quite as elementary as those limits that arise when dealing algebraic functions like polynomials. There's no evident way to cancel the $h$ in the denominator. We might still choose to explore the limit numerically, however. To this end, @tbl-funvalues lists values of $(2^h-1)/h$ and $(3^h-1)/h$ near $h=0$.
+ 
+```{python}
+#| label: tbl-funvalues
+#| tbl-cap: Values of $(2^h-1)/h$ and $(3^h-1)/h$ near $h=0$
+
+from IPython.display import Markdown
+
+h_vals = [10**(-n) for n in range(1,7)]
+def f2(h):
+    return (2**h - 1)/h
+def f3(h):
+    return (3**h - 1)/h
+
+header = "   |   | " + " | ".join(" " for h in h_vals) + " |"
+
+# separator row: one "---" per column
+sep = "|" + "---|" * (len(h_vals) + 1)
+
+# data rows: first cell is math header
+row_h  = "| $h$   | " + " | ".join(f"{h:.6f}" for h in h_vals) + " |"
+row_2h = "| $(2^h-1)/h$ | " + " | ".join(f"{f2(h):.6f}" for h in h_vals) + " |  "
+row_3h = "| $(3^h-1)/h$ | " + " | ".join(f"{f3(h):.6f}" for h in h_vals) + " |  "
+
+md_table = "\n   ".join([header, sep, row_h, row_2h, row_3h]) + "  "
+
+indented_table = "\n".join("    " + line for line in md_table.splitlines())
+
+Markdown(md_table)
+```
+
+The table indicates that 
+$$
+\lim_{h\to0} \frac{2^h-1}{h} \approx 0.6931 \text{ and } 
+\lim_{h\to0} \frac{3^h-1}{h} \approx 1.0986.
+$$
+This suggests that there must be some value of $b$ between $2$ and $3$ so that the limit 
+$$
+\lim_{h\to0}\frac{b^h-1}{h} \text{ is exactly } 1.
+$$ 
+We denote this value of $b$ with the letter $e$. That is, the number $e$ is chosen, by definition, to be the unique number such that 
+$$
+\lim_{h\to0}\frac{e^h-1}{h} = 1. 
+$$
+The great thing about this from the perspective of calculus is that we have the simpler formula for the derivative of the exponential function, namely
+$$
+\frac{d}{dx} e^x = e^x.
+$$
+Thus $f(x) = e^x$ is the exponential function whose derivative is as simple as possible.
+
+### The limit definition
+
+So, how does this approach to $e$ as the natural exponential base relate to Wikipedia's claim that 
+$$
+e = \lim _{n\to \infty }\left(1+{\frac {1}{n}}\right)^{n}?
+$$
+Well, if 
+$$
+\lim_{h\to0}\frac{e^h-1}{h} = 1,
+$$
+then for small values of $h$ we must have
+$$
+\frac{e^h-1}{h} \approx 1. 
+$$
+Solving for $e$, we get 
+$$
+e \approx (1+h)^{1/h}
+$$
+or, maybe
+$$
+e = \lim_{h\to0} (1+h)^{1/h}.
+$$
+The advantage here is that it makes it much easier to compute estimates for the numerical value of $e$; simply plug values of $h$ that are close to zero into $(1+h)^{1/h}$. The common definition stated by Wikipedia is simply a sequential version of this obtained with the identification $n=1/h$. The limit then becomes
+$$
+e = \lim_{n\to\infty} \left(1+\frac{1}{n}\right)^{n}.
+$$
+We can then approximate $e$ by plugging in large values of $n$ into $(1+1/n)^n$.
+
+```{python}
+#| label: tbl-evalues
+#| tbl-cap: Values of $(1+1/n)^n$ for large $n$
+
+from IPython.display import Markdown
+n_vals = [10**(n) for n in range(1,7)]
+def fe(n):
+    return (1+1/n)**n
+
+header = "   |   | " + " | ".join(" " for n in n_vals) + " |"
+
+# separator row: one "---" per column
+sep = "|" + "---|" * (len(n_vals) + 1)
+
+# data rows: first cell is math header
+row_n  = "| $n$   | " + " | ".join(f"{n}" for n in n_vals) + " |"
+row_e = "| $(1+1/n)^n$ | " + " | ".join(f"{fe(n):.6f}" for n in n_vals) + " |  "
+
+md_table = "\n   ".join([header, sep, row_n, row_e]) + "  "
+
+indented_table = "\n".join("    " + line for line in md_table.splitlines())
+
+Markdown(md_table)
+```
+
+It looks like $e\approx 2.718$. A more precise approximation is 
+$$
+e \approx 2.7182818284590452353602874714.
+$$
+
+
+## The basics of compound interest
+
+Let's shift gears now to talk about compound interest. The basic question asks, how much money will a bank account hold if we invest a certain amount at a given interest rate and let it grow year by year? To be more precise, suppose that 
+
+- $P$ denotes our initial investment (often called the *principal*),
+- $r$ denotes the annual interest rate, and 
+- $t$ denotes the length of time that we leave the account alone.
+
+We'd like a function $A(t)$ that tells us the amount that our account hold as a function of time $t$. For the time being we'll assume that $t$ takes discrete steps in numbers of years.
+
+### Analysis
+
+Let's be clear about the annual interest rate. This is simply the factor by which the money grows from one year to the next.
+
+- At time $t=0$, we've just put the money in the bank. We have $A(0)=P$.
+- After $t=1$ year, $A(1) = P + rP = P(1+r)$.
+- After $t=2$ years, $A(2) = P(1+r) + rP(1+r) = P(1+r)(1+r) = P(1+r)^2$.
+- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$\vdots$&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$\vdots$&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$\vdots$&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$\vdots$&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$\vdots$&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$\vdots$&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$\vdots$&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$\vdots$&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$\vdots$
+- After $t$ years, $A(t) =  P(1+r)^t$.
+
+Note that the interest that we make each year rolls into the investment the next year. This is the defining characteristic of *compound* interest. The effect is that your investment grows exponentially! Generally, though, the base $1+r$ is just a little larger than $1$.
+
+**Example**: Suppose we invest $\$1000$ at an annual interest rate of $4\%$. How much will we have after 
+
+- 1 year?
+- 10 years?
+
+*Solution*:
+
+- After 1 year, we have $A(1) = 1000\times1.04 = 1040$.
+- After 10 years, we have $A(10) = 1000\times(1.04)^{10} = 1480.24$.
+
+### Frequency of compound interest 
+
+In the previous example, the interest compounded *annually*. What if we want more frequent access to our funds, though? The typical approach is to compound the funds more frequently; we divide our rate, though, by the number of times we compound annually.
+
+Let's suppose that our annual rate is again $4\%$. Now, though, we wish to compound the interest *quarterly*, that is $4$ times throughout the year. The standard way to accomplish this is to use a quarterly rate of $1\%$. Then, after one year, the interest will have compounded once. After ten years, the interest will have compounded 40 times.  We'll find that 
+
+- After 1 year, we have $A(1) = 1000\times(1.01)^4 = 1040.60$.
+- After 10 years, we have $A(10) = 1000\times(1.04)^{40} = 1488.86$.
+
+Not surprisingly, we make a bit more money as time goes on. The change is not huge, though; the main advantage is more frequent access.
+
+Of course, we might want even more frequent access. We might want to compound monthly, or daily, or minutely, or anything really. We really should write down a general formula in terms of a parameter $n$ representing the number of times per year that we wish to compound the interest. This is not hard:
+
+If we compound the interest $n$ times per year at an annual rate $r$, then
+
+- the rate per period is $r/n$,
+- the number of times we compound the interest per year is $nt$, so 
+- $$A(t) = P(1+r/n)^{nt}.$${#eq-general_compound_interest_formula}
+
+**Example**: Suppose that on Jan 1 we invest $\$500$ at an annual interest rate of $6\%$ compounded daily. How much will we have on July 5 of a non leap year?
+
+*Solution*: Our rate per period will be $0.06/365$ and July 5 is the $185^{\text{th}}$ day of the year or $184$ days after Jan 1. Thus we'll have 
+$$
+500\times (1+0.06/365)^{184} = \$515.35.
+$$
+
+**Example**: Suppose that we invest $\$1$ on Jan 1 at an annual interest rate of $5\%$ compounded 12 times per year or approximately monthly. How much will we have on Jan 1 of the next year?
+
+*Solution*: Our rate per period will be $0.05/12$ and we'll compound 12 times.  Thus we'll have 
+$$
+(1+0.05/12)^{12} = \$1.05116.
+$$
+Again, we get a little more than the $5 that we'd get if we'd compounded just once. In fact, the *effect* is as if our interest were $5.116\%$. This is called the *effective rate of interest*.
+
+## Interest compounded *continuously*
+
+What if we want *constant* access to our money? Compounding by the minute is insufficient; we want our money *now*!
+
+The solution is to take the limit as $n\to\infty$ in @eq-general_compound_interest_formula. Here's that computation:
+
+$$
+\begin{aligned}
+\lim_{n\to\infty} P\left(1+\frac{r}{n}\right)^{nt} &= 
+  \lim_{n\to\infty} P\left(1+\frac{1}{n/r}\right)^{\frac{n}{r}rt} \\
+  &= \lim_{n\to\infty} P\left(\left(1+\frac{1}{n/r}\right)^{n/r}\right)^{rt}
+  = Pe^{rt}.
+\end{aligned}
+$$
+
+What a beautifully simple and pert little formula! To get there we used the fact that 
+$$
+\left(1+\frac{1}{n/r}\right)^{n/r} \to e \text{ as } n\to\infty.
+$$
+That's just the definition of $e$, since $\displaystyle \frac{n}{r} \to \infty$ as $n\to\infty$.
+
+**Example**: Suppose that $1000 was automatically deposited in a new account as the clock struck midnight on New Year's Eve going into 2009. The account accrues interest at an annual rate of 6.5% compounded continuously. How much would the account hold at 9:17 AM on July 5?
+
+*Solution*: 
+
+Of course, you can do this on a calculator. This example is a bit more complicated, though, so here's how I'd approach it with Python:
+
+```{python}
+#| echo: true
+from numpy import exp
+
+# Minutes in a year
+M = 24*60*365
+
+# Minutes until 9:17 AM on July 5
+m = 24*60*184 + 9*60 + 17
+
+# Time in years
+t = m/M
+
+# Annual rate
+r = 0.065
+
+# Amount after time t if compounded continuously:
+print(1000*exp(r*t))
+```
