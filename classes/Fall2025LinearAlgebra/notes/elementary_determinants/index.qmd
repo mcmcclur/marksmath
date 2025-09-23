@@ -1,0 +1,160 @@
+---
+title: Elementary matrices and determinants
+page-layout: article
+date: 2025-09-22
+format:
+  html:
+    toc: true
+    css: styles.css
+---
+
+## $2\times2$ determinants
+
+The determinant of a $2\times2$ matrix 
+$$
+A = \begin{bmatrix} a&b\\c&d \end{bmatrix}
+$$
+can be computed by $ad-bc$ and characterized as the area of the parallelogram spanned by the columns of $A$. The objective of this set of class notes is to gain some intuition around this via the geometric effect of the elementary matrices.
+
+## Elementary matrices
+
+The elementary matrices are exactly those matrices obtained 
+An elementary matrix can be obtained by applying an elementary row operation to the identity matrix. For example,
+
+$$
+\begin{bmatrix} 1&0\\0&1 \end{bmatrix}
+\xrightarrow{\,-2R_1+R_2 \to R_2\,}
+\begin{bmatrix}1&0\\-2&1\end{bmatrix}
+$$
+
+In addition, multiplication by an elementary matrix performs that operation! For example, 
+$$
+\begin{bmatrix}1&0\\-2&1\end{bmatrix}
+\begin{bmatrix}a&b\\c&d\end{bmatrix}
+=
+\begin{bmatrix}a&b\\-2a+c&-2b+d\end{bmatrix}.
+$$
+
+As a result, the nonsingular matrices are exactly those matrices that can be expressed as a product of elementary matrices. Furthermore, it's not hard to show that 
+$$
+\det(E_1E_2) = \det(E_1)\det(E_2)
+$$
+for elementary matrices $E_1$ and $E_2$. Thus, this result extends to all nonsingular matrices.
+
+## Geometric illustrations
+
+### Stretch
+
+The unit square is shown below. Multiplying by the elementary matrix
+$$\begin{bmatrix}2&0\\0&1\end{bmatrix}$$
+increases the area of the matrix by the factor 2, as well as the value of the determinant.
+
+```{ojs}
+viewof updateStretch = Inputs.toggle({label: "Apply:"})
+```
+
+```{ojs}
+picStretch = make_one_step_transition_pic([[2,0],[0,1]])
+```
+
+
+### Reflect
+
+If the sign of one of the diagonal entries is negative, we change the orientation of the image and the sign of the determinant
+$$\begin{bmatrix}-1&0\\0&1\end{bmatrix}$$
+
+
+```{ojs}
+viewof updateReflect = Inputs.toggle({label: "Apply:"})
+```
+
+```{ojs}
+picReflect = make_one_step_transition_pic([[-1,0],[0,1]])
+```
+
+### Reflect diagonally
+
+Swapping two rows in the identity matrix also induces a change and orientation and sign
+$$
+\begin{bmatrix} 1&0\\0&1 \end{bmatrix}
+\xrightarrow{\,R_1 \leftrightarrow R_2\,}
+\begin{bmatrix}0&1\\1&0\end{bmatrix}
+$$
+
+
+```{ojs}
+viewof updateReflect2 = Inputs.toggle({label: "Apply:"})
+```
+
+```{ojs}
+picReflect2 = make_one_step_transition_pic([[0,1],[1,0]])
+```
+
+### Skew 
+
+A skew preserves area.
+$$
+\begin{bmatrix} 1&0\\0&1 \end{bmatrix}
+\xrightarrow{\,-2R_2+R_1\to R_1\,}
+\begin{bmatrix}1&-2\\0&1\end{bmatrix}
+$$
+
+
+```{ojs}
+viewof updateSkew = Inputs.toggle({label: "Apply:"})
+```
+
+```{ojs}
+picSkew = make_one_step_transition_pic([[1,-2],[0,1]])
+```
+
+To understand the result, recall that *every time* we apply matrix multiplication to our image of the unit circle, the legs of the image are exactly the columns of the matrix.
+
+
+### Project 
+
+Projection flattens area and resulrs in a determinant of zero.
+$$\begin{bmatrix}1&0\\0&0\end{bmatrix}$$
+
+
+```{ojs}
+viewof updateProject = Inputs.toggle({label: "Apply:"})
+```
+
+```{ojs}
+picProject = make_one_step_transition_pic([[1,0],[0,0]])
+```
+
+
+
+<!-- Reactions -->
+
+```{ojs}
+  picStretch.update(updateStretch);
+```
+
+```{ojs}
+  picReflect.update(updateReflect);
+```
+
+```{ojs}
+  picReflect2.update(updateReflect2);
+```
+
+```{ojs}
+  picSkew.update(updateSkew);
+```
+
+```{ojs}
+  picProject.update(updateProject);
+```
+
+
+
+```{ojs}
+import {
+  make_one_step_transition_pic,
+} from './components/transitionPics2D.js';
+// import { create, all } from 'https://cdn.jsdelivr.net/npm/mathjs@12.1.0/index.mjs';
+// math = create(all);
+```
