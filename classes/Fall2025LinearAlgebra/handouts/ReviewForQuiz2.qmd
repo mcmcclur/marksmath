@@ -1,0 +1,129 @@
+---
+title: Review for quiz 1
+date: 2025-08-20
+format:
+  html:
+    page-layout: article
+    toc: true
+  pdf:
+    mainfont: "Times New Roman"
+    include-in-header:
+      text: |
+        \pagenumbering{gobble}
+---
+
+We have our first quiz next Wednesday, August 27th. You can expect that problem #1 will appear on the quiz exactly and that there will also be a problem very much like #2. There will very likely be a third problem that's a shorter version of something else you see on here. 
+
+This is review sheet is *longer* than the quiz will be to give you practice! It is representative of what you'll see, though, so please work it out to the best of your ability!
+
+There is also a MyOpenMath HW over this material due on Monday, August 25.
+
+## Quiz type questions
+
+1. Write down the precise definition of the following:
+   a. Linear equation. [Definition 1.1.7](https://understandinglinearalgebra.org/sec-expect.html#sec-expect-4-5){target=_blank}
+   b. Reduced Row Echelon Form. [Definition 1.2.5](https://understandinglinearalgebra.org/sec-finding-solutions.html#reduced-row-echelon-2){target=_blank}
+
+   Note: Don't paraphrase. I've linked the exact definitions in the textbook.
+
+2. Consider the following system:  
+    $$
+    \begin{aligned}
+    - x - 2y + 2z &= -1 \\
+    2x + 4y - z   &= 5  \\
+    x + 2y        &= 3
+    \end{aligned}
+    $$
+
+   a) Write the system as an augmented matrix.
+   b) Find the RREF of the matrix.
+   c) Use the RREF to find the solution of the system. Keep in mind that there may be one, none, or infinitely many solutions.  
+   
+   Note: This is taken from [Activity 1.2.2.b](https://understandinglinearalgebra.org/sec-finding-solutions.html#sec-finding-solutions-3-12-2-1-1-2){target=_blank} of section 1.2 of our textbook.
+
+3. Row reduce the following matrix:
+$$
+\begin{bmatrix}
+1 & 1 & 1 \\
+1 & 2 & 1 \\
+1 & 1 & 2
+\end{bmatrix}
+$$
+
+4. Determine if each of the following matrices is in RREF or not. For those that aren't, indicate why not.
+
+$$
+A_1=\begin{bmatrix}
+1&0&0&0&3\\
+0&1&0&0&-2\\
+0&0&1&0&0\\
+0&2&0&1&5
+\end{bmatrix}
+$$
+
+$$
+A_2=\begin{bmatrix}
+1&0&0&0&3\\
+0&1&0&0&-2\\
+0&0&1&0&0\\
+0&0&0&1&5
+\end{bmatrix}
+$$
+
+$$
+A_3=\begin{bmatrix}
+1&2&0&0&1\\
+0&1&0&0&-3\\
+0&0&1&0&4\\
+0&0&0&1&0
+\end{bmatrix}
+$$
+
+$$
+A_4=\begin{bmatrix}
+0&1&0&0&-3\\
+2&0&0&0&6\\
+0&0&1&0&4\\
+0&0&0&1&0
+\end{bmatrix}
+$$
+
+
+$$
+A_5=\begin{bmatrix}
+1&0&2&0&0\\
+0&1&-1&0&0\\
+0&0&0&1&4\\
+0&0&0&0&0
+\end{bmatrix}
+$$
+
+5. Exactly two of the the matrices in problem 5, it turns out, *are* in reduced row echelon form. Assume that both of those matrices are the augmented matrices of a $5\times5$ system and use the matrix to write down the solution of the corresponding system.
+
+6. The matrix below is the reduced row echelon form of an augmented matrix for a systems of four linear equations in six unknowns $x_1,x_2,x_3,x_4,x_5,x_6$. Find the solution of the system.
+
+$$
+\left(\begin{array}{rrrrrr|r}
+1 & 0 & -3 & 0 & 0 & -2 & 1 \\
+0 & 1 & 2 & 0 & 0 & 3 & 0 \\
+0 & 0 & 0 & 1 & 0 & 1 & 1 \\
+0 & 0 & 0 & 0 & 1 & 0 & 0
+\end{array}\right)
+$$
+
+::: {.content-visible when-format="html"}
+
+## Your questions and solutions
+
+If you'd like to ask a question about or reply to a question on this sheet, you can do so by pressing the "Reply on Discourse" button below.
+
+```{ojs}
+embedDiscourseMathTopic(19)
+```
+
+```{ojs}
+import {embedDiscourseMathTopic} from '/components/EmbedDiscourseMathTopics/embedDiscourseMathTopic.js';
+```
+
+:::
+
