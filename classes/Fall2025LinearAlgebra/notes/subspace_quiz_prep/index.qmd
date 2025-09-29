@@ -1,0 +1,318 @@
+---
+title: Subspaces for the quiz
+subtitle: Slideshow class notes
+date: 2025-09-29
+format:
+  revealjs:
+    css: ../RevealPres-style.css
+    controls: true
+    controls-layout: bottom-right
+    navigation-mode: vertical
+    smaller: true
+    history: false
+    transition: slide
+    date-format: ddd, MMM DD, YYYY
+    chalkboard: true
+    html-math-method:
+      method: mathjax 
+      url: "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js"
+      options:
+        tex:
+          packages: {'[+]': ['color', 'colorv2']}
+        loader:
+          load: ['[tex]/color', '[tex]/colorv2']
+---
+
+
+# Subspaces and quiz prep
+
+We've got a quiz on Wednesday which will cover matrix inverses and determinants, as well as the concept of a *subspace* of $\mathbb R^n$. The concept of a subspace is not super hard and turns out to be a convenient term to describe some of the things we've already covered.
+
+$$
+\newcommand{\uvec}{{\mathbf u}}
+\newcommand{\vvec}{{\mathbf v}}
+\newcommand{\wvec}{{\mathbf w}}
+\newcommand{\ivec}{\mathbf{i}}
+\newcommand{\jvec}{\mathbf{j}}
+\newcommand{\kvec}{\mathbf{k}}
+\newcommand{\real}{{\mathbb R}}
+$$
+
+# Subspaces 
+
+The following is [Definition 3.5.1](https://understandinglinearalgebra.org/sec-subspaces.html#sec-subspaces-3-3){target=_blank} of our text:
+
+> A subspace of $\real^p$ is a subset of $\real^p$ that is the span of a set of vectors.
+
+## Another characterization
+
+Our textbook's definition is not common. A more common definition is to say that 
+
+> A subspace of $\real^p$ is a subset of $\real^p$ that is closed under linear combinations.
+
+That simply means that if $\vvec$ and $\uvec$ are in the subspace, then so is a linear combination of those two.
+
+It's pretty easy to see that the span of a set of vectors is closed under linear combinations; it's less easy to see that a set that's closed under linear combinations is the span of a set of vectors.
+
+## Visualization
+
+In any event, the concept of a subspace is pretty simple to illustrate in low dimensions.
+
+
+## A one-dimensional subspace of $\mathbb R^2$
+
+A one-dimensional subspace of $\mathbb R^2$ is determined by a single vector and is a line through the origin that's parallel to that vector.
+
+```{python}
+#| fig-align: center
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Set up figure and axes
+fig, ax = plt.subplots(figsize=(6, 6))
+ax.set_xlim([-5, 5])
+ax.set_ylim([-3, 3])
+ax.set_aspect('equal')  # equal scaling
+
+# Move the spines to the origin
+ax.spines['left'].set_position('zero')
+ax.spines['bottom'].set_position('zero')
+
+# Hide the top and right spines
+ax.spines['right'].set_color('none')
+ax.spines['top'].set_color('none')
+
+# Put ticks only on bottom and left
+ax.xaxis.set_ticks_position('bottom')
+ax.yaxis.set_ticks_position('left')
+
+# Define vector
+v = np.array([2, 1])
+
+# Plot the line through the origin determined by v
+t = np.linspace(-5, 5, 100)
+x_line = t * v[0]
+y_line = t * v[1]
+ax.plot(x_line, y_line, 'b-')
+
+# Draw the vector itself (from origin)
+ax.quiver(0, 0, v[0], v[1],
+          angles='xy', scale_units='xy', scale=1,
+          color='k', linewidth=2)
+
+plt.show()
+```
+
+## A one-dimensional subspace of $\mathbb R^3$
+
+A one-dimensional subspace of $\mathbb R^3$ is also is a line through the origin that's parallel to a single vector; it just lives in $\mathbb R^3$, now.
+
+::: {.center}
+```{ojs}
+oneD 
+```
+:::
+
+## A two-dimensional subspace of $\mathbb R^3$
+
+A two-dimensional subspace of $\mathbb R^3$ is determined by two non-parallel vectors and is a plane containing the origin that is parallel to both vectors.
+
+```{ojs}
+twoD 
+```
+
+# Bases
+
+To fully discuss the idea of a subspace, it will help to develop a bit more notation. In particular, we need the concept of a *basis*. This is one of the most fundamental concepts in linear algebra and a definition that you need to know for the quiz.
+
+## Definition 
+
+This definition is taken directly from [Definition 3.2.3](https://understandinglinearalgebra.org/sec-bases.html#sec-bases-3-3){target=_blank} of our text:
+
+> A set of vectors $\vvec_1,\vvec_2,\ldots,\vvec_n$ in $\real^m$ is called a ***basis*** for $\real^m$ if the set of vectors spans $\real^m$ and is linearly independent.
+
+You might think of this as saying that, not only do the vectors span the whole space, but that they do so *efficiently*.
+
+## Examples in $\real^2$
+
+The vectors 
+$$
+\ivec=\begin{bmatrix}1\\0\end{bmatrix} \: \text{ and } \: 
+\jvec=\begin{bmatrix}0\\1\end{bmatrix}
+$$ 
+form a basis of $\real^2$.
+
+Alternatively, the vectors 
+$$
+\uvec=\begin{bmatrix}2\\1\end{bmatrix} \: \text{ and } \: 
+\vvec=\begin{bmatrix}1\\2\end{bmatrix}
+$$ 
+also form a basis of $\real^2$. 
+
+In fact, any pair of linearly independent vectors forms a basis of $\real^2$.
+
+
+```{ojs}
+import {oneD, twoD} from '@mcmcclur/linear-3d'
+```
+
+## Non-examples in $\real^2$
+
+The vectors 
+$$
+\ivec=\begin{bmatrix}1\\0\end{bmatrix}, \: 
+\jvec=\begin{bmatrix}0\\1\end{bmatrix},
+\uvec=\begin{bmatrix}2\\1\end{bmatrix}, \: \text{ and } \: 
+\vvec=\begin{bmatrix}1\\2\end{bmatrix}
+$$ 
+do *not* form a basis of $\real^2$. They span $\real^2$ but are not linearly independent.
+
+The vectors 
+$$
+\ivec=\begin{bmatrix}2\\-1\end{bmatrix} \: \text{ and } \: 
+\vvec=\begin{bmatrix}-4\\2\end{bmatrix}
+$$ 
+do *not* form a basis of $\real^2$. They neither span $\real^2$ nor are linearly independent.
+
+
+## A concrete test and its consequences
+
+It's generally pretty easy to see if a set of 2D vectors forms a basis. It gets trickier as the dimension increases so we need some kind of concrete, computational test to tell when a set of vectors is a basis.
+
+## The test
+
+This is [Proposition 3.2.4](https://understandinglinearalgebra.org/sec-bases.html#sec-bases-3-8){target=_blank} of our text:
+
+> A set of $n$ vectors $\vvec_1, \vvec_2, \cdots, \vvec_n$ 
+> forms a basis for $\real^m$ if and only if the matrix
+> $$
+> A = \left[\begin{array}{rrrr}
+> \vvec_1 & \vvec_2 & \cdots & \vvec_n
+> \end{array}\right]
+> \sim I_m.
+> $$
+
+Note that the $\sim$ symbol means that the two matrices are row equivalent, i.e. one can be transformed into the other via elementary row operations.
+
+Thus, if you want to know whether a set of $n$ vectors forms a basis for $\real^m$, simply form a matrix whose columns are exactly those vectors and reduce it to row echelon form. If you land at the $m$-dimensional identity matrix, then your vectors form a basis; otherwise, not.
+
+## An unsurprising corollary
+
+The number of vectors in a basis of $\real^m$ must be $m$.  
+
+We call this number $m$ the *dimension* of the space.
+
+::: {.fragment}
+The concept of dimension becomes a bit more subtle in the context of subspaces.
+:::
+
+## Example
+
+Suppose we wish to know if the columns of the following matrix form a basis for $\real^5$
+
+$$
+M = \left[\begin{array}{rrrrr}
+1 & 1 & -1 & 0 & 1 \\
+-4 & -12 & -2 & 8 & 0 \\
+3 & 0 & 1 & 3 & 2 \\
+2 & 4 & -2 & -2 & 0 \\
+2 & 3 & -1 & -1 & -1
+\end{array}\right]
+$$
+
+::: {.fragment}
+
+We could do so by reducing to RREF with Sage.
+
+:::
+
+## The computation 
+
+Here's the computation:
+
+<iframe width=800 height=500 src="./rref1.html"></iframe>
+
+# Column space and range 
+
+The following is [Definition 3.5.6](https://understandinglinearalgebra.org/sec-subspaces.html#sec-subspaces-4-3) of our text:
+
+>  If $A$ is an $m\times n$ matrix, we call the span of its columns the column space of $A$ and denote it as $\text{Col(A)}$.
+
+By definition, the column space of an $m\times n$ matrix is a subspace of $\mathbb R^m$.
+
+
+## Range 
+
+Since $A$ is $m\times n$ matrix, it leads a linear transformation $T:\real^n\to\real^m$ defined by matrix multiplication
+$$
+T(\mathbb{x}) = A\mathbb{x}.
+$$
+Of course, matrix multiplication always returns a linear combination of the columns of $A$. This leads to an alternate characterization of the column space:
+
+> If $A$ is an $m\times n$ matrix, the column space of $A$ is exactly the range of the linear transformation induced via multiplication by $A$.
+
+
+
+## A basis for column space
+
+Given a matrix, it's easy enough to describe the column space as the span of the columns. We'd like to do this *efficiently*, though. Of course, that means we should find a set of vectors that spans the column space that is linearly independent.
+
+That leads to [Definition 3.5.4](https://understandinglinearalgebra.org/sec-subspaces.html#sec-subspaces-3-8){target=_blank}:
+
+> A basis for a subspace $S$ of $\real^p$  is a set of vectors in $S$ that are linearly independent and whose span is $S$. We say that the dimension of the subspace $S$, denoted $\text{dim}(S)$, is the number of vectors in any basis.
+
+
+## Example 
+
+Suppose that $A$ is given by
+
+$$
+A = \left[\begin{array}{rrrrr}
+-7 & -1 & -5 & -7 & -15 \\
+1 & -8 & 17 & -5 & -12 \\
+-6 & 8 & -22 & 6 & 8 \\
+-7 & -3 & -1 & 6 & -4 \\
+-3 & 8 & -19 & -8 & -3
+\end{array}\right]
+$$
+
+Clearly, the column space of $A$ lives in $\real^5$. To describe it efficiently, we need to find a subset of the columns that are linearly independent and whose span is the entire column space. We can do that with the reduced row echelon form.
+
+## The computation  
+
+Here's how to compute the reduced row echelon form with Sage:
+
+<iframe width=800 height=500 src="./rref2.html"></iframe>
+
+## So...
+
+The point behind that Sage computation is that we can now easily see that the pivot columns are in positions 1, 2, and 4. Thus, we can drop the other columns from the original matrix, leaving the columns that form a basis for the range/column space.
+
+$$
+A = \left[\begin{array}{rrrrr}
+-7 & -1 & \textcolor{#ddd}{-5} & -7 & \textcolor{#ddd}{-15} \\
+1 & -8 & \textcolor{#ddd}{17} & -5 & \textcolor{#ddd}{-12} \\
+-6 & 8 & \textcolor{#ddd}{-22} & 6 & \textcolor{#ddd}{8} \\
+-7 & -3 & \textcolor{#ddd}{-1} & 6 & \textcolor{#ddd}{-4} \\
+-3 & 8 & \textcolor{#ddd}{-19} & -8 & \textcolor{#ddd}{-3}
+\end{array}\right]
+$$
+
+
+# Null space
+
+Here's [Definition 3.5.10](https://understandinglinearalgebra.org/sec-subspaces.html#sec-subspaces-5-3){target=_blank} from our text:
+
+> If $A$ is an $m\times n$ matrix, we call the subset of vectors $\mathbf x$ in $\mathbb R^n$ satisfying $A\mathbf{x} = \mathbf{0}$ the null space of $A$ and denote it by $\text{Null}(A)$.
+
+## Finding the null space
+
+To find the null space of a matrix, we can place it into reduced row echelon form and use that to solve the system $A\mathbf{x} = \mathbf{0}$ directly. We've done that a few times now and I'm not planning to ask about it on Wednesday's quiz.
+
+## Row space 
+
+If we can use the columns of an $m\times n$ matrix to form a subspace of $\real^m$, then we can also use the rows to form a subspace of $\mathbb R^n$. This subspace is called the row space and is related to the null space.
+
+To see the relationship, note that if we take the dot product of a row with a vector in the null space, we must get zero. This is true for every row and every element of the null space. Thus,
+
+> A vector is in the row space if and only if it's perpendicular to every element of the null space.
