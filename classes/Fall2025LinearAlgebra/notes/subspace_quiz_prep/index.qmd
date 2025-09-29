@@ -4,6 +4,7 @@ subtitle: Slideshow class notes
 date: 2025-09-29
 format:
   revealjs:
+    chalkboard: true
     css: ../RevealPres-style.css
     controls: true
     controls-layout: bottom-right
