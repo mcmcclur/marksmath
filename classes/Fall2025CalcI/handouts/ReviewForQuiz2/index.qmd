@@ -1,0 +1,68 @@
+---
+title: Review for quiz 2
+date: 2025-09-29
+echo: false 
+format:
+  html:
+    page-layout: article
+    toc: true
+  pdf:
+    mainfont: "Times New Roman"
+    include-in-header:
+      text: |
+        \pagenumbering{gobble}
+---
+
+We'll have our second quiz this Friday, October 3rd. There will probably be four questions on the quiz that will be a lot like the problems you see here.
+
+In problem 1, there are some problems involving fractions, where you might consider using the quotient rule.  There are also some questions involving the tangent function, which is itself a fraction. We'll talk about these things in class on Wednesday.
+
+::: {.content-visible when-format="html"}
+
+If you have questions about any of the problems on this sheet, you can use the Reply on Discourse button down below.
+
+:::
+
+## Problems 
+
+1. Use the differentiation rules to compute the derivatives of the following functions.
+   a. $\displaystyle f(x) = \sqrt{x} - \frac{1}{x^2}$
+   d. $\displaystyle f(x)=\frac{x^4 - x^3 + x - 1}{x^2}$
+   a. $f(x) = \sin(x) - \cos(x) + \tan(x)$
+   b. $f(x) = x^3\sin(x)$
+   f. $f(x) = \sqrt{x} (x^2+x+1)$
+   c. $f(x) = \sqrt{x}e^x\cos(x)$
+   d. $\displaystyle f(x)=\frac{\sin(x)}{x^2+1}$
+
+2. Compute the following limits involving trig functions.  
+   If you use the fact that $\displaystyle \lim_{\theta\to0} \sin(\theta)/\theta = 1$, be sure to clearly indicate how it arises.
+
+   a. $\displaystyle \lim_{x\to0} \frac{\sin(3x)}{x}$
+   a. $\displaystyle \lim_{x\to0} \frac{\sin(2x)}{\tan(x)}$
+   a. $\displaystyle \lim_{x\to0} \frac{\sin(2x)}{\cos(x)}$
+
+3. Sketch the graph of $$f(x) = 2\cos\left(\frac{\pi}{2} x\right).$$  
+   Be sure to clearly indicate the $x$ and $y$ intercepts, as well as the maximum and minimum values.
+
+4. Supposing that $f$ and $g$ are differentiable functions, use the definition of the derivative to show that
+$$\frac{d}{dx} (2f(x) - g(x)) = 2f'(x) - g'(x).$$
+   
+
+::: {.content-visible when-format="html"}
+
+## Questions
+
+If you'd like to ask a question about or reply to a question on this sheet, you can do so by pressing the "Reply on Discourse" button below.
+
+```{ojs}
+embedDiscourseMathTopic(41)
+```
+
+```{ojs}
+import {embedDiscourseMathTopic} from '/components/EmbedDiscourseMathTopics/embedDiscourseMathTopic.js';
+```
+
+:::
+
+
+
