@@ -1,0 +1,46 @@
+---
+title: More review for quiz 2
+date: 2025-10-01
+echo: false 
+format:
+  html:
+    page-layout: article
+    toc: true
+  pdf:
+    mainfont: "Times New Roman"
+    include-in-header:
+      text: |
+        \pagenumbering{gobble}
+---
+
+Here are a few more problems like our quiz this Friday.
+
+
+## Problems 
+
+1. Use the differentiation rules to compute the derivatives of the following functions.
+   a. $\displaystyle f(x) = x\tan(x)$
+   \vspace{1in}
+   b. $\displaystyle f(x) = \frac{\sqrt{x}}{x^2 + 1}$
+
+\vspace{1.5in}
+
+2. Use the fact that $\displaystyle \lim_{\theta\to0} \sin(\theta)/\theta = 1$ to compute 
+$$
+\lim_{x\to0} \frac{\tan(4x)}{3x}.
+$$
+
+\newpage
+
+3. Sketch the graph of $$f(x) = -\sin\left(\pi x\right).$$  
+   Be sure to clearly indicate the $x$ and $y$ intercepts, as well as the maximum and minimum values.
+
+\vspace{2in}
+
+4. Supposing that $f$ and $g$ are differentiable functions, use the definition of the derivative to show that
+$$\frac{d}{dx} f(x)+3g(x) = f'(x)+3g'(x).$$
+   
+
+
+
+
