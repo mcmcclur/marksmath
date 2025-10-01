@@ -1,0 +1,37 @@
+---
+title: Calculus III
+css: styles.css
+---
+
+::: {.grid}
+::::: {.g-col-12 .g-col-md-8}
+Math 291  
+Fall 2025  
+Week 7 (Sept 30 and Oct 2)
+with professor [Mark McClure](https://marksmath.org/)
+
+## Class Notes
+
+- [Arc length and the TNB Frame](notes/ArcLengthTNB)
+
+:::::
+::::: {.g-col-md-4 .d-none .d-md-block transform="translate(0,125px)"}
+<div id='side_pic'></div>
+:::::
+:::
+
+<style>
+  x3d canvas {
+    outline: none;
+  }
+</style>
+
+<div style="display: none" id="observablehq-run_it-c1406e28"></div>
+<script type="module">
+import {Runtime, Inspector} from "https://cdn.jsdelivr.net/npm/@observablehq/runtime@4/dist/runtime.js";
+import define from "https://api.observablehq.com/@mcmcclur/the-trefoil-knot.js?v=3";
+new Runtime().module(define, name => {
+  if (name === "small_pic") return new Inspector(document.querySelector("#side_pic"));
+  if (name === "run_it") return new Inspector(document.querySelector("#observablehq-run_it-c1406e28"));
+});
+</script>
