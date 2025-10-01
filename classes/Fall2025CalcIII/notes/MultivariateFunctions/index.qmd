@@ -1,0 +1,43 @@
+---
+title: Multivariate Functions
+page-layout: article
+date: 2025-10-02
+date-format: ddd, MMM D
+format:
+  html:
+    toc: true
+    css: ../note-styles.css
+  pdf:
+    toc: false
+    mainfont: "Times New Roman"
+    output-file: ArcLengthTNB
+    echo: false
+---
+
+```{python}
+from components.plots import plot 
+import io
+from PIL import Image
+```
+
+In Precalc, Calc I, Calc II, and just about all math classes prior to Calc III, you study functions mapping $\mathbb R \to \mathbb R$. Calculus III, though, is all about increasing the dimension in which we work. In the study of parametric/vector functions, we study functions mapping $\mathbb R \to \mathbb R^n$, i.e. we increase the dimension of the *range*. We often think of the input as time so that we study motion in space (if $n=3$) or in the plane (if $n=2$).
+
+Now, we're going to study functions mapping $\mathbb R^n \to \mathbb R$, i.e. we increase the dimension of the *domain*.
+`
+
+```{python}
+fig = plot(lambda x,y: x**2 - y**2, [-3,3], [-3,3])
+```
+
+::: {.content-visible when-format="html"}
+```{python}
+fig.show(config={'displayModeBar': False})
+```
+:::
+
+::: {.content-visible when-format="pdf"}
+```{python}
+png = fig.to_image(format="png", width=900, height=600)
+Image.open(io.BytesIO(png))
+```
+:::
