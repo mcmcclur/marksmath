@@ -9,10 +9,10 @@ def plot(f, xrange, yrange):
 
     surf = go.Surface(
         x=X, y=Y, z=Z,
-        colorscale="RdBu",
+        colorscale="RdBu_r",
         contours=dict(
-            x=dict(show=True, project=dict(x=True), start=-3, end=3, size=1),
-            y=dict(show=True, project=dict(y=True), start=-3, end=3, size=1),
+            x=dict(show=True, start=-3, end=3, size=1),
+            y=dict(show=True, start=-3, end=3, size=1),
             # z=dict(show=True, project=dict(z=True), start=-6, end=6, size=1),
         ),
         showscale=False,
