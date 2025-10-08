@@ -36,7 +36,7 @@ In the case where $\lambda$ is real, the equation
 $$T(\vect{x}) = A\vect{x} = \lambda \vect{x}$$
 immediately implies that the one-dimensional subspace of $\mathbb R^n$ spanned by $\vect{x}$ $\text{span}(\{\vect{x}\})$ is invariant under the action of $T$.
 
-The sign and magnitude of $\lambda$ dictate the geometric properties of the transformation on that inv:
+The sign and magnitude of $\lambda$ dictate the geometric properties of the transformation on that invariant subspace:
 
 - $|\lambda|<1$ implies that $T$ compresses $\text{span}(\{\vect{x}\})$,
 - $|\lambda|>1$ implies that $T$ stretches out $\text{span}(\{\vect{x}\})$,
@@ -86,8 +86,8 @@ pic1 = {
 <div>
 The action of $$M = \begin{bmatrix}2&0\\0&1/2\end{bmatrix}$$ preserves the subspace of $\mathbb R^2$ spanned by $[ 1,0 ]^{\mathsf T}$ and the subspace spanned by $[ 0,1 ]^{\mathsf T}$.
 
-- $[ 1,0 ]^{\mathsf T}$ is an eigevector with eigenvalue $2$ and 
-- $[ 0,1 ]^{\mathsf T}$ is an eigevector with eigenvalue $1/2$.
+- $[ 1,0 ]^{\mathsf T}$ is an eigenvector with eigenvalue $2$ and 
+- $[ 0,1 ]^{\mathsf T}$ is an eigenvector with eigenvalue $1/2$.
 </div>
 
 :::
@@ -158,8 +158,8 @@ $$
 viewof apply3 = (reset3, apply_switch({ invertible: true }))
 viewof reset3 = Inputs.button('Reset')
 ```
-
-::: {.example layout-ncol=2}
+::: {.example}
+::::: {layout-ncol=2}
 
 ```{ojs}
 pic3 = {
@@ -182,6 +182,27 @@ The action of $$M = \begin{bmatrix}1&1\\0&1\end{bmatrix}$$ preserves the subspac
 
 I guess that $[ 1,0 ]^{\mathsf T}$ is the only (non-zero) eigenvector and its eigenvalue is $1$.
 </div>
+
+:::::
+
+Let's verify algebraically that $\lambda=1$ is the only eigenvalue and that any corresponding eigenvector must have the form $[x \quad 0]^{\mathsf T}$. We begin by expanding out the product
+
+$$
+\begin{bmatrix}1&1\\0&1\end{bmatrix}
+\begin{bmatrix}x\\y\end{bmatrix}
+= \begin{bmatrix}x+y\\y\end{bmatrix}
+= \lambda \begin{bmatrix}x\\y\end{bmatrix}.
+$$
+This is equivalent to the pair of equations $x+y=\lambda x$ and $y=\lambda y$. Note that the second equation can be written $y(1-\lambda)=0$, which implies that either
+$$
+\lambda = 1 \text{ or } y=0.
+$$
+If $\lambda=1$, then the first equation states $x+y=x$ so $y=0$.  
+If $y=0$, then the first equation states $x=\lambda x$ so $\lambda=1$.  
+That is 
+$$
+\lambda = 1 \textit{ and } y=0.
+$$
 
 :::
 
@@ -216,7 +237,7 @@ pic4 = {
 <div>
 The action of $$M = \begin{bmatrix}1&3\\3&1\end{bmatrix}$$ preserves and stretches the subspace of $\mathbb R^2$ spanned by $[ 1,1 ]^{\mathsf T}$ and preserves but flips the subspace spanned by $[ -2,1 ]^{\mathsf T}$.
 
-The first has eigenvalue $2$ and the second has eigenvalue $-1$.
+The first has eigenvalue $4$ and the second has eigenvalue $-2$.
 </div>
 
 :::
@@ -279,7 +300,7 @@ Recall that
 $$M = \begin{bmatrix}1&1\\1/2&3/2\end{bmatrix}$$
 has the eigenvalues $\lambda=2$ and $\lambda =1/2$. Let's show how we can use the characteristic polynomial to find those eigenvalues.
 
-The first step will be to find the matrix $M-\lambda I$, which can be otained by simply sutracting $1$s off the diagonal of $M$. Thus,
+The first step will be to find the matrix $M-\lambda I$, which can be obtained by simply subtracting $1$s off the diagonal of $M$. Thus,
 $$M-\lambda I = \begin{bmatrix}1-\lambda&1\\1/2&3/2-\lambda\end{bmatrix}.$$
 
 We now find the determinant
@@ -297,26 +318,46 @@ From the factored form, we can see easily that the eigenvalues are
 $$\lambda=2 \text{ and } \lambda=1/2.$$
 
 
-## Interpreting real eigenvalues in 2D
+## Interpreting eigenvalues
 
-We now turn to the question of interpreting eigenvalues with a focus on *real* eigenvalues for the time being. A summary might look like:
+We now turn to the question of interpreting eigenvalues. While our current intuition is base largely on two dimensional matrices with real eigenvalues, these ideas actually extend to higher dimensional matrices with complex eigenvalues. A summary might look like:
 
-- The set of all eigenvectors for a single eigenvalue form a subspace, 
+- The set of all eigenvectors for a single eigenvalue forms a subspace, 
 - Eigenvectors for distinct eigenvalues are linearly independent,
-- The dimension of the subspace for an eigenvalue cannot exceed the algebraic multiplicity of the eigenvalue (obviously) but repeated eigenvalues can be a bit tricky.
+- The dimension of the subspace for an eigenvalue cannot exceed the algebraic multiplicity of the eigenvalue but repeated eigenvalues can be a bit tricky.
 
-While the intuition gained from our examples in $\mathbb R^2$ should help a lot, it's important to realize that this is all happening in $\mathbb R^n$, where $n$ is potentially large.
+### Multiplicity??
+
+So, what's this notion of "algebraic multiplicity" referred to above? In fact, there are two types of multiplicity
+
+  - *Algebraic multiplicity* refers to the multiplicity of the root of the eigenvalue within the characteristic polynomial.
+  - *Geometric multiplicity* refers to the dimension of the eigenspace.
+
+We can illustrate the concept with two simple 2D examples. Note that $\lambda=1$ is an eigenvalue for both 
+$$
+I = \begin{bmatrix}1&0\\0&1\end{bmatrix} \text{ and }
+M = \begin{bmatrix}1&1\\0&1\end{bmatrix},
+$$
+because the characteristic polynomial of each matrix is $(\lambda-1)^2$.
+Note that exponent of $2$ is exactly the algebraic multiplicity. More generally, $\lambda_0$ is an eigenvalue of multiplicity $m$ for a matrix if $(\lambda-\lambda_0)^m$ divides the characteristic polynomial but $(\lambda-\lambda_0)^{m+1}$ does not.
+
+The geometric multiplicity refers to the dimension of the eigenspace formed by the eigenvectors of the matrix. In our example above, the identity matrix $I$ has the linearly independent set of eigenvectors 
+$$
+\vect{\imath} = [1 \quad 0]^{\mathsf T} \text{ and } \vect{\jmath} = [0 \quad 1]^{\mathsf T}.
+$$
+Thus, the geometric multiplicity of the eigenvalue $\lambda=1$ for $I$ is again $2$.
+Note, though, that the geometric multiplicity of $\lambda=1$ for $M$ is just $1$.
 
 ### Eigenspaces
 
-It's pretty easy to show that the set of all eigenvectors for a single eigenvalue form a subspace. If $\vect{x}$ and $\vect{y}$ are eigenvectors for the eigenvector $\lambda$ and $\alpha$ and $\beta$ are scalars, then 
+It's pretty easy to show that the set of all eigenvectors for a single eigenvalue forms a subspace. If $\vect{x}$ and $\vect{y}$ are eigenvectors for the eigenvector $\lambda$ and $\alpha$ and $\beta$ are scalars, then 
 \begin{aligned}
 A(\alpha\vect{x} + \beta\vect{y}) &= 
   \alpha A\vect{x} + \beta A\vect{y} \\ 
   &= \alpha \lambda \vect{x} + \beta\lambda \vect{y} \\ 
   &= \lambda (\alpha\vect{x} + \beta\vect{y}).
 \end{aligned}
-Thus, $\alpha\vect{x} + \beta\vect{y}$ is also an eigenvector with eigenvalue $\lambda$.
+Thus, $\alpha\vect{x} + \beta\vect{y}$ is also an eigenvector with eigenvalue $\lambda$. That is, that the set of all eigenvectors for a single eigenvalue is closed under linear combinations, which is one characterization of a subspace.
 
 
 ### Linear independence for distinct eigenvalues
@@ -522,9 +563,11 @@ $$
 
 <details>
 <summary>Can you guess what oughtta happen?</summary>
+
 I suppose that the $x$-axis will stretch by th factor $6$,
 the $y$-axis should be fixed, and the $z$-axis will flip and stretch 
 by the factor $3$.
+
 </details>
 
 ### Three more real eigenvalues 
@@ -537,7 +580,7 @@ $$
 -6 & 27 & -15
 \end{array}\right].
 $$
-Let's check out it's eigenvalues and eigenvectors, though:
+Since the dimension and numbers are larger, let's use Sage to find the eigenvalues and eigenvectors:
 
 ```{=html}
 <iframe width=600 height=400 src="./components/embedDiagonalizationSageCell.html"></iframe>
@@ -546,39 +589,16 @@ Let's check out it's eigenvalues and eigenvectors, though:
 Here's how to interpret this output: 
 
   - There are three eigenvalue/eigenvector pairs:
-    - $\lambda=6$, $\vect{v}=[[1,1,1]]^{\mathsf T}$
-    - $\lambda=1$, $\vect{v}=[[1,2,3]]^{\mathsf T}$
-    - $\lambda=-3$, $\vect{v}=[[1,0,-1/2]]^{\mathsf T}$
+    - $\lambda=6$, $\vect{v}=[1 \quad 1\quad 1]^{\mathsf T}$
+    - $\lambda=1$, $\vect{v}=[1 \quad 2 \quad 3]^{\mathsf T}$
+    - $\lambda=-3$, $\vect{v}=[1 \quad 0 \quad -1/2]^{\mathsf T}$
   - Each eigenvalue appears with algebraic multiplicity $1$.
 
 Geometrically, this matrix acts just like the last one, just with different vectors:
 
-  - It stretches the line spanned by $[[1,1,1]]^{\mathsf T}$ by the factor $6$,
-  - it fixes the line spanned by $[[1,2,3]]^{\mathsf T}$, and 
-  - it flips and stretches the line spanned by $[[1,0,-1/2]]^{\mathsf T}$ by the factor $-3$.
-
-
-### Multiplicity??
-
-So, what's that "algebraic multiplicity" referred to in the last example? In fact, there are two types of multiplicity
-
-  - *Algebraic multiplicity* refers to the multiplicity of the root of the eigenvalue within the characteristic polynomial.
-  - *Geometric multiplicity* refers to the dimension of the eigenspace.
-
-We can illustrate the concept with two simple 2D examples. Note that $\lambda=1$ is an eigenvalue for both 
-$$
-I = \begin{bmatrix}1&0\\0&1\end{bmatrix} \text{ and }
-M = \begin{bmatrix}1&1\\0&1\end{bmatrix},
-$$
-because the characteristic polynomial of each matrix is $(\lambda-1)^2$.
-Note that exponent of $2$ is exactly the algebraic multiplicity. More generally, $\lambda_0$ is an eigenvalue of multiplicity $m$ for a matrix if $(\lambda-\lambda_0)^m$ divides the characteristic polynomial but $(\lambda-\lambda_0)^{m+1}$ does not.
-
-The geometric multiplicity refers to the dimension of the eigenspace formed by the eigenvectors of the matrix. In our example above, the identity matrix $I$ has the linearly independent set of eigenvectors 
-$$
-\vect{\imath} = [[1,0]]^{\mathsf T} \text{ and } \vect{\jmath} = [[0,1]]^{\mathsf T}.
-$$
-Thus, the geometric multiplicity of the eigenvalue $\lambda=1$ for $I$ is again $2$.
-Note, though, that the geometric multiplicity of $\lambda=1$ for $M$ is just $1$.
+  - It stretches the line spanned by $[1 \quad 1 \quad 1]^{\mathsf T}$ by the factor $6$,
+  - it fixes the line spanned by $[1 \quad 2 \quad 3]^{\mathsf T}$, and 
+  - it flips and stretches the line spanned by $[1 \quad 0 \quad -1/2]^{\mathsf T}$ by the factor $-3$.
 
 ### Complex eigenvalues in 3D
 
@@ -616,7 +636,7 @@ In this situation, we expect there to be a one-dimensional eigenspace that's str
 
 In order to find an eigenvector for $\lambda=2$ let's write
 $$
-(M-2I)\vect{v}=0 \text{ where } \vect{v}=[[x,y,z]]^{\mathsf T}.$$ 
+(M-2I)\vect{v}=0 \text{ where } \vect{v}=[x \quad y \quad z]^{\mathsf T}.$$ 
 Then this boils down to the system
 $$
 \begin{eqnarray}
@@ -642,7 +662,7 @@ It gets more complicated than I want to type out for the complex eigenvector. He
 
 Note that the complex eigenvalues are $1\pm i$, as we already knew. It looks like the corresponding eigenvectors are 
 $$
-\vect{v} = [[1,\frac{1}{2}\pm\frac{1}{2}i,0]]^{\mathsf T} = [[1,1/2,0]]^{\mathsf T} \pm i [[0,1/2,0]]^{\mathsf T}.
+\vect{v} = [1 \quad \frac{1}{2}\pm\frac{1}{2}i \quad 0]^{\mathsf T} = [1 \quad 1/2 \quad 0]^{\mathsf T} \pm i [0 \quad 1/2 \quad 0]^{\mathsf T}.
 $$
 Note that the real and complex parts of the eigenvector span the eigenspace, which is the $xy$-plane. Thus, the action of this matrix preserves that plane and involves rotation of that plane.
 
@@ -666,9 +686,9 @@ Let's use Sage straight away to compute the eigensystem:
 <iframe width=600 height=400 src="./components/embedEigen2SageCell.html"></iframe>
 ```
 
-This tells me that the real eigenspace is spanned by the vector $[[1,2,3]]^{\mathsf T}$ and that the complex eigenspace is spanned by the vectors 
+This tells me that the real eigenspace is spanned by the vector $[1 \quad 2 \quad 3]^{\mathsf T}$ and that the complex eigenspace is spanned by the vectors 
 $$
-[[1,0.2,-0.2]]^{\mathsf T} \text{ and } [[1,-0.4,-0.6]]^{\mathsf T}.
+[1 \quad 0.2 \quad -0.2]^{\mathsf T} \text{ and } [1 \quad -0.4 \quad -0.6]^{\mathsf T}.
 $$
 
 
