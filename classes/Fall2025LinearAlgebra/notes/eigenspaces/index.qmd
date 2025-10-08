@@ -84,10 +84,10 @@ pic1 = {
 ``` 
 
 <div>
-The action of $$M = \begin{bmatrix}2&0\\0&1/2\end{bmatrix}$$ preserves the subspace of $\mathbb R^2$ spanned by $[ 1,0 ]^T$ and the subspace spanned by $[ 0,1 ]^T$.
+The action of $$M = \begin{bmatrix}2&0\\0&1/2\end{bmatrix}$$ preserves the subspace of $\mathbb R^2$ spanned by $[ 1,0 ]^{\mathsf T}$ and the subspace spanned by $[ 0,1 ]^{\mathsf T}$.
 
-- $[ 1,0 ]^T$ is an eigevector with eigenvalue $2$ and 
-- $[ 0,1 ]^T$ is an eigevector with eigenvalue $1/2$.
+- $[ 1,0 ]^{\mathsf T}$ is an eigevector with eigenvalue $2$ and 
+- $[ 0,1 ]^{\mathsf T}$ is an eigevector with eigenvalue $1/2$.
 </div>
 
 :::
@@ -122,7 +122,7 @@ pic2 = {
 ``` 
 
 <div>
-The action of $$M = \begin{bmatrix}1&1\\1/2&3/2\end{bmatrix}$$ preserves the subspace of $\mathbb R^2$ spanned by $[ 1,1 ]^T$ and the subspace spanned by $[ -2,1 ]^T$.
+The action of $$M = \begin{bmatrix}1&1\\1/2&3/2\end{bmatrix}$$ preserves the subspace of $\mathbb R^2$ spanned by $[ 1,1 ]^{\mathsf T}$ and the subspace spanned by $[ -2,1 ]^{\mathsf T}$.
 
 The first subspace has eigenvalue $2$ and the second has eigenvalue $1/2$.
 </div>
@@ -178,9 +178,9 @@ pic3 = {
 ``` 
 
 <div>
-The action of $$M = \begin{bmatrix}1&1\\0&1\end{bmatrix}$$ preserves the subspace of $\mathbb R^2$ spanned by $[ 1,0 ]^T$ and that's it.
+The action of $$M = \begin{bmatrix}1&1\\0&1\end{bmatrix}$$ preserves the subspace of $\mathbb R^2$ spanned by $[ 1,0 ]^{\mathsf T}$ and that's it.
 
-I guess that $[ 1,0 ]^T$ is the only (non-zero) eigenvector and its eigenvalue is $1$.
+I guess that $[ 1,0 ]^{\mathsf T}$ is the only (non-zero) eigenvector and its eigenvalue is $1$.
 </div>
 
 :::
@@ -214,7 +214,7 @@ pic4 = {
 ``` 
 
 <div>
-The action of $$M = \begin{bmatrix}1&3\\3&1\end{bmatrix}$$ preserves and stretches the subspace of $\mathbb R^2$ spanned by $[ 1,1 ]^T$ and preserves but flips the subspace spanned by $[ -2,1 ]^T$.
+The action of $$M = \begin{bmatrix}1&3\\3&1\end{bmatrix}$$ preserves and stretches the subspace of $\mathbb R^2$ spanned by $[ 1,1 ]^{\mathsf T}$ and preserves but flips the subspace spanned by $[ -2,1 ]^{\mathsf T}$.
 
 The first has eigenvalue $2$ and the second has eigenvalue $-1$.
 </div>
@@ -248,7 +248,7 @@ pic5 = {
 }
 ``` 
 
-The action of $$M = \begin{bmatrix}4/5&2/5\\2/5&1/5\end{bmatrix}$$ projects $\mathbb R^2$ onto the subspace spanned by $[ 2,1 ]^T$, which is an eigenvector with eigenvalue $1$. The vector $[-1,2]^T$ is an eigenvector for eigenvalue $0$.
+The action of $$M = \begin{bmatrix}4/5&2/5\\2/5&1/5\end{bmatrix}$$ projects $\mathbb R^2$ onto the subspace spanned by $[ 2,1 ]^{\mathsf T}$, which is an eigenvector with eigenvalue $1$. The vector $[-1,2]^{\mathsf T}$ is an eigenvector for eigenvalue $0$.
 
 :::
 
@@ -297,7 +297,7 @@ From the factored form, we can see easily that the eigenvalues are
 $$\lambda=2 \text{ and } \lambda=1/2.$$
 
 
-## Interpreting real eigenvalues 
+## Interpreting real eigenvalues in 2D
 
 We now turn to the question of interpreting eigenvalues with a focus on *real* eigenvalues for the time being. A summary might look like:
 
@@ -341,13 +341,13 @@ $$\begin{bmatrix}1&1\\0&1\end{bmatrix}
 \begin{bmatrix}x\\y\end{bmatrix}
 = \begin{bmatrix}x+y\\y\end{bmatrix}.
 $$
-Thus, $[x \quad y]^T$ is an eigenvector only when $y=0$.
+Thus, $[x \quad y]^{\mathsf T}$ is an eigenvector only when $y=0$.
 
 It's worth mentioning that we've already explored the geometric action of $B$.
 
 
 
-## Complex eigenvalues
+## Interpreting complex eigenvalues in 2D
 
 Let's use our method for finding eigenvalues to see how complex eigenvalues might arise. We'll then try to figure out how to interpret them.
 
@@ -546,21 +546,131 @@ Let's check out it's eigenvalues and eigenvectors, though:
 Here's how to interpret this output: 
 
   - There are three eigenvalue/eigenvector pairs:
-    - $\lambda=6$, $\vect{v}=[[1,1,1]]^T$
-    - $\lambda=1$, $\vect{v}=[[1,2,3]]^T$
-    - $\lambda=-3$, $\vect{v}=[[1,0,-1/2]]^T$
+    - $\lambda=6$, $\vect{v}=[[1,1,1]]^{\mathsf T}$
+    - $\lambda=1$, $\vect{v}=[[1,2,3]]^{\mathsf T}$
+    - $\lambda=-3$, $\vect{v}=[[1,0,-1/2]]^{\mathsf T}$
   - Each eigenvalue appears with algebraic multiplicity $1$.
 
 Geometrically, this matrix acts just like the last one, just with different vectors:
 
-  - It stretches the line spanned by $[[1,1,1]]^T$ by the factor $6$,
-  - it fixes the line spanned by $[[1,2,3]]^T$, and 
-  - it flips and stretches the line spanned by $[[1,0,-1/2]]^T$ by the factor $-3$.
+  - It stretches the line spanned by $[[1,1,1]]^{\mathsf T}$ by the factor $6$,
+  - it fixes the line spanned by $[[1,2,3]]^{\mathsf T}$, and 
+  - it flips and stretches the line spanned by $[[1,0,-1/2]]^{\mathsf T}$ by the factor $-3$.
 
 
 ### Multiplicity??
 
-### Complex example
+So, what's that "algebraic multiplicity" referred to in the last example? In fact, there are two types of multiplicity
+
+  - *Algebraic multiplicity* refers to the multiplicity of the root of the eigenvalue within the characteristic polynomial.
+  - *Geometric multiplicity* refers to the dimension of the eigenspace.
+
+We can illustrate the concept with two simple 2D examples. Note that $\lambda=1$ is an eigenvalue for both 
+$$
+I = \begin{bmatrix}1&0\\0&1\end{bmatrix} \text{ and }
+M = \begin{bmatrix}1&1\\0&1\end{bmatrix},
+$$
+because the characteristic polynomial of each matrix is $(\lambda-1)^2$.
+Note that exponent of $2$ is exactly the algebraic multiplicity. More generally, $\lambda_0$ is an eigenvalue of multiplicity $m$ for a matrix if $(\lambda-\lambda_0)^m$ divides the characteristic polynomial but $(\lambda-\lambda_0)^{m+1}$ does not.
+
+The geometric multiplicity refers to the dimension of the eigenspace formed by the eigenvectors of the matrix. In our example above, the identity matrix $I$ has the linearly independent set of eigenvectors 
+$$
+\vect{\imath} = [[1,0]]^{\mathsf T} \text{ and } \vect{\jmath} = [[0,1]]^{\mathsf T}.
+$$
+Thus, the geometric multiplicity of the eigenvalue $\lambda=1$ for $I$ is again $2$.
+Note, though, that the geometric multiplicity of $\lambda=1$ for $M$ is just $1$.
+
+### Complex eigenvalues in 3D
+
+Since the characteristic polynomial of a 3D matrix is a cubic, there's always at least one real root and any complex eigenvalues come in conjugate pairs.
+
+#### Example 
+
+Let $M$ denote the matrix 
+$$
+M = \begin{bmatrix}
+0 & 2 & 0 \\
+-1 & 2 & 1 \\
+0 & 0 & 2
+\end{bmatrix}
+$$
+
+We can find the characteristic polynomial and eigenvalues as follows:
+$$
+\begin{aligned}
+\det(M-\lambda I) &= \begin{vmatrix}
+-\lambda & 2 & 0 \\
+-1 & 2-\lambda & 1 \\
+0 & 0 & 2-\lambda
+\end{vmatrix} \\  
+&= (2-\lambda)
+\begin{vmatrix} -\lambda & 2 \\ -1 & 2-\lambda \end{vmatrix}
+= (2-\lambda)(\lambda^2 - 2\lambda + 2).
+\end{aligned}
+$$
+
+The roots of that polynomial are exactly $\lambda = 2$ and $\lambda = 1\pm i$.
+
+In this situation, we expect there to be a one-dimensional eigenspace that's stretched out by the fact 2 and a two-dimensional eigenspace that's rotated through the angle $45^{\circ}$ and expanded by the factor $\sqrt{2}$.
+
+
+In order to find an eigenvector for $\lambda=2$ let's write
+$$
+(M-2I)\vect{v}=0 \text{ where } \vect{v}=[[x,y,z]]^{\mathsf T}.$$ 
+Then this boils down to the system
+$$
+\begin{eqnarray}
+-2x+2y&=0\\
+-x+z&=0
+\end{eqnarray}
+\quad\text{ so } y=x \text{ and } z=x.
+$$
+Thus, $x$ is free and we can find an eigenvector in terms of $x$:
+$$
+\vect{v}=x\begin{bmatrix}1&1&1\end{bmatrix}^{\mathsf T},\quad x\neq 0.
+$$
+Or setting $x=1$ we get
+$$
+\begin{bmatrix}1&1&1\end{bmatrix}^{\mathsf T}.
+$$
+
+It gets more complicated than I want to type out for the complex eigenvector. Here's how you can do it with Sage:
+
+```{=html}
+<iframe width=600 height=400 src="./components/embedEigenSageCell.html"></iframe>
+```
+
+Note that the complex eigenvalues are $1\pm i$, as we already knew. It looks like the corresponding eigenvectors are 
+$$
+\vect{v} = [[1,\frac{1}{2}\pm\frac{1}{2}i,0]]^{\mathsf T} = [[1,1/2,0]]^{\mathsf T} \pm i [[0,1/2,0]]^{\mathsf T}.
+$$
+Note that the real and complex parts of the eigenvector span the eigenspace, which is the $xy$-plane. Thus, the action of this matrix preserves that plane and involves rotation of that plane.
+
+#### Another example 
+
+Consider 
+
+$$
+M = \left[
+\begin{array}{ccc}
+ -3 & 10 & -5 \\
+ 3 & -10 & 7 \\
+ 7 & -23 & 15 \\
+\end{array}
+\right]
+$$
+
+Let's use Sage straight away to compute the eigensystem:
+
+```{=html}
+<iframe width=600 height=400 src="./components/embedEigen2SageCell.html"></iframe>
+```
+
+This tells me that the real eigenspace is spanned by the vector $[[1,2,3]]^{\mathsf T}$ and that the complex eigenspace is spanned by the vectors 
+$$
+[[1,0.2,-0.2]]^{\mathsf T} \text{ and } [[1,-0.4,-0.6]]^{\mathsf T}.
+$$
+
 
 ::: {.hidden}
 

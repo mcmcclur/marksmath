@@ -1,0 +1,21 @@
+<html>
+    <head>
+        <script src="https://sagecell.sagemath.org/static/embedded_sagecell.js"></script>
+        <script>sagecell.makeSagecell({
+            "inputLocation": ".sage",
+            evalButtonText: 'Evaluate'});</script>
+        <link rel="stylesheet" type="text/css" href="https://sagecell.sagemath.org/static/sagecell_embed.css">
+    </head>
+    <body>
+        <div class="sage">
+        <script type="text/x-sage">
+M = matrix([
+    (0,2,0), 
+    (-1,2,1), 
+    (0,0,2)
+])
+M.eigenvectors_right()
+        </script>
+        </div>
+    </body>
+</html>
