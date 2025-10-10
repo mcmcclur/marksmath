@@ -18,11 +18,11 @@ In today's lecture, we're going to discuss partial derivatives and a couple of t
 
 ## What is a partial derivative?
 
-A partial derivative tells you the rate of change of a function of several variables in one of the positively oriented cardinal directions. There a lot like the derivatives that you learn about for functions of one variable in Calc I.
+A partial derivative tells you the rate of change of a function of several variables in one of the positively oriented cardinal directions. They're a lot like the derivatives that you learn about for functions of one variable in Calc I.
 
 ### Plain old ordinary derivatives
 
-A derivative, as you probably know, measures the instantaneous rate of change of a function value with respect to its input variable. It's defined by the difference quotient:
+A derivative, as you probably know, measures the instantaneous rate of change of a function value with respect to its input variable. It is defined by the difference quotient:
 $$
 f'(x) = \lim_{h\to0}\frac{f(x+h)-f(x)}{h}.
 $$
@@ -53,7 +53,7 @@ That's where the exact slope of the tangent line in @fig-desmos_difference_quoti
 
 ### Partial derivatives 
 
-Now, imagine that you're sitting on a hillside whose elevation is given by the graph of a function $z=f(x,y)$. There's not just one oriented direction anymore; rather, there's infinitely many. Later, you'll talk about *directional* derivatives which really do measure the rate of change in *any* direction. The first step, though, is to consider what happens if you march in the one of the two positively oriented cardinal directions - i.e. due North or due East.
+Now, imagine that you're sitting on a hillside whose elevation is described by the graph of a function $z=f(x,y)$. There isn't just one oriented direction anymore; rather, there are infinitely many. Later, you'll talk about *directional* derivatives which really do measure the rate of change in *any* direction. The first step, though, is to consider what happens if you march in one of the two positively oriented cardinal directions - i.e. due North or due East.
 
 This situation is illustrated as a contour plot for the hill $f(x,y)=2-(x^2+y^2)/2$ in @fig-contours. 
 
@@ -128,7 +128,7 @@ pic
 
 ### Partial derivatives conceptually
 
-However you view it, these pictures motivate the concept of a *partial derivative*. A function $f(x,y)$ that maps $\mathbb R^2 \to \mathbb R$ can have two partial derivatives
+However you view it, these pictures motivate the concept of a *partial derivative*. A function $f(x,y)$ that maps $\mathbb R^2 \to \mathbb R$ can have two partial derivatives:
 
 - $\displaystyle \frac{\partial f}{\partial x}$ or $f_x(x,y)$ or just $f_x$ denotes the partial derivative of $f$ with respect to $x$, which measures the rate of change of $f$ in the positive $x$ direction and 
 - $\displaystyle \frac{\partial f}{\partial y}$ or $f_y(x,y)$ or just $f_y$ denotes the partial derivative of $f$ with respect to $y$, which measures the rate of change of $f$ in the positive $y$ direction. 
@@ -137,7 +137,7 @@ However you view it, these pictures motivate the concept of a *partial derivativ
 
 ### The definition of a partial derivative
 
-Partial derivatives are defined using multidimensional difference quotients:
+Partial derivatives are defined using multi-variable difference quotients:
 
 $$f_x(x,y) = \lim_{h\to0}\frac{f(x+h,y)-f(x,y)}{h}$$
 $$f_y(x,y) = \lim_{h\to0}\frac{f(x,y+h)-f(x,y)}{h}$$
@@ -146,7 +146,7 @@ The only difference between these two expressions is that the displacement ($h$)
 
 ### Computing partial derivatives algebraically
 
-Computing partial derivatives is fairly easy; I bet you've done it before! In a Calc I class, you might very well look at a function like
+Computing partial derivatives is fairly straightforward; you may have done it before! In a Calc I class, you might very well look at a function like
 $$
 f(x) = \sin(\alpha \, x) \text{ and compute } f'(x) = \alpha\, \cos(\alpha\, x).
 $$
@@ -170,11 +170,11 @@ $$
 
 ### Estimating partial derivatives geometrically
 
-In some applied situations you might need to estimate partial derivatives from a contour diagram. @fig-contour_estimation shows the graph of an unknown function $f$. Can you estimate $f_x(1.54, 0.96)$, which is the point marked in the figure?
+In some applied situations, you might need to estimate partial derivatives from a contour diagram. @fig-contour_estimation shows the graph of an unknown function $f$. Can you estimate $f_x(1.54, 0.96)$, which is the point marked in the figure?
 
 <details>
 <summary>Unknown??</summary>
-OK, the function is really really $f(x,y)=x^2\,\sin(x+y^2)$ but that's not the point.
+OK, the function is actually $f(x,y)=x^2\,\sin(x+y^2)$, but that's not the point.
 </details>
 
 ```{python}
@@ -220,11 +220,11 @@ plt.show()
 
 ## A couple extensions
 
-We can push the idea of a partial derivative of a bivariate function further in a couple ways.
+We can extend the idea of a partial derivative of a bivariate function in a couple of ways.
 
 ### Functions of more variables
 
-There's no reason we can't talk about functions of three or more variables. Maybe,
+There is no reason we cannot discuss functions of three or more variables. For example,
 $$
 f(x,y,z) = (x^2 + 2y^2 + 3z^2)^2.
 $$
@@ -269,13 +269,13 @@ You might notice, though, that the two middle terms are equal. This is a general
 
 ## Tangent planes 
 
-An important application on Calc I is the computation of a tangent line. In that context, we use the point slope formula 
+An important application in Calc I is the computation of a tangent line. In that context, we use the point slope formula 
 $$
 y = y_0 + m(x-x_0),
 $$
 where the point $x_0$ is given, the value $y_0=f(x_0)$, and the slope $m=f'(x_0)$.
 
-the corresponding problem in Calc III is to find the equation of a tangent plane:
+The corresponding problem in Calc III is to find the equation of a tangent plane:
 $$
 z = z_0 + m_x(x-x_0) + m_y(y-y_0),
 $$
@@ -299,7 +299,7 @@ f(1,2) &= 2 - 1 - 2 = -1, \\
 f_x(1,2) &= -2, \quad f_y(1,2) = -2.
 \end{aligned}
 $$
-Thus our tangent plane is 
+Thus, our tangent plane is 
 $$
 \begin{aligned}
 z &= f(1,2) + f_x(1,2)(x - 1) + f_y(1,2)(y - 2) \\[6pt]
@@ -316,24 +316,24 @@ $$
 
 ## Optimization
 
-Optimization is a fundamental application of calculus that is of tremendous importance. It's possible that we're getting slightly ahead of the game here but if you see this more than once that's fine. We're only just starting the topic, too; there's lots more to do, including classification and constrained optimization.
+Optimization is a fundamental application of calculus that is of tremendous importance. It's possible that we're getting slightly ahead of the game here, but if you see this more than once, that's fine. We are only just starting the topic, too; there is much more to cover, including classification and constrained optimization.
 
 ### Univariate optimization 
 
-In Calc I, you certainly learn how to find maxima and minima of functions of a single variable. If you've got a differentiable function $f$ defined on $\mathbb R$, the strategy is to solve the equation $f'(x)=0$; these solutions are called *critical points* and they are candidates for where extremes might occur. 
+In Calc I, you learn how to find maxima and minima of functions of a single variable. If you have a differentiable function $f$ defined on $\mathbb R$, the strategy is to solve the equation $f'(x)=0$; these solutions are called *critical points* and they are candidates for where extremes might occur. 
 
-Once you've got your critical points, it can be a bit tricky to determine which are maxima, which are minima, and which are neither. There's a second derivative test that can help with this classification. The easiest thing to do, though, is to examine a graph and that's what we'll do here.
+Once you have your critical points, it can be a bit tricky to determine which are maxima, which are minima, and which are neither. There's a second derivative test that can help with this classification. The easiest thing to do, though, is to examine a graph, and that's what we'll do here.
 
 ### Bivariate optimization
 
-When studying the optimization of functions of two variables, *both* derivatives should be zero to obtain a critical point. That yields a system of equations to solve for the critical points. There's again a second derivative test to help us classify the critical points, though we won't get into that now. It's generally pretty easy to tell what's going on from a contour diagram
+When studying the optimization of functions of two variables, *both* partial derivatives should be zero to obtain a critical point. That yields a system of equations to solve for the critical points. There's again a second derivative test to help us classify the critical points, though we won't get into that now. It's generally pretty easy to tell what's going on from a contour diagram.
 
 
 #### Example 1
 
 Let's consider the function $f(x,y) = x^2 - x y + 2 y^2 - 3 y$. 
 
-Judging from @fig-contour_for_optimization1, it sure looks like there's a minimum value with small, positive coordinates.
+Judging from @fig-contour_for_optimization1, it appears there is a minimum value with small, positive coordinates.
 
 ```{python}
 #| fig-cap: A contour diagram for optimization
@@ -441,7 +441,7 @@ fig.tight_layout()
 plt.show()
 ```
 
-It certainly looks like there's a saddle point at the origin and a maximum in the second quadrant that's harder to pinpoint exactly.
+It certainly looks like there is a saddle point at the origin and a maximum in the second quadrant that is harder to pinpoint exactly.
 
 To find these more precisely, we use the system
 
@@ -458,8 +458,11 @@ $$
 $$
 Thus, $x=0$ or $x=-2$. You can plug those values back into either original equation to get the corresponding values of $y=0$ and $y=2$.
 
+::: {style="display=: none"}
+
 ```{ojs}
 import {viewof pt, show, pic} from '@mcmcclur/partial-derivatives'
 ```
+:::
 
 
