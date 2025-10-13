@@ -17,6 +17,22 @@ $$
 \newcommand{\vect}[1]{\mathbf{#1}}
 $$
 
+A couple more 3D examples: 
+
+- For SageMath: `[(0, 6, -4), (-5, 18, -10), (-8, 26, -14)]`
+- By hand:  
+
+```{python}
+#| eval: false 
+#| echo: true
+  M = [
+      [2, -1, -1],
+      [0, 3, -4],
+      [0, 2, -1]
+  ]
+```
+
+
 When we study a linear transformation $T:\mathbb R^n \to \mathbb R^n$, there are often many invariant subspaces. We can simplify the transformation by studying how it acts on those smaller, invariant spaces. Eigenvectors and their associated eigenvalues are the algebraic tools for formulating this process. Furthermore, there's a very geometric way to view these concepts as well.
 
 ## The basic definitions
@@ -495,7 +511,7 @@ $$\sqrt{2}(\cos(\pi/4) + i\sin(\pi/4)) =
 \sqrt{2} \left(\frac{1}{\sqrt{2}} \pm i\frac{1}{\sqrt{2}}\right)
 = 1\pm i.$$
 
-### Double check 
+#### Double check 
 
 Let's double check those eigenvalues:
 
@@ -544,6 +560,80 @@ The action of $$M = \begin{bmatrix}1&-1\\1&1\end{bmatrix}$$ rotates $\mathbb R^2
 
 :::
 
+### "Involving" rotation
+
+If a matrix has complex eigenvalues, then it's geometric action generally "involves" rotation. Here's an examle to illustrate that.
+
+```{ojs} 
+//| panel: input
+//| layout-ncol: 2
+viewof applyRot3 = (resetRot3, 
+  apply_switch({ invertible: true }))
+viewof resetRot3 = Inputs.button('Reset')
+```
+
+::: {layout-ncol=2}
+
+```{ojs}
+picRot3 = {
+  resetRot3;
+  return eigen_pic(
+    [
+      [1,-1],
+      [1, 0]
+    ],
+    [
+      [1, 2],
+      [Math.sqrt(3), 0]
+    ],
+    { dd: 0.2 }
+  )
+}
+``` 
+
+The action of $$M = \begin{bmatrix}1&-1\\1&0\end{bmatrix}$$ kinda rotates through the angle $\pi/3$. You can hit the $M$ buttons $6$ times to see that but it's also more complicated than just rotation.
+
+:::
+
+::: {.example}
+
+Let's check the eigenvalues for this example.
+
+$$
+\det(M-\lambda I) = \left|\begin{array}{cc}1-\lambda & -1 \\ 1 & -\lambda\end{array}\right| = \lambda^2 - \lambda + 1. \\
+$$
+Setting $\lambda^2 - \lambda + 1 = 0$ and applying the quadratic formula, we find 
+$$
+\lambda = \frac{-b\pm\sqrt{b^2-4ac}}{2a} = \frac{1\pm\sqrt{1-4}}{2}=\frac{1}{2}\pm\frac{\sqrt{3}}{2}i.
+$$
+These conjugate eigenvalues should yield conjugate eigenvectors carrying the same information so we can choose just one, say with the $+$ sign. That suggests we set up the system
+$$
+\begin{bmatrix}1&-1\\1&0\end{bmatrix}
+\begin{bmatrix}x\\y\end{bmatrix}
+=
+\left(\frac{1}{2} + \frac{\sqrt{3}}{2}i\right)
+\begin{bmatrix}x\\y\end{bmatrix}.
+$$
+Recall that this system *will* be redundant. Examining the second equation, we find that 
+$$
+x = \left(\frac{1}{2} + \frac{\sqrt{3}}{2}i\right)y.
+$$
+Set $y=1$ to obtain the eigenvector 
+$$
+\begin{bmatrix} \frac{1}{2} + \frac{\sqrt{3}}{2}i \\ 1 \end{bmatrix}
+= 
+\begin{bmatrix}1/2 \\ 1\end{bmatrix} +
+\begin{bmatrix}\sqrt{3}/2 \\ 0\end{bmatrix}i
+$$
+Note that the real and imaginary parts of that vector determine a 2D subspace associated with that eigenvalue; that's the subspace that "involves" rotation. In fact, since the eigenvalue 
+$$
+\frac{1}{2} + \frac{\sqrt{3}}{2}i = \cos(\pi/3) + i\sin(\pi/3),
+$$
+we suspect that maybe we should see a rotation of order $6$?
+
+Indeed we can compute directly that $M^6 = I$, as you can see in the demo by applying $M$ six times.
+
+:::
 
 
 ## Three dimensional space
@@ -715,6 +805,18 @@ $$
       picRot2.step("forward");
     } else if (applyRot2[1] == "MInv") {
       picRot2.step(0);
+    }
+  }
+}
+```
+
+```{ojs}
+{
+  if (applyRot3[1]) {
+    if (applyRot3[1] == "M") {
+      picRot3.step("forward");
+    } else if (applyRot3[1] == "MInv") {
+      picRot3.step(0);
     }
   }
 }
