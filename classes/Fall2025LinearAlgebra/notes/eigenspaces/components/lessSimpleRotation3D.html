@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 16px; }
+    .controls { display: flex; gap: .6rem; margin-bottom: .6rem; }
+    button { padding: .42rem .8rem; border: 1px solid #ccc; border-radius: .5rem; background: #f6f6f6; cursor: pointer; }
+    #plot { width: 840px; height: 560px; max-width: 100%; }
+  </style>
+</head>
+<body>
+  <div class="controls">
+    <button id="btnM">M</button>
+    <button id="btnMinv">MInv</button>
+    <button id="btnReset">Reset</button>
+  </div>
+  <div id="plot"></div>
+
+  <script>
+    // ===== Matrix ============================================================
+    const M = [[4,-3,-1],[2,3,1],[-2,3,5]];
+    const Minv = inv3(M);
+
+    // ===== Eigensystem objects ==============================================
+    // Real eigenvector (λ=6):
+    const r = [-1, 0, 2];
+    // Invariant plane for complex pair 3 ± i√3, spanned by:
+//    const a = [-1, -2,  2];
+ //   const b = [-Math.sqrt(3), 0, 0];
+    const a = [1, 1/2,  -1/2];
+    const b = [0, Math.sqrt(3)/2, -Math.sqrt(3)/2];
+
+    // Parallelogram corners: ±2a, ±2b
+    const A  = scale(a,  2), Bv  = scale(b,  2);
+    const nA = scale(a, -2), nB  = scale(b, -2);
+
+    // Persistent, mutable state
+    let para = [A.slice(), Bv.slice(), nA.slice(), nB.slice()];
+    let rVec = r.slice();
+    let aVec = a.slice();
+    let bVec = b.slice();
+
+    // Build real basis B = [a b r] and B^{-1} once (for M^s)
+    const Bmat  = [[a[0], b[0], r[0]],[a[1], b[1], r[1]],[a[2], b[2], r[2]]];
+    const Binv  = inv3(Bmat);
+
+    // Complex eigenvalue data: 3 ± i√3
+    const mod = 2 * Math.sqrt(3);   // |3 + i√3|
+    const ang = Math.PI / 6;        // arg(3 + i√3)
+    const realScale = 6;            // along r
+
+    // ===== Plotly traces =====================================================
+    function meshParallelogram(P, Q, R, S, color="rgba(160,160,160,1)", op=0.22){
+      return { type:"mesh3d",
+        x:[P[0],Q[0],R[0],S[0]], y:[P[1],Q[1],R[1],S[1]], z:[P[2],Q[2],R[2],S[2]],
+        i:[0,0], j:[1,2], k:[2,3],
+        color, opacity:op, flatshading:true, hoverinfo:"skip", showscale:false
+      };
+    }
+    function edgeTrace(pts, color="#666"){
+      const closed = [...pts, pts[0]];
+      return { type:"scatter3d", mode:"lines",
+        x:closed.map(p=>p[0]), y:closed.map(p=>p[1]), z:closed.map(p=>p[2]),
+        line:{width:4, color}, hoverinfo:"skip", showlegend:false
+      };
+    }
+    function vectorTrace(vec, color){
+      return { type:"scatter3d", mode:"lines+markers",
+        x:[0,vec[0]], y:[0,vec[1]], z:[0,vec[2]],
+        line:{width:9, color}, marker:{size:4, color}, hoverinfo:"skip", showlegend:false
+      };
+    }
+
+    // Parallelogram + eigenvectors (order so vectors render on top)
+    const planeMesh  = meshParallelogram(para[0],para[1],para[2],para[3]);
+    const planeEdges = edgeTrace(para);
+    const rTrace     = vectorTrace(rVec, "#d62728"); // red
+    const aTrace     = vectorTrace(aVec, "#2ca02c"); // green
+    const bTrace     = vectorTrace(bVec, "#1f77b4"); // blue
+
+    const layout = {
+      scene: {
+        aspectmode: "cube",
+        camera: {
+          up:{x:0,y:0,z:1}, center:{x:0,y:0,z:0},
+          eye:{x:2.4, y:1.8, z:1.6},
+          projection:{type:"orthographic"}
+        },
+        dragmode: "turntable",
+        xaxis:{title:"x", zeroline:true},
+        yaxis:{title:"y", zeroline:true},
+        zaxis:{title:"z", zeroline:true}
+      },
+      margin:{l:0,r:0,t:0,b:0},
+      showlegend:false,
+      uirevision:true
+    };
+
+    Plotly.newPlot("plot",
+      [planeMesh, planeEdges, rTrace, aTrace, bTrace],
+      layout, { responsive:true, displayModeBar:false }
+    );
+
+    // ===== Buttons & animation ==============================================
+    let animating = false;
+    document.getElementById("btnM").onclick    = () => animateStep(+1);
+    document.getElementById("btnMinv").onclick = () => animateStep(-1);
+    document.getElementById("btnReset").onclick = () => {
+      if (animating) return;
+      para = [A.slice(), Bv.slice(), nA.slice(), nB.slice()];
+      rVec = r.slice();
+      aVec = a.slice();
+      bVec = b.slice();
+      updatePlot();
+    };
+
+    function M_power_s_matrix(s){
+      // D_s = blockdiag( mod^s * R(ang*s), realScale^s )
+      const rs = Math.pow(mod, s);
+      const c = Math.cos(ang*s), sn = Math.sin(ang*s);
+      const D = [
+        [ rs*c, -rs*sn, 0 ],
+        [ rs*sn,  rs*c, 0 ],
+        [   0,      0,  Math.pow(realScale, s) ]
+      ];
+      // T_s = B * D_s * B^{-1}
+      return matmul( matmul(Bmat, D), Binv );
+    }
+
+    function animateStep(direction){
+      if (animating) return;
+      animating = true;
+
+      // Originals at the start of this click
+      const P0 = para.map(p=>p.slice());
+      const r0 = rVec.slice(), a0 = aVec.slice(), b0 = bVec.slice();
+
+      const start = performance.now(), duration = 900;
+      function tick(t){
+        const e = Math.min(1, (t - start) / duration);
+        const s = easeInOut(e) * direction;   // s in [0,1] or [0,-1]
+        const Ts = M_power_s_matrix(s);
+
+        // Render from originals using M^s (no compounding within pass)
+        updateDisplay(
+          P0.map(p => matvec(Ts, p)),
+          matvec(Ts, r0),
+          matvec(Ts, a0),
+          matvec(Ts, b0)
+        );
+
+        if (e < 1) { requestAnimationFrame(tick); }
+        else {
+          // ---- No-jump finalization:
+          // Compute exact end transform once with s_end = ±1
+          const s_end = direction;                 // +1 for M, -1 for M^{-1}
+          const T_end = M_power_s_matrix(s_end);   // equals M or M^{-1} in this basis
+          const P_end = P0.map(p => matvec(T_end, p));
+          const r_end = matvec(T_end, r0);
+          const a_end = matvec(T_end, a0);
+          const b_end = matvec(T_end, b0);
+
+          // 1) Set persistent state to the final frame
+          para = P_end.map(p => p.slice());
+          rVec = r_end.slice();
+          aVec = a_end.slice();
+          bVec = b_end.slice();
+
+          // 2) Draw exactly that same final frame (no extra recompute)
+          updateDisplay(P_end, r_end, a_end, b_end);
+
+          animating = false;
+        }
+      }
+      requestAnimationFrame(tick);
+    }
+
+    // ===== Plot updates ======================================================
+    function updateDisplay(P, rP, aP, bP){
+      // plane mesh
+      Plotly.restyle("plot", {
+        x:[[P[0][0],P[1][0],P[2][0],P[3][0]]],
+        y:[[P[0][1],P[1][1],P[2][1],P[3][1]]],
+        z:[[P[0][2],P[1][2],P[2][2],P[3][2]]]
+      }, [0]);
+
+      // plane edges
+      const closed = [P[0],P[1],P[2],P[3],P[0]];
+      Plotly.restyle("plot", {
+        x:[closed.map(p=>p[0])],
+        y:[closed.map(p=>p[1])],
+        z:[closed.map(p=>p[2])]
+      }, [1]);
+
+      // eigenvectors
+      Plotly.restyle("plot", { x:[[0,rP[0]]], y:[[0,rP[1]]], z:[[0,rP[2]]] }, [2]); // r
+      Plotly.restyle("plot", { x:[[0,aP[0]]], y:[[0,aP[1]]], z:[[0,aP[2]]] }, [3]); // a
+      Plotly.restyle("plot", { x:[[0,bP[0]]], y:[[0,bP[1]]], z:[[0,bP[2]]] }, [4]); // b
+    }
+
+    function updatePlot(){
+      // Uses persistent state (after reset)
+      Plotly.restyle("plot", {
+        x:[[para[0][0],para[1][0],para[2][0],para[3][0]]],
+        y:[[para[0][1],para[1][1],para[2][1],para[3][1]]],
+        z:[[para[0][2],para[1][2],para[2][2],para[3][2]]]
+      }, [0]);
+
+      const closed = [para[0],para[1],para[2],para[3],para[0]];
+      Plotly.restyle("plot", {
+        x:[closed.map(p=>p[0])], y:[closed.map(p=>p[1])], z:[closed.map(p=>p[2])]
+      }, [1]);
+
+      Plotly.restyle("plot", { x:[[0,rVec[0]]], y:[[0,rVec[1]]], z:[[0,rVec[2]]] }, [2]);
+      Plotly.restyle("plot", { x:[[0,aVec[0]]], y:[[0,aVec[1]]], z:[[0,aVec[2]]] }, [3]);
+      Plotly.restyle("plot", { x:[[0,bVec[0]]], y:[[0,bVec[1]]], z:[[0,bVec[2]]] }, [4]);
+    }
+
+    // ===== Helpers ===========================================================
+    function matmul(A,B){
+      const m=A.length, n=A[0].length, p=B[0].length;
+      const C=Array.from({length:m},()=>Array(p).fill(0));
+      for(let i=0;i<m;i++) for(let k=0;k<n;k++) for(let j=0;j<p;j++) C[i][j]+=A[i][k]*B[k][j];
+      return C;
+    }
+    function matvec(A,x){
+      return [
+        A[0][0]*x[0]+A[0][1]*x[1]+A[0][2]*x[2],
+        A[1][0]*x[0]+A[1][1]*x[1]+A[1][2]*x[2],
+        A[2][0]*x[0]+A[2][1]*x[1]+A[2][2]*x[2]
+      ];
+    }
+    function inv3(A){
+      const [a,b,c,d,e,f,g,h,i] = [A[0][0],A[0][1],A[0][2],A[1][0],A[1][1],A[1][2],A[2][0],A[2][1],A[2][2]];
+      const A11=(e*i-f*h), A12=-(b*i-c*h), A13=(b*f-c*e);
+      const A21=-(d*i-f*g), A22=(a*i-c*g),  A23=-(a*f-c*d);
+      const A31=(d*h-e*g),  A32=-(a*h-b*g), A33=(a*e-b*d);
+      const det=a*A11 + b*A21 + c*A31;
+      return [[A11/det,A12/det,A13/det],[A21/det,A22/det,A23/det],[A31/det,A32/det,A33/det]];
+    }
+    function scale(v,k){ return [k*v[0], k*v[1], k*v[2]]; }
+    function easeInOut(x){ return 0.5 - 0.5*Math.cos(Math.PI*x); }
+  </script>
+</body>
+</html>

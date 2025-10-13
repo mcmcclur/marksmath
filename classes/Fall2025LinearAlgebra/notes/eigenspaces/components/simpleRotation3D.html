@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 16px; }
+    .controls { display: flex; gap: .6rem; margin-bottom: .6rem; }
+    button { padding: .42rem .8rem; border: 1px solid #ccc; border-radius: .5rem; background: #f6f6f6; cursor: pointer; }
+    #plot { width: 800px; height: 520px; max-width: 100%; }
+  </style>
+</head>
+<body>
+  <div class="controls">
+    <button id="btnM">M</button>
+    <button id="btnMinv">MInv</button>
+    <button id="btnReset">Reset</button>
+  </div>
+  <div id="plot"></div>
+
+  <script>
+    // --- Matrix (for discrete snap after animation) ---
+    const M = [[1,-1,0],[1,1,0],[0,0,2]];
+    const Minv = [[0.5,0.5,0],[-0.5,0.5,0],[0,0,0.5]];
+
+    // --- Initial geometry: square in xy-plane + basis i,j,k ---
+    const s = 2; // half-side length
+    const squareInit = [[-s,-s,0],[ s,-s,0],[ s, s,0],[-s, s,0]];
+    const iInit = [1,0,0], jInit = [0,1,0], kInit = [0,0,1];
+
+    // Mutable state
+    let square = squareInit.map(p => p.slice());
+    let iVec = iInit.slice(), jVec = jInit.slice(), kVec = kInit.slice();
+
+    // --- Plotly traces (mesh + edges + vectors) ---
+    function squareMeshTrace(pts) {
+      const xs = pts.map(p=>p[0]), ys = pts.map(p=>p[1]), zs = pts.map(p=>p[2]);
+      return { type:"mesh3d", x:xs, y:ys, z:zs, i:[0,0], j:[1,2], k:[2,3],
+               color:"rgba(160,160,160,1)", opacity:0.2, flatshading:true,
+               hoverinfo:"skip", showscale:false };
+    }
+    function squareEdgeTrace(pts) {
+      const closed = [...pts, pts[0]];
+      return { type:"scatter3d", mode:"lines",
+               x:closed.map(p=>p[0]), y:closed.map(p=>p[1]), z:closed.map(p=>p[2]),
+               line:{width:4, color:"#666"}, hoverinfo:"skip", showlegend:false };
+    }
+    function vectorTrace(vec, color) {
+      return { type:"scatter3d", mode:"lines+markers",
+               x:[0,vec[0]], y:[0,vec[1]], z:[0,vec[2]],
+               line:{width:8, color}, marker:{size:4, color},
+               hoverinfo:"skip", showlegend:false };
+    }
+
+    let traces = [
+      squareMeshTrace(square),
+      squareEdgeTrace(square),
+      vectorTrace(iVec, "#d62728"), // i (red)
+      vectorTrace(jVec, "#2ca02c"), // j (green)
+      vectorTrace(kVec, "#1f77b4")  // k (blue)
+    ];
+
+    const layout = {
+      scene: {
+        aspectmode: "cube",
+        camera: {
+          up: {x:0,y:0,z:1}, center: {x:0,y:0,z:0},
+          eye: {x: 2.2, y: 1.6, z: 1.6},
+          projection: { type: "orthographic" }
+        },
+        dragmode: "turntable",
+        xaxis: { title:"x", zeroline:true },
+        yaxis: { title:"y", zeroline:true },
+        zaxis: { title:"z", zeroline:true }
+      },
+      margin: { l:0, r:0, t:0, b:0 },
+      showlegend: false,
+      uirevision: true
+    };
+
+    Plotly.newPlot("plot", traces, layout, { responsive:true, displayModeBar:false });
+
+    // --- Buttons ---
+    document.getElementById("btnM").onclick = () => animateStep(+1);
+    document.getElementById("btnMinv").onclick = () => animateStep(-1);
+    document.getElementById("btnReset").onclick = () => {
+      if (animating) return;
+      square = squareInit.map(p => p.slice());
+      iVec = iInit.slice(); jVec = jInit.slice(); kVec = kInit.slice();
+      updatePlot();
+    };
+
+    // --- Animation: continuous action, then discrete snap ---
+    let animating = false;
+
+    function animateStep(direction) {
+      if (animating) return;
+      animating = true;
+
+      // Capture starting geometry
+      const sq0 = square.map(p => p.slice());
+      const i0 = iVec.slice(), j0 = jVec.slice(), k0 = kVec.slice();
+
+      const start = performance.now(), duration = 900;
+      function tick(t) {
+        const e = Math.min(1, (t - start) / duration);
+        const s = easeInOut(e) * direction;  // s in [0,1] or [0,-1]
+
+        // Apply continuous transform to the originals (not compounding within this pass)
+        updateDisplay(
+          sq0.map(p => contMap(p, s)),
+          contMap(i0, s),
+          contMap(j0, s),
+          contMap(k0, s)
+        );
+
+        if (e < 1) requestAnimationFrame(tick);
+        else {
+          // After animation, snap the persistent state to exactly M or M^{-1}
+          const A = direction > 0 ? M : Minv;
+          square = square.map(p => matvec(A, p));
+          iVec = matvec(A, iVec);
+          jVec = matvec(A, jVec);
+          kVec = matvec(A, kVec);
+          updatePlot();
+          animating = false;
+        }
+      }
+      requestAnimationFrame(tick);
+    }
+
+    // --- Continuous map matching M^s ---
+    // In xy: rotate by (π/4)*s, scale by (√2)^s; in z: scale by 2^s
+    function contMap(p, s) {
+      const [x, y, z] = p;
+      const theta = (Math.PI/4) * s;
+      const rScale = Math.pow(Math.SQRT2, s);   // (√2)^s
+      const c = Math.cos(theta), sn = Math.sin(theta);
+      const x1 = rScale * ( c*x - sn*y );
+      const y1 = rScale * ( sn*x + c*y );
+      const z1 = Math.pow(2, s) * z;
+      return [x1, y1, z1];
+    }
+
+    // --- Plot updates during animation ---
+    function updateDisplay(sqPts, iP, jP, kP) {
+      // Mesh
+      Plotly.restyle("plot", { x: [sqPts.map(p=>p[0])],
+                               y: [sqPts.map(p=>p[1])],
+                               z: [sqPts.map(p=>p[2])] }, [0]);
+      // Edges
+      const closed = [...sqPts, sqPts[0]];
+      Plotly.restyle("plot", { x: [closed.map(p=>p[0])],
+                               y: [closed.map(p=>p[1])],
+                               z: [closed.map(p=>p[2])] }, [1]);
+      // Vectors
+      Plotly.restyle("plot", { x: [[0,iP[0]]], y: [[0,iP[1]]], z: [[0,iP[2]]] }, [2]);
+      Plotly.restyle("plot", { x: [[0,jP[0]]], y: [[0,jP[1]]], z: [[0,jP[2]]] }, [3]);
+      Plotly.restyle("plot", { x: [[0,kP[0]]], y: [[0,kP[1]]], z: [[0,kP[2]]] }, [4]);
+    }
+
+    // --- Final (discrete) update after snapping ---
+    function updatePlot() {
+      const xs = square.map(p=>p[0]), ys = square.map(p=>p[1]), zs = square.map(p=>p[2]);
+      Plotly.restyle("plot", { x: [xs], y: [ys], z: [zs] }, [0]);
+      const closed = [...square, square[0]];
+      Plotly.restyle("plot", { x: [closed.map(p=>p[0])],
+                               y: [closed.map(p=>p[1])],
+                               z: [closed.map(p=>p[2])] }, [1]);
+      Plotly.restyle("plot", { x: [[0,iVec[0]]], y: [[0,iVec[1]]], z: [[0,iVec[2]]] }, [2]);
+      Plotly.restyle("plot", { x: [[0,jVec[0]]], y: [[0,jVec[1]]], z: [[0,jVec[2]]] }, [3]);
+      Plotly.restyle("plot", { x: [[0,kVec[0]]], y: [[0,kVec[1]]], z: [[0,kVec[2]]] }, [4]);
+    }
+
+    // --- Helpers ---
+    function matvec(A, x) {
+      return [
+        A[0][0]*x[0] + A[0][1]*x[1] + A[0][2]*x[2],
+        A[1][0]*x[0] + A[1][1]*x[1] + A[1][2]*x[2],
+        A[2][0]*x[0] + A[2][1]*x[1] + A[2][2]*x[2]
+      ];
+    }
+    function easeInOut(x){ return 0.5 - 0.5*Math.cos(Math.PI*x); } // smooth cosine easing
+  </script>
+</body>
+</html>

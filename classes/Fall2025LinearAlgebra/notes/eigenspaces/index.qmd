@@ -17,22 +17,6 @@ $$
 \newcommand{\vect}[1]{\mathbf{#1}}
 $$
 
-A couple more 3D examples: 
-
-- For SageMath: `[(0, 6, -4), (-5, 18, -10), (-8, 26, -14)]`
-- By hand:  
-
-```{python}
-#| eval: false 
-#| echo: true
-  M = [
-      [2, -1, -1],
-      [0, 3, -4],
-      [0, 2, -1]
-  ]
-```
-
-
 When we study a linear transformation $T:\mathbb R^n \to \mathbb R^n$, there are often many invariant subspaces. We can simplify the transformation by studying how it acts on those smaller, invariant spaces. Eigenvectors and their associated eigenvalues are the algebraic tools for formulating this process. Furthermore, there's a very geometric way to view these concepts as well.
 
 ## The basic definitions
@@ -692,95 +676,63 @@ Geometrically, this matrix acts just like the last one, just with different vect
 
 ### Complex eigenvalues in 3D
 
-Since the characteristic polynomial of a 3D matrix is a cubic, there's always at least one real root and any complex eigenvalues come in conjugate pairs.
+Since the characteristic polynomial of a 3D matrix is a cubic, there's always at least one real root and any complex eigenvalues come in conjugate pairs. Thus, we anticipate that there will be an invariant plane where the action of the matrix involves rotation and one-dimensional invariant subspace that's linearly independent from that plane. Here are a couple of examples illustrating this.
 
-#### Example 
+#### Simplest example 
 
-Let $M$ denote the matrix 
+The simplest possible example along these lines looks like so:
 $$
 M = \begin{bmatrix}
-0 & 2 & 0 \\
--1 & 2 & 1 \\
-0 & 0 & 2
+1&-1&0\\1&1&0\\0&0&2
+\end{bmatrix}.
+$$
+It's pretty easy to see how this works after we compute 
+$$
+M = \begin{bmatrix}
+1&-1&0\\1&1&0\\0&0&2
 \end{bmatrix}
+\begin{bmatrix}
+x\\y\\z
+\end{bmatrix}
+=
+\begin{bmatrix}
+x-y\\x+y\\2z
+\end{bmatrix}.
 $$
+Thus, we have a rotation with scaling in the $xy$-plane while the $z$-axis stretches out perpendicularly to the rotation.
 
-We can find the characteristic polynomial and eigenvalues as follows:
-$$
-\begin{aligned}
-\det(M-\lambda I) &= \begin{vmatrix}
--\lambda & 2 & 0 \\
--1 & 2-\lambda & 1 \\
-0 & 0 & 2-\lambda
-\end{vmatrix} \\  
-&= (2-\lambda)
-\begin{vmatrix} -\lambda & 2 \\ -1 & 2-\lambda \end{vmatrix}
-= (2-\lambda)(\lambda^2 - 2\lambda + 2).
-\end{aligned}
-$$
-
-The roots of that polynomial are exactly $\lambda = 2$ and $\lambda = 1\pm i$.
-
-In this situation, we expect there to be a one-dimensional eigenspace that's stretched out by the fact 2 and a two-dimensional eigenspace that's rotated through the angle $45^{\circ}$ and expanded by the factor $\sqrt{2}$.
-
-
-In order to find an eigenvector for $\lambda=2$ let's write
-$$
-(M-2I)\vect{v}=0 \text{ where } \vect{v}=[x \quad y \quad z]^{\mathsf T}.$$ 
-Then this boils down to the system
-$$
-\begin{eqnarray}
--2x+2y&=0\\
--x+z&=0
-\end{eqnarray}
-\quad\text{ so } y=x \text{ and } z=x.
-$$
-Thus, $x$ is free and we can find an eigenvector in terms of $x$:
-$$
-\vect{v}=x\begin{bmatrix}1&1&1\end{bmatrix}^{\mathsf T},\quad x\neq 0.
-$$
-Or setting $x=1$ we get
-$$
-\begin{bmatrix}1&1&1\end{bmatrix}^{\mathsf T}.
-$$
-
-It gets more complicated than I want to type out for the complex eigenvector. Here's how you can do it with Sage:
+You can see that in action here:
 
 ```{=html}
-<iframe width=600 height=400 src="./components/embedEigenSageCell.html"></iframe>
+<iframe width=800 height=600 src="./components/simpleRotation3D.html"></iframe>
 ```
 
-Note that the complex eigenvalues are $1\pm i$, as we already knew. It looks like the corresponding eigenvectors are 
-$$
-\vect{v} = [1 \quad \frac{1}{2}\pm\frac{1}{2}i \quad 0]^{\mathsf T} = [1 \quad 1/2 \quad 0]^{\mathsf T} \pm i [0 \quad 1/2 \quad 0]^{\mathsf T}.
-$$
-Note that the real and complex parts of the eigenvector span the eigenspace, which is the $xy$-plane. Thus, the action of this matrix preserves that plane and involves rotation of that plane.
+#### Another example
 
-#### Another example 
+Once you get to complex eigenvalues in 3D, things get more complicated. It's not hard to interpret eigenvalues and eigenvectors, if we compute them with software, though.
 
-Consider 
-
+Suppose we have
 $$
-M = \left[
-\begin{array}{ccc}
- -3 & 10 & -5 \\
- 3 & -10 & 7 \\
- 7 & -23 & 15 \\
-\end{array}
-\right]
+M = \begin{bmatrix}
+ 4&-3&-1 \\ 2&3&1 \\ -2&3&5
+\end{bmatrix}.
 $$
 
-Let's use Sage straight away to compute the eigensystem:
+We can compute the eigensystem with Sage:
 
 ```{=html}
 <iframe width=600 height=400 src="./components/embedEigen2SageCell.html"></iframe>
 ```
 
-This tells me that the real eigenspace is spanned by the vector $[1 \quad 2 \quad 3]^{\mathsf T}$ and that the complex eigenspace is spanned by the vectors 
-$$
-[1 \quad 0.2 \quad -0.2]^{\mathsf T} \text{ and } [1 \quad -0.4 \quad -0.6]^{\mathsf T}.
-$$
+So, clearly we have a real eigenvalue of $\lambda=6$ with invariant space spanned by $[1 \quad 0 \quad -2]^{\mathsf T}$. 
 
+For the complex eigenvalue, if you realize that $1.73205\approx\sqrt{3}$ and $0.866025\approx\sqrt{3}/2$, then we can see that the eigenspace is spanned by the vectors $$[1 \quad 1/2 \quad -1/2]^{\mathsf T} \text{ and } [0 \quad \sqrt{3}/2 \quad -\sqrt{3}/2]^{\mathsf T}.$$
+
+Altogether, this looks like so:
+
+```{=html}
+<iframe width=800 height=600 src="./components/lessSimpleRotation3D.html"></iframe>
+```
 
 ::: {.hidden}
 
