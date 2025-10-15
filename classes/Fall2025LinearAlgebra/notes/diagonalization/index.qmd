@@ -16,6 +16,7 @@ As we've seen, sometimes a $2\times2$ matrix will stretch one vector and flip an
 
 As it turns out, we can find a relationship between these types of matrices and use it to great benefit. Ideally, each matrix that behaves in some certain way can be represented by some particularly simple form. We could then leverage analysis of the simple form to help us understand the more general version.
 
+
 ## Matrix similarity
 
 We'll work in $\mathbb R^n$ throughout this set of notes and we're interested in what it means to say that two matrices $A,B\in\mathbb R^{n\times n}$ are similar.
@@ -110,8 +111,9 @@ $$
 \sim \begin{bmatrix}1 & 0 \\ 0 & -1\end{bmatrix}.
 $$
 
-
 A key point here is that we can use this technique to construct matrices with desired properties.
+
+
 
 ## Diagonalization 
 
@@ -122,6 +124,8 @@ $$
 
 
 ### Beginning example
+
+It turns out that the diagonalization procedure is closely related to eigenvalues and eigenvectors; we'll see how in this first example.
 
 Consider the matrix 
 $$
@@ -195,7 +199,7 @@ The action of $D$ is in different directions, though. $D$ stretches by the facto
 
 It seems these matrices should be similar so we should be able to find that similarity relationship. Here's how:
 
-First, note that $D$ has the eigenvalues of $A$ on its diagonal. Next, choose $S$ to a matrix whose columns are eigenvectors of $A$. It's important that the order of the eigenvector columns in $S$ matches the order of the eigenvalue entries in $D$. Then,
+First, note that $D$ has the eigenvalues of $A$ on its diagonal. Next, choose $S$ to be a matrix whose columns are eigenvectors of $A$. It's important that the order of the eigenvector columns in $S$ matches the order of the eigenvalue entries in $D$. Then,
 $$
 A = SDS^{-1}.
 $$
@@ -218,7 +222,7 @@ $$
 $$
 This is [easy enough to check](https://sagecell.sagemath.org/?q=xywdvc){target=_blank}. More importantly, it's easy to see why it must work by following the action of each matrix.
 
-Recall that multiplication of a $2\times2$ matrix times $\mathbf{\imath}$ extracts the first column of the matrix and multiplication times $\mathbf{\jmath}$ extracts the second. Thus, multiplication by $S$ sends the basis vectors to the eigenvectors. Multiplication by $S^{-1}$ does the reverse and sends the eigenvectors to the basis vectors.
+Recall that multiplication of a $2\times2$ matrix times $\vec{\imath}$ extracts the first column of the matrix and multiplication times $\vec{\jmath}$ extracts the second. Thus, multiplication by $S$ sends the basis vectors to the eigenvectors. Multiplication by $S^{-1}$ does the reverse and sends the eigenvectors to the basis vectors.
 
 We can now analyze $\mathbf{x} \to SDS^{-1} \mathbf{x}$ as follows:
 
@@ -230,7 +234,7 @@ The overall effect is to scale the eigenspaces of $A$ by the corresponding eigen
 
 ### Higher dimensions
 
-The same basic idea works in higher dimensions. We first generalize the role of $\mathbf{\imath}$ and $\mathbf{\jmath}$ to the standard basis vectors in $\mathbb R^n$ as follows: 
+The same basic idea works in higher dimensions. We first generalize the role of $\vec{\imath}$ and $\vec{\jmath}$ to the standard basis vectors in $\mathbb R^n$ as follows: 
 
 > For $j=1,\ldots,n$, the $j^{\text{th}}$ standard unit basis vector $\mathbf{e}_j$ has a one in the $j^{\text{th}}$ entry and a zero elsewhere.
 
@@ -252,7 +256,7 @@ $$
 We wish to find a diagonal form of $A$. To do so we first find its eigenvalues and eigenvectors, which is easily done with SageMath:
 
 ```{=html}
-<iframe width=600 height=400 src="./components/diagonlize5by5.html"></iframe>
+<iframe width=600 height=400 src="./components/diagonalize5by5.html"></iframe>
 ```
 
 We see 5 distinct eigenvalues and their associated eigenvectors. That tells us that we should be able to diagonalize $A$ to the matrix $D$ with the eigenvalues on the diagonal using the matrix $S$ whose columns are the eigenvectors of $A$. That is,
@@ -279,6 +283,8 @@ $$A=
 2 & -1 & -1 & 0 & 1
 \end{array}\right]^{-1}
 $$
+
+
 
 ## Constructing matrices
 
@@ -365,9 +371,10 @@ $$
 Naturally, we would prefer to do this [on a computer](https://sagecell.sagemath.org/?q=edzouf){target=_blank}.
 
 
+
 ## Power iteration 
 
-Eigenvalues and eigenvectors have a surprising range of application and, sometimes, we need to compute them for *very* large matrices and we might only need a specific few. These computations are generally performed on computers and there are algorithms can quickly find one eivenvalue/eigenvector pair one at a time. The most basic of these is called *power iteration*.
+Eigenvalues and eigenvectors have a surprising range of application and, sometimes, we need to compute them for *very* large matrices and we might only need a specific few. These computations are generally performed on computers and there are algorithms that can quickly find one eigenvalue/eigenvector pair one at a time. The most basic of these is called *power iteration*.
 
 
 ### A curious computation
@@ -409,7 +416,7 @@ Thus, we see convergence to the eigenvector.
 
 *BUT*, this only works when there's one single entry on the diagonal that's larger than any other in absolute value. If there are several of the same maximum value (which happens with complex eigenvalues, since they come in conjugate pairs), then the technique can fail.
 
-When there is a single eigenvalue that's larger in absolute value then all of the rest, then that value is called the *dominant eigenvalue* and it's corresponding eigenvector is called the *dominant eigenvector*.
+When there is a single eigenvalue that's larger in absolute value than all of the rest, then that value is called the *dominant eigenvalue* and its corresponding eigenvector is called the *dominant eigenvector*.
 
 ### Generalization
 
@@ -427,7 +434,7 @@ A^k = SD^kS^{-1}.
 $$
 As a result, the dominant eigenvector of $A$ dominates the iteration, just as the dominant eigenvector of $D$ does.
 
-Even if the matrix is not diagonalizable, the technique still works when their is a dominant eigenvalue. The existence of that dominant eigenvalue is the key issue.
+Even if the matrix is not diagonalizable, the technique still works when there is a dominant eigenvalue. The existence of that dominant eigenvalue is the key issue.
 
 ### Finding the eigenvalue
 
@@ -447,6 +454,32 @@ $$
 \lambda \frac{\mathbf{v}^{\mathsf T}\mathbf{v}}{\mathbf{v}^{\mathsf T}\mathbf{v}}
 = \lambda.
 $$
+
+
+
+## Matrix factorization
+
+It's worth mentioning that diagonalization is just one of many so-called matrix factorizations. Generally, each factorization expresses the given matrix as a product of other matrices in a way that describes some fundamental algorithm of linear algebra.
+
+Here's a list of a few such factorizations:
+
+
+1. Elementary matrix factorization  
+   Any non-singular matrix is the product of elementary matrices; the basics of solving and analyzing systems.
+
+2. LU Decomposition  
+   Expresses a square matrix $A$ as $A = LU$, where $L$ is lower-triangular and $U$ is upper-triangular; used to solve linear systems efficiently via forward and backward substitution.
+
+3. QR Decomposition  
+   Any real (or complex) matrix $A$ can be written as $A = QR$, where $Q$ is orthogonal (or unitary) and $R$ is upper-triangular; commonly used in least-squares problems and numerical eigenvalue methods.
+
+4. Eigen Decomposition  
+   When a square matrix $A$ is diagonalizable, $A = V \Lambda V^{-1}$, where $V$ contains eigenvectors and $\Lambda$ is a diagonal matrix of eigenvalues; fundamental for understanding linear transformations and dynamics.
+
+5. Singular Value Decomposition (SVD)  
+   Any $m \times n$ matrix $A$ can be written as $A = U \Sigma V^T$, where $U$ and $V$ are orthogonal and $\Sigma$ is diagonal with nonnegative entries (the singular values); essential for low-rank approximations, PCA, and numerical stability.
+
+
 
 <style>
 button {
