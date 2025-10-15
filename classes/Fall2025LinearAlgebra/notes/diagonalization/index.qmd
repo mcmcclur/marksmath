@@ -1,0 +1,462 @@
+---
+title: Diagonalization 
+page-layout: article
+date: 2025-10-15
+format:
+  html:
+    toc: true
+    css: ../note-styles.css
+    include-in-header:
+      - text: |
+          <script src="https://sagecell.sagemath.org/static/embedded_sagecell.js"></script>
+          <script>sagecell.makeSagecell({"inputLocation": ".sage"});</script>
+---
+
+As we've seen, sometimes a $2\times2$ matrix will stretch one vector and flip another. If a second matrix performs those same two operations, but on different vectors, then the overall effect is different, but similar. 
+
+As it turns out, we can find a relationship between these types of matrices and use it to great benefit. Ideally, each matrix that behaves in some certain way can be represented by some particularly simple form. We could then leverage analysis of the simple form to help us understand the more general version.
+
+## Matrix similarity
+
+We'll work in $\mathbb R^n$ throughout this set of notes and we're interested in what it means to say that two matrices $A,B\in\mathbb R^{n\times n}$ are similar.
+
+### The definition
+
+**Definition**: We say that a matrix $A$ is *similar* to the matrix $B$ if there is a non-singular matrix $S$ such that 
+$$
+A = SBS^{-1}.
+$$
+
+*Comments*:
+
+- The matrix $S$ that arises in this process is sometimes called  a *change of basis matrix*.
+- Clearly, $S$ must be an element of $\mathbb R^{n\times n}$ as well.
+- The algebraic operation $B \to SBS^{-1}$ is called *conjugation*.
+- When $A$ is similar to $B$, we might write $A \sim B$. The relation $\sim$ forms an equivalence relation; that is 
+   - $A \sim A$,
+   - If $A \sim B$, then $B \sim A$.
+   - If $A \sim B$ and $B \sim C$, then $A \sim C$.  
+Can you find the change of basis matrices that proves those statements?
+
+### Example 1
+
+Let 
+$$
+S = \left[
+\begin{array}{cc}
+ 1 & 0 \\
+ 0 & -1 \\
+\end{array}
+\right]
+\text{ and }
+A = \left[
+\begin{array}{cc}
+ 0 & -1 \\
+ 1 & 0 \\
+\end{array}
+\right].
+$$
+Note that $S$ is its own inverse, so 
+$$
+B = SAS = \left[
+\begin{array}{cc}
+ 1 & 0 \\
+ 0 & -1 \\
+\end{array}
+\right]
+\left[
+\begin{array}{cc}
+ 0 & -1 \\
+ 1 & 0 \\
+\end{array}
+\right]
+\left[
+\begin{array}{cc}
+ 1 & 0 \\
+ 0 & -1 \\
+\end{array}
+\right]
+=
+\left[
+\begin{array}{cc}
+ 0 & 1 \\
+ -1 & 0 \\
+\end{array}
+\right]
+$$
+is similar to $A$.
+
+The geometric actions of these matrices are not hard to determine.
+
+- $A$ represents counterclockwise rotation through $90^{\circ}$,
+- $S$ represents reflection across the $x$-axis,
+- $B$ represents clockwise rotation through $90^{\circ}$.
+
+Here's how the three actions $SAS$ make up $B$ or one-quarter clockwise rotation:
+
+```{ojs}
+viewof takeStep = Inputs.button("Step");
+reflect_rotate_reflect_pic = reflect_rotate_reflect();
+react = reflect_rotate_reflect_pic.take_step(takeStep)
+```
+
+Note that we did something quite similar when we discussed [oblique reflection](../geometry_of_linear_transformations/#oblique-reflection). At that time, our objective was to generate a reflection across a line making an oblique angle $\theta$ with the $x$-axis. We used the fact that reflection across the $x$-axis is easily understood as a change in the sign of the $y$-coordinate; we then write 
+$$
+A = R(\theta) \begin{bmatrix}1&0\\0&-1\end{bmatrix}R(-\theta),
+$$
+where $R$ is the rotation matrix through the angle $\theta$. Also note that $R(\theta)$ and $R(-\theta)$ are inverses of one another, 
+$$
+\begin{bmatrix}3/5 & 4/5 \\ 4/5 & -3/5\end{bmatrix} 
+\sim \begin{bmatrix}1 & 0 \\ 0 & -1\end{bmatrix}.
+$$
+
+
+A key point here is that we can use this technique to construct matrices with desired properties.
+
+## Diagonalization 
+
+**Definition**: We say that a matrix $A$ is *diagonalizable* if it's similar to a diagonal matrix $D$. That is, there's a non-singular matrix $S$ such that 
+$$
+A = SDS^{-1}.
+$$
+
+
+### Beginning example
+
+Consider the matrix 
+$$
+A = \begin{bmatrix}
+ 1 & 4 \\
+ 1 & 1 \\
+\end{bmatrix}.
+$$
+Note that 
+$$
+\begin{bmatrix}
+ 1 & 4 \\
+ 1 & 1 \\
+\end{bmatrix}
+\begin{bmatrix}
+ -2 \\ 1
+\end{bmatrix}
+=
+\begin{bmatrix}
+ 2 \\ -1
+\end{bmatrix}
+=
+-\begin{bmatrix}
+ -2 \\ 1 
+\end{bmatrix}
+$$
+and
+$$
+\begin{bmatrix}
+ 1 & 4 \\
+ 1 & 1 \\
+\end{bmatrix}
+\begin{bmatrix}
+ 2 \\ 1 
+\end{bmatrix}
+=
+\begin{bmatrix}
+ 6 \\ 3
+\end{bmatrix}
+=
+3\begin{bmatrix}
+ 2 \\ 1 
+\end{bmatrix}.
+$$
+Thus, we've got a pair of eigenvalues, namely $-1$ and $3$ with associated eigenvectors 
+$$
+\begin{bmatrix}
+ -2 \\ 1 
+\end{bmatrix}
+\: \text{ and } \:
+\begin{bmatrix}
+ 2 \\ 1 
+\end{bmatrix}.
+$$
+This matrix stretches out space by the factor $3$ in the direction
+$\begin{bmatrix}
+ 2 & 1 
+\end{bmatrix}^{\mathsf T}$
+and flips the direction 
+$\begin{bmatrix}
+ -2 & 1 
+\end{bmatrix}^{\mathsf T}$.
+
+Another matrix with a very similar geometric action is 
+$$
+D = \begin{bmatrix}
+-1 & 0 \\ 0 & 3
+\end{bmatrix}.
+$$
+The action of $D$ is in different directions, though. $D$ stretches by the factor $3$ in the $y$-direction and flips the $x$-direction.
+
+It seems these matrices should be similar so we should be able to find that similarity relationship. Here's how:
+
+First, note that $D$ has the eigenvalues of $A$ on its diagonal. Next, choose $S$ to a matrix whose columns are eigenvectors of $A$. It's important that the order of the eigenvector columns in $S$ matches the order of the eigenvalue entries in $D$. Then,
+$$
+A = SDS^{-1}.
+$$
+In the current example,
+$$
+\begin{bmatrix}
+ 1 & 4 \\
+ 1 & 1 \\
+\end{bmatrix}
+=
+\begin{bmatrix}
+-2 & 2 \\ 1 & 1
+\end{bmatrix}
+\begin{bmatrix}
+-1 & 0 \\ 0 & 3
+\end{bmatrix}
+\begin{bmatrix}
+-2 & 2 \\ 1 & 1
+\end{bmatrix}^{-1}.
+$$
+This is [easy enough to check](https://sagecell.sagemath.org/?q=xywdvc){target=_blank}. More importantly, it's easy to see why it must work by following the action of each matrix.
+
+Recall that multiplication of a $2\times2$ matrix times $\mathbf{\imath}$ extracts the first column of the matrix and multiplication times $\mathbf{\jmath}$ extracts the second. Thus, multiplication by $S$ sends the basis vectors to the eigenvectors. Multiplication by $S^{-1}$ does the reverse and sends the eigenvectors to the basis vectors.
+
+We can now analyze $\mathbf{x} \to SDS^{-1} \mathbf{x}$ as follows:
+
+- $\mathbf{x} \to \mathbf{y} = S^{-1} \mathbf{x}$ sends the eigenvectors of $A$ to the basis vectors,
+- $\mathbf{y} \to \mathbf{z} = D \mathbf{y}$ scales the basis vectors by the eigenvalues, and 
+- $\mathbf{y} \to \mathbf{z} = S \mathbf{y}$ sends the scaled basis vectors back to the eigenspaces of $A$.
+
+The overall effect is to scale the eigenspaces of $A$ by the corresponding eigenvalues.
+
+### Higher dimensions
+
+The same basic idea works in higher dimensions. We first generalize the role of $\mathbf{\imath}$ and $\mathbf{\jmath}$ to the standard basis vectors in $\mathbb R^n$ as follows: 
+
+> For $j=1,\ldots,n$, the $j^{\text{th}}$ standard unit basis vector $\mathbf{e}_j$ has a one in the $j^{\text{th}}$ entry and a zero elsewhere.
+
+As a result, if $A$ is an $n\times n$ matrix, then $A\mathbf{e}_j$ yields exactly the $j^{\text{th}}$ column of $A$.
+
+
+### Example 3
+
+Now, suppose that $A$ is the matrix
+$$
+A = \left[\begin{array}{ccccc}
+4 & 2 & 14 & 10 & -8 \\
+-8 & -6 & -12 & -16 & 8 \\
+1 & 0 & 7 & 1 & -1 \\
+3 & 4 & 3 & 9 & -3 \\
+4 & 6 & 20 & 16 & -8
+\end{array}\right].
+$$
+We wish to find a diagonal form of $A$. To do so we first find its eigenvalues and eigenvectors, which is easily done with SageMath:
+
+```{=html}
+<iframe width=600 height=400 src="./components/diagonlize5by5.html"></iframe>
+```
+
+We see 5 distinct eigenvalues and their associated eigenvectors. That tells us that we should be able to diagonalize $A$ to the matrix $D$ with the eigenvalues on the diagonal using the matrix $S$ whose columns are the eigenvectors of $A$. That is,
+$$A=
+\left[\begin{array}{rrrrr}
+1 & 1 & 0 & 1 & 1 \\
+0 & -2 & 1 & 2 & 0 \\
+2 & -1 & 0 & 0 & 0 \\
+-1 & 1 & -1 & -1 & 0 \\
+2 & -1 & -1 & 0 & 1
+\end{array}\right]
+\left[\begin{array}{rrrrr}
+6 & 0 & 0 & 0 & 0 \\
+0 & 4 & 0 & 0 & 0 \\
+0 & 0 & 2 & 0 & 0 \\
+0 & 0 & 0 & -2 & 0 \\
+0 & 0 & 0 & 0 & -4
+\end{array}\right]
+\left[\begin{array}{rrrrr}
+1 & 1 & 0 & 1 & 1 \\
+0 & -2 & 1 & 2 & 0 \\
+2 & -1 & 0 & 0 & 0 \\
+-1 & 1 & -1 & -1 & 0 \\
+2 & -1 & -1 & 0 & 1
+\end{array}\right]^{-1}
+$$
+
+## Constructing matrices
+
+Sometimes we'd like to construct a matrix with desired properties, for example, to perform specific geometric actions, which is very common in computer graphics. Generally, if you can perform a geometric action easily with respect to one of the coordinate axes, then you should be able to transfer that action to any other coordinate system specified by a complete set of linearly independent vectors. Depending on the situation, you might need those vectors to be mutually perpendicular as well.
+
+Here are a couple of examples that involve the line $L$ through the origin in $\mathbb R^3$ with direction vector 
+$$\mathbf{d} = \begin{bmatrix}1\\1\\1\end{bmatrix}.$$
+
+We're also going to need a pair of vectors that are both perpendicular to $\mathbf{d}$, as well as to one another. There's lots of choices, but I'll use 
+$$
+\mathbf{u} = \begin{bmatrix}1\\1\\-2\end{bmatrix} 
+\text{ and }
+\mathbf{v} = \begin{bmatrix}1\\-1\\0\end{bmatrix}.
+$$
+It's easy to see that these are all pairwise perpendicular using the dot product.
+
+### Projection onto $L$
+
+Suppose we'd like to project $\mathbb R^3$ perpendicularly onto the line $L$ defined above. Well, it's easy to project perpendicularly onto the $x$-axis; just use the matrix 
+$$
+D = \begin{bmatrix}
+1&0&0 \\ 0&0&0 \\ 0&0&0
+\end{bmatrix}.
+$$
+Suppose, though, that we'd like to project onto 
+If we'd like to obtain our desired matrix, we could conjugate $D$ using the change of basis matrix whose columns are $\mathbf{d}$, $\mathbf{u}$, and $\mathbf{v}$. That is we compute 
+$$
+\left[
+\begin{array}{ccc}
+ 1 & 1 & 1 \\
+ 1 & -1 & 1 \\
+ 1 & 0 & -2 \\
+\end{array}
+\right]
+\begin{bmatrix}
+1&0&0 \\ 0&0&0 \\ 0&0&0
+\end{bmatrix}
+\left[
+\begin{array}{ccc}
+ 1 & 1 & 1 \\
+ 1 & -1 & 1 \\
+ 1 & 0 & -2 \\
+\end{array}
+\right]^{-1}
+= 
+\frac{1}{3}\begin{bmatrix}
+ 1 & 1 & 1 \\
+ 1 & 1 & 1 \\
+ 1 & 1 & 1 \\
+\end{bmatrix}.
+$$
+
+### Rotation about $L$
+
+Now, suppose that we'd like a matrix that performs rotation about the line $L$. Again, it's not hard to find a matrix that rotates about the $x$-axis:
+$$
+D = \begin{bmatrix}
+1&0&0 \\ 0 & \cos(\theta) & -\sin(\theta) \\ 0 & \sin(\theta) & \cos(\theta)
+\end{bmatrix}.
+$$
+
+As before, we simply conjugate this by our change of basis matrix:
+
+$$
+\left[
+\begin{array}{ccc}
+ 1 & 1 & 1 \\
+ 1 & -1 & 1 \\
+ 1 & 0 & -2 \\
+\end{array}
+\right]
+\begin{bmatrix}
+1&0&0 \\ 0 & \cos(\theta) & -\sin(\theta) \\ 0 & \sin(\theta) & \cos(\theta)
+\end{bmatrix}
+\left[
+\begin{array}{ccc}
+ 1 & 1 & 1 \\
+ 1 & -1 & 1 \\
+ 1 & 0 & -2 \\
+\end{array}
+\right]^{-1}
+$$
+
+Naturally, we would prefer to do this [on a computer](https://sagecell.sagemath.org/?q=edzouf){target=_blank}.
+
+
+## Power iteration 
+
+Eigenvalues and eigenvectors have a surprising range of application and, sometimes, we need to compute them for *very* large matrices and we might only need a specific few. These computations are generally performed on computers and there are algorithms can quickly find one eivenvalue/eigenvector pair one at a time. The most basic of these is called *power iteration*.
+
+
+### A curious computation
+
+Here's a curious computation:
+
+```{=html}
+<iframe width=600 height=400 src="./components/power_iteration.html"></iframe>
+```
+
+Let's break this down: 
+
+- A random $n\times n$ matrix and a random vector of size $n$ are chosen.
+- We iterate through a loop 100 times and, at each step, we reset $\mathbf{v}=A\mathbf{v}$ and normalize that result.
+- Finally, we report the eigenvalues of $A$ (as computed by SageMath) and the value of $$\lambda = \frac{\mathbf{v}^{\mathsf T}A\mathbf{v}}{\mathbf{v}^{\mathsf T}\mathbf{v}}.$$
+Mysteriously, the value of $\lambda$ agrees with the largest eigenvalue reported by magnitude.
+
+It appears that we might have a technique to find the largest eigenvalue by absolute value. If you play with input by changing the random seed or the dimension, for example, you'll find that the technique often works but not always.
+
+I wonder what's really going on here?
+
+### Basic analysis 
+
+Motivated by our success with diagonalization, let's play with some simple matrices and see if we can generalize what we see.
+
+What could be easier than something like 
+$$
+A = \begin{bmatrix}1&0&0 \\ 0&-2&0 \\ 0&0&3 \end{bmatrix}.
+$$
+In fact, we can compute matrix powers in closed form pretty easily:
+$$
+A^k \begin{bmatrix}1\\1\\1\end{bmatrix} = \begin{bmatrix}1\\(-2)^k\\3^k\end{bmatrix}.
+$$
+Note that the $3^k$ is by far the largest entry and, when we normalize, the result looks like 
+$$
+\begin{bmatrix}(1/3)^k\\(-2/k)^k\\1\end{bmatrix} \to \begin{bmatrix}0\\0\\1\end{bmatrix}.
+$$
+Thus, we see convergence to the eigenvector.
+
+*BUT*, this only works when there's one single entry on the diagonal that's larger than any other in absolute value. If there are several of the same maximum value (which happens with complex eigenvalues, since they come in conjugate pairs), then the technique can fail.
+
+When there is a single eigenvalue that's larger in absolute value then all of the rest, then that value is called the *dominant eigenvalue* and it's corresponding eigenvector is called the *dominant eigenvector*.
+
+### Generalization
+
+Suppose that we've got a diagonalizable matrix with a dominant eigenvalue. Then this same technique should work. To see why, suppose that 
+$$
+A = SDS^{-1}.
+$$ 
+Note that 
+$$
+A^2 = SDS^{-1}SDS^{-1} = SD^2S^{-1}.
+$$
+More generally,
+$$
+A^k = SD^kS^{-1}.
+$$
+As a result, the dominant eigenvector of $A$ dominates the iteration, just as the dominant eigenvector of $D$ does.
+
+Even if the matrix is not diagonalizable, the technique still works when their is a dominant eigenvalue. The existence of that dominant eigenvalue is the key issue.
+
+### Finding the eigenvalue
+
+In the code, the eigenvalue is computed as `l = v*A*v/(v*v)`.  
+I wonder why that should work?
+
+In reality, $\mathbf{v}$ is a column vector and the right way to write this is as 
+$$
+\lambda = \frac{\mathbf{v}^{\mathsf T}A\mathbf{v}}{\mathbf{v}^{\mathsf T}\mathbf{v}}.
+$$
+Note that $\mathbf{v}^{\mathsf T}$ is $1\times n$, $\mathbf{v}$ is $n\times 1$, and the denominator $\mathbf{v}^{\mathsf T}\mathbf{v}$ is really just the dot product. The numerator looks a little more complicated but, remember $A\mathbf{v}=\lambda\mathbf{v}$. Thus,
+$$
+\frac{\mathbf{v}^{\mathsf T}A\mathbf{v}}{\mathbf{v}^{\mathsf T}\mathbf{v}}
+=
+\frac{\mathbf{v}^{\mathsf T}\lambda\mathbf{v}}{\mathbf{v}^{\mathsf T}\mathbf{v}}
+= 
+\lambda \frac{\mathbf{v}^{\mathsf T}\mathbf{v}}{\mathbf{v}^{\mathsf T}\mathbf{v}}
+= \lambda.
+$$
+
+<style>
+button {
+    margin-left: 15px !important;
+    margin-bottom: 15px !important;
+}
+</style>
+
+```{ojs}
+import {
+  reflect_rotate_reflect
+} from './components/transition_pics.js';
+```

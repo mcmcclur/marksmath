@@ -9,12 +9,20 @@
     <body>
         <div class="sage">
         <script type="text/x-sage">
-M = matrix([
-    (-3, 10, -5), 
-    (3, -10, 7), 
-    (7, -23, 15)
-])
-M.eigenvectors_right()
+set_random_seed(42)
+n = 3
+A = random_matrix(ZZ, n,n)
+v = random_vector(RR, n)
+for i in range(100):
+    v = A*v
+    v = v/norm(v)
+l = v*A*v/(v*v)
+
+print("Sage says lambdas are: ", A.eigenvalues())
+print('---')
+print("Iteration says one lambda is: ", l)
+if norm(A*v - l*v) < 10**-5:
+    print('Found eigenstuff!!')
         </script>
         </div>
     </body>

@@ -249,7 +249,7 @@ export function make_reflection_step_pic() {
         [0, 0]
       ].map(pointToPoint)
     )
-    .attr("fill", "gray")
+    .attr("fill", "lightgray")
     .attr("stroke", "currentColor")
     .attr("stroke-width", 0.5);
   const leg0 = configuration

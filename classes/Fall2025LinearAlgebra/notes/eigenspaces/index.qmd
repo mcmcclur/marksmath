@@ -6,11 +6,6 @@ format:
   html:
     toc: true
     css: ../note-styles.css
-    include-in-header:
-      - text: |
-          <link href="./images/M.svg"> <link href="./images/MInv.svg">
-          <script src="https://sagecell.sagemath.org/static/embedded_sagecell.js"></script>
-          <script>sagecell.makeSagecell({"inputLocation": ".sage"});</script>
 ---
 
 $$
