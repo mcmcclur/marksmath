@@ -3,6 +3,10 @@ title: Digit recognition
 css: styles.css 
 page-layout: article
 toc: true
+twitter-card: true 
+open-graph: true
+image: image-light.png
+description: Illustrates CNN and KNN algorithms for digit classification.
 resources:
   - ./components/cnn-model.json
   - ./components/cnn-model.weights.bin
@@ -14,7 +18,7 @@ format:
           <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/knn-classifier"></script>
 ---
 
-Draw a digit in the box below. Machine learning will attempt to assess what digits you've drawn.
+Draw a digit in the box below and the algorithms on this page will attempt to assess what digits you've drawn.
 
 
 <div class="grid"> 
@@ -69,7 +73,7 @@ This demo is meant to illustrate the application of two machine learning algorit
 - A CNN or Convolutional Neural Network and 
 - a KNN or K-Nearest Neighbors algorithm.
 
-Classification by CNN is the go to approach for image recognition. While not as strong, KNN can do surprisingly well and is simple enough to explain to an introductory class in machine learning on day one.
+Classification by CNN is the go to approach for image recognition. While not as strong, KNN can do surprisingly well and is simple enough to explain to an introductory class in machine learning on day one. We should be able to describe how CNN works, by contrast, by the last day of class.
 
 Both these models were built with the [Javascript version of Tensorflow](https://www.tensorflow.org/js).
 
@@ -124,7 +128,7 @@ Plot.plot({
 
 - Like all the demos on Mark's Math, the full code can be found in [my GitHub repo](https://github.com/mcmcclur/marksmath/tree/main/visualization/class/digit_recognizer).
 - The code defining the KNN algorithm is quite simple and can be found in [the index.qmd file for this page](https://github.com/mcmcclur/marksmath/blob/main/visualization/class/digit_recognizer/index.qmd).
-- The CNN model is much deeper and was trained with [this Observable notebook](https://github.com/mcmcclur/marksmath/tree/main/visualization/class/digit_recognizer).
+- The CNN model is much deeper and was trained with [this Observable notebook](https://observablehq.com/d/0e9901ff9f671cb2).
 - If you want to learn all the mathematics, statistics, and theory behind this stuff, you should take my Math for Machine Learning Course!
 
 

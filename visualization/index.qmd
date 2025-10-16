@@ -10,6 +10,18 @@ layout: article
 :::: {.grid}
 ::::: {.g-col-12 .g-col-sm-4}
 <div class="card text-bg-light mb-3">
+ <img class="light-content" src="data/digit_recognizer/image-light.png" class="card-img-top" alt="Illustration of two machine learning algorithms for digit recognition">
+ <img class="dark-content" src="data/digit_recognizer/image-dark.png" class="card-img-top" alt="Illustration of two machine learning algorithms for digit recognition">
+ <div class="card-body text-center">
+  <a href="./data/digit_recognizer/" class="btn btn-primary">
+    Digit recognizer
+  </a>
+ </div>
+</div>
+:::::
+
+::::: {.g-col-12 .g-col-sm-4}
+<div class="card text-bg-light mb-3">
  <img class="light-content" src="data/BigSouth23/BigSouth23Light.png" class="card-img-top" alt="Chord diagram for the Big South 2023 basketball season">
  <img class="dark-content" src="data/BigSouth23/BigSouth23Dark.png" class="card-img-top" alt="Chord diagram for the Big South 2023 basketball season">
  <div class="card-body text-center">

@@ -57,13 +57,13 @@ Data formatted in this way is often called *tidy data*. I'll typically refer to 
 
 ## Palmer penguins
 
-As a concrete example, we'll start the now widely used Palmer penguin data set.
+As a concrete example, we'll start with the now widely used Palmer penguin data set.
 
 This data was collected in a 2014 study at the Palmer Research station in Antarctica, as described in [this paper](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0090081){target=_blank}. 
 
 It was collected for use as an R data package, as [described on Allison Horst's Github page](https://allisonhorst.github.io/palmerpenguins/){target=_blank}.
 
-We'll use it a few times throughout this semester.
+We'll use this data a few times throughout this semester.
 
 ## The data set 
 
@@ -84,7 +84,7 @@ The table is interactive so that you can scroll through the complete dataset, if
 
 ## Distinction with summary data 
 
-To be clear about what we mean by *observational level, tidy data*, let's draw a distinction between it an *summary level data*.
+To be clear about what we mean by *observational level, tidy data*, let's draw a distinction between it and *summary level data*.
 
 To generate summary level data for the penguin data set, we might group the penguins by species, compute the average mass per species, and present that as a summary table. The result might look like so:
 
