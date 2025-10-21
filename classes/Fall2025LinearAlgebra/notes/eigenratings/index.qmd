@@ -1,0 +1,284 @@
+---
+title: Eigenratings
+format:
+  html:
+    css: style.css
+    search: false
+    page-layout: article
+    toc: true
+    code-copy: true
+    echo: true
+---
+
+## Intro
+ 
+This web page outlines a technique using eigenvalues and eigenvectors to rate teams playing games in a common league based on a matrix describing game results. The technique sets up a matrix based on game results between the teams that represents paired comparisons between the teams. It then uses the dominant eigenvector of that matrix to obtain ratings. There's a fair amount of flexibility in the setup of that matrix allowing for the possibility of optimization. 
+
+I first learned of this technique from James Keener's 1993 paper in *SIAM Review* "[The Perron-Frobenius theorem and the ranking of football teams](https://www.jstor.org/stable/2132526){target="_blank"}" and the presentation here is strongly influenced by that paper.
+
+While we're not going to talk explicitly about the World Wide Web, it's worth mentioning that this algorithm is essentially identical to Google's Pagerank algorithm developed in the 1990s to rank webpage importance. A good reference for the algorithm in that context is [*Google's Pagerank and Beyond*](https://press.princeton.edu/books/paperback/9780691152660/googles-pagerank-and-beyond) by Langville and Meyer.
+
+
+## Code 
+
+Eigenratings are typically applied to large datasets, like links between lots of webpages on the world wide web or models of relationships on a social network or (as we'll explore here) game results between teams in a sports league. Thus, while we'll have a few theoretical problems over the basics of how the technique works, we'll also have a computer lab in our next class. Therefore, today's notes illustrate some of the computer code that we'll use.
+
+Additionally, you can find live code in [this Colab notebook](https://colab.research.google.com/drive/1soQY6vIGJxofF6-AiQvF4dO0v9pfFOyX?usp=sharing#forceEdit=true&sandboxMode=true){target=_blank}. Colab is a Google product and is provided via UNCA's Google account; you should log onto your UNCA account to access and run the notebook.
+
+### Imports
+
+We'll use several libraries throughout, so let's load them first:
+
+```{python}
+# Basic numerics
+import numpy as np
+
+# Data manipulation
+import pandas as pd
+
+# Linear algebra tools
+from scipy.linalg import eig
+from scipy.sparse import dok_matrix
+from scipy.sparse.linalg import eigs
+```
+
+
+## Description of the algorithm
+
+Let's start with a simple example to motivate the technique and then describe the general algorithm as an eigenvector problem.
+
+
+### A simple working example
+
+Let's suppose that three competitors or teams (numbered zero, one, and two) compete against each other twice each in some type of contest  - football, basketball, tiddly winks, what have you. How might we rate them based on the results that we see? For concreteness, suppose the results are the following:
+
+ - Team zero beat team one twice and team two once,
+ - Team one beat team two once,
+ - Team two beat team zero and team one once each.
+
+We might represent this diagrammatically as follows:
+
+```{python}
+#| echo: false
+#| classes: centered
+import graphviz as gv 
+dot = gv.Digraph()
+dot.graph_attr.update({'rankdir': 'LR'})
+dot.edge("0", "2", label="1")
+dot.edge("2", "0", label="1")
+dot.edge("1", "2", label="1")
+dot.edge("2", "1", label="1")
+dot.edge("0", "1", label="2")
+dot
+```
+
+This configuration is called a *directed graph* or *digraph*. We construct it by placing an edge from team $i$ to team $j$ and labeling that edge with the number of times that team $i$ beat team $j$. We suppress zero edges. There's an obvious matrix associated with a digraph called the *adjacency matrix*. The rows and columns will be indexed by the teams. In row $i$ and column $j$, we place the label on the edge from team $i$ to team $j$. The adjacency matrix for this digraph is
+
+$$\left(\begin{matrix}
+  0 & 2 & 1 \\
+  0 & 0 & 1 \\
+  1 & 1 & 0
+\end{matrix}\right)$$
+
+It seems reasonably clear that team zero should be ranked the highest, having beaten both competitors a total of 3 times out of 4 possible tries. Team one, on the other hand, won only 1 game out of its four tries, while team two seems to be in the middle, having split its games with both competitors. Certainly, the teams listed from worst to first should be: $1$, $2$, $0$. 
+
+
+
+### Eigen-formulation
+
+It turns out there's a lovely way to recover this exact ranking using the eigensystem of the adjacency matrix associated with the directed graph. In general, suppose we have $N$ participants in our collection of contests. We also suppose there is a vector $\vec{r}$ of ratings with positive entries $r_j$. Conceptually, $r_j$ represents the actual strength of the $j^{\text{th}}$ competitor. We wish to assign a positive score $s_i$ to each competitor. If competitor $i$ beats competitor $j$, we expect that to contribute positively to the score of competitor $i$. Furthermore, the stronger competitor $j$ was, the more we expect the contribution to be.  Symbolically, we might write:
+
+$$s_i = \frac{1}{n_i}\sum_{j=1}^N a_{ij}r_j.$$
+
+Thus, $s_i$ is a linear combination of the strengths of its opponents. The normalization factor $n_i$ is the number of games that team $i$ played; we include it because we don't want a team's rating to be higher simply because it played more games.
+
+A key issue, of course, is how should the matrix of coefficients $A=(a_{ij})$ be chosen? Certainly, if team $i$ defeated team $j$ every time they played (there might be more than one contest between the two), then we expect $a_{ij}>0$. Beyond that, there's a lot of flexibility and the precise choice is one for experimentation and (potentially) optimization. In the simple approach that follows, we'll take $a_{ij}$ to simply be the number of times that team $i$ defeated team $j$.
+
+Finally, it seems reasonable to hope that our score $s_i$ of the $i^{\text{th}}$ team should be related to the actual strength $r_i$ of that team. Let's assume that they are, in fact, proportional: $\vec{s} = \lambda \vec{r}$. Put another way, we have
+$$A\vec{r} = \lambda\vec{r}.$$
+That is, the actual strengths vector $\vec{r}$ is an eigen-vector of $A$!
+
+### The Perron-Frobenius theorem
+
+At this point, we turn to some mathematical theory to guide us in our choice of eigenvector.
+
+**Theorem**: If the square matrix $A$ has nonnegative entries, then it has an eigenvector $\vec{r}$ with nonnegative entries corresponding to a positive eigenvalue $\lambda$. If $A$ is irreducible, then $\vec{r}$ has strictly positive entries, is unique, simple, and the corresponding eigenvalue is the one of largest absolute value.
+
+This all seems good because we certainly want a vector of positive ratings and the theorem tells us which one to choose. This eigenvalue/eigenvector pair is sometimes called *dominant*. 
+
+To some readers, the notion of an *irreducible* matrix is quite possibly new. There are a number of equivalent characterizations including:
+
+ - $A\vec{v}>0$, whenever $\vec{v}>0$,
+ - There is no permutation of the rows and columns of $A$ transforming the matrix into a block matrix of the form
+ $$\left(\begin{matrix}
+   A_{11} & A_{12} \\
+   0 & A_{22}
+ \end{matrix}\right),$$
+ where $A_{11}$ and $A_{22}$ are square.
+ - The associated digraph is strongly connected, i.e. there is a path from any vertex to any other.
+
+I find the last characterization easiest to work with and it's easy to believe that it's likely to be satisfied, if teams play each other enough. Even if the matrix is *not* irreducible, the eigen-rating approach can work. If not, it's often sufficient to work with the appropriate strongly connected component of the digraph.
+
+### The simple example revisited in code
+
+Recall that the adjacency matrix associated with our simple example, written in code, is:
+
+
+```{python}
+M = [
+    [0,2,1],
+    [0,0,1],
+    [1,1,0]
+]
+```
+
+According to the theory, this should have a unique positive eigenvalue whose magnitude is larger than the magnitude of any other eigenvalue. There should be an associated eigenvector with all positive entries. Of course, if $\vec{v}$ is an eigenvector, then so is $-\vec{v}$ (or any constant multiple). The theory tells us that we might as well just take the absolute value.
+
+Here's the eigensystem for our simple example:
+
+```{python}
+values, vectors = eig(M)
+print(values)
+print(vectors)
+```
+
+The result is a pair: a list of the eigenvalues and a matrix whose columns are the eigenvectors. Note that the last displayed eigenvalue, about $1.769$, has zero imaginary part and is clearly larger in absolute value than the other two, which are complex conjugates. The corresponding eigenvector has components all with the same sign. The absolute value of that eigenvector should be reasonable strengths associated with the teams, approximately:
+$$0.7235, \; 0.3396, \; 0.6009.$$
+As expected, the zeroth team is the strongest, while the middle team is the weakest.
+
+## Working with real data 
+
+Let's take a look now at some examples involving real data.
+
+### The Big South
+
+I've got the results of every Big South regular season game played last year; we can grab that data like so:
+
+```{python}
+games = pd.read_csv('https://marksmath.org/data/BigSouth2025RegularSeason.csv')
+games
+```
+
+Here are the teams. This code is slightly more complicated than necessary, since it accounts for the possibility that some teams didn't win any games.
+```{python}
+wteams = games.WTeamName
+lteams = games.LTeamName
+teams = pd.concat([wteams, lteams], names=['TeamName']
+  ).drop_duplicates().sort_values()
+teams = list(teams.to_numpy().flat)
+teams = pd.DataFrame({'team': teams})
+teams
+```
+
+Now, let's iterate through the games and construct the simple win matrix described above:
+
+```{python}
+# Construct dict to look up idx from team name
+teams['idx'] = teams.index
+team_to_idx_dict = teams.set_index('team')['idx'].to_dict()
+teams = teams.drop('idx', axis=1)
+
+# Set up the matrix
+n = len(teams)
+M = dok_matrix((n,n))
+for game in games.iterrows():
+    i = team_to_idx_dict[game[1].WTeamName]
+    j = team_to_idx_dict[game[1].LTeamName]
+    M[i,j] = M[i,j] + 1
+
+# Display it
+M = M.toarray()
+M
+```
+
+For a league of moderate size, it still might help to visualize this data with a directed graph:
+```{python}
+#| echo: false
+dot = gv.Digraph()
+dot.graph_attr.update({'size': '8,5!'})
+for i in range(len(M)):
+    wteam = teams.iloc[i].team
+    for j in range(len(M)):
+        if(M[i,j] > 0):
+            lteam = teams.iloc[j].team
+            dot.edge(wteam, lteam, label=str(int(M[i,j])))
+dot
+```
+
+Once we have the matrix, it's pretty easy to compute the dominant eigenvector and display the teams ranked by rating:
+
+```{python}
+#| id: ultimate-target
+value, vector = eigs(M, k=1, which = 'LM')
+vector = abs(np.ndarray.flatten(vector.real))
+teams['rating'] = vector
+teams.sort_values('rating', ascending=False)
+```
+
+That looks like a reasonable ranking, at least!
+
+
+### Comments
+
+There's a lot going on here and plenty of things worth pointing out.  
+
+#### The matrix $M$
+
+The first thing to mention is the matrix $M$ itself. To this point, we've used only the simplest possible formulation where $[M]_{ij}$ is simply the number of times that team $i$ defeated team $j$. We didn't even need to normalize the rows by the number of games played, since each team played the same number of games.
+
+It seems easy to believe that we could pick the matrix entries in a way that improves the ratings. Perhaps we could take the score into account, for example? Perhaps we could weight more recent games more heavily or take the home court advantage into account? There are a ton of possibilities that, ultimately, should be chosen by optimization.
+
+#### The computer commands
+
+The commands that construct the matrix and compute the eigenvalue are of interest, as well. I'm referring specifically to the following lines of code:
+
+```
+M = dok_matrix((n,n))
+value, vector = eigs(M, k=1, which = 'LM')
+```
+
+The matrix `M` is stored as a *sparse* matrix, meaning that a high proportion of its entries are zero. For a relatively small problem like this, the sparseness is not really such a big deal. As the size of the matrix grows, utilizing the sparse structure of the matrix becomes more and more important. Truly large sparse matrices can be stored in much less memory than dense matrices. In addition, algorithms can be specialized for sparse matrices to avoid unnecessary computation and speed things up considerably.
+
+The eigenvalue and eigenvector are computed using the `eigs` command, which is specifically designed for sparse matrices. The arguments `k=1` and `which='LM'` indicate that we need only 1 eigenvector and that we specifically want the one whose eigenvalue has the largest magnitude — the so-called *dominant eigenvector*.
+
+#### Power iteration
+
+A common algorithm to compute just the dominant eigenvector is called *power iteration*. 
+
+Power iteration should work with any matrix $A$ having a dominant eigenvector corresponding to a simple, positive eigenvalue. To apply it, simply pick a vector $\mathbf{x}_0$ and iterate the function 
+$$
+\mathbf{x} \to \frac{A\mathbf{x}}{\|\mathbf{x}\|}.
+$$
+As long as the initial vector $\mathbf{x}_0$ lies outside any other eigenspace, the process will converge to the dominant eigenvector and its magnitude will be the dominant eigenvalue. The rate of convergence should be exponential and the base is the ratio of the dominant eigenvalue divided by the magnitude of the next largest eigenvalue.
+
+This works because multiplication by the matrix $A$ stretches space out the most in the direction of the dominant eigenvector. 
+
+Power iteration is super easy to implement and we can check that it works by comparing to the team ratings generated by SciPy:
+
+```{python}
+x = np.ones(len(M))
+for i in range(50):
+    x = M.dot(x)/np.linalg.norm(x)
+x/np.linalg.norm(x) - teams.rating
+```
+
+
+## A homework problem
+
+Here's one problem over this material. Note that parts (a) and (b) are fair exam questions.
+
+1. @tbl-AFLCentral Displays the results of all games between AFL Central teams in 1981. Based on that data,
+
+   a. Draw the directed adjacency graph that describes these results,
+   b. Write down the corresponding adjacency matrix, assuming the rows and columns are indexed by the teams in alphabetical order, and 
+   c. Use a computer to compute the ratings and corresponding rankings.
+
+::: {#tbl-AFLCentral tbl-cap="AFL Central 1981"}
+
+```{python}
+#| echo: false
+afl_central = pd.read_csv('AFLCentral1981.csv')
+afl_central.to_html(index=False)
+```
+
+:::
