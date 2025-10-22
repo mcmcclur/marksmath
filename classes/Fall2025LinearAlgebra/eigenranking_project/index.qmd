@@ -57,9 +57,11 @@ viewof name = {
 
 ## Your next task
 
-Once you've got your data, you analyze it as shown in [this Colab notebook](https://colab.research.google.com/drive/1TKfuEKHImULfA1z6dt7x2UITQMdvBDYs?usp=sharing#forceEdit=true&sandboxMode=true){target=_blank}. When finished, you should share your results with me.
+Once you've got your data, you'll analyze it in Colab. I'll show you how Audrey would do her version here:
 
-I'll show you how to do Audrey's example in class!
+- [Blank notebook](https://colab.research.google.com/drive/1Gzn_3usH0agwQFIjb9V-U0n8_mCOMgrp?usp=sharing){target=_blank}
+- [Finished version](https://colab.research.google.com/drive/1QZuuQHPU1kXRB0vtzOVDoNrgZJYirfXq?usp=sharing#forceEdit=true&sandboxMode=true){target=_blank}
+
 
 ```{ojs}
 function toMarkdownTable(games) {
