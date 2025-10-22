@@ -1,0 +1,88 @@
+---
+title: Your eigenranking lab
+format:
+    html:
+        css: styles.css
+        page-layout: article
+---
+
+In this computer lab for linear algebra, you're going to apply the eigenrating technique to a league of four teams each pair of which plays once.
+
+## Your data 
+
+To get the games for your league, choose your name from the following list:
+
+```{ojs}
+viewof name = { 
+    const names = d3.sort( 
+        ["---", "Jordan","Gabriel","Jacob S","Lexi","Carlos","Amina","Doug","Lauren","Miranda","Collin","Leo","Sal","Bryan P","Audrey","Estelle","Zachary","Fin","Bryan M","Lilia","Isabel","Jacob C","William","James"]
+    ).map((name,idx) => ({name,idx}));
+    return Inputs.select(names, {format: o => o.name});
+}
+```
+
+<div style="height: 10px"></div>
+
+```{ojs} 
+{
+    if(name.idx > 0) {
+        const games = generate_season(name.idx);
+        const good_games = games.map(function (game) {
+            const good_game = ({});
+            if(game.score1 < game.score2) {
+                good_game.WTeam = game.team2;
+                good_game.LTeam = game.team1;
+                const wscore = game.score2;
+                const lscore = game.score1;
+                good_game.WScore = wscore;
+                good_game.Lscore = lscore;
+            }
+            else {
+                good_game.WTeam = game.team1;
+                good_game.LTeam = game.team2;
+                const wscore = game.score1;
+                const lscore = game.score2;
+                good_game.WScore = wscore;
+                good_game.Lscore = lscore;
+            }
+            return good_game
+        });
+        return md`${toMarkdownTable(good_games)}`
+    }
+    else {
+        return md``
+    }
+}
+```
+
+## Your next task
+
+Once you've got your data, you analyze it as shown in [this Colab notebook](https://colab.research.google.com/drive/1TKfuEKHImULfA1z6dt7x2UITQMdvBDYs?usp=sharing#forceEdit=true&sandboxMode=true){target=_blank}. When finished, you should share your results with me.
+
+I'll show you how to do Audrey's example in class!
+
+```{ojs}
+function toMarkdownTable(games) {
+  if (!games.length) return "";
+
+  // Get headers from the keys of the first object
+  const headers = Object.keys(games[0]);
+
+  // Build the header row and the separator row
+  const headerRow = `    | ${headers.join(" | ")} |`;
+  const separatorRow = `    | ${headers.map(() => "---").join(" | ")} |`;
+
+  // Build the data rows
+  const dataRows = games.map(
+    game => `    | ${headers.map(h => game[h]).join(" | ")} |`
+  );
+
+  // Join everything together
+  return [headerRow, separatorRow, ...dataRows].join("\n");
+}
+```
+
+```{ojs}
+import {generate_season} from './components/generate_season.js';
+```
+
