@@ -1,0 +1,119 @@
+---
+title: Simplest linear regression
+page-layout: article
+echo: false
+toc: true
+---
+
+## An odd minimization problem 
+
+Suppose we plot the points 
+$$\{(-2,-1), (-1,-1), (1,1), (2,1)\}$$
+in the plane together with a line of the form $f(x) = a\,x$.
+
+```{ojs}
+{
+    const a = d3.sum(data, ([x,y]) => x*y)/d3.sum(data, ([x,y]) => x*x);
+    
+    let [xmin,xmax] = d3.extent(data, a => a[0]);
+    let xrange = xmax-xmin;
+    xmin = xmin - 0.1*xrange;
+    xmax = xmax + 0.1*xrange;
+
+    let [ymin, ymax] = d3.extent(data, a => a[1]);
+    let yrange = ymax-ymin;
+    ymin = ymin - 0.1*yrange;
+    ymax = ymax + 0.1*yrange;
+
+    const width = 600;
+    const height = width * (ymax-ymin)/(xmax-xmin);
+
+    return Plot.plot({
+        width, height,
+        x: {domain: [xmin,xmax]},
+        y: {domain: [ymin,ymax]},
+        marks: [
+            Plot.dot(data, {fill: 'black'}),
+            Plot.line([[xmin,a*xmin], [xmax, a*xmax]], {strokeWidth: 0.4}),
+            Plot.line([[xmin,aa*xmin], [xmax, aa*xmax]]),
+            Plot.axisX({y:0}), Plot.axisY({x:0}),
+            Plot.ruleX([0]), Plot.ruleY([0])
+        ]
+        });
+}
+```
+
+
+
+::: {layout = "[[1,1]]"}
+
+```{ojs}
+viewof aa = Inputs.range(
+    [-0.1,1.2], 
+    {value: 0.6, step: 0.001, label: tex`a:`}
+)
+```
+```{ojs}
+md`Squared error = ${d3.format('0.4f')(d3.sum(data, A => (aa*A[0] - A[1])**2))}`
+```
+
+:::
+
+
+
+```{ojs}
+data = {
+    let data = [[1,1],[2,1]];
+    data = data.concat(data.map(a => a.map(x => -x)));
+    return data;
+}
+```
+
+```{ojs}
+Plot.plot({
+    marks: [
+        Plot.dot(ncaa_data, {
+            x: 'seed_diff',
+            y: o => o.team1_score - o.team2_score,
+            fill: 'black',
+            opacity: 0.5,
+            channels: {
+                'Team 1': 'team1_name', 'Team 2': 'team2_name',
+                'Score difference': o => o.team1_score - o.team2_score
+            },
+            tip: true
+        }),
+        Plot.linearRegressionY(ncaa_data, 
+            {x: "seed_diff", y: o => o.team1_score - o.team2_score, 
+            stroke: "black", ci: 0}
+        ),        
+        Plot.axisX({y:0}), Plot.axisY({x:0}),
+        Plot.ruleX([0]), Plot.ruleY([0])
+    ]
+})
+```
+
+```{ojs}
+ncaa_data = {
+    const ncaa_data = await FileAttachment("NCAATrainingData2023.csv").csv({typed: true});
+    return ncaa_data;
+}
+```
+
+<!-- NCAA Regression Coefficient 
+```{ojs}
+d3.sum(
+    ncaa_data, 
+    o => o.seed_diff*(o.team1_score - o.team2_score)
+)/d3.sum(ncaa_data, o => o.seed_diff*o.seed_diff); 
+```
+-->
+
+<style>
+  input[type="number"] {
+    width: 120px;
+  }
+  form label {
+    width: 35px !important;
+  }
+</style>
