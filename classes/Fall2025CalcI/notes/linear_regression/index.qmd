@@ -5,11 +5,28 @@ echo: false
 toc: true
 ---
 
+Today, we're going to learn about the simplest form of *linear regression* - an important technique in statistics and machine learning.
+
 ## An odd minimization problem 
 
-Suppose we plot the points 
-$$\{(-2,-1), (-1,-1), (1,1), (2,1)\}$$
-in the plane together with a line of the form $f(x) = a\,x$.
+Let's start with a problem that you might not think about as "applied" right away.
+
+### The problem 
+
+Suppose we plot some points in the plane together with a line of the form $f(x) = a\,x$. Perhaps, our points are:
+$$\{(-2,-1), (-1,-1), (1,1), (2,1)\}.$$
+The general question is: How can we arrange for the line to be the "best" fit to the points?
+
+I guess we need to be a bit more specific about a couple of things:
+
+- How do we "choose" the line? 
+- How do we measure "best fit"?
+
+### Illustration
+
+Choosing the line is not hard; it's just a matter of specifying its slope using the value of $a$. This is illustrated in @fig-slope below, where you can specify the slope using the slider.
+
+::: {#fig-slope fig-cap="Approximating symmetric data with a line" style="max-width: 600px; margin: 0 auto"}
 
 ```{ojs}
 {
@@ -43,9 +60,7 @@ in the plane together with a line of the form $f(x) = a\,x$.
 }
 ```
 
-
-
-::: {layout = "[[1,1]]"}
+::::: {layout = "[[1,1]]"}
 
 ```{ojs}
 viewof aa = Inputs.range(
@@ -57,8 +72,38 @@ viewof aa = Inputs.range(
 md`Squared error = ${d3.format('0.4f')(d3.sum(data, A => (aa*A[0] - A[1])**2))}`
 ```
 
+:::::
+
 :::
 
+### Total squared error
+
+Assessing the quality of the fit is more involved and generally done using a so-called *least squared error* approach. Note that the squared error is shown as a function of $a$ in the interactive image.
+
+To define squared error, recall that the parameter $a$ defines a function:
+$$f(x) = a\,x.$$
+We think of the points as representing data with input $x$ and output $y$. Our mission is to predict a $y$ value from a given $x$ value. Given a data point, $(x_0,y_0)$, the squared error produced by the function $f$ is 
+$$
+\text{squared error } = (f(x_0) - y_0)^2 = (ax_0 - y_0)^2.
+$$
+If we've got a *bunch* of data points $\{(x_1,y_1),(x_2,y_2),\ldots,(x_n,y_n)\}$, then the total squared error is
+$$
+\text{total squared error } = \sum_{i=1}^n(f(x_i) - y_i)^2 = \sum_{i=1}^n(ax_i - y_i)^2.
+$$
+All that summation $\left(\sum\right)$ symbol says to do is add up the squared error produced by all the points in our data. 
+
+### Application
+
+Let's apply this to our sample data, which is 
+$$\{(-2,-1), (-1,-1), (1,1), (2,1)\}.$$
+So we'll have the following four terms in our squared error:
+$$\begin{aligned}
+E(a) &= (-2a-(-1))^2 + (-a+1)^2 + (a-1)^2 + (2a-1)^2 \\
+&= 2\left((a-1)^2 + (2a-1)^2\right).
+\end{aligned}$$
+Note that $E$ is a function of $a$ and our mission is to find what value of $a$ makes $E$ the smallest. We can do that by finding where $E'(a)=0$:
+$$E'(a) = 2\left(2(a-1) + 2(2a-1)2\right) = 2(10a-6)\stackrel{?}{=}0.$$
+Note that the solution is $a=6/10$ or $0.6$, in agreement with @fig-slope.
 
 
 ```{ojs}
@@ -68,6 +113,16 @@ data = {
     return data;
 }
 ```
+
+## A truly applied example
+
+The general technique here is called *linear regression* and can be applied to *real data*. One of my favorite applications is to make predictions in sports. For example, here's an application of the technique to the [NCAA Basketball tournament](https://wncviz.com/NCAABrackets/){target=_blank}. Each NCAA tournament involves 64 to 68 teams, each of which has a seed from 1-16. The idea is to predict the score difference based on the seed difference. 
+
+To do this, we need data. @fig-ncaa below shows that data for the Men's 2023 NCAA tournament. Each point corresponds to a game that was played during that tournament and you can hover over the points to get more information on the games. The horizontal axis tells us the seed difference and the vertical tells us the score difference in the game. Note that each game appears twice - once from the perspective of each team. Thus, the data is symmetric about the origin, like our simpler example above.
+
+The diagonal line with negative slope shown in the figure is the regression line. Its slope is about $-1.08$. Thus, we might generally expect a seed difference of $D$ to correspond to a point difference of $D$. For example, we'd expect a 3 seed to defeat a 14 seed by a little more than 11.
+
+::: {#fig-ncaa fig-cap="Regression for the NCAA Tournament" style="max-width: 600px; margin: 0 auto"}
 
 ```{ojs}
 Plot.plot({
@@ -92,6 +147,8 @@ Plot.plot({
     ]
 })
 ```
+
+:::
 
 ```{ojs}
 ncaa_data = {
