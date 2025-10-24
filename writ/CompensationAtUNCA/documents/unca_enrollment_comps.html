@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <div id="observablehq-enrollment_timeserieses-e1a45434"></div>
+
+    <script type="module">
+    import {Runtime, Inspector} from "https://cdn.jsdelivr.net/npm/@observablehq/runtime@5/dist/runtime.js";
+    import define from "https://api.observablehq.com/d/2d5787de615ec8aa.js?v=3";
+    new Runtime().module(define, name => {
+      if (name === "enrollment_timeserieses") return new Inspector(document.querySelector("#observablehq-enrollment_timeserieses-e1a45434"));
+      return ["retention_data","enrollment_data","schools"].includes(name);
+    });
+    </script>
+  </body>
+</html>
