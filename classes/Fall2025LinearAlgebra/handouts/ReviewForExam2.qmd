@@ -24,13 +24,13 @@ Most of the problems on the exam will be like one of the following. This section
 
 1. Write down careful and complete definitions of the following:
 
-   a. Eigenvalue/Eigenvector pair for a matrix $A$
-   b. Characteristic polynomial of a matrix $A$
-   c. Similarity of matrices
-   d. Diagonalizable matrix
-   e. Nonsingular matrix
+   a. Eigenvalue/Eigenvector pair for a matrix $A$ [Definition 1.4.1](https://understandinglinearalgebra.org/sec-eigen-intro.html#definition-eigenvectors){target=_blank}
+   b. Characteristic polynomial of a matrix $A$ ([$\det(A-\lambda I)=0$](https://understandinglinearalgebra.org/sec-eigen-find.html#sec-eigen-find-3-4){target=_blank})
+   c. Similarity of matrices [Definition 4.3.11](https://understandinglinearalgebra.org/sec-eigen-diag.html#sec-eigen-diag-5-4){target=_blank}
+   d. Diagonalizable matrix [Definition 4.3.4](https://understandinglinearalgebra.org/sec-eigen-diag.html#sec-eigen-diag-3-8){target=_blank}
+   e. ~~Nonsingular matrix~~
 
-2. Write down three more characterizations of *Nonsingular Matrix*.
+2. Write down three characterizations of *Invertible Matrix*.
 
 3. Suppose
 	 $$
