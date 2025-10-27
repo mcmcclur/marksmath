@@ -1,0 +1,17 @@
+<!doctype html>
+<notebook theme="air">
+  <title>UNC System salary via</title>
+  <script id="1" type="text/markdown">
+    # UNC System salary via
+  </script>
+  <script id="3" type="application/vnd.observable.javascript" pinned="">
+    {
+      const grouped_data = d3.rollups(data.filter(o => o.job_category == "professor"), a => d3.mean(a, o => o.salary), o => o.school_abbr);
+
+      return d3.sort(grouped_data, a => a[1])
+    }
+  </script>
+  <script id="2" type="application/vnd.observable.javascript" pinned="">
+    data = FileAttachment("unc_system_condensed_salaries.csv").csv({typed: true})
+  </script>
+</notebook>
