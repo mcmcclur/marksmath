@@ -1,0 +1,12 @@
+.quarto-light div.note-comments {
+  margin-bottom: 3px;
+  margin-top: 5px;
+  font-size: 0.85em;
+  background-color: #f6f6f6;
+  border: solid 1px #ddd;
+  padding: 1px 5px 0px 0px;
+  max-width: 650px;
+ }
+.quarto-light div.note-comments p {
+  margin: 2px;
+ }

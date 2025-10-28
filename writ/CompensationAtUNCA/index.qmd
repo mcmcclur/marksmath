@@ -1,26 +1,40 @@
 ---
 title: Compensation issues at UNCA
-abstract: Past and present explorations of compensation for faculty and staff at UNCA
+subtitle: Past and present explorations of compensation for faculty and staff at UNCA
+date: 2025-10-25
+date-format: "MMM, YYYY"
 author:
   - family: McClure
     given: Mark
-    email: mcmcclur@unca.edu
 resources:
   - ./documents/unca_enrollment_comps.html
 format:
-  html:
+  html: 
     toc: true
     page-layout: article
     execute:
       echo: false
+    css:
+      - https://unpkg.com/tippy.js@6/themes/light-border.css
+      - styles.css 
 ---
 
+::: {#fig-simple_plot fig-cap="Average faculty salaries across the UNC System adjusted by CoL; more detail below."} 
+
+```{ojs}
+import {summarize_data, make_salary_viz} from './components/system_salary_viz.js';
+small_summary_salaries = await (await FileAttachment("./data/small_summary_data.csv")
+    .csv({typed: true}));
+make_salary_viz(small_summary_salaries, {animate: true, tooltips: false})
+```
+
+:::
 
 UNCA has long been underfunded but things seem to have taken a turn for the worse around 2013. Since 2015, several committees, task forces, and other groups have studied the problem and written reports with a particular interest on how it relates to faculty/staff compensation. As a member of Faculty Senate during part of that time who also works with data, I became involved with some of those groups. Since I was recently reappointed to the standing committee on compensation, I thought it might be a good time to gather some of that old material in one place and to start to put some new material together.
-
+ 
 ## Past reports 
 
-Ordered chronologically by release date.
+Here are all the written reports on compensation at UNCA that I'm aware of ordered chronologically by release date. There's also a little of my own commentary.
 
 0. [Task Force on Faculty Salary and Equity](./documents/SalaryAndEquityReportJan2018.pdf) - Jan 2018  
    <div class="note-comments">
@@ -117,19 +131,58 @@ Ordered chronologically by release date.
 
 As far as I know, the Compensation Committee has not met since Spring of 2023. I vaguely recall being told that I was on that committee the following year. I think my response was something along the lines of "The hell I am".
 
+## Current situation 
+
+Since I was reappointed to the damn committee again this year, I thought I'd gather the most recent data and take a quick look at compensation across the UNC System. The visualization below is the result. It shows average salaries for various groups of non-medical faculty across the UNC System. You can play with the buttons and switches, too. 
+
+```{ojs}
+viewof group = Inputs.radio(
+  ["All", "Professor", "Associate", "Assistant", "Lecturer"],
+  {label: "Group title:", value: "All"}
+)
+viewof sort_by = Inputs.radio(["Avg Salary", "Name"], {label: "Sort by:", value: "Avg Salary"})
+viewof col_adjust = Inputs.toggle({label: "CoL Adjust:", value: true})
+```
+
+```{ojs}
+summary_data = summarize_data(data, group, sort_by, col_adjust)
+make_salary_viz(summary_data);
+```
+
+## Data and further comments
+
+I know of two primary sources of data for faculty salaries in the UNC System:
+
+- [The Integrated Postsecondary Education Data System (IPEDS)](https://nces.ed.gov/ipeds/){target=_blank}
+- [The UNC Salary Information Database](https://uncdm.northcarolina.edu/salaries/index.php){target=_blank}
+
+These tools are complementary and serve very different purposes.
+
+IPEDS is a nationwide data source for all schools in higher education going back to 1980. It provides very clean and fairly reliable summary data on a huge range of issues, including faculty and staff salary information. It's provided by the federal government via the Department of Education and is still available, though data collection has recently stopped. Data dissemination has always lagged a bit so it's not always the best source for the most current information.
+
+The UNC Database provides microdata on salaries for all employees of the UNC System. It's updated quarterly so it makes for an excellent resource that's detailed and current. It's not particularly clean, though, and employee positions aren't described in as much detail as I'd like. It was reasonably easy to separate out the non-medical faculty and classify them as I've done here. There are many, many more staff members, though. Perhaps, I'll look at *all* staff at some point, but I don't know of a reasonable way to separate natural subgroups of staff at the moment.
+
+The visualizations here are (so far) built using just the UNC Database. I will probably use the IPEDS data to build some time series graphs a bit later.
+
+Salaries can be adjusted by cost of living and, when we do so, UNCA comes dead last in every category. I obtained the Cost of Living (CoL) data from Best Places. Here, for example, is [Best Places CoL page on Asheville](https://www.bestplaces.net/cost_of_living/city/nc/asheville). The data used here was recorded in October of 2025.
 
 
-<style>
-.quarto-light div.note-comments {
-  margin-bottom: 3px;
-  margin-top: 5px;
-  font-size: 0.85em;
-  background-color: #f6f6f6;
-  border: solid 1px #ddd;
-  padding: 1px 5px 0px 0px;
-  max-width: 650px;
- }
-.quarto-light div.note-comments p {
-  margin: 2px;
- }
-</style>
+```{ojs}
+data = {
+  const salaries = await (await FileAttachment("./data/unc_system_condensed_salaries.csv")
+    .csv({typed: true}))
+    .filter(o => o.job_category != "administrator")
+  const CoL = await FileAttachment("./data/UNC_System_CoL.csv").csv({typed: true});
+  const groupedCoL = d3.group(CoL, o => o.Abbreviation);
+  salaries.forEach(function(o) {
+    const d = groupedCoL.get(o.school_abbr)[0];
+    o.school_name = d.School;
+    o.CoL = d.CoL;
+    o.group = o.job_category == "professor" ? "Professor" :
+      o.job_category == "associate_professor" ? "Associate" :
+      o.job_category == "assistant_professor" ? "Assistant" :
+      "Lecturer"
+  });
+  return salaries
+}
+```
