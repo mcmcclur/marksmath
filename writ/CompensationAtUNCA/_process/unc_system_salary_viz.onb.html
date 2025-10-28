@@ -1,17 +1,139 @@
 <!doctype html>
 <notebook theme="air">
-  <title>UNC System salary via</title>
+  <title>UNC System salary viz</title>
   <script id="1" type="text/markdown">
-    # UNC System salary via
+    # UNC System salary viz
+  </script>
+  <script id="12" type="application/vnd.observable.javascript">
+    viewof group = Inputs.radio(
+      ["All", "Professor", "Associate", "Assistant", "Lecturer"],
+      {label: "Group title:", value: "All"}
+    )
+  </script>
+  <script id="14" type="application/vnd.observable.javascript">
+    viewof sort_by = Inputs.radio(["Avg Salary", "Name"], {label: "Sort by:", value: "Avg Salary"})
+  </script>
+  <script id="11" type="application/vnd.observable.javascript">
+    viewof col_adjust = Inputs.toggle({label: "CoL Adjust:", value: true})
+  </script>
+  <script id="5" type="application/vnd.observable.javascript">
+    chart = {
+      const w = 850;
+      const h = 300;
+      const pad = 50;
+      const svg = d3
+        .create("svg")
+        .attr("viewBox", [0, 0, w, h])
+        .style("border", "solid 1px black");
+
+      const x_scale = d3
+        .scaleBand()
+        .domain(summary_data.map((o) => o.abbr))
+        .range([pad, w - pad])
+        .padding(0.2);
+      const max_value = 210000; // d3.max(summary_data.map((o) => o.average_salary));
+      const y_scale = d3
+        .scaleLinear()
+        .domain([0, max_value])
+        .range([h - pad, pad]);
+
+      svg
+        .append("g")
+        .selectAll("rect")
+        .data(summary_data)
+        .join("rect")
+        .attr('class', d => d.abbr)
+        .attr("x", (d) => x_scale(d.abbr))
+        .attr("y", (d) => y_scale(d.val))
+        .attr("height", (d) => y_scale(0) - y_scale(d.val))
+        .attr("width", x_scale.bandwidth())
+        .attr("fill", o => o.abbr != "UNCA" ? "lightblue" : '#003DA5')
+        .on('pointerenter', function() {
+          d3.select(this)
+            .attr('stroke-width', 2)
+            .attr('stroke', 'black')
+        })
+        .on('pointerleave', function() {
+          svg.selectAll('rect')
+            .attr('stroke', null)
+        })
+        .each(function(d) {
+          tippy(this, {
+            allowHTML: true,
+            content: `
+              <div style="font-weight: bold">${d.school}</div>
+              <div><span style="font-style: italic">Avg Salary:</span> $${Math.round(d.average_salary)}</div>
+              <div><span style="font-style: italic">CoL:</span> $${Math.round(d.CoL)}</div>
+              <div><span style="font-style: italic">Adjusted:</span> $${Math.round(d.adjusted_average_salary)}</div>
+            `,
+            animation: false,
+            arrow: true
+          })
+        })
+
+      const x_axis = svg
+        .append("g")
+        .attr("transform", `translate(0,${h - pad})`)
+        .call(d3.axisBottom(x_scale).tickSizeOuter(0));
+      const y_axis = svg
+        .append("g")
+        .attr("transform", `translate(${pad})`)
+        .call(d3.axisLeft(y_scale).tickSizeOuter(0));
+      y_axis.select("path.domain").attr("stroke", null);
+
+      return svg.node();
+    }
   </script>
   <script id="3" type="application/vnd.observable.javascript" pinned="">
-    {
-      const grouped_data = d3.rollups(data.filter(o => o.job_category == "professor"), a => d3.mean(a, o => o.salary), o => o.school_abbr);
+    summary_data = {
+      const filtered_data = group == "All" ? data : data.filter(o => o.group == group)
+      const summary_data = d3.rollups(
+        filtered_data,
+        a => ({
+          abbr: a[0].school_abbr,
+          school: a[0].school_name,
+          average_salary: d3.mean(a, o => o.salary),
+          CoL: a[0].CoL
+        }),
+        o => o.school_abbr
+      ).map(a => a[1]);
 
-      return d3.sort(grouped_data, a => a[1])
+      summary_data.forEach(function(o) {
+        o.adjusted_average_salary = 100*o.average_salary/o.CoL;
+        if(col_adjust) {
+          o.val =  o.adjusted_average_salary
+        } else {
+            o.val = o.average_salary
+          }
+        });
+      if(sort_by == "Avg Salary") {
+        return d3.sort(summary_data, o => -o.val);
+      }
+      else {
+        return summary_data;
+      }
     }
   </script>
   <script id="2" type="application/vnd.observable.javascript" pinned="">
-    data = FileAttachment("unc_system_condensed_salaries.csv").csv({typed: true})
+    data = {
+      const salaries = await (await FileAttachment("unc_system_condensed_salaries.csv")
+        .csv({typed: true}))
+        .filter(o => o.job_category != "administrator")
+      const CoL = await FileAttachment("UNC_System_CoL.csv").csv({typed: true});
+      const groupedCoL = d3.group(CoL, o => o.Abbreviation);
+      salaries.forEach(function(o) {
+        const d = groupedCoL.get(o.school_abbr)[0];
+        o.school_name = d.School;
+        o.CoL = d.CoL;
+        o.group = o.job_category == "professor" ? "Professor" :
+          o.job_category == "associate_professor" ? "Associate" :
+          o.job_category == "assistant_professor" ? "Assistant" :
+          "Lecturer"
+      });
+      return salaries
+    }
+  </script>
+  <script id="18" type="text/x-typescript" pinned="">
+    import tippy from 'https://cdn.jsdelivr.net/npm/tippy.js@6/+esm';
   </script>
 </notebook>
