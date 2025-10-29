@@ -8,8 +8,10 @@ author:
     given: Mark
 resources:
   - ./documents/unca_enrollment_comps.html
+
 format:
   html: 
+    page-footer: "Written, owned, hosted, and copyright 2025, Mark McClure<br>All opinions expressed herein are my own and do not reflect the opinions of my employer, The University of North Carolina Asheville."
     toc: true
     page-layout: article
     execute:
@@ -30,7 +32,7 @@ make_salary_viz(small_summary_salaries, {animate: true, tooltips: false})
 
 :::
 
-UNCA has long been underfunded but things seem to have taken a turn for the worse around 2013. Since 2015, several committees, task forces, and other groups have studied the problem and written reports with a particular interest on how it relates to faculty/staff compensation. As a member of Faculty Senate during part of that time who also works with data, I became involved with some of those groups. Since I was recently reappointed to the standing committee on compensation, I thought it might be a good time to gather some of that old material in one place and to start to put some new material together.
+UNCA has long been underfunded but things seem to have taken a turn for the worse around 2013. Since 2015, several committees, task forces, and other groups have studied the issue and written reports, with particular interest in how it relates to faculty and staff compensation. As a member of Faculty Senate during part of that time who also works with data, I became involved with some of those groups. Since I was recently reappointed to the standing committee on compensation, I thought it might be a good time to gather some of that old material in one place and to start to put some new material together.
  
 ## Past reports 
 
@@ -39,20 +41,20 @@ Here are all the written reports on compensation at UNCA that I'm aware of order
 0. [Task Force on Faculty Salary and Equity](./documents/SalaryAndEquityReportJan2018.pdf) - Jan 2018  
    <div class="note-comments">
    
-    This $\text{zero}^{\text{th}}$ report predates my participation and is a bit different from the remaining documents in that it is not primarily motivated by concern with the level of compensation at UNCA. It's more concerned with equity between and within departments and with procedures for maintaining fairness moving forward. The report does note, however, that "substantive salary increases had not been available for several years".
+    This $\text{zero}^{\text{th}}$ report predates my participation and is a bit different from the remaining documents in that it is not primarily motivated by concern with the level of compensation at UNCA. It focuses more on equity between and within departments and with procedures for maintaining fairness moving forward. The report does note, however, that "substantive salary increases had not been available for several years".
 
    </div>
 1. [Task Force on Total Compensation](./documents/TaskForceReportMay2019.pdf) - May 2019  
     <div class="note-comments">
 
-     By Fall of 2018, concern over the *level* of compensation at UNCA had grown and a new taskforce to study that specific issue was formed. I was appointed to that taskforce as a member of the Institutional Development Committee of Faculty Senate.
+     By Fall of 2018, concern over the *level* of compensation at UNCA had grown and a new task force to study that specific issue was formed. I was appointed to that task force as a member of the Institutional Development Committee of Faculty Senate.
 
      This report focused on salary and benefits for both faculty and staff at UNCA. It compared that compensation to cost of living as measured by consumer price index for Southeast urban areas. We had good data on both of those going back a couple of decades so we were able to illustrate how our effective compensation has decreased over time.
 
      There were several issues with this study, such as 
 
      - We did not study compensation with our peers in either the system or with similar institutions, simply because that was not part of our charge.
-     - We did not study the relationship between compensation and housing costs in Asheville. We would've like to study this but the data is simply hard to come by.
+     - We did not study the relationship between compensation and housing costs in Asheville. We would've liked to study this but the data is simply hard to come by.
     
     </div>
 
@@ -61,7 +63,7 @@ Here are all the written reports on compensation at UNCA that I'm aware of order
 
    When the work of the prior Task Force on Total Compensation was nearing completion, I happened to stumble upon some outstanding data on housing costs in Asheville via personal relationship with people at Mosaic Realty. I used that data to compare the rate of growth of compensation at UNCA with the cost of home ownership going back a decade and a half. This document is the result of that work.
 
-   While this work was too late to appear in the immediately preceding taskforce report, it does appear as an addendum.
+   While this work was too late to appear in the immediately preceding task force report, it does appear as an addendum.
 
    </div>
 
@@ -76,7 +78,7 @@ Here are all the written reports on compensation at UNCA that I'm aware of order
    - Refers to the prior task force data on salaries and provides new assessments using BLS data,
    - Addresses morale via surveys like [Harvard's COACHE](https://coache.gse.harvard.edu/faculty-job-satisfaction-survey){target=_blank} and the UNC System Employee Engagement Survey,
    - Contains a lists of asks of the administration including 
-     - the committment to secure cost-of-living adjustments and 
+     - the commitment to secure cost-of-living adjustments and 
      - to develop the means to improve salaries at UNC Asheville
    
    The authors of this report are not identified, though it's signed by 58 faculty members.
@@ -164,7 +166,7 @@ The UNC Database provides microdata on salaries for all employees of the UNC Sys
 
 The visualizations here are (so far) built using just the UNC Database. I will probably use the IPEDS data to build some time series graphs a bit later.
 
-Salaries can be adjusted by cost of living and, when we do so, UNCA comes dead last in every category. I obtained the Cost of Living (CoL) data from Best Places. Here, for example, is [Best Places CoL page on Asheville](https://www.bestplaces.net/cost_of_living/city/nc/asheville). The data used here was recorded in October of 2025.
+Salaries can be adjusted by cost of living and, when we do so, UNCA ranks dead last in every category. I obtained the Cost of Living (CoL) data from Best Places. Here, for example, is [Best Places CoL page on Asheville](https://www.bestplaces.net/cost_of_living/city/nc/asheville). The data used here was recorded in October of 2025.
 
 
 ```{ojs}

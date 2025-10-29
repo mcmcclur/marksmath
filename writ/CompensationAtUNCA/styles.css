@@ -10,3 +10,7 @@
 .quarto-light div.note-comments p {
   margin: 2px;
  }
+
+ .nav-footer-center::after {
+  content: " All opinions expressed herein are my own and do not reflect the opinions of my employer, The University of North Carolina Asheville.";
+ }
