@@ -11,7 +11,6 @@ resources:
 
 format:
   html: 
-    page-footer: "Written, owned, hosted, and copyright 2025, Mark McClure<br>All opinions expressed herein are my own and do not reflect the opinions of my employer, The University of North Carolina Asheville."
     toc: true
     page-layout: article
     execute:
@@ -32,7 +31,7 @@ make_salary_viz(small_summary_salaries, {animate: true, tooltips: false})
 
 :::
 
-UNCA has long been underfunded but things seem to have taken a turn for the worse around 2013. Since 2015, several committees, task forces, and other groups have studied the issue and written reports, with particular interest in how it relates to faculty and staff compensation. As a member of Faculty Senate during part of that time who also works with data, I became involved with some of those groups. Since I was recently reappointed to the standing committee on compensation, I thought it might be a good time to gather some of that old material in one place and to start to put some new material together.
+UNCA has long been underfunded but things seem to have taken a turn for the worse around 2013. Since 2015, several committees, task forces, and other groups have studied the issue and produced reports, with a particular interest on how it relates to faculty and staff compensation. As a member of Faculty Senate during part of that time who also works with data, I became involved with some of those groups. Since I was recently reappointed to the standing committee on compensation, I thought it might be a good time to gather some of that old material in one place and to start to put some new material together.
  
 ## Past reports 
 
@@ -111,9 +110,9 @@ Here are all the written reports on compensation at UNCA that I'm aware of order
    - investment from the state.
 
    Two years of significant state funding were obtained and towards something, I guess. The Asheville Ideas Fest arose from philanthropic donations.
-
-   *Note*: While enrollment is part of this strategy, it's important to note that the plan states quite clearly that "enrollment alone won't provide the net revenue to close the shortfall". It goes further to say "Enrollment up to 4,000 students will yield roughly $5M towards a $24M shortfall." This statement is based on a detailed study by John Pierce and does not appear to be accounted for in current strategies.
-  
+  <div style="font-size: 1.25em; padding: 10px;">
+   *Note*: While enrollment is part of this strategy, it's important to note that the plan states quite clearly that "enrollment alone won't provide the net revenue to close the shortfall". It goes further to say "Enrollment up to 4,000 students will yield roughly $5M towards a $24M shortfall." This statement is based on a detailed study by John Pierce and does not appear to be accounted for in current strategies. According to a recent conversation I had with John, enrollment up to 5000 still comes nowhere close to closing the shortfall.
+  </div>
    </div>
 
 6. [First Compensation Committee report](./documents/CommitteeReport2023.pdf) - Feb 2023  
@@ -135,12 +134,12 @@ As far as I know, the Compensation Committee has not met since Spring of 2023. I
 
 ## Current situation 
 
-Since I was reappointed to the damn committee again this year, I thought I'd gather the most recent data and take a quick look at compensation across the UNC System. The visualization below is the result. It shows average salaries for various groups of non-medical faculty across the UNC System. You can play with the buttons and switches, too. 
+Since I was reappointed to the damn committee again this year, I thought I'd gather the most recent data and take a quick look at compensation across the UNC System. The visualization below is the result. It shows average salaries for various groups of non-medical faculty across the UNC System. 
 
 ```{ojs}
 viewof group = Inputs.radio(
   ["All", "Professor", "Associate", "Assistant", "Lecturer"],
-  {label: "Group title:", value: "All"}
+  {label: "Group:", value: "All"}
 )
 viewof sort_by = Inputs.radio(["Avg Salary", "Name"], {label: "Sort by:", value: "Avg Salary"})
 viewof col_adjust = Inputs.toggle({label: "CoL Adjust:", value: true})
@@ -151,22 +150,28 @@ summary_data = summarize_data(data, group, sort_by, col_adjust)
 make_salary_viz(summary_data);
 ```
 
-## Data and further comments
+You can explore the different faculty groups and adjust for cost of living (CoL) or not. When adjusted for CoL, UNCA ranks dead last by pay for every group. Even when not cost adjusted, UNCA ranks in the bottom third for all groups but lecturers.
 
-I know of two primary sources of data for faculty salaries in the UNC System:
+## Further comments
 
-- [The Integrated Postsecondary Education Data System (IPEDS)](https://nces.ed.gov/ipeds/){target=_blank}
-- [The UNC Salary Information Database](https://uncdm.northcarolina.edu/salaries/index.php){target=_blank}
+### Data sources
 
-These tools are complementary and serve very different purposes.
+The salary data here comes from the [UNC Salary Information Database](https://uncdm.northcarolina.edu/salaries/index.php){target=_blank}. The UNC Database provides microdata on salaries for all employees of the UNC System. It's updated quarterly so it makes for an excellent resource that's detailed and current.
 
-IPEDS is a nationwide data source for all schools in higher education going back to 1980. It provides very clean and fairly reliable summary data on a huge range of issues, including faculty and staff salary information. It's provided by the federal government via the Department of Education and is still available, though data collection has recently stopped. Data dissemination has always lagged a bit so it's not always the best source for the most current information.
+The Cost of Living (CoL) data comes from [Best Places](https://www.bestplaces.net){target=_blankl} used here was recorded in October of 2025. Here, for example, is [Best Places CoL page on Asheville](https://www.bestplaces.net/cost_of_living/city/nc/asheville), which indicates that Asheville has a CoL of 105.8.
 
-The UNC Database provides microdata on salaries for all employees of the UNC System. It's updated quarterly so it makes for an excellent resource that's detailed and current. It's not particularly clean, though, and employee positions aren't described in as much detail as I'd like. It was reasonably easy to separate out the non-medical faculty and classify them as I've done here. There are many, many more staff members, though. Perhaps, I'll look at *all* staff at some point, but I don't know of a reasonable way to separate natural subgroups of staff at the moment.
+At any point in time, the overall CoL for the US is set to 100. Thus, Asheville's CoL of 105.8 indicates that the general cost of living in Asheville is about 5.8% higher than the national average. The adjusted salaries are computed by
+$$
+\text{adjusted salary} = \text{raw salary}\times\frac{100}{\text{CoL}}.
+$$
 
-The visualizations here are (so far) built using just the UNC Database. I will probably use the IPEDS data to build some time series graphs a bit later.
+### Potential further work 
 
-Salaries can be adjusted by cost of living and, when we do so, UNCA ranks dead last in every category. I obtained the Cost of Living (CoL) data from Best Places. Here, for example, is [Best Places CoL page on Asheville](https://www.bestplaces.net/cost_of_living/city/nc/asheville). The data used here was recorded in October of 2025.
+- The interactive tool above suggests that relative salary situation at UNCA is worst for Full Professors with a CoL adjusted salary over $18,000 lower than the next lowest school. No other faculty group is nearly so low, suggesting that salary compression may be a serious issue. That could easily be studied directly.
+
+- It would also be nice to include staff in this study. The data is not particularly clean, though, and employee positions aren't described in as much detail as I'd like. It was reasonably easy to separate out the non-medical faculty and classify them as I've done here. There are many, many more staff members, though. Perhaps, I'll look at *all* staff at some point, but I don't know of a reasonable way to separate natural subgroups of staff at the moment.
+
+- Finally, I might incorporate IPEDS data - a nationwide data source for all schools in higher education going back to 1980. IPEDS provides very clean and fairly reliable summary data on a huge range of issues, including faculty and staff salary information. It's provided by the federal government via the Department of Education and is still available, though data collection has recently stopped. Data dissemination has always lagged a bit so it's not always the best source for the most current information. Nonetheless, it's the only source that provides longitudinal data for virtually all schools in the US.
 
 
 ```{ojs}
