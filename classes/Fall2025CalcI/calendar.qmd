@@ -49,11 +49,15 @@ sidebar: CalcIFall2025
       color: '#511d66',
     },
     {
-      title  : 'Exam 3',
+      title  : 'No class',
       start  : '2025-11-14',
-      color: '#511d66',
+      color  : 'gray',
     },
     {
+      title  : 'Exam 3',
+      start  : '2025-11-21',
+      color: '#511d66',
+    },    {
       title  : 'Quiz 1',
       start  : '2025-08-29',
       color: '#9a4eae',
