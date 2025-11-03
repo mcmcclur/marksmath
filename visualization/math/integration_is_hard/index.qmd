@@ -1,0 +1,81 @@
+---
+title: Integration is hard!
+format:
+    html:
+        page-layout: article
+        toc: true
+        css: styles.css
+        include-in-header: 
+            text: |
+                <script src="https://sagecell.sagemath.org/static/embedded_sagecell.js"></script>
+                <script>sagecell.makeSagecell({inputLocation: ".hidesage", autoeval: true, linked: true, linkKey: "link"});</script>
+                <script>sagecell.makeSagecell({inputLocation: ".sage", linked: true, linkKey: "link"});</script>
+                <link rel="stylesheet" type="text/css" href="https://sagecell.sagemath.org/static/sagecell_embed.css">
+---
+
+If integration seems hard to you, that's because it really is! Integration is generally *much* harder than differentiation and this little demo illustrates that algorithmically.
+
+The code below is written with [SageMath](https://www.sagemath.org/){target=_blank} - a full blown computer algebra system built on top of Python. When you hit the "Evaluate" button to evaluate the code, a random function will be generated. Sage will then differentiate the function and attempt to integrate it. The time taken to perform those computations will be reported as well. The function is generated using an iterative procedure and the number of iterations is controlled by the `depth` parameter. You can set the depth and, generally, the larger the `depth`, the more complicated the function. You can also specify your own function like `f(x) = sin(x)`, if you like.
+
+
+<div class="hidesage" style="display: none;">
+  <script type="text/x-sage">
+_function_list = [
+    sin, cos, tan, sec,
+    exp, sqrt, log
+]
+def _f(x): return 1/x
+_function_list.append(_f)
+def _f(x): return x^2
+_function_list.append(_f)
+def _f(x): return x^3
+_function_list.append(_f)
+def _f(x): return x^5
+_function_list.append(_f)
+def _f(x): return x^7
+_function_list.append(_f)
+
+def _step(f):
+    operation = randint(0,3)
+    g = choice(_function_list)
+    if operation == 0:
+        def f_out(x): return f(x)+g(x)
+    elif operation == 1:
+        def f_out(x): return f(x)*g(x)
+    elif operation == 2:
+        def f_out(x): return f(x)/g(x)
+    elif operation == 3:
+        def f_out(x): return f(g(x))
+    return f_out
+
+def _ident(x): return x
+
+def random_function(depth):
+    f = _ident
+    for i in range(depth):
+        f = _step(f)
+    return f
+print('loaded!')
+  </script>
+</div>
+
+
+<div class="sage">
+  <script type="text/x-sage">
+import time
+depth = 3
+f = random_function(depth)
+
+pretty_print("f(x)=", f(x))
+t = time.time()
+df = diff(f(x), x)
+pretty_print("Derivative: ", df)
+print('Derivative in ', time.time() - t, " seconds")
+t = time.time()
+intf = integrate(f(x), x)
+pretty_print("Integral: ", intf)
+print('Integral in ', time.time() - t, " seconds")
+  </script>
+</div>
+
+Sometimes, the integration computation will timeout and, if so, the `random_function` command will no longer be defined. Just hit the reload button and try again, in this case.
