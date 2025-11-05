@@ -1,0 +1,96 @@
+---
+title: Computing orthogonal projections
+format:
+    html:
+        page-layout: article
+        toc: true
+        css: styles.css
+        include-in-header: 
+            text: |
+                <script src="https://sagecell.sagemath.org/static/embedded_sagecell.js"></script>
+                <script>sagecell.makeSagecell({"inputLocation": ".sage"});</script>
+                <link rel="stylesheet" type="text/css" href="https://sagecell.sagemath.org/static/sagecell_embed.css">
+---
+
+We'll discuss orthogonal projection at some length in class and it's also covered in section 6.3 of our text. The purpose of this short set of notes is to illustrate how to implement orthogonal projection onto a subspace with SageMath. You might very well find this useful when doing your homework.
+
+## The formula
+
+Our intention is to apply [Proposition 6.3.16](https://understandinglinearalgebra.org/sec-orthogonal-bases.html#prop-proj-orthonormal){target=_blank} of our text, which says
+
+> Let $\mathbf{v}_1, \mathbf{v}_2, \ldots, \mathbf{v}_n$ be an orthonormal basis of a subspace $V\subset\mathbb R^m$ and let $Q$ be the matrix whose columns are those vectors, i.e.
+$$
+Q = \begin{bmatrix} \mathbf{v}_1 & \mathbf{v}_2 & \cdots & \mathbf{v}_n\end{bmatrix}.
+$$
+Then, $QQ^T$ is the matrix representing orthogonal projection onto $V$.
+
+
+## Example 1
+
+I suppose that the most interesting example that we can actually visualize would be the projection of point in 3D space onto a two-dimensional subspace. Suppose, for example that the subspace is spanned by the vectors 
+$$
+\mathbf{v}_1 = \begin{bmatrix} 1 \\ 2 \\ 3\end{bmatrix}
+\text{ and }
+\mathbf{v}_2 = \begin{bmatrix} 5 \\ -1 \\ -1\end{bmatrix}.
+$$
+It's easy to check that these are orthogonal and they can be normalized by dividing by their length.
+
+Now, suppose we'd like to project the vector 
+$$\mathbf{u} = \frac{1}{5}\left\langle -3,  -3, 1 \right\rangle$$
+onto that subspace. We can do so and illustrate using the following SageMath code:
+
+<div class="sage">
+  <script type="text/x-sage">
+# Define the spanning vectors v1 and v2 and the
+# vector u, which we'll project onto the span:
+v1 = vector([1, 2, 3])
+v1 = v1/v1.norm()
+v2 = vector([5, -1, -1])
+v2 = v2/v2.norm()
+u = vector([-3,-3,1])/5
+
+# Compute the projection:
+Q = matrix([v1,v2]).transpose()
+p = Q*Q.transpose()*u
+print("p =", p)
+print("or approximately", N(p()))
+
+# Plot the plane with the spanning vectors
+var('s t')
+r = s*v1 + t*v2
+plane = parametric_plot3d(r, (s, -1, 1), (t, -1, 1), opacity=0.6, color='lightblue')
+v1_arrow = arrow3d((0,0,0), v1, color='red')
+v2_arrow = arrow3d((0,0,0), v2, color='green')
+
+# Add the vector that we're going to project and
+# it's component that's orthogonal to the plane
+u_arrow = arrow3d((0,0,0), u, color='black')
+u_comp = arrow3d(p,u)
+
+# Show it all together
+P = point(p, size=20, color='black')
+show(plane + v1_arrow + v2_arrow + u_arrow + P + u_comp, 
+   aspect_ratio=1, axes_labels=['x', 'y', 'z'])
+  </script>
+</div>
+
+## Example 2
+
+The technique works just as well in higher dimensional subspaces, though we can't visualize it in the same way.  Here's how to compute the projection of a point in $\mathbb R^5$ onto a three dimensional subspace, for example:
+
+<div class="sage">
+  <script type="text/x-sage">
+v1 = vector([1,2,3,4,5])
+v1 = v1/v1.norm()
+v2 = vector([1,1,1,1,-2])
+v2 = v2/v2.norm()
+v3 = vector([16,-19,3,2,1])
+v3 = v3/v3.norm()
+
+Q = matrix([v1,v2,v3]).transpose()
+P = Q*Q.transpose()*vector([5,4,3,2,1])
+print(P)
+print('or', N(P))
+  </script>
+</div>
+
