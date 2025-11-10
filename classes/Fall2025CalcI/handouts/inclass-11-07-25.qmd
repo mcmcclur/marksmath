@@ -1,0 +1,58 @@
+---
+title: Calc I in class problems
+subtitle: on beginning integration
+date: 2025-11-07
+format:
+  html:
+    page-layout: article
+  pdf:
+    mainfont: "Times New Roman"
+    include-in-header:
+      text: |
+        \pagenumbering{gobble}
+        \usepackage[top=1in, bottom=0.5in]{geometry}
+---
+
+1. Use the fundamental theorem of calculus to evaluate
+$$
+\int_0^2 (4x^3 - x + e^x)\,dx.
+$$
+
+2. Suppose an object starts at $x(0)=1$ and has velocity given by $x'(t) = 2t - 1$. Find the position of the object at time $t=2$.
+
+3. The complete graph of a function $f$ is shown in the figure below; it consists of a quarter circle and a straight line segment. Evaluate 
+$$
+\int_{-2}^3 f(x) \, dx.
+$$
+
+```{python}
+#| echo: false
+#| fig-align: center
+import matplotlib.pyplot as plt
+import numpy as np
+
+def f(x):
+    return np.sqrt(4-x**2) if x < 0 else 2-x
+
+xs = np.linspace(-2, 3, 600)
+ys = [f(x) for x in xs]
+
+plt.plot(xs, ys, 'k-', linewidth=2)
+
+ax = plt.gca()
+
+ax.spines['left'].set_position('zero')
+ax.spines['bottom'].set_position('zero')
+ax.spines['right'].set_color('none')
+ax.spines['top'].set_color('none')
+ax.set_xticks([-2,-1,1,2,3])
+ax.set_yticks([-1,1,2])
+
+ax.set_xlim(-2.2,3.2)
+ax.set_ylim(-1.2,2.2)
+
+ax.set_aspect(1)
+
+plt.tight_layout()
+plt.show()
+```

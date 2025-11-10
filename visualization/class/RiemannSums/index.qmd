@@ -1,14 +1,38 @@
 ---
 title: Riemann Sums
 css: riemann.css
+page-layout: article
+toc: true
+format:
+    html:
+        include-in-header: 
+            text: |
+                <script src="https://sagecell.sagemath.org/static/embedded_sagecell.js"></script>
+                <script>sagecell.makeSagecell({"inputLocation": ".sage"});</script>
+                <link rel="stylesheet" type="text/css" href="https://sagecell.sagemath.org/static/sagecell_embed.css">
 ---
 
-Numerical estimates to definite integrals can be obtained via various types of summations. This demo allows you to choose a function, partition size, and sum type (from Left, Right, Midpoint, or Trapezoidal) to compute and visualize the corresponding numerical integration approximation. 
+Numerical estimates to definite integrals can be obtained via various types of summations. This page provides 
+
+  - A visualization illustrating why summation should work and why some techniques are more precise than others.
+  - A numerical tool for actually computing these sums.
+
+## Visualization
+
+This demo allows you to choose a function, partition size, and sum type (from Left, Right, Midpoint, or Trapezoidal) to compute and visualize the corresponding numerical integration approximation. 
 
 ::: {.viz-container} 
 ```{ojs}
 viewof example = Inputs.select(
   [
+    {
+      label: "linear",
+      a: 0,
+      b: 4,
+      f: x => 1 + x/2,
+      f_tex: String.raw`\left(1+x/2\right)`,
+      actual: 8
+    },
     {
       label: "quadratic",
       a: 0,
@@ -67,14 +91,11 @@ viewof N = Inputs.range([1,100], {label: tex`N:`, value: 10, step:1})
 ```{ojs}
 tex.block`${
   String.raw`\int_{${example.a}}^{${example.b}} ${example.f_tex} \, dx 
-  \approx ${d3.format('0.5f')(estimate)}`
+  \approx ${d3.format('0.5f')(estimate)} \: \: \: \: \: \: \text{error} \approx ${
+  d3.format("0.5f")(Math.abs(example.actual - estimate))}`
 }`
 ```
-```{ojs}
-tex.block`\text{error} \approx ${
-  d3.format("0.5f")(Math.abs(example.actual - estimate))
-}`
-```
+
 ::::: {.centered}
 ```{ojs}
 riemann_plot = plot(example);
@@ -90,6 +111,82 @@ update = riemann_plot.update_rects(type, N)
 estimate = compute_sum(example, N, type);
 ```
 
+## Computation
+
+Here's some live SageMath code that allows you to actually compute these sums. 
+
+
+::: {.panel-tabset}
+
+## Left 
+
+$$\int_a^b f(x) \, dx \approx \sum_{i=1}^n f(x_{i-1}) \, \Delta x$$
+
+<div class="sage">
+  <script type="text/x-sage">
+f(x) = exp(-x)
+a = 0; b = 3; n = 100
+
+# Code below is automatic.
+dx = (b-a)/n
+x(i) = a + i*dx
+N(sum(f(x(i-1))*dx, i,1,n))
+  </script>
+</div>
+
+## Right 
+
+$$\int_a^b f(x) \, dx \approx \sum_{i=1}^n f(x_i) \, \Delta x$$
+
+<div class="sage">
+  <script type="text/x-sage">
+f(x) = exp(-x)
+a = 0; b = 3; n = 100
+
+# Code below is automatic.
+dx = (b-a)/n
+x(i) = a + i*dx
+N(sum(f(x(i))*dx, i,1,n))
+  </script>
+</div>
+
+## Midpoint 
+
+$$\int_a^b f(x) \, dx \approx \sum_{i=1}^n f\left(\frac{x_{i-1} + x_i}{2}\right) \, \Delta x$$
+
+<div class="sage">
+  <script type="text/x-sage">
+f(x) = exp(-x)
+a = 0; b = 3; n = 100
+
+# Code below is automatic.
+dx = (b-a)/n
+x(i) = a + i*dx
+N(sum(f((x(i)+x(i-1))/2) * dx, i,1,n))
+  </script>
+</div>
+
+## Trapezoidal 
+
+$$\int_a^b f(x) \, dx \approx \sum_{i=1}^n \frac{f(x_{i-1}) + f(x_i)}{2} \, \Delta x$$
+
+<div class="sage">
+  <script type="text/x-sage">
+f(x) = exp(-x)
+a = 0; b = 3; n = 100
+
+# Code below is automatic.
+dx = (b-a)/n
+x(i) = a + i*dx
+N(sum((f(x(i)) + f(x(i-1)))/2 * dx, i,1,n))
+  </script>
+</div>
+:::
+
+Note how similar the computer code for the sum is to the mathematical notation. That is 
+
+- `sum(f(x(i))*dx, i,1,n)` looks like 
+- $\sum_{i=1}^n f(x_i) \, \Delta x$
 
 ```{ojs}
 import {plot} from './components/plot.js'
