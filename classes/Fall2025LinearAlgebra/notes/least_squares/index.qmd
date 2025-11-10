@@ -1,0 +1,296 @@
+---
+title: Orthogonal least squares
+subtitle: and linear regression
+format:
+    html:
+        page-layout: article
+        toc: true
+        css: styles.css
+        echo: true
+---
+
+We'll discuss orthogonal projection at some length in class and it's also covered in section 6.5 of our text. In this set of notes, we'll present a few pictures and code to illustrate the ideas.
+
+The code on this page uses the following Python libraries:
+
+```{python}
+import pandas as pd # Data manipulation
+import numpy as np  # Fundamental numerics
+from scipy.linalg import solve    # Solve linear systems
+import matplotlib.pyplot as plt   # Graphics
+```
+
+## Linear regression and least squares
+
+When it comes to data $\{(x_i,y_i)\}$, the least squares problem is to find $f(x)=ax+b$ that best fits that data. That is we'd like to minimize
+$$\sum (ax_i + b - y_i)^2$$
+or, from the perspective of linear algebra, we'd like to minimize the squared norm
+$$
+\left\|\left(\begin{matrix}
+x_1 & 1 \\ x_2 & 1 \\ \vdots & \vdots \\ x_n & 1
+\end{matrix}\right)
+\left(\begin{matrix} a \\ b \end{matrix} \right) -
+\left(\begin{matrix}
+y_1 \\ y_2 \\ \vdots  \\ y_n
+\end{matrix}\right)\right\|^2.
+$$
+More generally, we'd like to solve $A\mathbf{x} = \mathbf{y}$ in this *least squares sense*. As we learn in class, this can be done by solving the system $A^T A \mathbf{x}=A^T\mathbf{y}$. 
+
+
+## Basic example
+
+Here's a really small example that we saw in class:
+
+```{python}
+x = [0,1,2]
+y = [0,1,1]
+plt.plot(x,y, 'ok')
+```
+
+The idea is to draw a line that's the "best fit" to that data in the least squares sense. To do so, we first solve this system:
+
+```{python}
+X = np.array([x,[1,1,1]]).transpose()
+x_hat = solve(X.T @ X, X.T @ y)
+a, b = x_hat
+print(f"a = {a:.6f}")
+print(f"b = {b:.6f}")
+```
+
+And here's the line:
+
+```{python}
+plt.plot(x,y, 'ok')
+plt.plot([-0.2,2.2], [a*(-0.2)+b, a*2.2+b])
+```
+
+Here's a plot in 3D space of 
+
+- the target $\mathbf{y}$, 
+- the plane spanned by the vectors $[0\:1\:2]^{\mathsf T}$ and $[1\:1\:1]^{\mathsf T}$, and 
+- the projection $\hat{\mathbf{y}}$ of $\mathbf{y}$ onto that plane.
+
+```{python}
+#| echo: false
+import plotly.graph_objects as go
+
+x_vec  = np.array([0., 1., 2.])
+one    = np.ones(3)
+y      = np.array([0., 1., 1.])
+
+A = np.column_stack([x_vec, one])
+theta = np.linalg.solve(A.T @ A, A.T @ y) 
+y_hat = A @ theta
+
+u = np.linspace(-0.25, 1, 25)
+v = np.linspace(-0.25, 1, 25)
+U, V = np.meshgrid(u, v)
+points = np.outer(U.ravel(), x_vec) + np.outer(V.ravel(), one)
+Xsurf = points[:, 0].reshape(U.shape)
+Ysurf = points[:, 1].reshape(U.shape)
+Zsurf = points[:, 2].reshape(U.shape)
+
+
+# Scale 
+r = y - y_hat 
+rlen = np.linalg.norm(r)
+xu   = x_vec / np.linalg.norm(x_vec)
+oneu = one / np.linalg.norm(one)
+L = 0.85 * rlen
+
+x_tip   = y_hat + L * xu
+one_tip = y_hat + L * oneu
+
+xs = np.concatenate([Xsurf.ravel(), [y[0], y_hat[0], x_tip[0], one_tip[0]]])
+ys = np.concatenate([Ysurf.ravel(), [y[1], y_hat[1], x_tip[1], one_tip[1]]])
+zs = np.concatenate([Zsurf.ravel(), [y[2], y_hat[2], x_tip[2], one_tip[2]]])
+
+mn = min(xs.min(), ys.min(), zs.min())
+mx = max(xs.max(), ys.max(), zs.max())
+pad = 0.1 * (mx - mn + 1e-9)
+mn = -0.5
+mx = 2
+rng_min, rng_max = mn - pad, mx + pad
+
+
+fig = go.Figure()
+
+# Plane
+fig.add_trace(go.Surface(
+    x=Xsurf, y=Ysurf, z=Zsurf,
+    hoverinfo='skip',
+    opacity=0.55, showscale=False, name="span{x, 1}"
+))
+
+fig.add_trace(go.Scatter3d(
+    x=[y_hat[0], x_tip[0]], y=[y_hat[1], x_tip[1]], z=[y_hat[2], x_tip[2]],
+    mode="lines+markers+text",
+    text=["", "[0,1,2]"], textposition="top center",
+    marker=dict(size=3), name="[0,1,2]"
+))
+fig.add_trace(go.Scatter3d(
+    x=[y_hat[0], one_tip[0]], y=[y_hat[1], one_tip[1]], z=[y_hat[2], one_tip[2]],
+    mode="lines+markers+text",
+    text=["", "[1,1,1]"], textposition="top center",
+    marker=dict(size=3), name="[1,1,1]"
+))
+
+fig.add_trace(go.Scatter3d(
+    x=[y[0]], y=[y[1]], z=[y[2]],
+    mode="markers+text", text=["y"], textposition="bottom center",
+    marker=dict(size=6), name="y"
+))
+fig.add_trace(go.Scatter3d(
+    x=[y_hat[0]], y=[y_hat[1]], z=[y_hat[2]],
+    mode="markers+text", text=["ŷ"], textposition="bottom center",
+    marker=dict(size=6), name="ŷ"
+))
+
+fig.add_trace(go.Scatter3d(
+    x=[y_hat[0], y[0]], y=[y_hat[1], y[1]], z=[y_hat[2], y[2]],
+    mode="lines+markers", name="y - ŷ"
+))
+
+fig.update_layout(
+    width=900, height=700,
+    scene_dragmode='orbit',
+    margin=dict(l=20, r=20, t=60, b=20),
+    scene=dict(
+        xaxis=dict(title="component 0", range=[rng_min, rng_max]),
+        yaxis=dict(title="component 1", range=[rng_min, rng_max]),
+        zaxis=dict(title="component 2", range=[rng_min, rng_max]),
+        aspectmode="cube",
+        camera=dict(eye=dict(x=1, y=1.5, z=0.6))
+    ),
+)
+
+fig.show()
+```
+
+## Galileo's ramp
+
+Here's an example illustrating the fact that "linear" doesn't refer to the line we use to fit the data. In fact, can use any *linear* combination of functions. If we use the functions $1$, $x$, and $x^2$, we obtain a quadratic fit to the data.
+
+This example is based on Galileo's 1995 experiments on projectile motion. In one such experiment, he let a ball roll down an inclined ramp right off of a table and measured its vertical distance traveled. He did this for several ramp heights and thus obtained a relationship between the height at which he released the ball and the vertical distance that the ball traveled.  
+
+I've got the actual data stored on my website! We can load and view it directly with Python like so:
+
+```{python}
+df = pd.read_csv('https://marksmath.org/data/galileos_ramp.csv')
+df
+```
+
+The unit of distance is the "punti", according to the source:
+
+- [Teaching Statistics with Data of Historic Significance: Galileo's Gravity and Motion Experiments](https://amstat.tandfonline.com/doi/full/10.1080/10691898.1995.11910483).
+  
+We can also plot the data:
+
+```{python}
+plt.plot(df.D,df.H, '.')
+```
+
+While it rather flips the role of what we might call *explanatory* and *response*, it does look like height released is related to distance traveled via a quadratic - that is,
+$$H = a D^2 + b D + c.$$
+In order to fit the data, we could solve the least squares problem
+$$
+\left(\begin{matrix}
+  d_1^2 & d_1 & 1 \\
+  d_2^2 & d_2 & 1 \\
+  \vdots & \vdots & \vdots \\
+  d_n^2 & d_n & 1 
+\end{matrix}\right)
+\left(\begin{matrix}a \\ b \\ c \end{matrix} \right) \approx 
+\left(\begin{matrix}
+  h_1 \\ h_2 \\ \vdots \\ h_n
+\end{matrix}\right).
+$$
+
+Of course, using the normal equations $A^T A \mathbf{x} = A^T \mathbf{y}$, this boils down to solving the linear system
+
+$$
+\left(\begin{matrix}
+  d_1^2 & d_2^2 & \cdots & d_n^2 \\
+  d_1 & d_2 & \cdots & d_n \\
+  1 & 1 & \cdots & 1 
+\end{matrix}\right)
+\left(\begin{matrix}
+  d_1^2 & d_1 & 1 \\
+  d_2^2 & d_2 & 1 \\
+  \vdots & \vdots & \vdots \\
+  d_n^2 & d_n & 1 
+\end{matrix}\right)
+\left(\begin{matrix}a \\ b \\ c \end{matrix} \right) = 
+\left(\begin{matrix}
+  d_1^2 & d_2^2 & \cdots & d_n^2 \\
+  d_1 & d_2 & \cdots & d_n \\
+  1 & 1 & \cdots & 1 
+\end{matrix}\right)
+\left(\begin{matrix}
+  h_1 \\ h_2 \\ \vdots \\ h_n
+\end{matrix}\right).
+$$
+
+Here's how to set up the matrix containing the values of $D$ - the matrix traditionally called $A$ in the normal equations:
+
+```{python}
+A = np.array([df.D**2, df.D, df.D**0]).transpose()
+A
+```
+
+We now solve the normal equations:
+
+```{python}
+a,b,c = solve(A.transpose().dot(A), A.transpose().dot(df.H))
+a,b,c
+```
+
+Thus we expect 
+$$H \approx 0.00818073977 D^2 - 4.00484297 D + 600.05.$$
+Let's define and plot that function together with data:
+
+```{python}
+def f(x): return a*x**2 + b*x + c
+xs = np.linspace(250,600)
+ys = f(xs)
+plt.plot(xs,ys)
+plt.plot(df.D,df.H, '.')
+```
+
+Looks pretty good!
+
+## A larger example from the CDC  
+
+Often, this technique is used in the context of large data sets. Here's some data from the CDC's BRFSS:
+
+```{python}
+cdc_data = pd.read_csv("http://marksmath.org/data/cdc.csv")
+print(len(cdc_data))
+cdc_data.head(12)
+```
+
+Let's grab a sample of size 500 and plot it:
+
+```{python}
+cdc_sample = cdc_data.sample(500, random_state=42)
+plt.plot(cdc_sample.height, cdc_sample.weight, 'ok', alpha=0.3)
+```
+
+Finally, let's find and plot the regression line with the data:
+
+```{python}
+A = np.array([cdc_sample.height, np.ones(500)]).transpose()
+a,b = solve(A.transpose().dot(A), A.transpose().dot(cdc_sample.weight))
+plt.plot(cdc_sample.height, cdc_sample.weight, 'ok', alpha=0.3)
+plt.plot([58,81],[a*58+b, a*81+b])
+```
+
+## Problems??
+
+Here are a couple of potential quiz like problems over this material. Recall that we will also have a computer lab involving this stuff on Wednesday.
+
+1. Explain how $A^{\mathsf T}A \mathbf{x} = A^{\mathsf T} \mathbf{y}$ yields a vector that's orthogonal to the column space of $A$.
+
+2. Given the data 
+$$\{(-1,-1), (0,1), (1,1), (3,2)\},$$
+write down the resulting normal equations.
