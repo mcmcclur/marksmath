@@ -5,12 +5,18 @@ page-layout: article
 
 Sample datasets
 
+- CDC's BRFSS data
+  - Description: A sample of size 20,000 with nine variables taken from [Open Intro](https://www.openintro.org/book/statdata/?data=cdc).
+  - [CSV](cdc.csv)
 - College Football 2024
   - Description: Lists team stats for all 135 D1 College Football teams for the Fall 2024 season. I assembled this summary data from more detailed data obtained from [Massey Ratings](https://masseyratings.com/).
   - [CSV](./CFBStats/CFB2024.csv)
 - Colors
   - Description: This is a small, manufactured data set of RGB values that are *close* to primary colors; there are also a few missing values values. The intention is to illustrate imputation with, for example, a KNN imputer.
   - [CSV](./colors.csv)
+- Galileo's Ramp 
+  - Description: Supposedly, some of Galileo's actual inclined ramp data taken from [Teaching Statistics with Data of Historic Significance: Galileo's Gravity and Motion Experiments](https://amstat.tandfonline.com/doi/full/10.1080/10691898.1995.11910483).
+  - [CSV](galileos_ramp.csv)
 - NCAA Basketball data (multiple files for sports analytics)
   - The Big South 2025 Regular Season 
     - Description: Game by game results of the Mens's 2025 Big South regular season.
