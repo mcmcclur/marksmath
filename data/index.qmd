@@ -8,9 +8,13 @@ Sample datasets
 - CDC's BRFSS data
   - Description: A sample of size 20,000 with nine variables taken from [Open Intro](https://www.openintro.org/book/statdata/?data=cdc).
   - [CSV](cdc.csv)
-- College Football 2024
-  - Description: Lists team stats for all 135 D1 College Football teams for the Fall 2024 season. I assembled this summary data from more detailed data obtained from [Massey Ratings](https://masseyratings.com/).
-  - [CSV](./CFBStats/CFB2024.csv)
+- College Football
+  - Games by Conference and Season 
+    - Description: Games results with team names, scores, conference, and year going back to 2017. Obtained from [Massey Ratings](https://masseyratings.com)
+    - [CSV](./cfb_games_by_conf_and_year.csv)
+  - CFB Stats 
+    - Description: Lists team stats for all 135 D1 College Football teams for the Fall 2024 season. Obtained from [CFB Stats](https://cfbstats.com/)
+    - [CSV](./CFBStats/CFB2024.csv)
 - Colors
   - Description: This is a small, manufactured data set of RGB values that are *close* to primary colors; there are also a few missing values values. The intention is to illustrate imputation with, for example, a KNN imputer.
   - [CSV](./colors.csv)
