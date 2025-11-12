@@ -9,13 +9,13 @@ format:
     echo: true
 ---
  
-This web page outlines a technique based in linear algebra to rate teams playing games in a common league based on the score differences that we see in the games. The basic idea is to perform a linear regression where the input consists of games and the output is the score differences.
+This web page outlines a technique based in linear algebra to rate teams playing games in a common league based on the score differences that we see in the games. The basic idea is to perform a linear regression where the input consists of games and the output is the set of score differences.
 
-This technique dates back to Ken Massey's 1997 senior honors thesis at Bluefield College. My understanding of the technique is based mostly on Chapter 2 of [Langville and Meyer's text on sport's ranking](https://press.princeton.edu/books/hardcover/9780691154220/whos-1).
+This technique dates back to Ken Massey's 1997 senior honors thesis at Bluefield College. My understanding of the technique is based mostly on Chapter 2 of [Langville and Meyer's text on sports ranking](https://press.princeton.edu/books/hardcover/9780691154220/whos-1).
 
 ## Code 
 
-We'll describe the mathematics of Massey's algorithm and also shows how to implement it in Python. Each code block has a clipboard icon in the upper right that you can click on to copy the code. You should be able to run the code in a scientific Python environment.
+We'll describe the mathematics of Massey's algorithm and also shows how to implement it in Python. Each code block has a clipboard icon in the upper right that you can click on to copy the code. You should be able to run the code in a scientific Python environment like Colab.
 
 ### Imports
 
@@ -39,7 +39,7 @@ Let's describe the algorithm and take a look at a relatively simple example
 
 ### The general problem
 
-In general, we've got $m$ games played between $n$ teams. Let's suppose that in the $k^{\text{th}}$ game, team $i$ beat team $j$ by $y_k$ points. We'd like the teams ratings $r_i$ and $r_j$ to reflect this fact, i.e. we'd like
+In general, we've got $m$ games played between $n$ teams. Let's suppose that in the $k^{\text{th}}$ game, team $i$ beat team $j$ by $y_k$ points. We'd like the teams' ratings $r_i$ and $r_j$ to reflect this fact, i.e. we'd like
 $$r_i - r_j = y_k.$$
 To put it another way, we'd like our ratings of teams $i$ and $j$ to indicate the expected score difference between the teams, if they play again.
 
@@ -55,7 +55,7 @@ The matrix $M = X^T X$ formed in this process is called the *Massey matrix* and 
 
 A way to get around this problem is to set all the elements in some row of $M$ equal to 1. This is conventionally done in the last row. We similarly replace the last element of
 $$\vec{p} = X^T y$$
-to zero. This implies the constraint that the sum of the ratings must be zero. Furthermore, the resulting system
+with zero. This implies the constraint that the sum of the ratings must be zero. Furthermore, the resulting system
 $$M \vec{r} = \vec{p}$$
 can be shown to have a unique solution.
 
@@ -79,7 +79,7 @@ dot.edge("C", "A", label="1")
 dot
 ```
 
-Note that a directed edge from team $i$ to team $j$ indicates that team $i$ defeated team $j$ in that game; the edge labels indicates the score differences. Given the directed graph shown above, how would you rank the teams?
+Note that a directed edge from team $i$ to team $j$ indicates that team $i$ defeated team $j$ in that game; the edge labels indicate the score differences. Given the directed graph shown above, how would you rank the teams?
 
 
 To rank the teams the Massey way, we start with the general equation
@@ -92,7 +92,7 @@ $$
 \begin{pmatrix}3\\2\\1\\2\\3\\1\end{pmatrix}.
 $$
 
-If we multiply both sides by $X^T$ and modify the last rows according Massey's strategy, the equation becomes
+If we multiply both sides by $X^T$ and modify the last row according Massey's strategy, the equation becomes
 
 $$
 \begin{pmatrix}4&-2&-2\\-2&4&-2\\1&1&1\end{pmatrix}
@@ -112,9 +112,9 @@ In particular, note that $r_1 < r_2 < r_0$, which is probably in accordance with
 
 It's worth noting that the Massey equation
 $$M\vec{r} = \vec{p}$$
-can itself be written down and interpreted without reference to $X$ or $y$. As we've already noted, $M_{ii}$ denotes the number of games played by team $i$ and $M_{ij}$ is the opposite of the number of games played by teams $i$ and $j$. Similarly, the entries of $\vec{p}$ is the accumulated set of score differences for each team.
+can itself be written down and interpreted without reference to $X$ or $y$. As we've already noted, $M_{ii}$ denotes the number of games played by team $i$ and $M_{ij}$ is the opposite of the number of games played by teams $i$ and $j$. Similarly, the entries of $\vec{p}$ are the set of score differences for each team.
 
-For example, if we expand the first term in the product $M\vec{r}$ and set that equal to the first term of $p$, we get
+For example, if we expand the first term in the product $M\vec{r}$ and set that equal to the first entry of $\vec{p}$, we get
 $$4r_0 - 2r_1 - 2r_2 = 7.$$
 This indicates that team $0$ played four games, two against each other team, and that it outscored its opponents by a combined score of seven. If we solve for $r_0$, we get
 $$r_0 = \frac{1}{2}r_1 + \frac{1}{2}r_2 + \frac{7}{2}.$$
@@ -191,13 +191,12 @@ games = games.reset_index().drop('index', axis=1)
 games.tail(6)
 ```
 
-OK, to implement Massey's algorithm, we'll initiate a matrix `X` and a vector `y`, and iterate through the games setting the values in `X` and `y` as we go. We use those to setup and solve the Massey equation.
+OK, to implement Massey's algorithm, we'll initialize a matrix `X` and a vector `y`, and iterate through the games setting the values in `X` and `y` as we go. We use those to setup and solve the Massey equation.
 
 
 ```{python}
 X = np.zeros([m,n])
 y = np.zeros([m])
-X.transpose().dot(y)
 
 for i,r in games.iterrows():
     X[i, r.WTeamIdx] = 1
@@ -228,16 +227,9 @@ rank_teams
 
 Hey, not bad!
 
-Now, if you happen to need that table in Markdown, you could generate it like so:
-
-```{python}
-print(rank_teams.to_markdown())
-```
-
-
 ## Lab problem 
 
-OK, now you're going to give it a try! Specifically, you should rank the teams for a specific year and conference as indicated in select menu below:
+OK, now you're going to give it a try! Specifically, you should rank the teams for a specific year and conference as indicated by choosing your name from the select menu below:
 
 ```{python}
 #| echo: false
@@ -250,9 +242,9 @@ ojs_define(
 ```{ojs}
 //| echo: false
 viewof name = {
-  const names = ["---","Audrey","ahajdare","bmartin3","Bryan","cflorest","Collin","Estelle_Morgan","Fin","gcarswel","Isabel","Jacob_Prime","jandrew4","jwiatrowski","Lauren","leibnizcaneatit","Leo","lexidooley","Lilia","mholden","SalMangum","The_One_True_Jacob","Zachary"];
-  year_conf_pairs.forEach((o,i) => o['name'] = names[i]);
-  return Inputs.select(year_conf_pairs, {format: o => o.name, label: "Discourse name:"})
+  const names = ["---", "Audrey", "Amina","Bryan P","Bryan M","Carlos","Collin","Estelle","Fin","Gabriel","Isabel","Jacob C","Jacob S","James","Jordan","Lauren","Leo","Lexi","Lilia","Miranda","Sal","William","Zachary"];
+  year_conf_pairs.slice(0,names.length).forEach((o,i) => o['name'] = names[i]);
+  return Inputs.select(year_conf_pairs.slice(0,names.length), {format: o => o.name, label: "Name:"})
 }
 ```
 
@@ -260,7 +252,7 @@ viewof name = {
 //| echo: false
 {
   if(name.name != "---") {
-    return md`You get to explore the ${name.year} ${name.conf}`
+    return md`You get to explore the ${name.year} ${name.conf}!`
   }
   else {
     return md``
