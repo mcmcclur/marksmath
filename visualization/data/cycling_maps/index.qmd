@@ -128,7 +128,9 @@ menu_files = ({
   "MTN: Pink Beds to Bennett Gap": FileAttachment(
     "./menu_files/PinkBedsBennettGap.reduced.gpx"
   ),
-  "MTN: Spencer Fletcher": FileAttachment("./menu_files/SpencerFletcherWithRob.reduced.gpx")
+  "MTN: Spencer Fletcher": FileAttachment("./menu_files/SpencerFletcherWithRob.reduced.gpx"),
+  "MTN: Tsali Left/Right with AD": FileAttachment("./menu_files/TsaliLeftRight.gpx"),
+  "MTN: Tsali Thompson/Mouse with AD": FileAttachment("./menu_files/TsaliThompsonMouse.gpx")
 });
 ```
 
