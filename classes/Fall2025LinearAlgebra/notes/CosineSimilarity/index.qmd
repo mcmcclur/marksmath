@@ -32,7 +32,7 @@ word_counts = build_counts_df([
 word_counts
 ```
 
-I'm sure you've seen exactly this kind of thing used to build word clouds like the following:
+This is is exactly the kind of data needed to build word clouds like the following clouds built by [Jason Davies d3-cloud](https://github.com/jasondavies/d3-cloud){target=_blank}:
 
 ![Word cloud for mathematics](wordcloudMath.svg)
 
