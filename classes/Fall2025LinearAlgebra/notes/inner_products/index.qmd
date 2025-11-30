@@ -1,0 +1,228 @@
+---
+title: Inner products
+subtitle: and orthogonal functions
+format:
+    html:
+        page-layout: article
+        toc: true
+        css: styles.css
+        echo: false
+---
+
+## Vector space recap 
+
+Recall that a *vector space* is a set $V$ equipped with a notions of addition and scalar multiplication satisfying assumptions making it similar to $\mathbb R^n$ as an algebraic structure. You can find the full set of axioms for a vector space in [Beezer's FCLA](https://runestone.academy/ns/books/published/fcla/section-VS.html){target=_blank}.
+
+Some of the most important examples of vector spaces, other than $\mathbb R^n$ are function spaces, like 
+
+- the set of all polynomials,
+- the set of all continuous functions,
+- the set of all infinitely differentiable functions.
+Often, we'll restrict the set of functions under consideration to an interval; thus, we might consider 
+- the set of all polynomials restricted to $[-1,1]$ or 
+- the set of all continuous functions restricted to $[0,\pi]$.
+
+We are often interested in specific subspaces of a given vector space, i.e. subsets that are themselves vector spaces. Examples include 
+
+- the set of all polynomials of degree at most $3$,
+- the set of all continuous functions $f$ on $\mathbb R$ such that $f(0)=0$,
+- the set of all vectors $\begin{bmatrix}x,y,z\end{bmatrix}^{\mathsf{T}}$ such that $x-y=0$.
+
+The key thing to check in this subspace context is that the proposed set is closed under addition and scalar multiplication. Taking that into account, we can show that the following are *not* vector spaces:
+
+- the set of all polynomials of degree exactly $3$,
+- the set of all continuous functions $f$ on $\mathbb R$ such that $f(0)=1$,
+- the set of all vectors $\begin{bmatrix}x,y,z\end{bmatrix}^{\mathsf{T}}$ such that $x-y=10$.
+
+## Inner products 
+
+Where the notion of a vector space generalizes the properties of $\mathbb R^n$, the notion of an inner product generalizes the properties of the dot product. Specifically, the dot product is a bivariate operation
+$$\langle \cdot \operatorname {,} \cdot \rangle :V\times V\to \mathbb R$$
+that satisfies
+
+- Symmetry: $\langle x,y\rangle ={\langle y,x\rangle }$,
+- Linearity: $\langle ax+by,z\rangle =a\langle x,z\rangle +b\langle y,z\rangle$, and 
+- Positive definiteness: $\langle x,x\rangle >0$.
+
+It's easy to show that the dot product satisfies all these properties. It turns out that it is exactly these properties that makes the dot product so useful in algebraic computations. While we might not be able to make sense of perpendicularity in general vector spaces, we can still make perfectly good sense of the concept of orthogonality:
+
+**Def** (orthogonality)
+
+Suppose that $f$ and $g$ are elements of a vector space $V$ equipped with an inner product $\langle \cdot \operatorname {,} \cdot \rangle$. We say that $f$ and $g$ are *orthogonal* if 
+$$\langle f \operatorname {,} g \rangle = 0$$
+
+### Continuous functions on $[-1,1]$ 
+
+One important example is the set 
+$$
+V = \{f:[-1,1]\to\mathbb R: f \text{ is continuous}\}.
+$$
+
+Here are a couple examples of orthogonal pairs of functions in this space:
+
+- $f(x) = x^3 + x$ and $g(x) = x^4 + x^2$
+- $f(x) = \sin(x)$ and $g(x) = \cos(x)$.
+
+More generally, if $f$ is odd and $g$ is even, then $fg$ is odd so that 
+$$
+\int_{-1}^1 f(x) g(x) \, dx = 0.
+$$
+Thus, $f$ and $g$ are orthogonal in $V$.
+
+## The Legendre polynomials
+
+### Definition
+
+The Legendre polynomials $P_n(x)$ can be defined by three characteristics:
+
+- For each $n\in \mathbb N$, $P_n$ has degree $n$,
+- They are orthogonal over the interval $[-1, 1]$, and
+- $P_n(1) = 1$.
+
+### Checking Legendre polygnomials
+
+It's easy to use the criteria for Legendre polynomials to check and see if a proposed list of the first few satisfies those criteria or not. Here's the first three, for example:
+
+- $P_0(x) = 1$ since that's the only constant polynomial satisfying $P(1)=1$,
+- $P_1(x) = x$ so that $P_1(1)=1$ and 
+$$\int_{-1}^1 P_1(x) P_0(x) \, dx = \int_{-1}^1 x \, dx = 0.$$
+- $P_2(x) = (3x^2-1)/2$ so that $P_2(1) = 1$ and
+$$\frac{1}{2}\int_{-1}^1 (3x^2-1) \, dx = \frac{1}{2}\int_{-1}^1 (3x^2-1)x \, dx  = 0.$$
+
+### Constructing Legendre polygnomials
+
+We can actually *construct* the Legendre polynomials recursively, though. It helps to first show that each $P_{2n}$ must be an even function and that each $P_{2n+1}$ must be an odd function for all $n$. Can you see why?
+
+Once you've got $P_0,P_1,\ldots,P_{n-1}$, you can *derive* $P_n$ by setting up and solving a linear system. For example, if we suppose that
+$$
+P_3(x) = ax^3 + bx,
+$$
+then
+$$
+\int_{-1}^1 (a x^3 + bx)x \, dx = \int_{-1}^1 (ax^4 + bx^2) \, dx = \frac{2 a}{5}+\frac{2 b}{3}. 
+$$
+Together with the condition that $P_n(1)=1$, this yields the system
+$$
+\begin{aligned}
+a+b &= 1 \\
+\frac{2 a}{5}+\frac{2 b}{3} &= 0. 
+\end{aligned}
+$$
+This system can be solved for $a$ and $b$ to yield
+$$
+a = 5/2 \text{ and } b = -3/2
+$$
+so that
+$$
+P_3(x) = \frac{5}{2}x^3 - \frac{3}{2}x. 
+$$
+
+## The harmonics
+
+::: {.callout-note}
+
+This material will not appear on the final exam. It simply serves as an illustration of the utility of viewing sets of functions as a vector space.
+
+:::
+
+Another interesting set of orthogonal functions are the so-called *harmonics*:
+
+### Harmonics?
+
+$$
+\{\sin(x), \sin(2x), \sin(3x), \ldots, \sin(nx), \ldots, \}. 
+$$
+
+These get their name because they represent the fundamental modes of vibration of a string with fixed ends. Here are the graphs of the first 12 harmonics
+
+```{ojs}
+viewof h = Inputs.range([1, 12], { step: 1, value: 1, label: "harmonic:" });
+harmonic(h)
+```
+
+And here they are in action:
+
+```{ojs}
+viewof mode = Inputs.radio(d3.range(1, 7), { label: "Mode:", value: 1 });
+vibration(mode)
+```
+
+### Orthogonality of the harmonics 
+
+The orthogonality of the harmonics can be established fairly easily with the trig identity
+$$
+\sin(mx)\sin(nx) = \frac{1}{2} \left(\cos(\pi(m-n))-\cos(\pi(m+n))\right).
+$$
+From there, it's pretty easy to see that 
+$$
+\int_0^{\pi} \sin(mx)\sin(nx) \, dx = 
+\begin{cases} \pi/2 & m=n \\ 0 & \text{otherwise}.\end{cases}
+$$
+In particular, the harmonics form an orthogonal family.
+
+### Approximating functions
+
+Orthogonal functions are a topic of great importance in applied mathematics. Largely, this arises from the fact that the orthogonality condition yields a way to express other functions as infinite sums. Let's suppose, for example, that we'd like to express a function $f$ as 
+$$
+f(x) = \sum_{n=1}^{\infty} b_n\sin(nx).
+$$
+We can multiply both sides by $\sin(mx)$ and integrate over $[0,\pi]$:
+$$
+\int_0^{\pi} f(x) \sin(mx) \, dx =
+  \sum_{n=1}^{\infty} b_n \int_0^{\pi} \sin(mx)\sin(nx) \, dx 
+  = \frac{\pi}{2}b_m.
+$$
+Thus,
+$$
+b_m = \frac{2}{\pi} \int_0^{\pi} f(x) \sin(mx) \, dx.
+$$
+
+The simplest interesting example along these lines is to approximate the function $f(x)=1$ over the interval $[0,\pi]$. To do so, we compute 
+$$
+\begin{aligned}
+b_m &= \frac{2}{\pi} \int_0^{\pi}  1 \sin(m\,x) \, dx = 
+  -\frac{2}{m\pi} \cos(m\,x)\rvert_0^{\pi} \\
+  &= -\frac{2}{m\pi} \left(\cos(m\pi) - \cos(0)\right) = 
+  \begin{cases}
+    \frac{4}{m\pi} & \text{ if } m \text{ is odd} \\
+    0 & \text{ if } m \text{ is even}
+  \end{cases}.
+\end{aligned}
+$$
+This suggests that we can express the number $1$ as 
+$$
+1 = \frac{4}{\pi} \sum_{m=0}^{\infty} \frac{1}{2m+1} \sin((2m+1)x)
+$$
+and that this expression should be valid over the interval $[0,\pi]$.
+
+Here's what that convergence looks like:
+
+```{ojs}
+viewof N = Inputs.range([1, 100], { step: 1, value: 8, label: "terms:" });
+fourier_pic(N)
+```
+
+
+## Problems
+
+
+1. Determine which of the following sets are vector spaces. For those that are not, specify exactly why not. To set notation, we write 
+
+   - $U$ to denote the set of all continuous functions mapping $[0,1]\to\mathbb R$ and 
+   - $\mathbb R^n$ to denote
+$$
+\left\{ \begin{bmatrix}x_1 \\ x_2 \\ \vdots \\ x_n \end{bmatrix}: 
+  x_1,x_2,\ldots,x_n \in \mathbb R \right\}.
+$$
+   a. $\{\mathbf{u}\in\mathbb R^7: x_2 + x_6 = 0\}$
+   b. $\{\mathbf{u}\in\mathbb R^5: \|\mathbf{u}\| \leq 1\}$
+   c. $\{f\in U: f(0) = 0\}$
+   d. $\{f\in U: \int_0^1 f(x) \, dx = 1\}$
+
+2. Derive a formula for $P_4(x)$, the fourth Legendre polynomial as a function of $x$.
+
+3. Find a value of $b$ so that $f(x) = x^3$ and $g(x) = 6 x^2 + b x$ are orthogonal.
+
+```{ojs}
+import {harmonic, vibration, fourier_pic} from './components/plots.js'
+```
