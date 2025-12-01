@@ -11,7 +11,7 @@ format:
 
 ## Vector space recap 
 
-Recall that a *vector space* is a set $V$ equipped with a notions of addition and scalar multiplication satisfying assumptions making it similar to $\mathbb R^n$ as an algebraic structure. You can find the full set of axioms for a vector space in [Beezer's FCLA](https://runestone.academy/ns/books/published/fcla/section-VS.html){target=_blank}.
+Recall that a *vector space* is a set $V$ equipped with notions of addition and scalar multiplication satisfying assumptions making it similar to $\mathbb R^n$ as an algebraic structure. You can find the full set of axioms for a vector space in [Beezer's FCLA](https://runestone.academy/ns/books/published/fcla/section-VS.html){target=_blank}.
 
 Some of the most important examples of vector spaces, other than $\mathbb R^n$ are function spaces, like 
 
@@ -69,6 +69,14 @@ $$
 $$
 Thus, $f$ and $g$ are orthogonal in $V$.
 
+### A comment on notation 
+
+When working in $\mathbb R^n$ it's common to typeset vectors in a way that distinguishes them from scalars. Thus, we might type or write 
+$$
+\vec{u} \text{ or } \mathbf{v}.
+$$
+That's not typically done in the abstract setting. Thus, you might notice that I used symbols like $x,y,f,\text{ and }g$ to represent elements of a vector space above.
+
 ## The Legendre polynomials
 
 ### Definition
@@ -79,7 +87,7 @@ The Legendre polynomials $P_n(x)$ can be defined by three characteristics:
 - They are orthogonal over the interval $[-1, 1]$, and
 - $P_n(1) = 1$.
 
-### Checking Legendre polygnomials
+### Checking Legendre polynomials
 
 It's easy to use the criteria for Legendre polynomials to check and see if a proposed list of the first few satisfies those criteria or not. Here's the first three, for example:
 
@@ -87,9 +95,9 @@ It's easy to use the criteria for Legendre polynomials to check and see if a pro
 - $P_1(x) = x$ so that $P_1(1)=1$ and 
 $$\int_{-1}^1 P_1(x) P_0(x) \, dx = \int_{-1}^1 x \, dx = 0.$$
 - $P_2(x) = (3x^2-1)/2$ so that $P_2(1) = 1$ and
-$$\frac{1}{2}\int_{-1}^1 (3x^2-1) \, dx = \frac{1}{2}\int_{-1}^1 (3x^2-1)x \, dx  = 0.$$
+$$\frac{1}{2}\int_{-1}^1 (3x^2-1) 1 \, dx = \frac{1}{2}\int_{-1}^1 (3x^2-1)x \, dx  = 0.$$
 
-### Constructing Legendre polygnomials
+### Constructing Legendre polynomials
 
 We can actually *construct* the Legendre polynomials recursively, though. It helps to first show that each $P_{2n}$ must be an even function and that each $P_{2n+1}$ must be an odd function for all $n$. Can you see why?
 
@@ -130,7 +138,7 @@ Another interesting set of orthogonal functions are the so-called *harmonics*:
 ### Harmonics?
 
 $$
-\{\sin(x), \sin(2x), \sin(3x), \ldots, \sin(nx), \ldots, \}. 
+\{\sin(x), \sin(2x), \sin(3x), \ldots, \sin(nx), \ldots \}. 
 $$
 
 These get their name because they represent the fundamental modes of vibration of a string with fixed ends. Here are the graphs of the first 12 harmonics
@@ -151,7 +159,7 @@ vibration(mode)
 
 The orthogonality of the harmonics can be established fairly easily with the trig identity
 $$
-\sin(mx)\sin(nx) = \frac{1}{2} \left(\cos(\pi(m-n))-\cos(\pi(m+n))\right).
+\sin(mx)\sin(nx) = \frac{1}{2} \left(\cos((m-n)x)-\cos((m+n)x)\right).
 $$
 From there, it's pretty easy to see that 
 $$
@@ -198,7 +206,7 @@ and that this expression should be valid over the interval $[0,\pi]$.
 Here's what that convergence looks like:
 
 ```{ojs}
-viewof N = Inputs.range([1, 100], { step: 1, value: 8, label: "terms:" });
+viewof N = Inputs.range([1, 100], { step: 1, value: 1, label: "terms:" });
 fourier_pic(N)
 ```
 
@@ -214,8 +222,8 @@ $$
 \left\{ \begin{bmatrix}x_1 \\ x_2 \\ \vdots \\ x_n \end{bmatrix}: 
   x_1,x_2,\ldots,x_n \in \mathbb R \right\}.
 $$
-   a. $\{\mathbf{u}\in\mathbb R^7: x_2 + x_6 = 0\}$
-   b. $\{\mathbf{u}\in\mathbb R^5: \|\mathbf{u}\| \leq 1\}$
+   a. $\{\mathbf{x}\in\mathbb R^7: x_2 + x_6 = 0\}$
+   b. $\{\mathbf{x}\in\mathbb R^5: \|\mathbf{u}\| \leq 1\}$
    c. $\{f\in U: f(0) = 0\}$
    d. $\{f\in U: \int_0^1 f(x) \, dx = 1\}$
 

@@ -13,11 +13,11 @@ format:
         \pagenumbering{gobble}
 ---
 
-Our class final exams are set according to [UNCA's Final Exam Schedule](https://drive.google.com/file/d/1sCKQNjolBQ7PS-OoLL4OUpJzE3Kr4X9S/view){target=_blank}. According to that schedule, our Final Exam will be This Friday, December 5 at 8:00 AM. 
+Our class final exams are set according to [UNCA's Final Exam Schedule](https://drive.google.com/file/d/1sCKQNjolBQ7PS-OoLL4OUpJzE3Kr4X9S/view){target=_blank}. According to that schedule, our final exam will be this friday, December 5 at 8:00 AM. 
 
 This problem sheet consists primarily of problems right off of past exams, together with a few new problems. You should treat this review sheet like the past review sheets. The final exam will have significant similarities to this review sheet so, if you can do well on this review sheet, you should be able to do well on the final.
 
-*Please* study for the final! Don't just look at the review sheet and figure that you already know how to do the problems. In my experience, final exams c an have a significant impact on final grades.
+*Please* study for the final! Don't just look at the review sheet and figure that you already know how to do the problems. In my experience, final exams can have a significant impact on final grades.
 
 *Note:* This is not quite the final version of the review sheet; I still need to add one problem on inner products.
 
@@ -155,9 +155,10 @@ $$
    c. $\{f\in U: f(0) = 1\}$
    d. $\{f\in U: \int_0^1 f(x) \, dx = 0\}$
 
-1. Write down the definition of an inner product on a vector space $V$.
+2. Write down the definition of an inner product on a vector space $V$.
 
-2. One more question about inner products
+3. Find a real value of $b$ such that $f(x) = x^2$ and $g(x) = x^2 + b$, both restricted to the unit interval $[0,1]$, are orthogonal.
+
 
 ::: {.content-visible when-format="html"}
 
