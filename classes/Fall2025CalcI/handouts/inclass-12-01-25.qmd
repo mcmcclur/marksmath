@@ -1,0 +1,28 @@
+---
+title: Calc I in class problems
+subtitle: good old practice for the final
+date: 2025-12-01
+date-format: full
+format:
+  html:
+    page-layout: article
+  pdf:
+    mainfont: "Times New Roman"
+    include-in-header:
+      text: |
+        \pagenumbering{gobble}
+        \usepackage[top=1in, bottom=0.5in]{geometry}
+---
+
+1. Let $f(x) = 1 - 4x - x^2$.
+
+   a. Sketch the graph of $f$.
+   b. Draw the line that is tangent to the graph at the point where $x=-3$.
+   c. Find a formula for that tangent line.
+
+   Recall that you need to be able to do this without the use of a calculator. Your graph need be only a sketch but be sure to you have the correct general shape, $y$-intercept, and axis of symmetry.
+
+2. At noon, the Aquaholic is 10 miles East of Cape Fear and sailing West at 20 miles an hour. At the same time, the Beeracuda is 20 miles south of Cape Fear and sailing North at 15 miles an hour. 
+
+   - How fast is the distance between the two boats changing at this time?
+   - Are they getting closer together or moving farther apart?
