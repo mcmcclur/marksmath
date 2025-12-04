@@ -1,6 +1,5 @@
 ---
 title: Final Review
-subtitle: First draft
 date: 2025-11-30
 format:
   html:
@@ -19,8 +18,6 @@ This problem sheet consists primarily of problems right off of past exams, toget
 
 *Please* study for the final! Don't just look at the review sheet and figure that you already know how to do the problems. In my experience, final exams can have a significant impact on final grades.
 
-*Note:* This is not quite the final version of the review sheet; I still need to add one problem on inner products.
-
 
 ## Exam 1
 
@@ -30,6 +27,8 @@ This problem sheet consists primarily of problems right off of past exams, toget
 
 2. Write down a componentwise proof of the fact that vector addition is commutative. That is, if $\mathbf{u}, \mathbf{v}\in\mathbb{R}^n$, then 
 $$\mathbf{u} + \mathbf{v} = \mathbf{v} + \mathbf{u}.$$ 
+
+::: {start=4}
 
 4. Consider the matrix 
 $$
@@ -88,6 +87,7 @@ $$
    b. Find the reduced row echelon form of $A$.
    c. Use your reduced row echelon form to express $\mathbf{u}$ as a linear combination of $\mathbf{x}$, $\mathbf{y}$, and $\mathbf{z}$ or explain why there is no such linear combination.
 
+:::
 
 ## Exam 2
 
@@ -97,12 +97,18 @@ $$
    c. Similarity of matrices
    d. Diagonalizable matrix
 
+::: {start=3}
+
 3. Write down a $3\times3$ matrix that 
    - stretches by the factor $2$ in the direction of the vector $\begin{bmatrix}2&1&1\end{bmatrix}^{\mathsf T}$, 
    - reflects in the direction $\begin{bmatrix}2&-1&1\end{bmatrix}^{\mathsf T}$, and 
    - compresses by the factor $1/2$ in the direction $\begin{bmatrix}0&-1&1\end{bmatrix}^{\mathsf T}$.  
 
    You may express your matrix in the form $SDS^{-1}$, where $D$ is a diagonal matrix.
+
+:::
+
+::: {start=5}
 
 5. Let $A$ denote the matrix 
 $$
@@ -113,9 +119,15 @@ $$
    a. Find the eigenvalues of $A$.
    b. Find the eigenvector corresponding to the largest eigenvalue of $A$.
 
+:::
+
+::: {start=7}
+
 7. Suppose that $A$ is similar to $B$ with change of basis matrix $S$ so that 
 $$A = SBS^{-1}.$$
 Show that $B$ is similar to $A$. Be sure to clearly identify what the change of basis matrix is and why it works to establish the fact that $B$ is similar to $A$.
+
+::: 
 
 ## Quiz 3
 
@@ -150,8 +162,8 @@ $$
 \left\{ \begin{bmatrix}x_1 \\ x_2 \\ \vdots \\ x_n \end{bmatrix}: 
   x_1,x_2,\ldots,x_n \in \mathbb R \right\}.
 $$
-   a. $\{\mathbf{u}\in\mathbb R^5: x_2 + x_4 = 0\}$
-   b. $\{\mathbf{u}\in\mathbb R^5: \|\mathbf{u}\| \leq 10\}$
+   a. $\{\mathbf{x}\in\mathbb R^5: x_2 + x_4 = 0\}$
+   b. $\{\mathbf{x}\in\mathbb R^5: \|\mathbf{x}\| \leq 10\}$
    c. $\{f\in U: f(0) = 1\}$
    d. $\{f\in U: \int_0^1 f(x) \, dx = 0\}$
 

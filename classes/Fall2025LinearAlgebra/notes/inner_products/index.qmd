@@ -223,7 +223,7 @@ $$
   x_1,x_2,\ldots,x_n \in \mathbb R \right\}.
 $$
    a. $\{\mathbf{x}\in\mathbb R^7: x_2 + x_6 = 0\}$
-   b. $\{\mathbf{x}\in\mathbb R^5: \|\mathbf{u}\| \leq 1\}$
+   b. $\{\mathbf{x}\in\mathbb R^5: \|\mathbf{x}\| \leq 1\}$
    c. $\{f\in U: f(0) = 0\}$
    d. $\{f\in U: \int_0^1 f(x) \, dx = 1\}$
 
