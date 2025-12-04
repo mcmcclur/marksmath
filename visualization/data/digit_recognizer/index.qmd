@@ -126,8 +126,8 @@ Plot.plot({
 
 ## Where can I learn more??
 
-- Like all the demos on Mark's Math, the full code can be found in [my GitHub repo](https://github.com/mcmcclur/marksmath/tree/main/visualization/class/digit_recognizer).
-- The code defining the KNN algorithm is quite simple and can be found in [the index.qmd file for this page](https://github.com/mcmcclur/marksmath/blob/main/visualization/class/digit_recognizer/index.qmd).
+- Like all the demos on Mark's Math, the full code can be found in [my GitHub repo](https://github.com/mcmcclur/marksmath/tree/main/visualization/data/digit_recognizer).
+- The code defining the KNN algorithm is quite simple and can be found in [the index.qmd file for this page](https://github.com/mcmcclur/marksmath/blob/main/visualization/data/digit_recognizer/index.qmd#L144).
 - The CNN model is much deeper and was trained with [this Observable notebook](https://observablehq.com/d/0e9901ff9f671cb2).
 - If you want to learn all the mathematics, statistics, and theory behind this stuff, you should take my Math for Machine Learning Course!
 
