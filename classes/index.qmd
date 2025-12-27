@@ -15,14 +15,17 @@ courses = await FileAttachment("./components/courses.csv")
 make_force_animation(courses)
 ```
 
-## Upcoming courses 
-
-### Fall 2025
-
-- [Calculus I](./Fall2025CalcI/) - MWF 11:00-12:15 and 12:30-1:45
-- [Linear Algebra](./Fall2025LinearAlgebra/) - MW 8:00-9:15
-
+## Courses 
 
 ### Spring 2026
 
+- [Calculus III](classes/Spring2026)
 - [Math for Machine Learning](./Spring2026MML/)
+
+### Fall 2025
+
+- [Calculus I](./Fall2025CalcI/)
+- [Linear Algebra](./Fall2025LinearAlgebra/)
+
+
+
