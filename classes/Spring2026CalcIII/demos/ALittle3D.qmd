@@ -1,0 +1,35 @@
+--- 
+title: A Little 3D
+page-layout: article
+---
+
+<style media="screen">
+    canvas {
+        outline: none
+    }
+    .control {
+        margin: 8px;
+    }
+    .comment {
+        background-color: #eee;
+        border: solid 1px #ddd;
+        padding: 10px;
+        margin: 8px;
+    }
+</style>
+
+<div id="observablehq-lead-995148ea"></div>
+<div id="observablehq-viewof-choice-995148ea"></div>
+<div id="observablehq-comment-995148ea" class="comment"></div>
+<div id="observablehq-pic3d-995148ea"></div>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@observablehq/inspector@5/dist/inspector.css">
+<script type="module">
+import {Runtime, Inspector} from "https://cdn.jsdelivr.net/npm/@observablehq/runtime@5/dist/runtime.js";
+import define from "https://api.observablehq.com/d/e4d66ca1955b47a9@266.js?v=4";
+new Runtime().module(define, name => {
+  if (name === "lead") return new Inspector(document.querySelector("#observablehq-lead-995148ea"));
+  if (name === "viewof choice") return new Inspector(document.querySelector("#observablehq-viewof-choice-995148ea"));
+  if (name === "comment") return new Inspector(document.querySelector("#observablehq-comment-995148ea"));
+  if (name === "pic3d") return new Inspector(document.querySelector("#observablehq-pic3d-995148ea"));
+});
+</script>

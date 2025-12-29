@@ -1,0 +1,145 @@
+---
+title: Syllabus 
+background: "light"
+format:
+  html:
+    page-layout: article
+    toc: true
+  pdf:
+    mainfont: "Times New Roman"
+    include-in-header:
+      text: |
+        \pagenumbering{gobble}
+---
+
+<style>
+  .list-heading {
+    font-weight: bold;
+  }
+</style>
+
+Math 291: Calculus III  
+Spring 2026  
+MWF 8:00-9:15 and 9:30-10:45  
+
+Professor: Mark McClure  
+Office: 325 Robinson Hall  
+email: mcmcclur@unca.edu  
+Office hours: MWF 10:50-11:30
+
+## Course purpose
+
+As the follow up to Calc I and II, we hope to accomplish the following
+in this third semester course:
+
+- [Learn multi-dimensional calculus]{.list-heading}: The main theme of
+  Calculus III is application of the ideas developed in Calculus I and
+  II to higher dimensional settings. You already have most of the
+  necessary fundamental ideas; we just need to do a little extra
+  book-keeping.
+- [Understand the universe]{.list-heading}: Seriously! Newton developed
+  calculus to help understand the motions of the heavens.
+- [Develop 3D visualization]{.list-heading}: You will definitely need
+  some skill in geometric visualization to succeed in this class. The
+  computer will help quite a lot in this regard.
+- [Reinforcement of algebraic skills]{.list-heading}: We will constantly
+  use skills you developed in Calculus I and II. You should find that
+  you get better at differentiation and integration as we go along.
+
+## Materials
+
+- [Text]{.list-heading}: We will use [The APEX
+  Calculus](http://www.apexcalculus.com/) text. This is an open text
+  made freely available through a [Creative Commons license](https://creativecommons.org/licenses/by-nc/4.0/). You may
+  - [View the text
+    online](https://opentext.uleth.ca/apex-calculus/apex-calculus.html)
+  - [Download a free PDF](../common/APEX_V4.pdf) and/or
+  - [Purchase a hardcopy from
+    Amazon](https://www.amazon.com/APEX-Calculus-v4-0/dp/1719263663)
+
+  You are [not required]{.it} to purchase a hard copy; I suspect that
+  use of the online versions will be just fine for many students.
+- [Websites]{.list-heading}
+  - [
+    [MyOpenMath](https://www.myopenmath.com/course/course.php?folder=0&cid=306129):
+    ]{.list-heading} Our auto graded homework system
+  - [ [Discourse](https://discourse.marksmath.org/)]{.list-heading}: Our
+    online forum
+
+## Tech Policies 
+
+You are not permitted to use any type of computational assistant, such as calculators, computers, smartphones, etc., on in class quizzes or exams. 
+
+That's not to say that computational tools don't have their place. In fact, when working on homework, you are explicitly allowed to use calculators, computational software, and ChatBots like ChatGPT. We'll discuss best practices with these tools at various times in class.
+
+
+## Grades
+
+- [Quizzes]{.list-heading}: We will have two quizzes each worth 15 to 25 points on 
+  - Friday, Jan 30 and 
+  - Friday, March 6 (right before Spring break)
+- [Exams]{.list-heading}: There will be three exams during the semester
+  worth about 100 points apiece. Likely dates for the exams are:
+  - Friday, February 13,
+  - Friday, April 3, and 
+  - Friday, April 24
+- [Final exam]{.list-heading}: There will be a comprehensive, final exam
+  worth around 150 points during finals week.
+- [Homework]{.list-heading}: There will a couple types of graded homework:
+  - [MyOpenMath](https://www.myopenmath.com/course/course.php?folder=0&cid=306129), which is online and automatically graded and 
+  - [our forum](https://discourse.marksmath.org/) - where we will have a
+    few assignments. There will also be a few bonus points available through the forum.
+- [In class problems]{.list-heading}: We will occasionally work problem sheets
+  together. Quiz and exam problems will be closely related to these
+  sheets. In addition, you will receive a 40 point class participation
+  grade simply for participating regularly.
+- [Final grades]{.list-heading}: I will determine final grades using a
+  scale not more stringent than the standard 90-80-70-60 scale. You will
+  be apprised of your standing as the term progresses.
+- [Late work]{.list-heading}: In general, I don\'t accept late work.
+- [Cheating]{.list-heading}: I expect that your work on all in class
+  quizzes and exams is yours and yours alone. If I suspect cheating my
+  policy is to assign you a score of zero on that assessment and to
+  refer you to the administration.
+
+## Advice
+
+- [Learning mathematics]{.list-heading}: I expect that you wouldn\'t be
+  in calculus if you didn\'t already know that mathematical study is a
+  challenging, yet worthwhile endeavor. Mathematics is the most natural
+  language with which we describe the world around us and, I believe,
+  this helps us better comprehend and enjoy the world. However,
+  understanding this deep language has a price - it\'s hard and takes
+  loads of work! I suggest that you spend at least 1.5 hours between
+  classes and at least 3 hours over the weekend studying each math
+  class. Remember that college is a full time job!
+- [The typical day]{.list-heading}: Class is 75 minutes long and will
+  usually be divided between lecture and problem sessions or quizzes.
+- [Exam week]{.list-heading}: Problems for the exams will be taken from
+  homework, in class sheets, and a small collection of review problems.
+  The review problems will typically be available the five days before
+  an exam and we will discuss them the period before the exam.
+- [Help]{.list-heading}: You are not undertaking this challenging task
+  alone. Here are a few sources of assistance:
+  - [Me]{.list-heading}: I like to talk to people about mathematics!
+    That\'s why I chose this profession. My schedule with office hours
+    is posted on my webpage, but I\'m around much more regularly than
+    that. Please feel free to approach me any time you have questions.
+  - [Your classmates]{.list-heading}: Most people learn mathematics best
+    by talking it through with others. You will find that you can both
+    learn from and help your fellow classmates. In particular, if your
+    classmate is explaining a fine point to you, then you are helping
+    them!
+  - [ [Math Discourse](Math%20Discourse/)]{.list-heading}: A kinda
+    combination of the previous two that never sleeps!
+  - [The Math Lab]{.list-heading}: We all know the Math Lab rocks! It\'s
+    open long hours and is located right across the hall from my office.
+    You will be welcome there and will definitely find people to talk to
+    about mathematics.
+
+## Your rights and responsibilities
+
+It's worth understanding your rights and responsibilities as a student
+at UNCA. One of my responsibilities is to make sure you have the
+information that you need to do that. Since this is common to [all]{.it}
+classes, I've set up this [Official UNCA Policies page](/OfficialPolicies/).
