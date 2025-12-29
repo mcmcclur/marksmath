@@ -1,0 +1,52 @@
+---
+title: Calculus III
+css: styles.css
+---
+
+::: {.grid}
+::::: {.g-col-12 .g-col-md-8}
+Math 291  
+Spring 2026  
+with professor [Mark McClure](https://marksmath.org/)
+
+## Handy links
+
+- [Syllabus](syllabus.qmd)
+- [Course Calendar](./calendar.qmd)
+- [APEX Calculus Textbook](https://opentext.uleth.ca/apex-calculus/apex-calculus.html){target=_blank}
+- [MyOpenMath](https://myopenmath.com){target=_blank}
+- [Discourse](https://discourse.marksmath.org){target=_blank}
+- [The Math Lab!](https://math.unca.edu/learn/math-lab/){target=_blank}
+
+## Handouts
+
+
+## Demos
+
+- [Planetary motion](/visualization/class/orbits/)
+
+<!-- ## Class Notes -->
+
+
+:::::
+
+::::: {.g-col-md-4 .d-none .d-md-block transform="translate(0,125px)"}
+<div id='side_pic'></div>
+:::::
+:::
+
+<style>
+  x3d canvas {
+    outline: none;
+  }
+</style>
+
+<div style="display: none" id="observablehq-run_it-c1406e28"></div>
+<script type="module">
+import {Runtime, Inspector} from "https://cdn.jsdelivr.net/npm/@observablehq/runtime@4/dist/runtime.js";
+import define from "https://api.observablehq.com/@mcmcclur/the-trefoil-knot.js?v=3";
+new Runtime().module(define, name => {
+  if (name === "small_pic") return new Inspector(document.querySelector("#side_pic"));
+  if (name === "run_it") return new Inspector(document.querySelector("#observablehq-run_it-c1406e28"));
+});
+</script>
