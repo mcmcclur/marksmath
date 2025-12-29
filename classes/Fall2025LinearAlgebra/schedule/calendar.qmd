@@ -103,7 +103,7 @@ css: calendar_style.css
 ```
 
 ```{ojs}
-FullCalendar = import("https://cdn.skypack.dev/fullcalendar");
+FullCalendar = import("https://cdn.skypack.dev/fullcalendar@6.0");
 YAML = import("https://cdn.skypack.dev/yaml");
 tippy = require("tippy.js@6")
 ```

@@ -1,7 +1,7 @@
 ---
 title: Course Calendar
-subtitle: "Math 191 - Fall 2025"
-sidebar: CalcIFall2025
+subtitle: "Math 291 - Spring 2026"
+sidebar: CalcISpring2026
 ---
 
 <div id="cal"></div>
@@ -12,74 +12,64 @@ sidebar: CalcIFall2025
   const events = [
     {
       title: 'Classes Begin',
-      start: '2025-08-18',
+      start: '2026-01-12',
       color: 'green'
     },
     {
-      title  : 'Labor Day',
-      start  : '2025-09-01',
+      title  : 'MLK Day',
+      start  : '2026-01-19',
       color: 'gray',
     },
     {
-      title  : 'Fall break',
-      start  : '2025-10-06',
-      end: '2025-10-08',
+      title  : 'Spring break',
+      start  : '2026-03-09',
+      end: '2026-03-14',
       color: 'gray',
     },
     {
-      title  : 'Thanksgiving',
+      title  : 'UG Research Day',
       classNames: ['no_class'],
-      start  : '2025-11-26',
-      end: '2025-11-29',
+      start  : '2026-04-21',
       color: 'gray',
     },
     {
       title  : 'Last day of class',
-      start  : '2025-12-02',
+      // classNames: ['no_class'],
+      start  : '2026-04-28',
       color: '#880000',
     },
     {
       title  : 'Exam 1',
-      start  : '2025-09-12',
+      start  : '2026-02-13',
       color: '#511d66',
     },
     {
       title  : 'Exam 2',
-      start  : '2025-10-17',
+      start  : '2026-04-03',
       color: '#511d66',
-    },
-    {
-      title  : 'No class',
-      start  : '2025-11-14',
-      color  : 'gray',
     },
     {
       title  : 'Exam 3',
-      start  : '2025-11-21',
+      start  : '2026-04-24',
       color: '#511d66',
     },    {
       title  : 'Quiz 1',
-      start  : '2025-08-29',
+      start  : '2026-01-30',
       color: '#9a4eae',
     },
     {
       title  : 'Quiz 2',
-      start  : '2025-10-03',
-      color: '#9a4eae',
-    },
-    {
-      title  : 'Quiz 3',
-      start  : '2025-10-31',
+      start  : '2026-03-06',
       color: '#9a4eae',
     },
     {
       title  : 'Final Exam AM',
-      start  : '2025-12-05T11:30',
+      start  : '2026-12-05T11:30',
       color: '#9a4eae',
     },
     {
       title  : 'Final Exam PM',
-      start  : '2025-12-08T11:30',
+      start  : '2026-12-08T11:30',
       color: '#9a4eae',
     }
   ]; 
@@ -89,7 +79,7 @@ sidebar: CalcIFall2025
     initialView: 'dayGridMonth',
     fixedWeekCount: false,
     showNonCurrentDates: false,
-    initialDate: '2025-08-04',
+    // initialDate: '2026-01-12',
     hiddenDays: [0,6],
     height: 'auto',
     events,
