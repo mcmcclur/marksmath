@@ -40,19 +40,18 @@
 - Week 11:
     - Mon, Mar 30: Eigenrating - Dominant eigenvectors, Google Pagerank, and another sports rating algorithm.
     - Wed, Apr 1: PCA - Principal Component Analysis
-    - Fri, Apr 3: More optimization - Gradient descent and Lagrange multipliers
+    - Fri, Apr 3: Networks - Definitions and algorithms
 - Week 12:
-    - Mon, Apr 6: SVM 1 - Support vector machines (With potential classification review)
-    - Wed, Apr 8: SVM 2 - Support vector machines II
-    - Fri, Apr 10: Lab 3 - SVM Lab 
-
+    - Mon, Apr 6: Expression graphs - Representing algebraic expressions as networks.
+    - Wed, Apr 8: More optimization - Gradient descent
+    - Fri, Apr 10: Neural networks - The basics of neural networks
 - Week 13:
-    - Mon, Apr 13: Networks - Definitions and algorithms
+    - Mon, Apr 13: Lab 3
     - Wed, Apr 15: Review
     - Fri, Apr 17: Exam IV
 - Week 14:
-    - Mon, Apr 20: Expression graphs - Representing algebraic expressions as networks.
-    - Wed, Apr 22: Neural networks - The basics of neural networks.
-    - Fri, Apr 24: Convolution - Convolutional neural networks 
+    - Mon, Apr 20: Convolution - An image processing tool
+    - Wed, Apr 22: CNNs - Convolution neural networks and image classification
+    - Fri, Apr 24: LLMs - The basics of large language models 
 - Week 15:
     - Mon, Apr 27: Review
