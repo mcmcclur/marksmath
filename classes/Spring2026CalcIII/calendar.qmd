@@ -63,13 +63,13 @@ sidebar: CalcISpring2026
       color: '#9a4eae',
     },
     {
-      title  : 'Final Exam AM',
-      start  : '2026-12-05T11:30',
+      title  : 'Final Exam 1',
+      start  : '2026-05-01T08:30',
       color: '#9a4eae',
     },
     {
-      title  : 'Final Exam PM',
-      start  : '2026-12-08T11:30',
+      title  : 'Final Exam 2',
+      start  : '2026-05-04T08:30',
       color: '#9a4eae',
     }
   ]; 
