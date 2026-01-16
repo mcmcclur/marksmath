@@ -1,0 +1,217 @@
+---
+title: Simplest linear regression
+page-layout: article
+echo: false
+toc: true
+---
+
+Let's take a hands-on look at the very simplest form of *linear regression*.
+
+## The problem 
+
+Suppose we plot just a few points in the plane; perhaps, our points are:
+$$\{(-2,-1), (-1,-1), (1,1), (2,1)\}.$$
+Thus, the picture looks like so:
+
+::: {#fig-some_data fig-cap="A few points in the plane symmetrically distributed around the origin" style="max-width: 600px; margin: 0 auto"}
+
+```{ojs}
+{
+    let [xmin,xmax] = d3.extent(data, a => a[0]);
+    let xrange = xmax-xmin;
+    xmin = xmin - 0.1*xrange;
+    xmax = xmax + 0.1*xrange;
+
+    let [ymin, ymax] = d3.extent(data, a => a[1]);
+    let yrange = ymax-ymin;
+    ymin = ymin - 0.1*yrange;
+    ymax = ymax + 0.1*yrange;
+
+    const width = 600;
+    const height = width * (ymax-ymin)/(xmax-xmin);
+    return Plot.plot({
+        width, height,
+        x: {domain: [xmin,xmax]},
+        y: {domain: [ymin,ymax]},
+        marks: [
+            Plot.dot(data, {fill: 'black'}),
+            Plot.axisX({y:0}), Plot.axisY({x:0}),
+            Plot.ruleX([0]), Plot.ruleY([0])
+        ]
+        });
+}
+```
+
+:::
+
+Our objective is to find the line that is the "best" fit to this data. I guess we need to be a bit more specific about a couple of things:
+
+- How do we "choose" the line? 
+- How do we measure "best fit"?
+
+### Choosing the line 
+
+*Generally*, a line in the plane can be written in the form 
+$$
+f_{a,b}(x) = ax+b.
+$$
+Thus, "choosing the line" is a matter of specifying the parameters $a$ and $b$. This is illustrated in the interactive figure below.
+
+::: {#fig-slope fig-cap="Approximating symmetric data with a line" style="max-width: 600px; margin: 0 auto"}
+
+```{ojs}
+{
+    const a = d3.sum(data, ([x,y]) => x*y)/d3.sum(data, ([x,y]) => x*x);
+    
+    let [xmin,xmax] = d3.extent(data, a => a[0]);
+    let xrange = xmax-xmin;
+    xmin = xmin - 0.1*xrange;
+    xmax = xmax + 0.1*xrange;
+
+    let [ymin, ymax] = d3.extent(data, a => a[1]);
+    let yrange = ymax-ymin;
+    ymin = ymin - 0.1*yrange;
+    ymax = ymax + 0.1*yrange;
+
+    const width = 600;
+    const height = width * (ymax-ymin)/(xmax-xmin);
+
+    return Plot.plot({
+        width, height,
+        x: {domain: [xmin,xmax]},
+        y: {domain: [ymin,ymax]},
+        marks: [
+            Plot.dot(data, {fill: 'black'}),
+            Plot.line([[xmin,a*xmin], [xmax, a*xmax]], {strokeWidth: 0.4}),
+            Plot.line([[xmin,aa*xmin+bb], [xmax, aa*xmax+bb]]),
+            Plot.axisX({y:0}), Plot.axisY({x:0}),
+            Plot.ruleX([0]), Plot.ruleY([0])
+        ]
+        });
+}
+```
+
+:::
+
+
+```{ojs}
+viewof aa = Inputs.range(
+    [-0.1,1.2], 
+    {value: 0.6, step: 0.001, label: tex`a:`}
+)
+```
+```{ojs}
+viewof bb = Inputs.range(
+    [-1,1], 
+    {value: 0, step: 0.001, label: tex`b:`}
+)
+```
+```{ojs}
+md`Total squared error = ${d3.format('0.4f')(d3.sum(data, A => (aa*A[0]+bb - A[1])**2))}`
+```
+
+### A simplifying assumption
+
+
+One fairly conspicuous property of these points is their symmetry around the origin. This suggests that the "best fit" might pass through the origin and the only way to make that happen is if $b=0$. In this case the form of the line simplifies to $f(x) = ax$ for some choice of $a$.
+
+For the remainder of this document, we'll assume that $b=0$ so that the form of the line is $f_a(x) = ax$.
+
+### Total squared error
+
+Assessing the quality of the fit is more involved and generally done using a so-called *least squared error* approach. Note that the total squared error is shown as a function of $a$ in the interactive image.
+
+To define total squared error, recall that the parameter $a$ defines a function:
+$$f(x) = a\,x.$$
+We think of the points as representing data with input $x$ and output $y$. Our mission is to predict a $y$ value from a given $x$ value. Given a data point, $(x_0,y_0)$, the squared error produced by the function $f$ for that point is 
+$$
+\text{squared error } = (f(x_0) - y_0)^2 = (ax_0 - y_0)^2.
+$$
+If we've got a *bunch* of data points $\{(x_1,y_1),(x_2,y_2),\ldots,(x_n,y_n)\}$, then the total squared error is
+$$
+\text{total squared error } = \sum_{i=1}^n(f(x_i) - y_i)^2 = \sum_{i=1}^n(ax_i - y_i)^2.
+$$
+All that summation $\left(\sum\right)$ symbol says to do is add up the squared error produced by all the points in our data. 
+
+### Application
+
+Let's apply this to our sample data, which is 
+$$\{(-2,-1), (-1,-1), (1,1), (2,1)\}.$$
+So we'll have the following four terms in our total squared error:
+$$\begin{aligned}
+E(a) &= (-2a-(-1))^2 + (-a+1)^2 + (a-1)^2 + (2a-1)^2 \\
+&= 2\left((a-1)^2 + (2a-1)^2\right).
+\end{aligned}$$
+Note that $E$ is a function of $a$ and our mission is to find what value of $a$ makes $E$ the smallest. We can do that by finding where $E'(a)=0$:
+$$E'(a) = 2\left(2(a-1) + 2(2a-1)2\right) = 2(10a-6)\stackrel{?}{=}0.$$
+Note that the solution is $a=6/10$ or $0.6$, in agreement with @fig-slope.
+
+
+```{ojs}
+data = {
+    let data = [[1,1],[2,1]];
+    data = data.concat(data.map(a => a.map(x => -x)));
+    return data;
+}
+```
+
+## A real example with symmetry
+
+The general technique here is called *linear regression* and can be applied to *real data*. One of my favorite applications is to make predictions in sports. For example, here's an application of the technique to the [NCAA Basketball tournament](https://wncviz.com/NCAABrackets/){target=_blank}. Each NCAA tournament involves 64 to 68 teams, each of which has a seed from 1-16. The idea is to predict the score difference based on the seed difference. 
+
+To do this, we need data. @fig-ncaa below shows that data for the Men's 2023 NCAA tournament. Each point corresponds to a game that was played during that tournament and you can hover over the points to get more information on the games. The horizontal axis tells us the seed difference and the vertical tells us the score difference in the game. Note that each game appears twice - once from the perspective of each team. Thus, the data is symmetric about the origin, like our simpler example above.
+
+The diagonal line with negative slope shown in the figure is the regression line. Its slope is about $-1.08$. Thus, we might generally expect a seed difference of $D$ to correspond to a point difference of $D$. For example, we'd expect a 3 seed to defeat a 14 seed by a little more than 11.
+
+::: {#fig-ncaa fig-cap="Regression for the NCAA Tournament" style="max-width: 600px; margin: 0 auto"}
+
+```{ojs}
+Plot.plot({
+    marks: [
+        Plot.dot(ncaa_data, {
+            x: 'seed_diff',
+            y: o => o.team1_score - o.team2_score,
+            fill: 'black',
+            opacity: 0.5,
+            channels: {
+                'Team 1': 'team1_name', 'Team 2': 'team2_name',
+                'Score difference': o => o.team1_score - o.team2_score
+            },
+            tip: true
+        }),
+        Plot.linearRegressionY(ncaa_data, 
+            {x: "seed_diff", y: o => o.team1_score - o.team2_score, 
+            stroke: "black", ci: 0}
+        ),        
+        Plot.axisX({y:0}), Plot.axisY({x:0}),
+        Plot.ruleX([0]), Plot.ruleY([0])
+    ]
+})
+```
+
+:::
+
+```{ojs}
+ncaa_data = {
+    const ncaa_data = await FileAttachment("NCAATrainingData2023.csv").csv({typed: true});
+    return ncaa_data;
+}
+```
+
+<!-- NCAA Regression Coefficient 
+```{ojs}
+d3.sum(
+    ncaa_data, 
+    o => o.seed_diff*(o.team1_score - o.team2_score)
+)/d3.sum(ncaa_data, o => o.seed_diff*o.seed_diff); 
+```
+-->
+
+<style>
+  input[type="number"] {
+    width: 120px;
+  }
+  form label {
+    width: 35px !important;
+  }
+</style>

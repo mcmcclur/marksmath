@@ -15,11 +15,12 @@ format:
     eval: true
     output: true
     date-format: ddd, MMM DD, YYYY
+    html-math-method: mathjax
 ---
 
 
 
-# Our view of single variable, differential calculus
+# Our view of single-variable, differential calculus
 
 In this first, purely mathematical presentation, we'll survey that part of single variable, differential calculus that we'll need to know to get started with machine learning. Since Calculus I is a prerequisite for this course, I'll assume that you've been at least exposed to Calculus.
 
@@ -528,7 +529,7 @@ $$\frac{d}{dx} f(x)g(x) = f'(x)g(x) + f(x)g'(x).$$
 
 ## The chain rule 
 
-The last rule that you typically learn is the *chain rule*:
+The last rule that you typically learn is the *chain rule*, which plays a prominent rule the technique of *gradient descent* when applied to neural networks:
 $$\frac{d}{dx} f(g(x)) = f'(g(x))g'(x).$$
 
 ::: {.fragment}
@@ -564,7 +565,7 @@ In the figure below, the purple graph is the graph of a function $f$, the dashed
 
 :::
 
-## Optimization
+# Optimization
 
 A key application of the derivative is optimization. In the context of single variable calculus, this amounts to finding  maxima and minima of functions.
 
@@ -631,6 +632,7 @@ $$x^2 = 8/9 \text{ or } x = \sqrt{8/9}.$$
 
 We can plug back into $f$ to get the absolute minimum value of
 $$y = \frac{3}{4}\left(\sqrt{8/9}\right)^3 - 2\sqrt{8/9}.$$
+
 
 # The numerical perspective
 

@@ -22,7 +22,7 @@ format:
 
 # Why multivariable calculus?
 
-Last week, we discussed single variable calculus that we all know from Calc I emphasizing the specific elements that are of particular importance in machine learning. In part, that includes *optimizing* functions using *numerical* techniques.
+Last time, we discussed single variable calculus that we all know from Calc I emphasizing the specific elements that are of particular importance in machine learning. In part, that includes *optimizing* functions using *numerical* techniques.
 
 In the context of machine learning, though, the functions that we wish to optimize often have *many* inputs and optimizing those kinds of functions lies in the domain of *multivariable* calculus.
 
