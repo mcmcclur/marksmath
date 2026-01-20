@@ -1,6 +1,36 @@
+// I use this script to embed Discourse topics into my website.
+// Still needs work. It seems that content with embedded
+// Desmos iframes kills the cooked content so that nothing
+// shows up.
+// 
+// Generally, I embed topics that are created for students to
+// reply to with questions about review sheets. As such, the 
+// ability to typeset mathematics is critical and, as far as I
+// can tell, the standard way to embed posts via Discourse 
+// doesn't support math rendering. So, I wrote this.
+// 
+// Note that the script fetches posts in the topic from 
+// /discourse-api/t/{topicId}.json.
+// For this to work, I needed to configure my main website
+// (on Apache) to proxy requests to discourse.marksmath.org.
+// To do so, place the following within the VirtualHost block in
+// /etc/apache2/sites-enabled/marksmath.org-le-ssl.conf
+
+//     # ---- Discourse read-only API proxy ----
+//     SSLProxyEngine On
+//     ProxyRequests Off
+//     ProxyPassMatch ^/discourse-api/(.*)$ https://discourse.marksmath.org/$1
+//     ProxyPassReverse /discourse-api/ https://discourse.marksmath.org/
+//     <Location /discourse-api/>
+//         RequestHeader set Api-Key "ReadOnlyAPIKey"
+//         RequestHeader set Api-Username "username_with_access"
+//         Header unset Set-Cookie
+//     </Location>
+
 import {importMathJax} from './importMathJax.js';
 const MathJax = importMathJax();
-import * as d3 from 'https://cdn.jsdelivr.net/npm/d3@7/+esm';
+import {select, create} from 'https://cdn.jsdelivr.net/npm/d3@7/+esm';
+const d3 = {select, create};
 
 export async function embedDiscourseMathTopic(topicId) {
   const replies_container = d3.create('div')
@@ -20,7 +50,8 @@ export async function embedDiscourseMathTopic(topicId) {
   try {
     while(page < 20) {
       const response = await fetch(
-        `https://discourse.marksmath.org/t/${topicId}.json?page=${page}`);
+        `/discourse-api/t/${topicId}.json?page=${page}`
+      );
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -35,6 +66,7 @@ export async function embedDiscourseMathTopic(topicId) {
       if(page == 1) {
         posts = posts.slice(1);
       }
+
 
       posts.forEach(function(post) {
         if (!post.cooked) {
@@ -78,7 +110,6 @@ export async function embedDiscourseMathTopic(topicId) {
           .style('font-size', '0.9em')
           .style('font-weight', 'bold');
 
-        // Format timestamp as M/D h:mm AM/PM
         const date = new Date(post.created_at);
         const month = date.getMonth() + 1;
         const day = date.getDate();
@@ -133,7 +164,6 @@ export async function embedDiscourseMathTopic(topicId) {
             d3.select(this.parentNode)
               .insert('span', function() { return a.node(); })
               .attr('class', 'mention text-muted')
-              // .style('font-style', 'italic')
               .style('text-decoration', 'none')
               .text(a.text());
             a.remove();

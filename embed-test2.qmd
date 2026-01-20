@@ -1,0 +1,21 @@
+---
+title: Embed test 2
+page-layout: article
+css: /components/EmbedDiscourseMathTopics/embedDiscourseMathTopic.css
+---
+
+Trying to embed a Discourse topic.
+
+## Embedded topic
+
+It should appear here below this.
+
+```{ojs}
+embedDiscourseMathTopic(40)
+```
+
+```{ojs}
+import {embedDiscourseMathTopic} from '/components/EmbedDiscourseMathTopics/embedDiscourseMathTopic.js';
+```
+
+It should appear above this.
