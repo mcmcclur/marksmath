@@ -1,0 +1,91 @@
+---
+title: Using SageMath
+format:
+    html:
+        page-layout: article
+        toc: true
+        css: styles.css
+        include-in-header: 
+            text: |
+                <script src="https://sagecell.sagemath.org/static/embedded_sagecell.js"></script>
+                <script>sagecell.makeSagecell({"inputLocation": ".sage"});</script>
+                <link rel="stylesheet" type="text/css" href="https://sagecell.sagemath.org/static/sagecell_embed.css">
+---
+
+Now that we've learned the basics of row reduction to RREF, let's explore how to perform row reduction on a computer. There are lots of viable tools for this purpose. Among the many possibilities that we could use, we will mostly stick with SageMath.
+
+SageMath (or just Sage) is free, open-source mathematical software built on top of Python. You might think of it as Python plus a huge number of open source libraries built in. For those familiar with Python, the basic language and idioms should seem familiar. In addition, though, there are a great many commands for performing mathematical tasks that are pre-imported into the namespsace.
+
+## First steps with Sage
+
+There are several ways to use Sage. By far the easiest, though, is via the [Sage Cell Server](https://sagecell.sagemath.org/){target=_blank}. If you navigate to that webpage, you'll find a code input box where you can just type code and press "Evaluate".
+
+Even better, it's easy to embed those code boxes into any webpage. So, for example, you can press the evaluate button below to add 2 and 3:
+
+
+<div class="sage">
+  <script type="text/x-sage">
+s = 2+3
+print("2+3 =", s)
+  </script>
+</div>
+
+The box is editable so that you can change it to add 3 and 4 or to solve differential equations or whatever. Here, for example, is how to solve a non-linear system of equations:
+
+<div class="sage">
+  <script type="text/x-sage">
+x,y = var('x,y')
+solve([x^2-3*x*y-1, y^2-3*x*y-1], [x,y])
+  </script>
+</div>
+
+Now, that we see a couple of real solutions, we can plot those curves together with the solutions:
+
+<div class="sage">
+  <script type="text/x-sage">
+x,y = var('x,y')
+p1 = implicit_plot(x^2 - 3*x*y - 1, (-1.6,1.6), (-1.6,1.6), fill=False)
+p2 = implicit_plot(y^2 - 3*x*y - 1, (-1.6,1.6), (-1.6,1.6), fill=False)
+p1+p2 + point([(-1/2,1/2), (1/2,-1/2)], size=50)  </script>
+</div>
+
+### A few observations
+
+- Sage is a *symbolic* system; that is, it can give you solutions like 
+$$i\sqrt{2}/2 \text{ rather than } 0.7071i.$$
+- I defined `x,y = var('x,y')` in both cells because definitions don't generally persist between sage cells.
+- If sage can solve non-linear systems symbolically, then I suppose you could use it to solve linear systems symbolically as well.
+
+In spite of Sage's symbolic capabilities, there are often good reasons to work numerically and to work with matrices.
+
+
+## Manipulating matrices with Sage
+
+With Sage, we can define matrices and perform quite a few computations quickly and easily. Suppose, for example, we'd like to solve a system of equations:
+
+$$
+\begin{aligned}
+x+2y+3z &= 1 \\
+3x+2y-z &= -1 \\
+5x+2y-5z &= 1
+\end{aligned}
+$$
+
+We can use Sage's built in `matrix` command to express the system as an augmented matrix and then use that matrix's `rref` method to quickly reduce it to reduced row echelon form:
+
+<div class="sage">
+  <script type="text/x-sage">
+A = matrix([
+    [1,2,3,1],
+    [3,2,-1,-1], 
+    [5,2,-5,-3]
+])
+A.rref()
+  </script>
+</div>
+
+From there, of course, it's easy to see that there's an infinite family of solutions to to write down that family in parameterized form. Right?
+
+### Give it a try!
+
+I've set up a [10 point problem on our forum](https://discourse.marksmath.org/t/solving-your-personal-system-with-sage/30){target=_blank} so that everyone can try their hand at this. Give it a try!
