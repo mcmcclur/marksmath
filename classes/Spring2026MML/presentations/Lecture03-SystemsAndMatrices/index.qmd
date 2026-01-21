@@ -1,0 +1,533 @@
+---
+title: Systems and Matrices
+date: 2026-01-21
+format:  
+  revealjs:
+    css: ../classnote-style.css
+    controls: true
+    controls-layout: bottom-right
+    navigation-mode: vertical
+    smaller: true
+    history: true
+    transition: slide
+    keyboard: true
+    date-format: ddd, MMM DD, YYYY
+    author: "Portions copyright Rob Beezer ([GFDL](https://www.gnu.org/licenses/fdl-1.3.en.html){target='_blank'})"
+    # echo: true
+    # eval: true
+    # output: true
+    # code-fold: true
+---
+
+# Why linear algebra?
+
+$$
+\newcommand{\vect}[1]{\mathbf{#1}}
+\newcommand{\rowopswap}[2]{R_{#1}\leftrightarrow R_{#2}}
+\newcommand{\rowopmult}[2]{#1R_{#2}}
+\newcommand{\rowopadd}[3]{#1R_{#2}+R_{#3}}
+\newcommand\aug{\fboxsep=-\fboxrule\!\!\!\fbox{\strut}\!\!\!}
+$$
+
+Last time, we learned that 
+
+1. Quadratic expressions, like $(y_i - (ax_i+b))^2$, arise naturally when we quantify error during linear regression and that 
+2. We minimize these by computing the derivative, setting that to zero, and solving for the parameters.
+
+This process invariably leads to a system of linear equations that needs to be solved. Thus, we now turn to the general problem of solving systems of equations. This leads to the topic of linear algebra, which has many more applications.
+
+# Simple example system
+
+Let's start with a simple example:
+$$\begin{aligned}
+2 x_1 - x_2 &= 4 \\ x_1 + x_2 &= -1.
+\end{aligned}$$
+
+It's pretty easy to verify that the ordered pair $x_1=1$, $x_2=-2$ forms a solution to the system. That is, both equations are solved simultaneously when we plug in $x_1=1$ and $x_2=-2$.
+
+## Comments 
+
+- We use $x_1,x_2$ (and $x_3,x_4,\ldots$ if necessary) because numerical subscripts allow as many variables as we need.
+- Multiple output variables will often be denoted $y_1,y_2,\ldots$.
+- You can convince yourself that there's a *unique* solution by graphing the lines.
+
+::: {.centered style="width: 692px; height: 351px"}
+
+```{python}
+import numpy as np
+from matplotlib import pyplot as plt
+
+plt.plot([-4,4],[-12,4], 'k')
+plt.plot([-4,4],[3,-5], 'k')
+plt.plot([1],[-2], 'bo')
+
+fig = plt.gcf()
+fig.set_figwidth(8)
+fig.set_figheight(4)
+
+plt.show()
+```
+
+:::
+
+## Solving the system
+
+There's a general technique for solving linear systems that uses algebra on the equations themselves. Working with the current example 
+$$\begin{aligned}
+2 x_1 - x_2 &= 4 \\ x_1 + x_2 &= -1,
+\end{aligned}$$
+we subtract twice the second equation from the first and replace the second equation with that result. This yields
+$$\begin{aligned}
+2 x_1 - x_2 &= 4 \\  -3x_2 &= 6.
+\end{aligned}$$
+From there, it's easy to see that $x_2=-2$ and that we then need $x_1=1$.
+
+## Types of solutions sets 
+
+In general, a pair of equations in a pair of unknowns is likely to have a unique solution. In special cases, though, a system may have infinitely many solutions or none at all.
+
+::: {layout="[[1,1],[1,1]]"}
+
+$$\underline{\text{Infinitely many solutions}}$$
+
+$$\underline{\text{No solutions}}$$
+
+$$\begin{aligned}
+2x_1 - x_2 &= 4 \\ 
+4x_1 - 2x_2 &= 8
+\end{aligned}$$
+
+$$\begin{aligned}
+2x_1 - x_2 &= 4 \\ 
+4x_1 - 2x_2 &= 10
+\end{aligned}$$
+
+:::
+
+Can you see why?
+
+## Parameterizing an infinite solution set
+
+When a system has infinitely many solutions, we often parameterize that solution set. Considering this set, for example:
+
+$$\begin{aligned}
+2x_1 - x_2 &= 4 \\ 
+4x_1 - 2x_2 &= 8
+\end{aligned}$$
+
+We see that the two equations are equivalent, so we can drop one and solve for $x_2$ in terms of $x_1$ in the other. We obtain 
+
+$$x_2 = 2x_1-4$$
+
+and the solution set looks like 
+
+$$\{(t,2t-4):t\in\mathbb R\}.$$
+
+# General systems 
+
+In general, a system of linear equations is a collection of $m$ equations in $n$ unknowns $x_1,\,x_2,\,x_3,\ldots,x_n$ of the form 
+$$\begin{align*}
+a_{11}x_1+a_{12}x_2+a_{13}x_3+\dots+a_{1n}x_n&=b_1\\
+a_{21}x_1+a_{22}x_2+a_{23}x_3+\dots+a_{2n}x_n&=b_2\\
+a_{31}x_1+a_{32}x_2+a_{33}x_3+\dots+a_{3n}x_n&=b_3\\
+&\vdots\\
+a_{m1}x_1+a_{m2}x_2+a_{m3}x_3+\dots+a_{mn}x_n&=b_m.
+\end{align*}$$
+The numbers $a_{ij}$ and $b_i$ are real constants.
+
+## Homogeneous systems
+
+As we've seen, some systems have no solutions at all. 
+
+If, however,  $b_i=0$ for each $i=1,\ldots,m$, then the system is guaranteed to have at least one solution, namely the zero solution where $x_j=0$ for each $j=1,\ldots,n$.
+
+Such a system is called *homogeneous*.
+
+## Equation Operations
+
+Given a system of linear equations, the following three operations will transform the system into a different one. Each operation is known as an equation operation. Furthermore, these operations preserver the solution set.
+
+1. Swap the locations of two equations in the list of equations.
+2. Multiply each term of an equation by a nonzero quantity.
+3. Multiply each term of one equation by some quantity, and add these terms to a second equation, on both sides of the equality. Leave the first equation the same after this operation, but replace the second equation by the new one.
+
+## Solving systems via equation operations
+
+We can use the equation operations to help us solve systems. Let's use the following system to illustrate.
+$$\begin{align*}
+x_1+2x_2+2x_3&=4\\
+x_1+3x_2+3x_3&=5\\
+2x_1+6x_2+5x_3&=6\\
+\end{align*}$$
+
+First, multiply $\alpha=-1$ times the first, add the result to the second. Similarly, multiply $\alpha=-2$ times the first, add the result to the third
+$$\begin{align*}
+x_1+2x_2+2x_3&=4\\
+0x_1+1x_2+ 1x_3&=1\\
+0x_1+2x_2+1x_3&=-2\\
+\end{align*}$$
+
+## Solving (cont)
+
+From that last step 
+$$\begin{align*}
+x_1+2x_2+2x_3&=4\\
+0x_1+1x_2+ 1x_3&=1\\
+0x_1+2x_2+1x_3&=-2\\
+\end{align*}$$
+
+Multiply $\alpha=-2$ times the second and add the result to the third:
+$$\begin{align*}
+x_1+2x_2+2x_3&=4\\
+0x_1+1x_2+ 1x_3&=1\\
+0x_1+0x_2-1x_3&=-4\\
+\end{align*}$$
+
+## Solving (finale)
+
+Finally, we multiply the last equation by $-1$ to get 
+$$\begin{align*}
+x_1+2x_2+2x_3&=4\\
+x_2 + x_3&=1\\
+x_3&=4\\
+\end{align*}$$
+
+Now, this system is easily solved via back-substitution. We see straight away that $x_3=4$. Plugging that solution into the second equation, we see that $x_2=-3$. Finally,
+$$x_1 = 4-(2(-3) + 2(4)) = 4-(-6+8) = 2.$$
+
+So that $(x_1,x_2,x_3) = (2,-3,4)$ is the unique solution.
+
+::: {.fragment}
+Note that it's the upper-triangular form of the resulting system that allows this easy solution at the end.
+:::
+
+
+# Underdetermined systems
+
+Here's a longer example using a system with more unknowns than equations; this type of system is called underdetermined. Typically, these types of systems have infinitely many solutions. Here's an example:
+
+$$\begin{align*}
+x_1+2x_2 +0x_3+ x_4&= 7\\
+x_1+x_2+x_3-x_4&=3\\
+3x_1+x_2+5x_3-7x_4&=1\\
+\end{align*}$$
+
+If we add $-1$ times the first equation to the second and $-3$ times the first to the third, we get
+
+$$\begin{align*}
+x_1+2x_2 +0x_3+ x_4&= 7\\
+0x_1-x_2+x_3-2x_4&=-4\\
+0x_1-5x_2+5x_3-10x_4&=-20.
+\end{align*}$$
+
+## Underdetermined (cont 1)
+
+Continuing with that last step 
+
+$$\begin{align*}
+x_1+2x_2 +0x_3+ x_4&= 7\\
+0x_1-x_2+x_3-2x_4&=-4\\
+0x_1-5x_2+5x_3-10x_4&=-20.
+\end{align*}$$
+
+Multiply the second equation by $-5$ and add that result to the third to get
+
+$$\begin{align*}
+x_1+2x_2 +0x_3+ x_4&= 7\\
+0x_1-x_2+x_3-2x_4&=-4\\
+0x_1+0x_2+0x_3+0x_4&=0\\
+\end{align*}$$
+
+## Underdetermined (cont 2)
+
+Continuing again with the last step 
+$$\begin{align*}
+x_1+2x_2 +0x_3+ x_4&= 7\\
+0x_1-x_2+x_3-2x_4&=-4\\
+0x_1+0x_2+0x_3+0x_4&=0\\
+\end{align*}$$
+
+We multiply $2$ times the second and add to the first to get 
+$$\begin{align*}
+x_1+0x_2 +2x_3-3x_4&= -1\\
+0x_1-x_2+x_3-2x_4&=-4\\
+0x_1+0x_2+0x_3+0x_4&=0\\
+\end{align*}$$
+
+
+## Underdetermined (cont 3)
+
+If we multiply the second by $-1$ and drop the zero terms, we get 
+
+$$\begin{align*}
+x_1+2x_3 - 3x_4&= -1\\
+x_2-x_3+2x_4&=4\\
+0&=0\text{.}
+\end{align*}$$
+
+So that 
+
+$$\begin{align*}
+x_1 &= -2x_3 + 3x_4 - 1\\
+x_2 &= x_3-2x_4 + 4
+\end{align*}$$
+
+## Underdetermined (finale)
+
+To understand the system
+
+$$\begin{align*}
+x_1 &= -2x_3 + 3x_4 - 1\\
+x_2 &= x_3-2x_4 + 4
+\end{align*}$$
+
+note that $x_3$ and $x_4$ can be any real numbers - say, $x_3=s$ and $x_4=t$. Thus, we have 
+$$\begin{align*}
+x_1 &= -2s + 3t - 1\\
+x_2 &= s-2t + 4
+\end{align*}$$
+
+The solution set is two-dimensional and can be written parametrically as 
+$$\{(-2s + 3t - 1,s-2t + 4,s,t): s\in\mathbb R, t\in\mathbb R\}.$$
+
+# Matrices
+
+After solving a few of these systems it becomes apparent that the action is in the interaction of the coefficients. The variables are, in a sense, just placeholders.
+
+Thus, we define an $m\times n$ *matrix* to be a rectangular array of numbers having $m$ rows and $n$ columns. Representation of systems of equations and their solution techniques can all be done with matrices, which tends to be more straightforward and less error prone. 
+
+Matrices can also be easily represented in computer memory as an array of arrays so that algorithms for solving systems can be implemented on a computer fairly easily.
+
+
+## Coefficient matrices 
+
+The set of coefficients of a system 
+$$\begin{align*}
+a_{11}x_1+a_{12}x_2+a_{13}x_3+\dots+a_{1n}x_n&=b_1\\
+a_{21}x_1+a_{22}x_2+a_{23}x_3+\dots+a_{2n}x_n&=b_2\\
+\vdots&\\
+a_{m1}x_1+a_{m2}x_2+a_{m3}x_3+\dots+a_{mn}x_n&=b_m
+\end{align*}$$
+can be represented as a matrix:
+$$\begin{equation*}
+A=
+\begin{bmatrix}
+a_{11}&a_{12}&a_{13}&\dots&a_{1n}\\
+a_{21}&a_{22}&a_{23}&\dots&a_{2n}\\
+\vdots&\vdots&\vdots&     &\vdots\\
+a_{m1}&a_{m2}&a_{m3}&\dots&a_{mn}\\
+\end{bmatrix}\text{.}
+\end{equation*}$$
+
+## Representing the system 
+
+In fact, it might make sense to represent the whole system like so:
+
+$$\begin{equation*}
+\begin{bmatrix}
+a_{11}&a_{12}&a_{13}&\dots&a_{1n}\\
+a_{21}&a_{22}&a_{23}&\dots&a_{2n}\\
+\vdots&\vdots&\vdots&     &\vdots\\
+a_{m1}&a_{m2}&a_{m3}&\dots&a_{mn}\\
+\end{bmatrix}
+\begin{bmatrix}
+x_1 \\ x_2 \\ \vdots\\x_n 
+\end{bmatrix} 
+=
+\begin{bmatrix}
+b_1 \\ b_2 \\\vdots \\ b_m 
+\end{bmatrix}.
+\end{equation*}$$
+
+Or, more compactly as 
+$$
+A\vec{x} = \vec{b}.
+$$
+
+::: {.fragment}
+We'll soon develop a method of matrix multiplication that will place this notation within a firm theoretical framework.
+:::
+## Augmented matrices 
+
+When working with the system $A\vec{x}=\vec{b}$, it often makes sense to drop the variable $\vec{x}$ and work with the so-called augmented matrix $[A|\vec{b}]$. In expanded form:
+
+$$
+\left[\begin{matrix}
+a_{11}&a_{12}&a_{13}&\dots&a_{1n}\\
+a_{21}&a_{22}&a_{23}&\dots&a_{2n}\\
+\vdots&\vdots&\vdots&     &\vdots\\
+a_{m1}&a_{m2}&a_{m3}&\dots&a_{mn}\\
+\end{matrix}\right|
+\left.\begin{matrix}
+b_1 \\ b_2 \\ \vdots \\ b_m
+\end{matrix}\right]
+$$
+
+We can then do row operations on the augmented matrix and read off solutions from the result.
+
+We will sometimes drop the separation bar when the intent is understood.
+
+## Row operations on matrices
+
+The equation operations on systems translate to analogous row operations for matrices.
+
+1. $i\leftrightarrow j$: Swap the locations of two rows.
+2. $\alpha R_i$: Multiply each entry of a single row by a nonzero quantity.
+3. $\alpha R_i + R_j$: Multiply each entry of one row by some quantity, and add these values to the entries in the same columns of a second row. Leave the first row the same after this operation, but replace the second row by the new values.
+
+## Example
+
+Recall the system on the left, which we solved via equation operations. Those can now be expressed in terms of row operations, as shown.
+
+::: {layout="[[1,1],[1]]"}
+
+\begin{align*}
+x_1+2x_2+2x_3&=4\\
+x_1+3x_2+3x_3&=5\\
+2x_1+6x_2+5x_3&=6
+\end{align*}
+
+\begin{align*}
+A=\begin{bmatrix}
+1&2&2&4\\
+1&3&3&5\\
+2&6&5&6
+\end{bmatrix}
+\end{align*}
+
+$$
+\begin{align*}
+\xrightarrow{\rowopadd{-1}{1}{2}}
+&
+\begin{bmatrix}
+1&2&2&4\\
+0&1&1&1\\
+2&6&5&6
+\end{bmatrix}
+\xrightarrow{\rowopadd{-2}{1}{3}}
+\begin{bmatrix}
+1&2&2&4\\
+0&1&1&1\\
+0&2&1&-2
+\end{bmatrix}\\
+\xrightarrow{\rowopadd{-2}{2}{3}}
+&
+\begin{bmatrix}
+1&2&2&4\\
+0&1&1&1\\
+0&0&-1&-4
+\end{bmatrix}
+\xrightarrow{\rowopmult{-1}{3}}
+\begin{bmatrix}
+1&2&2&4\\
+0&1& 1&1\\
+0&0&1&4
+\end{bmatrix}\text{.}
+\end{align*}
+$$
+
+:::
+
+
+# Reduced Row-Echelon Form
+
+Any matrix can be placed into a particular canonical form, called the *reduced row-echelon form* or RREF, that makes it easy to analyze in a number of ways.
+A matrix is RREF if it meets all of the following conditions:
+
+1. If there is a row where every entry is zero, then this row lies below any other row that contains a nonzero entry. [(Zeros at the bottom.)]{.fragment style="color: red"}
+2. The leftmost nonzero entry of a row is equal to 1 and that entry is the only nonzero entry in its column. [(Solitary leading 1s.)]{.fragment style="color: red"}
+3. Consider any two different leftmost nonzero entries, one located in row $i$, column $j$ and the other located in row $s$, column $t$. If $s>i$, then $t>j$. [(Leading ones are staggered.)]{.fragment style="color: red"}
+
+::: {.fragment style="font-style: italic"}
+Any matrix can be placed into RREF by a sequence of row operations and those row operations preserve important properties of the matrix.
+:::
+
+::: {.fragment style="font-style: italic"}
+The leading ones in a RREF matrix are often called the *pivots*.
+:::
+
+## Example 
+
+Here's a matrix in reduced row echelon form:
+
+$$\begin{bmatrix}
+1&-3&0&6&0&0&-5&9\\
+0&0&0&0&1&0&3&-7\\
+0&0&0&0&0&1&7&3\\
+0&0&0&0&0&0&0&0\\
+0&0&0&0&0&0&0&0
+\end{bmatrix}$$
+
+If this is the coefficient matrix of a homogenous system, then we could write that system as
+
+$$\begin{aligned}
+x_1 - 3 x_2 + 0x_3 + 6 x_4 + 0x_5 + 0x_6 - 5x_7 + 9 x_8 &= 0 \\ 
+x_5 + 0x_6 + 3x_7 - 7 x_8 &= 0 \\ 
+x_6 + 7x_7 + 3x_8 &= 0.
+\end{aligned}$$
+
+
+## Interpreting RREF
+
+Continuing with the previous system, 
+
+$$\begin{aligned}
+x_1 - 3 x_2 + 0x_3 + 6 x_4 + 0x_5 + 0x_6 - 5x_7 + 9 x_8 &= 0 \\ 
+x_5 + 0x_6 + 3x_7 - 7 x_8 &= 0 \\ 
+x_6 + 7x_7 + 3x_8 &= 0,
+\end{aligned}$$
+
+note that the pivot variables are $x_1$, $x_5$, and $x_6$. The other five variables are free and the pivot variables can be expressed in terms of those free variables:
+
+$$\begin{aligned}
+x_6 &= -(7x_7 + 3x_8) \\
+x_5 &= -(3x_7 - 7x_8) \\ 
+x_1 &= 3x_2 - 6x_4 + 5x_7 - 9x_8.
+\end{aligned}$$
+
+## The general solution 
+
+Once we've expressed the pivot variables in terms of the free variables as
+$$\begin{aligned}
+x_6 &= -(7x_7 + 3x_8) \\
+x_5 &= -(3x_7 - 7x_8) \\ 
+x_1 &= 3x_2 - 6x_4 + 5x_7 - 9x_8,
+\end{aligned}$$
+
+we can Identify the five three variables with parameters $r$, $s$, $t$, $u$, and $v$:
+
+|r|s|t|u|v|
+|:---:|:---:|:---:|:---:|:---:|
+|$x_2$|$x_3$|$x_4$|$x_7$|$x_8$|
+
+That allows us to explicitly write out the five dimensional solution space:
+
+$$(3r-6t+5u-9v,\, r,\, s,\, t,\, 7v-3u,\, -(7u+3v),\, u,\, v).$$
+
+# Nonsingular matrices
+
+The $n\times n$ systems are often of particular importance. Such a matrix is called *square*. 
+
+Generally, we expect a square system to have a unique solution and it would be nice to have a way to determine this.
+
+## The homogenous case 
+
+Let's consider a homogenous $n\times n$ system $A\vec{x}=\vec{0}$. If the system has a unique solution, there can be no zero rows of its reduced row echelon form. Thus, we must have
+$$
+a_{ij} = \begin{cases} 1 & i=j \\ 0 & \text{else}.\end{cases}
+$$
+We might write the expanded form as
+$$
+\begin{bmatrix}
+1 & 0 & \cdots & 0 \\
+0 & 1 & \cdots & 0 \\
+\vdots & \vdots & \ddots & \vdots \\
+0 & 0 & \cdots & 1
+\end{bmatrix}.
+$$
+
+## Definition
+
+An square matrix $A$ is said to be *nonsingular* if the equation $A\vec{x} = \vec{0}$ has only the trivial solution $\vec{x}=\vec{0}$.
+
+The previous slide gives us a simple way to check if a matrix is non-singular - simply compute its RREF.

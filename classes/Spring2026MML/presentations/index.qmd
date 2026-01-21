@@ -3,8 +3,18 @@ title: Class presentations
 sidebar: MML2026
 ---
 
-Daily class presentations
+You can find the links to our daily class presentations below. Generally, I'll type these up in sufficient detail for the interested student to follow along. Of course, I didn't invent any of this and there are plenty of other references. Here are some other references for this material:
 
+- [Open Intro Statistics](https://www.openintro.org/book/os/){target=blank} A free and open source introduction to elementary statistics
+- [APEX Calculus](https://opentext.uleth.ca/apex-calculus/apex-calculus.html){target=_blank} A free, open source, and fairly standard Calculus textbook
+- [A First Course in Linear Algebra](https://runestone.academy/ns/books/published/fcla/fcla.html){target=_blank} A free and open source text in Linear Algebra
+- [Mathematics for Machine Learning](https://mml-book.github.io/){target=_blank} A text on the mathematics of machine learning made freely available by Cambridge University Press
+- [The Elements of Statistical Learning](https://hastie.su.domains/ElemStatLearn/){target=_blank} A foundational text
+- [An Introduction to Statistical Learning](https://www.statlearning.com/){target=_blank} A toned-down version of the previous text including code in R and Python
+
+Of course, I learned most of this material many years ago and some of the presentations bear my own preferences. All mistakes are my own.
+
+## Daily class presentations
 
 - Mon, Jan 12: Intro and KNN
     - [Presentation](./Lecture00-Intro/){target=_blank}
@@ -33,5 +43,15 @@ Daily class presentations
   <summary>Comments</summary>
   <div>
     Today, we'll take a look at derivatives and optimization of multivariable functions, which is a small part of what's covered in Calculus III.
+  </div>
+</details>
+
+- Wed, Jan 21: Linear systems and matrices
+  - [Presentation](./Lecture03-SystemsAndMatrices/){target=_blank}
+  -
+<details>
+  <summary>Comments</summary>
+  <div>
+    Last time, we learned that optimization of multivariable functions leads naturally to systems of equations; when your function quadratic, the system is linear. Today, we'll recap that and push forward to studying linear systems in general.
   </div>
 </details>
