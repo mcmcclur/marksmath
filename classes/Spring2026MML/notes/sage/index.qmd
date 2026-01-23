@@ -86,6 +86,6 @@ A.rref()
 
 From there, of course, it's easy to see that there's an infinite family of solutions to to write down that family in parameterized form. Right?
 
-### Give it a try!
+### Try it out on your HW 
 
-I've set up a [10 point problem on our forum](https://discourse.marksmath.org/t/solving-your-personal-system-with-sage/30){target=_blank} so that everyone can try their hand at this. Give it a try!
+By all means, check your computations on our online HW. Feel free to use it to compute RREF, for sure. As far as exam assessment goes, you should be OK with reduction to RREF for a $3 \times 4$ example with small integer entries.

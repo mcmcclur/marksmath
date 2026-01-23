@@ -55,3 +55,13 @@ Of course, I learned most of this material many years ago and some of the presen
     Last time, we learned that optimization of multivariable functions leads naturally to systems of equations; when your function quadratic, the system is linear. Today, we'll recap that and push forward to studying linear systems in general.
   </div>
 </details>
+
+- Fri, Jan 23: Reduced row echelon form
+  - [Presentation](./Lecture04-RREF/){target=_blank}
+  -
+<details>
+  <summary>Comments</summary>
+  <div>
+    Last time, we talked about linear systems and how they to the concept of a *matrix*. Today, we'll focus on matrices themselves and their reduced row echelon form.
+  </div>
+</details>

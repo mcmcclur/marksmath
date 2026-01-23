@@ -1,0 +1,583 @@
+---
+title: Reduced row echelon form
+date: 2026-01-21
+format:  
+  revealjs:
+    css: [../classnote-style.css, ./style.css] 
+    controls: true
+    controls-layout: bottom-right
+    navigation-mode: vertical
+    smaller: true
+    history: true
+    transition: slide
+    keyboard: true
+    date-format: ddd, MMM DD, YYYY
+    author: "Portions copyright Rob Beezer ([GFDL](https://www.gnu.org/licenses/fdl-1.3.en.html){target='_blank'})"
+    # echo: true
+    # eval: true
+    # output: true
+    # code-fold: true
+---
+
+# Recap and look ahead
+
+Last time, we talked about linear systems and how they arise naturally in the process of the optimization of multivariable quadratic functions. We also talked about using algebraic operations on the equations can lead to solutions and what types of solutions sets can and cannot arise. We finished by noting that the coefficients in a linear system can be naturally thought of as a rectangular array of numbers, called a *matrix*, and that we might be able to solve the system by working with matrix directly.
+
+Today, we'll focus on matrices, row operations, and reduced row echelon form of matrix. This will help us formalize the techniques we developed last time into definitive algorithms.
+
+$$
+\newcommand{\vect}[1]{\mathbf{#1}}
+\newcommand{\rowopswap}[2]{R_{#1}\leftrightarrow R_{#2}}
+\newcommand{\rowopmult}[2]{#1R_{#2}}
+\newcommand{\rowopadd}[3]{#1R_{#2}+R_{#3}}
+\newcommand\aug{\fboxsep=-\fboxrule\!\!\!\fbox{\strut}\!\!\!}
+\newcommand{\matrixentry}[2]{\left\lbrack#1\right\rbrack_{#2}}
+$$
+
+
+# Matrices and vectors
+
+**Definition** A matrix $A\in\mathbb{R^{m\times n}}$ is simply an $m\times n$ array of numbers:
+
+$$
+\begin{equation*}
+A=
+\begin{bmatrix}
+a_{11}&a_{12}&a_{13}&\dots&a_{1n}\\
+a_{21}&a_{22}&a_{23}&\dots&a_{2n}\\
+\vdots&\vdots&\vdots&     &\vdots\\
+a_{m1}&a_{m2}&a_{m3}&\dots&a_{mn}\\
+\end{bmatrix}\text{.}
+\end{equation*}
+$$
+
+Given a matrix $A$, we sometimes write $[A]_{ij}$ to refer to the element in row $i$ and column $j$. In the abstract example above, we have
+$$[A]_{ij} = a_{ij}.$$
+
+## Example of a matrix
+
+Here's a matrix $B$ with $m=3$ rows and $n=4$ columns. 
+$$
+B=\begin{bmatrix}
+-1&2&5&3\\
+1&0&-6&1\\
+-4&2&2&-2
+\end{bmatrix}
+$$
+
+The subscript notation for entry extraction yields, for example, that  $$\matrixentry{B}{2,3}=-6 \text{ and } \matrixentry{B}{3,4}=-2.$$
+
+## Matrix transpose
+
+Given $A\in\mathbb{R^{m\times n}}$, the *transpose* of $A$ is the matrix $A^{\mathsf T}$ defined by 
+$$[A^{\mathsf T}]_{ij} = [A]_{ji}.$$
+The effect is to swap the rows and columns of $A$. For example,
+$$
+B=\begin{bmatrix}
+-1&2&5&3\\
+1&0&-6&1\\
+-4&2&2&-2
+\end{bmatrix}
+\implies
+B^{\mathsf T} = \begin{bmatrix}
+-1&1&-4 \\ 2&0&2 \\ 5&-6&2 \\ 3&1&-2
+\end{bmatrix}
+$$
+
+
+
+## Column vectors 
+
+A *column vector* $\vect{u}$ in $\mathbb{R^m}$ is a vertical array of numbers or, more precisely an $m\times 1$ matrix:
+$$
+\vect{u} = \begin{bmatrix}u_1 \\ u_2 \\ \vdots \\ u_m\end{bmatrix}.
+$$
+In the interest of saving vertical space, I might sometimes write 
+$$
+\vect{u} = \begin{bmatrix}u_1 & u_2 & \cdots & u_m\end{bmatrix}^{\mathsf T}.
+$$
+When writing on the board, I typically distinguish vectors from scalars using a vector hat like $\vec{u}$.
+
+## Matrix columns 
+
+Sometimes, we might write an $m\times n$ matrix as a row of $n$ column vectors, each of size $m$:
+$$
+A = \begin{bmatrix} 
+\mathbf{A}_1 & \mathbf{A}_2 & \cdots & \mathbf{A}_n.
+\end{bmatrix}
+$$
+
+## Matrix-vector multiplication
+
+Let the matrix $A \in \mathbb{R^{m\times n}}$ and the vector $\vect{u} \in \mathbb{R^n}$ be defined by
+$$
+\begin{aligned}
+A &= \begin{bmatrix} 
+\mathbf{A}_1 & \mathbf{A}_2 & \cdots & \mathbf{A}_n.
+\end{bmatrix} \\
+\vect{u} &= \begin{bmatrix}
+u_1 & u_2 & \cdots & u_n
+\end{bmatrix}^{\mathsf T}
+\end{aligned}
+$$
+Then the matrix-vector product $A\vect{u}$ is defined by 
+$$
+A\vect{u} = u_1 \mathbf{A}_1 + u_2 \mathbf{A}_2 + \cdots + u_n \mathbf{A}_n \in \mathbb{R^n}.
+$$
+This operation of multiplying column vectors by scalars and adding up the results is often called a *linear combination*.
+
+## Example of numeric matrix-vector multiplication
+
+$$
+\begin{aligned}
+\begin{bmatrix}
+1 & -1 & 1 \\
+2 & 1 & 3
+\end{bmatrix}
+\begin{bmatrix}
+2 \\ -1 \\ 2
+\end{bmatrix}
+&=
+2\begin{bmatrix}1 \\ 2 \end{bmatrix} +
+(-1)\begin{bmatrix}-1 \\ 1 \end{bmatrix} +
+2\begin{bmatrix}1 \\ 3 \end{bmatrix} \\
+&= \begin{bmatrix}
+2 + 1 + 2 \\
+4 - 1 + 6
+\end{bmatrix}
+=
+\begin{bmatrix}
+5 \\ 9
+\end{bmatrix}
+\end{aligned}
+$$
+
+::: {.fragment}
+If you're familiar with the dot product, you might notice that the first entry of the result is the dot product of the first row with the column vector and the second entry of the result is the dot product of the second row with the column vector.
+:::
+
+## Example of abstract matrix-vector multiplication
+
+
+$$
+\begin{aligned}
+\begin{bmatrix}
+a_{11}&a_{12}&\dots&a_{1n}\\
+a_{21}&a_{22}&\dots&a_{2n}\\
+\vdots&\vdots&\ddots&\vdots\\
+a_{m1}&a_{m2}&\dots&a_{mn}\\
+\end{bmatrix}
+\begin{bmatrix}
+x_1 \\ x_2 \\ \vdots\\x_n
+\end{bmatrix}
+&= 
+x_1 \begin{bmatrix}
+a_{11}\\
+a_{21}\\
+\vdots\\
+a_{m1}\\
+\end{bmatrix}
++
+x_2 \begin{bmatrix}
+a_{12}\\
+a_{22}\\
+\vdots\\
+a_{m2}\\
+\end{bmatrix}
++\cdots+
+x_n \begin{bmatrix}
+a_{1n}\\
+a_{2n}\\
+\vdots\\
+a_{mn}\\
+\end{bmatrix} \\
+&= 
+\begin{bmatrix}
+a_{11}x_1 + a_{12}x_2 + \cdots + a_{1n}x_n \\
+a_{21}x_1 + a_{22}x_2 + \cdots + a_{2n}x_n \\
+\vdots \\
+a_{m1}x_1 + a_{m2}x_2 + \cdots + a_{mn}x_n
+\end{bmatrix}
+\end{aligned}
+$$
+
+## Representing systems
+
+The matrix-vector equation $A\vect{u} = \vect{b}$ given by 
+$$
+\begin{equation*}
+\begin{bmatrix}
+a_{11}&a_{12}&a_{13}&\dots&a_{1n}\\
+a_{21}&a_{22}&a_{23}&\dots&a_{2n}\\
+\vdots&\vdots&\vdots&\ddots&\vdots\\
+a_{m1}&a_{m2}&a_{m3}&\dots&a_{mn}\\
+\end{bmatrix}
+\begin{bmatrix}
+x_1 \\ x_2 \\ \vdots\\x_n
+\end{bmatrix}
+=
+\begin{bmatrix}
+b_1 \\ b_2 \\\vdots \\ b_m
+\end{bmatrix}.
+\end{equation*}
+$$
+is equivalent to the system
+\begin{align*}
+a_{11}x_1+a_{12}x_2+a_{13}x_3+\dots+a_{1n}x_n&=b_1\\
+a_{21}x_1+a_{22}x_2+a_{23}x_3+\dots+a_{2n}x_n&=b_2\\
+&\vdots\\
+a_{m1}x_1+a_{m2}x_2+a_{m3}x_3+\dots+a_{mn}x_n&=b_m.
+\end{align*}
+
+## Augmented matrices 
+
+When working with the system $A\vect{x}=\vect{b}$, it often makes sense to drop the variable $\vect{x}$ and work with the so-called augmented matrix $[A|\vect{b}]$. In expanded form:
+
+$$
+\left[\begin{matrix}
+a_{11}&a_{12}&a_{13}&\dots&a_{1n}\\
+a_{21}&a_{22}&a_{23}&\dots&a_{2n}\\
+\vdots&\vdots&\vdots&     &\vdots\\
+a_{m1}&a_{m2}&a_{m3}&\dots&a_{mn}\\
+\end{matrix}\right|
+\left.\begin{matrix}
+b_1 \\ b_2 \\ \vdots \\ b_m
+\end{matrix}\right]
+$$
+
+We can then do row operations on the augmented matrix and read off solutions from the result.
+
+We will sometimes drop the separation bar when the intent is understood.
+
+
+# Row operations
+
+The equation operations on systems translate to analogous row operations for matrices.
+
+1. $i\leftrightarrow j$: Swap the locations of two rows.
+2. $\alpha R_i$: Multiply each entry of a single row by a nonzero quantity.
+3. $\alpha R_i + R_j$: Multiply each entry of one row by some quantity, and add these values to the entries in the same columns of a second row. Leave the first row the same after this operation, but replace the second row by the new values.
+
+## Example
+
+The system on the left can be expressed as the augmented matrix on the right. We can then use row operations to place that matrix in upper triangular form.
+
+::: {layout="[[1,1],[1]]"}
+
+\begin{align*}
+x_1+2x_2+2x_3&=4\\
+x_1+3x_2+3x_3&=5\\
+2x_1+6x_2+5x_3&=6
+\end{align*}
+
+\begin{align*}
+A=\begin{bmatrix}
+1&2&2&4\\
+1&3&3&5\\
+2&6&5&6
+\end{bmatrix}
+\end{align*}
+
+$$
+\begin{align*}
+\xrightarrow{\rowopadd{-1}{1}{2}}
+&
+\begin{bmatrix}
+1&2&2&4\\
+0&1&1&1\\
+2&6&5&6
+\end{bmatrix}
+\xrightarrow{\rowopadd{-2}{1}{3}}
+\begin{bmatrix}
+1&2&2&4\\
+0&1&1&1\\
+0&2&1&-2
+\end{bmatrix}\\
+\xrightarrow{\rowopadd{-2}{2}{3}}
+&
+\begin{bmatrix}
+1&2&2&4\\
+0&1&1&1\\
+0&0&-1&-4
+\end{bmatrix}
+\xrightarrow{\rowopmult{-1}{3}}
+\begin{bmatrix}
+1&2&2&4\\
+0&1& 1&1\\
+0&0&1&4
+\end{bmatrix}\text{.}
+\end{align*}
+$$
+
+:::
+
+## Solving the system 
+
+We played with this exact system last time and saw that it can be solved via back-substitution. Here's another approach to solving the system that leads to the so-called reduced row echelon form:
+$$
+\begin{aligned}
+\begin{bmatrix}
+1&2&2&4\\
+0&1& 1&1\\
+0&0&1&4
+\end{bmatrix}
+&\xrightarrow{\rowopadd{-1}{3}{2}}
+\begin{bmatrix}
+1&2&2&4\\
+0&1&0&-3\\
+0&0&1&4
+\end{bmatrix}
+\xrightarrow{\rowopadd{-2}{3}{1}}
+\begin{bmatrix}
+1&2&0&-4\\
+0&1&0&-3\\
+0&0&1&4
+\end{bmatrix} \\
+&\xrightarrow{\rowopadd{-2}{2}{1}}
+\begin{bmatrix}
+1&0&0&2\\
+0&1&0&-3\\
+0&0&1&4
+\end{bmatrix}
+\end{aligned}
+$$
+
+From here, it's totally easy to see that the solution vector can be written 
+$$
+\vect{b} = \begin{bmatrix} 2 & -3 & 4 \end{bmatrix}^{\mathsf T}.
+$$
+
+# Reduced Row-Echelon Form
+
+Any matrix can be placed into a particular canonical form, called the *reduced row-echelon form* or RREF, that makes it easy to analyze in a number of ways.
+A matrix is RREF if it meets all of the following conditions:
+
+1. If there is a row where every entry is zero, then this row lies below any other row that contains a nonzero entry. [(Zeros at the bottom.)]{.fragment style="color: red"}
+2. The leftmost nonzero entry of a row is equal to 1 and that entry is the only nonzero entry in its column. [(Solitary leading 1s.)]{.fragment style="color: red"}
+3. Consider any two different leftmost nonzero entries, one located in row $i$, column $j$ and the other located in row $s$, column $t$. If $s>i$, then $t>j$. [(Leading ones are staggered.)]{.fragment style="color: red"}
+
+::: {.fragment style="font-style: italic"}
+Any matrix can be placed into RREF by a sequence of row operations and those row operations preserve important properties of the matrix.
+:::
+
+::: {.fragment style="font-style: italic"}
+The leading ones in a RREF matrix are often called the *pivots*.
+:::
+
+## Example 
+
+Here's a matrix in reduced row echelon form:
+
+$$\begin{bmatrix}
+1&-3&0&6&0&0&-5&9\\
+0&0&0&0&1&0&3&-7\\
+0&0&0&0&0&1&7&3\\
+0&0&0&0&0&0&0&0\\
+0&0&0&0&0&0&0&0
+\end{bmatrix}$$
+
+If this is the coefficient matrix of a homogenous system, then we could write that system as
+
+$$\begin{aligned}
+x_1 - 3 x_2 + 0x_3 + 6 x_4 + 0x_5 + 0x_6 - 5x_7 + 9 x_8 &= 0 \\ 
+x_5 + 0x_6 + 3x_7 - 7 x_8 &= 0 \\ 
+x_6 + 7x_7 + 3x_8 &= 0.
+\end{aligned}$$
+
+
+## Interpreting RREF
+
+Continuing with the previous system, 
+
+$$\begin{aligned}
+x_1 - 3 x_2 + 0x_3 + 6 x_4 + 0x_5 + 0x_6 - 5x_7 + 9 x_8 &= 0 \\ 
+x_5 + 0x_6 + 3x_7 - 7 x_8 &= 0 \\ 
+x_6 + 7x_7 + 3x_8 &= 0,
+\end{aligned}$$
+
+note that the pivot variables are $x_1$, $x_5$, and $x_6$. The other five variables are free and the pivot variables can be expressed in terms of those free variables:
+
+$$\begin{aligned}
+x_6 &= -(7x_7 + 3x_8) \\
+x_5 &= -(3x_7 - 7x_8) \\ 
+x_1 &= 3x_2 - 6x_4 + 5x_7 - 9x_8.
+\end{aligned}$$
+
+## The general solution 
+
+Once we've expressed the pivot variables in terms of the free variables as
+$$\begin{aligned}
+x_6 &= -(7x_7 + 3x_8) \\
+x_5 &= -(3x_7 - 7x_8) \\ 
+x_1 &= 3x_2 - 6x_4 + 5x_7 - 9x_8,
+\end{aligned}$$
+
+we can Identify the five three variables with parameters $r$, $s$, $t$, $u$, and $v$:
+
+|r|s|t|u|v|
+|:---:|:---:|:---:|:---:|:---:|
+|$x_2$|$x_3$|$x_4$|$x_7$|$x_8$|
+
+That allows us to explicitly write out the five dimensional solution space:
+
+$$(3r-6t+5u-9v,\, r,\, s,\, t,\, 7v-3u,\, -(7u+3v),\, u,\, v).$$
+
+# A little theory
+
+Let's formalize our tools a bit. Starting with a definition:
+
+**Definition of row-equivalence**: Two matrices are called *row-equivalent* if one can be obtained from the other by a sequence of row operations.
+
+If $A$ is row-equivalent to $B$, I might write $A \sim B$. Note that if $A$, $B$, and $C$ are matrices, then 
+
+- $A \sim A$,
+- $A \sim B \implies B \sim A$, and 
+- $A \sim B \text{ and } B \sim C \implies A \sim C$.
+
+## Existence of RREF
+
+It turns out that *any* matrix is row-equivalent to another matrix in RREF.
+
+**Theorem: Existence of RREF** Suppose $A$ is a matrix. Then there is a matrix $B$ so that
+
+1. $A$ and $B$ are row-equivalent and
+2. $B$ is in reduced row-echelon form.
+
+As a result, we can determine the solution set of any linear system.
+
+## Uniqueness of RREF
+
+**Theorem: Uniqueness of RREF**: Suppose that $A$ is an matrix and that $B$ and $C$ are matrices that are row-equivalent to $A$ and in reduced row-echelon form. Then $B=C$.
+
+::: {.fragment .callout-note appearance=simple}
+
+Existence/uniqueness theorems are the bomb!
+
+:::
+
+## An algorithm 
+
+From the applied perspective, the proof of these theorems is the existence of an algorithm. We'll check that out on the next slide but, first, here's the input:
+
+
+```{python}
+#| echo: true
+import numpy as np
+tol = 1e-12
+A = np.array([
+  [1,2,2,4],
+  [1,3,3,5],
+  [2,6,5,6]
+], dtype=float)
+m, n = A.shape
+```
+
+## Implementation
+
+```{python}
+#| echo: true
+#| code-overflow: scroll
+#| code-height: 100px
+r = 0                 # Set current row
+for j in range(n):    # Iterate along the columns
+    i = r             # Set sub row counter
+    while i < m and abs(A[i, j]) < tol:
+        i = i+1       # Skip to first non-zero term
+    if i < m:         # If we're not done with the column 
+        A[[r, i]] = A[[i, r]]    # Swap the rows
+        A[r] = A[r]/A[r, j]      # Scale the pivot
+        for k in range(m):       # Zero out terms above the pivot
+            if k != r:
+                A[k] = A[k] - A[k, j] * A[r]
+        r = r+1       # Increment current row
+print(A)
+```
+
+
+## Computational tools 
+
+There are a few tools that you can use to assist you in Gauss-Jordan computations. These include,
+
+- [This Colab Notebook](https://colab.research.google.com/drive/19EfrrYKpGC786Sdi-xHURAdPhU1YTkjl?usp=sharing#sandboxMode=true){target=_blank}, which implements the exat algorithm shown here 
+- [This description of SageMath](../../notes/sage) includes a computation for RREF. This is probably ideal for MyOpenMath HW because it works well with fractions.
+
+# Another example 
+
+Here's a good example to try by hand:
+
+$$
+A = \begin{bmatrix}
+1 & 1 & 3 & 1 \\
+0 & 1 & 1 & 0 \\
+2 & 1 & 5 & 2
+\end{bmatrix}
+$$
+
+Assuming this matrix is the augmented matrix of a system, you should be able to:
+
+- Write down the system the matrix defines, 
+- Reduce the matrix to RREF, and 
+- Use that reduced form to describe the solution set.
+
+## Answers
+
+::: {.fragment}
+
+The reduced row echelon form is 
+$$
+\begin{bmatrix} 
+1 & 0 & 2 & 1 \\
+0 & 1 & 1 & 0 \\
+0 & 0 & 0 & 0
+\end{bmatrix}
+$$
+
+:::
+
+::: {.fragment} 
+
+This yields reduced system 
+$$x_1 + 2x_3 = 1 \text{ and } x_2+x_3 = 0.$$
+
+:::
+
+::: {.fragment}
+
+Thus, the solution set is 
+
+$$\{(1-2t, -t, t): t\in \mathbb R\}.$$
+
+:::
+
+
+# Nonsingular matrices
+
+The $n\times n$ systems are often of particular importance. Such a matrix is called *square*. 
+
+Generally, we expect a square system to have a unique solution and it would be nice to have a way to determine this.
+
+## The homogenous case 
+
+Let's consider a homogenous $n\times n$ system $A\vect{x}=\vect{0}$. If the system has a unique solution, there can be no zero rows of its reduced row echelon form. Thus, we must have
+$$
+a_{ij} = \begin{cases} 1 & i=j \\ 0 & \text{else}.\end{cases}
+$$
+We might write the expanded form as
+$$
+\begin{bmatrix}
+1 & 0 & \cdots & 0 \\
+0 & 1 & \cdots & 0 \\
+\vdots & \vdots & \ddots & \vdots \\
+0 & 0 & \cdots & 1
+\end{bmatrix}.
+$$
+
+## Definition
+
+An square matrix $A$ is said to be *nonsingular* if the equation $A\vect{x} = \vect{0}$ has only the trivial solution $\vect{x}=\vect{0}$.
+
+The previous slide gives us a simple way to check if a matrix is non-singular: simply compute its RREF. If you get a square matrix with ones on the diagonal and zeros off the diagonal, then the original matrix is non singular.
+
+A matrix that is not singular is called *nonsingular*.
+
+The concept of singularity is of fundamental importance. We will state several more characterizations of this concept over the next couple of weeks.
