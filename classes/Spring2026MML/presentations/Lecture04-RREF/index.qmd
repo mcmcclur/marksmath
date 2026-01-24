@@ -1,6 +1,6 @@
 ---
 title: Reduced row echelon form
-date: 2026-01-21
+date: 2026-01-23
 format:  
   revealjs:
     css: [../classnote-style.css, ./style.css] 
@@ -21,9 +21,9 @@ format:
 
 # Recap and look ahead
 
-Last time, we talked about linear systems and how they arise naturally in the process of the optimization of multivariable quadratic functions. We also talked about using algebraic operations on the equations can lead to solutions and what types of solutions sets can and cannot arise. We finished by noting that the coefficients in a linear system can be naturally thought of as a rectangular array of numbers, called a *matrix*, and that we might be able to solve the system by working with matrix directly.
+Last time, we talked about linear systems and how they arise naturally in the process of the optimization of multivariable quadratic functions. We also talked about using algebraic operations on the equations can lead to solutions and what types of solution sets can and cannot arise. We finished by noting that the coefficients in a linear system can be naturally thought of as a rectangular array of numbers, called a *matrix*, and that we might be able to solve the system by working with the matrix directly.
 
-Today, we'll focus on matrices, row operations, and reduced row echelon form of matrix. This will help us formalize the techniques we developed last time into definitive algorithms.
+Today, we'll focus on matrices, row operations, and reduced row echelon form of a matrix. This will help us formalize the techniques we developed last time into definitive algorithms.
 
 $$
 \newcommand{\vect}[1]{\mathbf{#1}}
@@ -122,7 +122,7 @@ u_1 & u_2 & \cdots & u_n
 $$
 Then the matrix-vector product $A\vect{u}$ is defined by 
 $$
-A\vect{u} = u_1 \mathbf{A}_1 + u_2 \mathbf{A}_2 + \cdots + u_n \mathbf{A}_n \in \mathbb{R^n}.
+A\vect{u} = u_1 \mathbf{A}_1 + u_2 \mathbf{A}_2 + \cdots + u_n \mathbf{A}_n \in \mathbb{R^m}.
 $$
 This operation of multiplying column vectors by scalars and adding up the results is often called a *linear combination*.
 
@@ -344,7 +344,7 @@ $$
 
 From here, it's totally easy to see that the solution vector can be written 
 $$
-\vect{b} = \begin{bmatrix} 2 & -3 & 4 \end{bmatrix}^{\mathsf T}.
+\vect{x} = \begin{bmatrix} 2 & -3 & 4 \end{bmatrix}^{\mathsf T}.
 $$
 
 # Reduced Row-Echelon Form
@@ -376,7 +376,7 @@ $$\begin{bmatrix}
 0&0&0&0&0&0&0&0
 \end{bmatrix}$$
 
-If this is the coefficient matrix of a homogenous system, then we could write that system as
+If this is the coefficient matrix of a homogeneous system, then we could write that system as
 
 $$\begin{aligned}
 x_1 - 3 x_2 + 0x_3 + 6 x_4 + 0x_5 + 0x_6 - 5x_7 + 9 x_8 &= 0 \\ 
@@ -412,7 +412,7 @@ x_5 &= -(3x_7 - 7x_8) \\
 x_1 &= 3x_2 - 6x_4 + 5x_7 - 9x_8,
 \end{aligned}$$
 
-we can Identify the five three variables with parameters $r$, $s$, $t$, $u$, and $v$:
+we can identify the five free variables with parameters $r$, $s$, $t$, $u$, and $v$:
 
 |r|s|t|u|v|
 |:---:|:---:|:---:|:---:|:---:|
@@ -447,7 +447,7 @@ As a result, we can determine the solution set of any linear system.
 
 ## Uniqueness of RREF
 
-**Theorem: Uniqueness of RREF**: Suppose that $A$ is an matrix and that $B$ and $C$ are matrices that are row-equivalent to $A$ and in reduced row-echelon form. Then $B=C$.
+**Theorem: Uniqueness of RREF**: Suppose that $A$ is a matrix and that $B$ and $C$ are matrices that are row-equivalent to $A$ and in reduced row-echelon form. Then $B=C$.
 
 ::: {.fragment .callout-note appearance=simple}
 
@@ -498,7 +498,7 @@ print(A)
 
 There are a few tools that you can use to assist you in Gauss-Jordan computations. These include,
 
-- [This Colab Notebook](https://colab.research.google.com/drive/19EfrrYKpGC786Sdi-xHURAdPhU1YTkjl?usp=sharing#sandboxMode=true){target=_blank}, which implements the exat algorithm shown here 
+- [This Colab Notebook](https://colab.research.google.com/drive/19EfrrYKpGC786Sdi-xHURAdPhU1YTkjl?usp=sharing#sandboxMode=true){target=_blank}, which implements the exact algorithm shown here 
 - [This description of SageMath](../../notes/sage) includes a computation for RREF. This is probably ideal for MyOpenMath HW because it works well with fractions.
 
 # Another example 
@@ -574,7 +574,7 @@ $$
 
 ## Definition
 
-An square matrix $A$ is said to be *nonsingular* if the equation $A\vect{x} = \vect{0}$ has only the trivial solution $\vect{x}=\vect{0}$.
+A square matrix $A$ is said to be *nonsingular* if the equation $A\vect{x} = \vect{0}$ has only the trivial solution $\vect{x}=\vect{0}$.
 
 The previous slide gives us a simple way to check if a matrix is non-singular: simply compute its RREF. If you get a square matrix with ones on the diagonal and zeros off the diagonal, then the original matrix is non singular.
 
