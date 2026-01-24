@@ -3,19 +3,18 @@
     - Wed, Jan 14: Review of Calc I - Functions, derivatives, and optimization
     - Fri, Jan 16: Overview of Calc III - Functions of two variables and their visualization. Partial derivatives and optimization.
 - Week 2:
-    - Wed, Jan 21: Systems and Matrices - General systems and equation operations, matrix representation and row operation, Reduced Row Echelon Form and nonsingular matrices
-    - Fri, Jan 23: Matrix algebra - Matrix multiplication, inverses, determinants, and transposes
+    - Wed, Jan 21: Systems and Matrices - General systems and equation operations, matrix representation and row operations
+    - Fri, Jan 23: RREF - Reduced Row Echelon Form and nonsingular matrices
 - Week 3: 
-    - Mon, Jan 26: Linear Algebra I - Abstract vector spaces, linear transformations and their matrix representation
     - Wed, Jan 28: Review 
     - Fri, Jan 30: Exam I
 - Week 4:
-    - Mon, Feb 2: Linear Algebra II - Subspaces, column space, null space, and range
-    - Wed, Feb 4: Linear Algebra III - Geometry of linear transformations and determinants
-    - Fri, Feb 6: Linear Algebra IV - Norms and inner products
+    - Mon, Feb 2: Linear Algebra I - Matrix Multiplication, Inverses, and Linear Transformations
+    - Wed, Feb 4: Linear Algebra II - Geometry of linear transformations and determinants
+    - Fri, Feb 6: Linear Algebra III - Subspaces, column space, null space, and range
 - Week 5:
-    - Mon, Feb 9: Data Intro - Data tables and data frames, types of data, images of data.
-    - Wed, Feb 11: Measures of data - Mean, variance, covariance, and correlation.
+    - Mon, Feb 9: Linear Algebra IV - Norms and inner products
+    - Wed, Feb 11: Data - Data tables and data frames. Types of data and their measures. Mean, variance, covariance, and correlation.
     - Fri, Feb 13: Linear Regression - Normal equations, simple examples, and Massey ratings
 - Week 6:
     - Mon, Feb 16: Practical issues - Encoding variables and regularization for linear regression.

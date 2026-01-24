@@ -16,6 +16,11 @@ css: calendar_style.css
       color: 'gray',
     },
     {
+      title  : 'Snow Day',
+      start  : '2026-01-26',
+      color: 'gray',
+    },
+    {
       title  : 'Spring break',
       start  : '2026-03-09',
       end: '2026-03-14',
