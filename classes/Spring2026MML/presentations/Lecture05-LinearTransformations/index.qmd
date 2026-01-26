@@ -1,0 +1,549 @@
+---
+title: Linear transformations
+date: 2026-02-02
+format:  
+  revealjs:
+    css: ../classnote-style.css 
+    controls: true
+    controls-layout: bottom-right
+    navigation-mode: vertical
+    smaller: true
+    history: true
+    transition: slide
+    keyboard: true
+    date-format: ddd, MMM DD, YYYY
+    html-math-method: mathjax
+    author: "Portions copyright Rob Beezer ([GFDL](https://www.gnu.org/licenses/fdl-1.3.en.html){target='_blank'})"
+    # echo: true
+    # eval: true
+    # output: true
+    # code-fold: true
+---
+
+# Recap and look ahead
+
+The last topic we discussed before the exam concerned the matrix representation of linear systems. We discussed reduced row echelon form and how we can use matrix multiplication to represent an arbitrary system in the very compact form $A\mathbf{x}=\mathbf{b}$.
+
+Today, we'll talk more about matrix multiplication and how it defines a particular type of function called a *linear transformation*.
+
+$$
+\newcommand{\vect}[1]{\mathbf{#1}}
+\newcommand{\rowopswap}[2]{R_{#1}\leftrightarrow R_{#2}}
+\newcommand{\rowopmult}[2]{#1R_{#2}}
+\newcommand{\rowopadd}[3]{#1R_{#2}+R_{#3}}
+\newcommand\aug{\fboxsep=-\fboxrule\!\!\!\fbox{\strut}\!\!\!}
+\newcommand{\matrixentry}[2]{\left\lbrack#1\right\rbrack_{#2}}
+$$
+
+# Matrix Algebra 
+
+Our first main objective today will be to define the algebraic operations on matrices, i.e.
+
+- Addition,
+- Scalar multiplication, and then...
+- Matrix multiplication
+
+This will all be done componentwise. Thus, let's first recall some useful notation for operations that reference components.
+
+## Component notation 
+
+As defined in the last lecture (a week and a half ago, now) the notation $[A]_{ij}$ refers to the entry in row $i$ and column $j$ and $\mathbf{A}_i$ refers to the $i^{\text{th}}$ column. For example, if 
+$$
+B=\begin{bmatrix}
+-1&2&5&3\\
+1&0&-6&1\\
+-4&2&2&-2
+\end{bmatrix},
+$$
+Then $[B]_{32} = 2$ and 
+$$
+\mathbf{B}_3 = \begin{bmatrix}
+5\\-6\\2
+\end{bmatrix}.
+$$
+
+## Matrix addition
+
+Matrix addition is defined in the simplest possible componentwise manner. That is, if $A$ and $B$ are $m\times n$ matrices, then $A+B$ is the matrix satisfying
+$$
+[A+B]_{ij} = [A]_{ij} + [B]_{ij}
+$$
+for all $i,j$ satisfying $1\leq i \leq m$ and $1\leq j \leq n$.  For example,
+$$
+\begin{bmatrix}
+2&-3&4\\
+1&0&-7
+\end{bmatrix}
++
+\begin{bmatrix}
+6&2&-4\\
+3&5&2
+\end{bmatrix}
+=
+\begin{bmatrix}
+8&-1&0\\
+4&5&-5
+\end{bmatrix}.
+$$
+
+## Scalar multiplication
+
+Scalar multiplication is also defined in the simplest possible componentwise manner. If $A$ is a matrix and $\alpha \in \mathbb R$, then $\alpha A$ is the matrix satisfying
+$$
+[\alpha A]_{ij} = \alpha [A]_{ij}.
+$$
+For example,
+$$
+2\begin{bmatrix}
+2&-3&4\\
+1&0&-7
+\end{bmatrix}
+= 
+\begin{bmatrix}
+4&-6&8\\
+2&0&-14
+\end{bmatrix}.
+$$
+
+## Algebraic properties of matrices
+
+Many (though not all) of the algebraic properties of real numbers are passed on to the corresponding matrix operations. Given matrices $A$, $B$, and $C$, for example, and scalars $\alpha$ and $\beta$, we have statements like
+
+- $A+B = B+A$,
+- $(A+B)+C = A+(B+C)$,
+- $(\alpha + \beta)A = \alpha A + \beta A$,
+
+We'll see more after we get to matrix multiplication.
+
+## A componentwise proof
+
+These things can be proven componentise and doing so provides a nice illustration of the power of the component notation. Here's a proof of the distributive law of scalar multiplication over matrix addition, for example.
+
+**Claim:** Given $m\times n$ matrices $A$ and $B$ and a scalar $\alpha$, 
+$$\alpha (A+B) = \alpha A + \alpha B.$$
+
+*Proof*:
+
+$$
+\begin{align*} [\alpha(A+B)]_{ij} &= \alpha [A+B]_{ij} && \text{Def scalar multiplication} \\ 
+&= \alpha ([A]_{ij} + [B]_{ij}) && \text{Def matrix addition} \\ 
+&= \alpha [A]_{ij} + \alpha [B]_{ij} && \text{Real dist} \\ 
+&= [\alpha A]_{ij} + [\alpha B]_{ij} && \text{Def scalar multiplication} \\ 
+&= [\alpha A + \alpha B]_{ij} && \text{Def matrix addition}
+\end{align*}
+$$ 
+
+# Matrix multiplication
+
+We now prepare to define matrix multiplication. The definition is again componentwise but it's more complicated than your first guess might be.
+
+Ultimately, matrix multiplication is used to describe the general linear transformation mapping $\mathbb R^n \to \mathbb R^m$ and it is that objective that drives the definition.
+
+::: {.fragment}
+
+---
+
+I'll tell you what a linear transformation is in just a bit!
+
+:::
+
+## Definition 
+
+Suppose that $A$ is an $m\times n$ matrix and that $B$ is an $n\times p$ matrix. The matrix product $AB$ is then an $m\times p$ matrix whose entries are 
+$$
+\matrixentry{AB}{ij} =
+\sum_{k=1}^{n}\matrixentry{A}{ik}\matrixentry{B}{kj}\text{.}
+$$
+In words, the entry in row $i$ and column $j$ of $AB$ is obtained by multiplying the $i^{\text{th}}$ row of $A$ with the $j^{\text{th}}$ column of $B$ componentwise and adding the results.
+
+::: {.fragment}
+
+---
+
+You might recognize that operation as the dot product of the $i^{\text{th}}$ row of $A$ with the $j^{\text{th}}$ column of $B$. We'll get to the dot product soon enough!
+
+:::
+
+## Example 
+
+It's not so hard once you do a few!  Here's an example:
+
+$$
+\left[\begin{matrix}-1 & 1 & -1\\-1 & -3 & -3\end{matrix}\right]
+\left[\begin{matrix}1 & 0 & -2 & 3\\-1 & -1 & 1 & 1\\-1 & 0 & 3 & 3\end{matrix}\right]
+=
+\left[\begin{matrix}-1 & -1 & 0 & -5\\5 & 3 & -10 & -15\end{matrix}\right]
+$$
+
+::: {.fragment}
+
+---
+
+You can see how it's crucial that the number of columns of $A$ equals the number of rows of $B$. Quite generally, if 
+$$
+A \in \mathbb{R}^{m\times n} \text{ and }
+B \in \mathbb{R}^{n\times k,} 
+$$
+then $AB\in\mathbb{R}^{m\times k}$.
+
+:::
+
+## Another example 
+
+$$
+\begin{bmatrix} 2 & -1 \\ -3 & 2 \end{bmatrix}
+\begin{bmatrix} x_1 \\ x_2 \end{bmatrix} =
+\begin{bmatrix} 2x_1 - x_2 \\ -3x_1 + 2x_2 \end{bmatrix}
+$$
+
+::: {.fragment}
+
+---
+
+Thus, we can represent systems using a compact matrix multiplication.
+
+:::
+
+## An important special case 
+
+If $A$ is $m\times n$ and $B$ is $n\times 1$, then we might think of $B$ as a column vector in $\mathbb R^n$ and we might even denote it as $\vect{v}$.
+
+Note then that $A\vect{v}$ is an $m\times 1$ column vector thus, the function
+$$\vect{v} \to A\vect{v}$$ 
+maps $\mathbb R^n \to \mathbb R^m$.
+
+As we'll show, this function is, in fact, a linear transformation. Furthermore, any linear transformation from $\mathbb R^n$ to $\mathbb R^m$ can be represented in this fashion.
+
+## Example 
+
+Here's a fun example:
+
+$$
+\left[\begin{matrix}2 & 5 & 4 & 2\\4 & -5 & 1 & -3\\0 & -4 & -4 & 1\end{matrix}\right]
+\left[\begin{matrix}0\\0\\1\\0\end{matrix}\right]
+=
+\left[\begin{matrix}4\\1\\-4\end{matrix}\right]
+$$
+
+::: {.fragment}
+
+---
+
+This illustrates the fact that *the product of a matrix with one of the standard coordinate basis vectors extracts a column from the matrix*.
+
+:::
+
+## Generalization
+
+A natural generalization of the last example yields our previous definition of matrix-vector multiplication:
+Let the matrix $A \in \mathbb{R^{m\times n}}$ and the vector $\vect{u} \in \mathbb{R^n}$ be defined by
+$$
+\begin{aligned}
+A &= \begin{bmatrix} 
+\mathbf{A}_1 & \mathbf{A}_2 & \cdots & \mathbf{A}_n.
+\end{bmatrix} \\
+\vect{u} &= \begin{bmatrix}
+u_1 & u_2 & \cdots & u_n
+\end{bmatrix}^{\mathsf T}
+\end{aligned}
+$$
+Then the matrix-vector product $A\vect{u}$ is defined by 
+$$
+A\vect{u} = u_1 \mathbf{A}_1 + u_2 \mathbf{A}_2 + \cdots + u_n \mathbf{A}_n \in \mathbb{R^m}.
+$$
+This operation of multiplying column vectors by scalars and adding up the results is often called a *linear combination*.
+
+
+# Algebra of matrix multiplication
+
+Our next goal will be to establish two major algebraic properties of matrix multiplication that are essential to understand how matrix multiplication defines a linear transformation. Namely,
+
+**The Distributive Law**: If $A$ is $m\times n$ and $B$ and $C$ are both $n\times p$, then
+
+$$A(B+C) = AB + AC.$$
+
+**Compatibility of matrix and scalar multiplication**: If $A$ is $m\times n$, $B$ is $n\times p$, and $\alpha\in\mathbb R$, then 
+$$A(\alpha B) = \alpha (AB).$$
+
+
+## The importance of these properties
+
+Given a matrix $A\in\mathbb R^{m\times n}$, we can define a function $T:\mathbb R^n \to \mathbb R^m$ by 
+$$T(\vect{u}) = A\vect{u}.$$
+The distributive law and the compatibility of matrix multiplication with scalar multiplication are the fundamental ways that we are permitted to algebraically manipulate these functions.
+
+These types of functions are important enough to be given their own name. That is, a function $T:\mathbb R^n \to \mathbb R^m$ that satisfies 
+$$
+\begin{aligned}
+T(\vect{u}+\vect{v}) &= T(\vect{u}) + T(\vect{v}) \text{ and}\\
+T(\alpha\vect{u}) &= \alpha T(\vect{v})
+\end{aligned}
+$$
+for all $\alpha\in\mathbb{R}^n$ and all $\vect{u},\vect{v}\in\mathbb{R}^n$ is called a *linear transformation*.
+
+## Proof of the compatibility property
+
+We'll show that $A(\alpha B) = \alpha (AB)$ by showing that 
+$$[A(\alpha B)]_{ij} = [\alpha (AB)]_{ij}.$$ 
+In words, we show that the entries are all equal. We do this like so:
+
+\begin{align*}
+[A(\alpha B)]_{ij} &= \sum_{k=1}^n [A]_{ik}[\alpha B]_{kj} && \text{Def Matrix Mult} \\
+&= \sum_{k=1}^n [A]_{ik}\alpha [B]_{kj} && \text{Real Dist Property} \\
+&= \alpha \sum_{k=1}^n [A]_{ik}[B]_{kj} && \text{Real Dist Property} \\
+&= \alpha [AB]_{ij} && \text{Def Matrix Mult}
+\end{align*}
+
+## Proof of the distributive property
+
+$$\begin{align*}
+\matrixentry{A(B+C)}{ij}&=\sum_{k=1}^{n}\matrixentry{A}{ik}\matrixentry{B+C}{kj}&&
+\text{Def Matrix Mult} \\
+&=\sum_{k=1}^{n}\matrixentry{A}{ik}(\matrixentry{B}{kj}+\matrixentry{C}{kj})&&
+\text{Def Matrix Addition} \\
+&=\sum_{k=1}^{n}\matrixentry{A}{ik}\matrixentry{B}{kj}+\matrixentry{A}{ik}\matrixentry{C}{kj}&&
+\text{Real Dist Property} \\
+&=\sum_{k=1}^{n}\matrixentry{A}{ik}\matrixentry{B}{kj}+\sum_{k=1}^{n}\matrixentry{A}{ik}\matrixentry{C}{kj}&&
+\text{Real Comm Property} \\
+&=\matrixentry{AB}{ij}+\matrixentry{AC}{ij}&&
+\text{Def Matrix Mult} \\
+&=\matrixentry{AB+AC}{ij}&&
+\text{Def Matrix Addition} \\
+\end{align*}$$
+
+## A non-law 
+
+We go through this tedium for a couple of reasons:
+
+1. We use and rely on these properties constantly while actually doing linear algebra.
+2. While the proofs of these laws show that the properties are, in some sense, inherited from the real numbers, they are not automatic.
+
+To illustrate the second point, note that matrix multipliction is *not* commutative. In fact, if $A$ is $m\times n$ and $B$ is $n\times p$, then $AB$ and $BA$ are both defined only when $m=p$.
+
+Even when $A$ and $B$ are both $2\times2$ matrices, we need not have $AB=BA$. I invite you to search for examples!
+
+
+# Associativity
+
+Associativity is another important algebraic property of matrix multiplication involving three multiplicatively compatible matrices. Specifically, if  
+$$
+A \in \mathbb{R}^{m\times n}, B \in \mathbb{R}^{n\times p}, 
+\text{ and } C \in \mathbb{R}^{p\times s},
+$$
+then $(AB)C = A(BC)$.
+
+## A special case
+
+If we specialize to the case that $s=1$ so that 
+$$C=\vect{u} \in \mathbb{R}^{p\times 1}$$ 
+represents a column vector, then assosicativity asserts that 
+$$(AB)\vect{u} = A(B\vect{u}).$$
+
+## Relation to composition
+
+Now suppose that $T_1$ and $T_2$ are the linear transformations defined by 
+$$T_1(\vect{u}) = A\vect{u} \text{ and } T_2(\vect{u}) = B\vect{u}.$$
+
+Then, associativity asserts that $T_1\circ T_2(\vect{u}) = T_1(T_2(\vect{u}))$.
+
+Put another way, the associative law implies that the product $AB$ is the matrix that represents the linear transformation $T_1\circ T_2$.
+
+
+## Proof of the associative property 
+
+The associative property can also be proven componentwise:
+
+\begin{align*}
+\matrixentry{A(BD)}{ij}&=\sum_{k=1}^{n}\matrixentry{A}{ik}\matrixentry{BD}{kj} =\sum_{k=1}^{n}\matrixentry{A}{ik}\left(\sum_{\ell=1}^{p}\matrixentry{B}{k\ell}\matrixentry{D}{\ell j}\right) && \text{Mat Mul }\times 2 \\
+&=\sum_{k=1}^{n}\sum_{\ell=1}^{p}\matrixentry{A}{ik}\matrixentry{B}{k\ell}\matrixentry{D}{\ell j} =\sum_{\ell=1}^{p}\sum_{k=1}^{n}\matrixentry{A}{ik}\matrixentry{B}{k\ell}\matrixentry{D}{\ell j} && \text{Dist & Comm} \\
+&=\sum_{\ell=1}^{p}\matrixentry{D}{\ell j}\left(\sum_{k=1}^{n}\matrixentry{A}{ik}\matrixentry{B}{k\ell}\right) = \sum_{\ell=1}^{p}\matrixentry{D}{\ell j}\matrixentry{AB}{i\ell} && \text{Dist & Mat Mul} \\
+&=\sum_{\ell=1}^{p}\matrixentry{AB}{i\ell}\matrixentry{D}{\ell j} = \matrixentry{(AB)D}{ij}&&
+\text{Comm & Mat Mul}
+\end{align*}
+
+
+# Inverses
+
+Reall that a *square* matrix is one with the same number of rows and columns. Thus, $A$ is square if there is a natural number $n$ with $A\in\mathbb{R}^{n\times n}$.
+
+If $A$ is square, then the corresponding linear transformation $T$ maps $\mathbb{R}^n \to \mathbb{R}^n$. Thus, we have a hope that $T$ *might* be one-to-one and onto.
+
+In this case, $T$ has an inverse transformation, which we denote $T^{-1}$. If we compose $T$ and $T^{-1}$, we should get the identity function.
+
+## Simplest case 
+
+When $n=1$, our function $T$ maps $\mathbb{R}\to\mathbb{R}$. The linear functions are exactly those of the form 
+$$
+T(x) = ax, \text{ for some } a\in\mathbb{R}.
+$$
+
+The inverse of $T$ is the function $T^{-1}(x) = \frac{1}{a}x$ and the composition of these functions satisfies 
+$$
+T^{-1}(T(x)) = \frac{1}{a} (ax) = \left(\frac{1}{a}a\right)x = 1x = x.
+$$
+
+Of course, the inverse exists only when $a\neq0$. Otherwise $T$ is not one-to-one and the formula for the inverse rightly results in division by zero.
+
+## Generalization
+
+If we want to work more generally, we need an analogy to $1/a$, the multiplicative inverse. We'll call this thing the matrix inverse and will denote the inverse of $A$ by $A^{-1}$. 
+
+We also need some criteria to determine when $A^{-1}$ exists, because it might not. At least it shouldn't, when the linear transformation defined by $A$ is not one-to-one.
+
+Finally, we'll need an analogy to the number $1$ in $\mathbb{R}^{n\times n}$. That is, we need a matrix $I$ satisfying 
+$$
+I\vect{x} = \vect{x},
+$$
+for all $\vect{x}\in\mathbb{R}^n$. We'll call $I$ the identity matrix.
+
+## Identity matrices 
+
+Given $n\in\mathbb N$, the $n$-dimensional identity matrix $I$ is defined
+$$
+I_{ij}=\begin{cases}
+1 & i=j \\
+0 & i\neq j.
+\end{cases}
+$$
+
+Thus, $I$ has ones only on its diagonal:
+$$
+I = \begin{bmatrix}
+1 & 0 & 0 & \cdots & 0 \\
+0 & 1 & 0 & \cdots & 0 \\
+0 & 0 & 1 & \cdots & 0 \\
+\vdots & \vdots & \vdots & \ddots & \vdots \\
+0 & 0 & 0 & \cdots & 1 \\
+\end{bmatrix}.
+$$
+
+## Multiplicative identity 
+
+I guess it's reasonably easy to see that $I$ serves as a multiplicative identity. That is, if 
+$$\vect{x} = \begin{bmatrix}
+x_1 & x_2 & x_3 & \cdots & x_n 
+\end{bmatrix}^{\mathsf T},$$
+then 
+
+$$
+I\vect{x} = \begin{bmatrix}
+1 & 0 & 0 & \cdots & 0 \\
+0 & 1 & 0 & \cdots & 0 \\
+0 & 0 & 1 & \cdots & 0 \\
+\vdots & \vdots & \vdots & \ddots & \vdots \\
+0 & 0 & 0 & \cdots & 1 \\
+\end{bmatrix}
+\begin{bmatrix}
+x_1 \\ x_2 \\ x_3 \\ \vdots \\ x_n 
+\end{bmatrix}
+=
+\begin{bmatrix}
+x_1 \\ x_2 \\ x_3 \\ \vdots \\ x_n 
+\end{bmatrix}
+= \vect{x}.
+$$
+
+## The matrix inverse
+
+If $A\in\mathbb R^{n\times n}$, then the inverse of $A$ (if it exists) is the matrix $A^{-1}\in\mathbb R^{n\times n}$ that satisfies
+$$
+AA^{-1} = I = A^{-1}A.
+$$
+When $A^{-1}$ does exist we say that $A$ is *invertible* and call $A^{-1}$ the *inverse* of $A$.
+
+## The functional inverse 
+
+Let $A$ be an invertible $n\times n$ matrix. Define the fucntions $T$ and $T^{-1}$ by 
+$$
+T(\vect{x}) = A\vect{x} \text{ and } T^{-1}(\vect{x}) = A^{-1}\vect{x}.
+$$
+
+Then,
+$$
+T\circ T^{-1}(\vect{x}) = T(T^{-1}(\vect{x})) = A(A^{-1}\vect{x}) = 
+(AA^{-1})\vect{x} = I\vect{x} = \vect{x}.
+$$
+
+In particular, the function $T^{-1}$ is, indeed, the functional inverse of $T$.
+
+
+# Computing inverses 
+
+Given a matrix and a purported inverse, it's not hard (in principle) to check to see if it they are, in fact inverses or not. For example:
+
+$$
+\left[
+\begin{array}{ccc}
+ 1 & 2 & 1 \\
+ 0 & 1 & -1 \\
+ 1 & 0 & 4 \\
+\end{array}
+\right]
+\left[
+\begin{array}{ccc}
+ 4 & -8 & -3 \\
+ -1 & 3 & 1 \\
+ -1 & 2 & 1 \\
+\end{array}
+\right]
+= 
+\left[
+\begin{array}{ccc}
+ 1 & 0 & 0 \\
+ 0 & 1 & 0 \\
+ 0 & 0 & 1 \\
+\end{array}
+\right]
+$$
+
+::: {.fragment}
+
+---
+
+Of course, we'd like to know how *find* matrix inverses.
+
+:::
+
+## The standard basis vectors 
+
+Working in $\mathbb{R}^n$, we're going to write down a list of $n$ column vectors called the *standard basis vectors*. While they are important quite generally, we define them now because they play a fundamental role in an algorithm for find the inverse of a matrix.
+
+Let $i\in\{1,2,\ldots,n\}$. We define the $i^{\text{th}}$ standard basis vector $\vect{e}_j$ by 
+$$
+[\vect{e}_i]_j = \begin{cases}
+1 & \text{if } i=j \\
+0 & \text{if } i\neq j.
+\end{cases}
+$$
+
+Note that, that these standard basis vectors are direct analogies of the vectors $\vect{i}$, $\vect{j}$, and $\vect{k}$ in $\mathbb{R}^3$. In fact, if $n=3$, then $\vect{e}_1 = \vect{i}$, $\vect{e}_2 = \vect{j}$, and $\vect{e}_3 = \vect{k}$.
+
+## The columns of $A^{-1}$
+
+Now, suppose that $\vect{x}$ solves the matrix equation 
+$$A\vect{x}=\vec{e}_i.$$
+I guess that means that
+$$A^{-1}\vect{e}_i=\vect{x}.$$
+But, $A^{-1}\vect{e}_i$ tells us exactly the $i^{\text{th}}$ column of $A^{-1}$. 
+
+Thus, we can find the $i^{\text{th}}$ column of $A^{-1}$ by solving  $A\vect{x}=\vect{e}_i$. Letting $i$ range from $1$ to $n$, we can find *all* the columns of $A^{-1}$.
+
+## An algorithm
+
+Of course, we've got an algorithm to solve $A\vect{x}=\vect{e}_i$. Simply form the augmented matrix $[A|\vect{e}_i]$. Then, use row reduction to place that augmented matrix into reduced row echelon form. If there's a solution $\vect{x}$, then we land at 
+$$
+[I|\vect{x}].
+$$
+If $A$ isn't transformed into $I$ in that process, then there wasn't a solution in the first place.
+
+## A complete algorithm
+
+Better yet, we could form the augmented matrix 
+$$[A|I],$$ 
+effectively setting the columns in the augmented portion to all $n$ standard basis vectors at once. If we row reduce that, then there are two possiblities:
+
+1. We land at $[I|A^{-1}]$, in which case we have $A^{-1}$ or 
+2. We don't land there since $A$ does not row reduct to $I$. In this case, $A$ is not invertible.
+
+# Examples 
+
