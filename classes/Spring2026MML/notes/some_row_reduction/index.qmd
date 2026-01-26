@@ -1,0 +1,339 @@
+---
+title: Reduction to reduced row echelon form
+subtitle: Examples and interpretation
+date: 2026-01-28
+format:
+  html:
+    toc: true
+    css: styles.css
+    page-layout: article
+    include-in-header: 
+        text: |
+            <script src="https://sagecell.sagemath.org/static/embedded_sagecell.js"></script>
+            <script>sagecell.makeSagecell({"inputLocation": ".sage"});</script>
+            <link rel="stylesheet" type="text/css" href="https://sagecell.sagemath.org/static/sagecell_embed.css">
+---
+
+Here are a few examples illustrating the computation of Reduced Row Echelon Form (RREF). After recalling the definition, there are three worked out examples illustrating the three things that might happen when working with $3\times3$ systems. There's also a Sage cell indicating how to check things on the computer.
+
+## The definition
+
+Recall that a matrix is in reduced row echelon form if the following properties are satisfied.
+
+- If the entries in a row are all zero, then the same is true of any row below it.
+- If we move across a row from left to right, the first nonzero entry we encounter is 1. We call this entry the leading entry in the row.
+- The leading entry in any row is to the right of the leading entries in all the rows above it.
+- A leading entry is the only nonzero entry in its column.
+
+### Check it out 
+
+Can you tell which of these are in reduced row echelon form?
+
+$$
+B_1=\begin{bmatrix}
+1&0&2&0&0\\
+0&1&-3&0&0\\
+0&0&0&1&5\\
+0&0&0&0&0
+\end{bmatrix}
+$$
+
+$$
+B_2=\begin{bmatrix}
+1&0&2&0&0\\
+0&0&0&0&0\\
+0&1&-3&0&0\\
+0&0&0&1&5
+\end{bmatrix}
+$$
+
+$$
+B_3=\begin{bmatrix}
+1&2&0&0&1\\
+0&1&0&0&-3\\
+0&0&0&1&4\\
+0&0&0&0&0
+\end{bmatrix}
+$$
+
+
+## Performing row reduction
+
+
+Given a system $A\mathbf{x} = \mathbf{b}$, there are generally three possibilities. It might have 
+
+- Exactly one solution (the typical situation),
+- No solutions (rare but important), or
+- Infinitely many solutions (rarer still but just as important)
+
+Let's take a look at those three possibilities.
+
+### The typical situation
+
+Here's the system 
+$$
+\begin{aligned}
+x_1 + x_3 &= 2 \\
+x_3 &= 3 \\
+x_1+x_2 &= -1
+\end{aligned}
+$$
+
+We represent the system as an augmented matrix $[A|\mathbf{b}]$ and row reduce it. If the $A$ transforms into an $I$, then the last column is the solution!
+
+$$
+\begin{aligned}
+\left[
+\begin{array}{rrr|r}
+1&0&1&2\\
+0&0&1&3\\
+1&1&0&-1
+\end{array}
+\right]
+&\xrightarrow{\;R_3\leftarrow R_3-R_1\;}
+\left[
+\begin{array}{rrr|r}
+1&0&1&2\\
+0&0&1&3\\
+0&1&-1&-3
+\end{array}
+\right] \\[1.0em]
+&\xrightarrow{\;R_2\leftrightarrow R_3\;}
+\left[
+\begin{array}{rrr|r}
+1&0&1&2\\
+0&1&-1&-3\\
+0&0&1&3
+\end{array}
+\right] \\[1.0em]
+&\xrightarrow{\;R_2\leftarrow R_2+R_3\;}
+\left[
+\begin{array}{rrr|r}
+1&0&1&2\\
+0&1&0&0\\
+0&0&1&3
+\end{array}
+\right] \\[1.0em]
+&\xrightarrow{\;R_1\leftarrow R_1-R_3\;}
+\left[
+\begin{array}{rrr|r}
+1&0&0&-1\\
+0&1&0&0\\
+0&0&1&3
+\end{array}
+\right]
+\end{aligned}
+$$
+
+
+### A randomly chosen system 
+
+I will generally try to ensure that numbers work out reasonably. If you just make up numbers, though, it can get nasty. I used a random number generator to build this example.
+
+$$
+\begin{aligned}
+\left[
+\begin{array}{rrr|r}
+8 & 12 & 10 & 7\\
+12 & 9 & 1 & 10\\
+5 & 9 & 1 & 2
+\end{array}
+\right]
+&\xrightarrow{\;R_1 \leftrightarrow R_2\;}
+\left[
+\begin{array}{rrr|r}
+12 & 9 & 1 & 10\\
+8 & 12 & 10 & 7\\
+5 & 9 & 1 & 2
+\end{array}
+\right] \\[1.2em]
+&\xrightarrow{\;R_2\leftarrow R_2-\tfrac{2}{3}R_1,\; R_3\leftarrow R_3-\tfrac{5}{12}R_1\;}
+\left[
+\begin{array}{rrr|r}
+12 & 9 & 1 & 10\\
+0 & 6 & \tfrac{28}{3} & \tfrac{1}{3}\\
+0 & \tfrac{21}{4} & \tfrac{7}{12} & -\tfrac{13}{6}
+\end{array}
+\right] \\[1.2em]
+&\xrightarrow{\;R_2\leftarrow \tfrac{1}{6}R_2\;}
+\left[
+\begin{array}{rrr|r}
+12 & 9 & 1 & 10\\
+0 & 1 & \tfrac{14}{9} & \tfrac{1}{18}\\
+0 & \tfrac{21}{4} & \tfrac{7}{12} & -\tfrac{13}{6}
+\end{array}
+\right] \\[1.2em]
+&\xrightarrow{\;R_1\leftarrow R_1-9R_2,\; R_3\leftarrow R_3-\tfrac{21}{4}R_2\;}
+\left[
+\begin{array}{rrr|r}
+12 & 0 & -13 & \tfrac{19}{2}\\
+0 & 1 & \tfrac{14}{9} & \tfrac{1}{18}\\
+0 & 0 & -\tfrac{91}{12} & -\tfrac{59}{24}
+\end{array}
+\right] \\[1.2em]
+&\xrightarrow{\;R_3\leftarrow -\tfrac{12}{91}R_3\;}
+\left[
+\begin{array}{rrr|r}
+12 & 0 & -13 & \tfrac{19}{2}\\
+0 & 1 & \tfrac{14}{9} & \tfrac{1}{18}\\
+0 & 0 & 1 & \tfrac{59}{182}
+\end{array}
+\right] \\[1.2em]
+&\xrightarrow{\;R_2\leftarrow R_2-\tfrac{14}{9}R_3,\; R_1\leftarrow R_1+13R_3\;}
+\left[
+\begin{array}{rrr|r}
+12 & 0 & 0 & \tfrac{96}{7}\\
+0 & 1 & 0 & -\tfrac{35}{78}\\
+0 & 0 & 1 & \tfrac{59}{182}
+\end{array}
+\right] \\[1.2em]
+&\xrightarrow{\;R_1\leftarrow \tfrac{1}{12}R_1\;}
+\left[
+\begin{array}{rrr|r}
+1 & 0 & 0 & \tfrac{8}{7}\\
+0 & 1 & 0 & -\tfrac{35}{78}\\
+0 & 0 & 1 & \tfrac{59}{182}
+\end{array}
+\right]
+\end{aligned}
+$$
+
+
+### Infinitely many solutions
+
+This example illustrates a system with infinitely many solutions.
+
+$$
+\begin{aligned}
+\left[
+\begin{array}{rrr|r}
+1&2&3&1\\
+4&5&6&1\\
+7&8&9&1
+\end{array}
+\right]
+&\xrightarrow{\;R_2\leftarrow R_2-4R_1,\; R_3\leftarrow R_3-7R_1\;}
+\left[
+\begin{array}{rrr|r}
+1&2&3&1\\
+0&-3&-6&-3\\
+0&-6&-12&-6
+\end{array}
+\right] \\[1.2em]
+&\xrightarrow{\;R_2\leftarrow -\tfrac{1}{3}R_2\;}
+\left[
+\begin{array}{rrr|r}
+1&2&3&1\\
+0&1&2&1\\
+0&-6&-12&-6
+\end{array}
+\right] \\[1.2em]
+&\xrightarrow{\;R_3\leftarrow R_3+6R_2\;}
+\left[
+\begin{array}{rrr|r}
+1&2&3&1\\
+0&1&2&1\\
+0&0&0&0
+\end{array}
+\right] \\[1.2em]
+&\xrightarrow{\;R_1\leftarrow R_1-2R_2\;}
+\left[
+\begin{array}{rrr|r}
+1&0&-1&-1\\
+0&1&2&1\\
+0&0&0&0
+\end{array}
+\right]
+\end{aligned}
+$$
+
+Interpreting that final matrix as a system, we see that 
+$x_3$ is free and that 
+$$
+x_1 = x_3 - 1 \text{ and } x_2 = 1 - 2x_3.
+$$
+If we wanted to write down a parametric description of the solution set, we could write it as 
+$$
+\{(x_3-1, 1-2x_3, x_3): x_3\in\mathbb R\}
+$$
+or, equivalently,
+$$
+\{(t-1, 1-2t, t): t\in\mathbb R\}.
+$$
+
+### An inconsistent system
+
+Here's how things work out when your system is inconsistent.
+
+$$
+\begin{aligned}
+\left[
+\begin{array}{rrr|r}
+1&4&5&7\\
+2&8&10&14\\
+3&12&15&22
+\end{array}
+\right]
+&\xrightarrow{\;R_2\leftarrow R_2-2R_1,\; R_3\leftarrow R_3-3R_1\;}
+\left[
+\begin{array}{rrr|r}
+1&4&5&7\\
+0&0&0&0\\
+0&0&0&1
+\end{array}
+\right] \\[1.0em]
+&\xrightarrow{\;R_2\leftrightarrow R_3\;}
+\left[
+\begin{array}{rrr|r}
+1&4&5&7\\
+0&0&0&1\\
+0&0&0&0
+\end{array}
+\right] \\[1.0em]
+&\xrightarrow{\;R_1\leftarrow R_1-7R_2\;}
+\left[
+\begin{array}{rrr|r}
+1&4&5&0\\
+0&0&0&1\\
+0&0&0&0
+\end{array}
+\right]
+\end{aligned}
+$$
+
+In this example, you can see even after the first step that there's no way for 
+$$
+0x_1 + 0x_2 + 0x_3 = 1.
+$$
+Thus, the system has no solution.
+
+
+## Using SageMath
+
+
+Finally, don't forget that we can define matrices and perform quite a few computations quickly and easily, which can be quite convenient for checking your work.
+
+Suppose, for example, we'd like to solve a system of equations:
+
+$$
+\begin{aligned}
+x+2y+3z &= 1 \\
+3x+2y-z &= -1 \\
+5x+2y-5z &= 1
+\end{aligned}
+$$
+
+We can use Sage's built in `matrix` command to express the system as an augmented matrix and then use that matrix's `rref` method to quickly reduce it to reduced row echelon form:
+
+<div class="sage">
+  <script type="text/x-sage">
+A = matrix([
+    [1,2,3,1],
+    [3,2,-1,-1], 
+    [5,2,-5,-3]
+])
+A.rref()
+  </script>
+</div>
+
+From there, of course, it's easy to see that there's an infinite family of solutions and to write down that family in parameterized form.
