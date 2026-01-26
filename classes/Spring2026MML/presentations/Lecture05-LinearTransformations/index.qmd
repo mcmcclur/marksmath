@@ -1,5 +1,5 @@
 ---
-title: Linear transformations
+title: Linear transformations <br> and their inverses
 date: 2026-02-02
 format:  
   revealjs:
@@ -117,7 +117,7 @@ We'll see more after we get to matrix multiplication.
 
 ## A componentwise proof
 
-These things can be proven componentise and doing so provides a nice illustration of the power of the component notation. Here's a proof of the distributive law of scalar multiplication over matrix addition, for example.
+These things can be proven componentwise and doing so provides a nice illustration of the power of the component notation. Here's a proof of the distributive law of scalar multiplication over matrix addition, for example.
 
 **Claim:** Given $m\times n$ matrices $A$ and $B$ and a scalar $\alpha$, 
 $$\alpha (A+B) = \alpha A + \alpha B.$$
@@ -276,10 +276,10 @@ These types of functions are important enough to be given their own name. That i
 $$
 \begin{aligned}
 T(\vect{u}+\vect{v}) &= T(\vect{u}) + T(\vect{v}) \text{ and}\\
-T(\alpha\vect{u}) &= \alpha T(\vect{v})
+T(\alpha\vect{u}) &= \alpha T(\vect{u})
 \end{aligned}
 $$
-for all $\alpha\in\mathbb{R}^n$ and all $\vect{u},\vect{v}\in\mathbb{R}^n$ is called a *linear transformation*.
+for all $\alpha\in\mathbb{R}$ and all $\vect{u},\vect{v}\in\mathbb{R}^n$ is called a *linear transformation*.
 
 ## Proof of the compatibility property
 
@@ -318,7 +318,7 @@ We go through this tedium for a couple of reasons:
 1. We use and rely on these properties constantly while actually doing linear algebra.
 2. While the proofs of these laws show that the properties are, in some sense, inherited from the real numbers, they are not automatic.
 
-To illustrate the second point, note that matrix multipliction is *not* commutative. In fact, if $A$ is $m\times n$ and $B$ is $n\times p$, then $AB$ and $BA$ are both defined only when $m=p$.
+To illustrate the second point, note that matrix multiplication is *not* commutative. In fact, if $A$ is $m\times n$ and $B$ is $n\times p$, then $AB$ and $BA$ are both defined only when $m=p$.
 
 Even when $A$ and $B$ are both $2\times2$ matrices, we need not have $AB=BA$. I invite you to search for examples!
 
@@ -336,7 +336,7 @@ then $(AB)C = A(BC)$.
 
 If we specialize to the case that $s=1$ so that 
 $$C=\vect{u} \in \mathbb{R}^{p\times 1}$$ 
-represents a column vector, then assosicativity asserts that 
+represents a column vector, then associativity asserts that 
 $$(AB)\vect{u} = A(B\vect{u}).$$
 
 ## Relation to composition
@@ -353,18 +353,19 @@ Put another way, the associative law implies that the product $AB$ is the matrix
 
 The associative property can also be proven componentwise:
 
-\begin{align*}
-\matrixentry{A(BD)}{ij}&=\sum_{k=1}^{n}\matrixentry{A}{ik}\matrixentry{BD}{kj} =\sum_{k=1}^{n}\matrixentry{A}{ik}\left(\sum_{\ell=1}^{p}\matrixentry{B}{k\ell}\matrixentry{D}{\ell j}\right) && \text{Mat Mul }\times 2 \\
-&=\sum_{k=1}^{n}\sum_{\ell=1}^{p}\matrixentry{A}{ik}\matrixentry{B}{k\ell}\matrixentry{D}{\ell j} =\sum_{\ell=1}^{p}\sum_{k=1}^{n}\matrixentry{A}{ik}\matrixentry{B}{k\ell}\matrixentry{D}{\ell j} && \text{Dist & Comm} \\
-&=\sum_{\ell=1}^{p}\matrixentry{D}{\ell j}\left(\sum_{k=1}^{n}\matrixentry{A}{ik}\matrixentry{B}{k\ell}\right) = \sum_{\ell=1}^{p}\matrixentry{D}{\ell j}\matrixentry{AB}{i\ell} && \text{Dist & Mat Mul} \\
-&=\sum_{\ell=1}^{p}\matrixentry{AB}{i\ell}\matrixentry{D}{\ell j} = \matrixentry{(AB)D}{ij}&&
-\text{Comm & Mat Mul}
-\end{align*}
-
+$$
+\begin{aligned}
+\matrixentry{A(BC)}{ij}&=\sum_{k=1}^{n}\matrixentry{A}{ik}\matrixentry{BC}{kj} =\sum_{k=1}^{n}\matrixentry{A}{ik}\left(\sum_{\ell=1}^{p}\matrixentry{B}{k\ell}\matrixentry{C}{\ell j}\right) && \text{Mat Mul }\times 2 \\
+&=\sum_{k=1}^{n}\sum_{\ell=1}^{p}\matrixentry{A}{ik}\matrixentry{B}{k\ell}\matrixentry{C}{\ell j} =\sum_{\ell=1}^{p}\sum_{k=1}^{n}\matrixentry{A}{ik}\matrixentry{B}{k\ell}\matrixentry{C}{\ell j} && \text{Dist \& Comm} \\
+&=\sum_{\ell=1}^{p}\matrixentry{C}{\ell j}\left(\sum_{k=1}^{n}\matrixentry{A}{ik}\matrixentry{B}{k\ell}\right) = \sum_{\ell=1}^{p}\matrixentry{C}{\ell j}\matrixentry{AB}{i\ell} && \text{Dist \& Mat Mul} \\
+&=\sum_{\ell=1}^{p}\matrixentry{AB}{i\ell}\matrixentry{C}{\ell j} = \matrixentry{(AB)C}{ij} &&
+\text{Comm \& Mat Mul}
+\end{aligned}
+$$
 
 # Inverses
 
-Reall that a *square* matrix is one with the same number of rows and columns. Thus, $A$ is square if there is a natural number $n$ with $A\in\mathbb{R}^{n\times n}$.
+Recall that a *square* matrix is one with the same number of rows and columns. Thus, $A$ is square if there is a natural number $n$ with $A\in\mathbb{R}^{n\times n}$.
 
 If $A$ is square, then the corresponding linear transformation $T$ maps $\mathbb{R}^n \to \mathbb{R}^n$. Thus, we have a hope that $T$ *might* be one-to-one and onto.
 
@@ -453,7 +454,7 @@ When $A^{-1}$ does exist we say that $A$ is *invertible* and call $A^{-1}$ the *
 
 ## The functional inverse 
 
-Let $A$ be an invertible $n\times n$ matrix. Define the fucntions $T$ and $T^{-1}$ by 
+Let $A$ be an invertible $n\times n$ matrix. Define the functions $T$ and $T^{-1}$ by
 $$
 T(\vect{x}) = A\vect{x} \text{ and } T^{-1}(\vect{x}) = A^{-1}\vect{x}.
 $$
@@ -506,9 +507,9 @@ Of course, we'd like to know how *find* matrix inverses.
 
 ## The standard basis vectors 
 
-Working in $\mathbb{R}^n$, we're going to write down a list of $n$ column vectors called the *standard basis vectors*. While they are important quite generally, we define them now because they play a fundamental role in an algorithm for find the inverse of a matrix.
+Working in $\mathbb{R}^n$, we're going to write down a list of $n$ column vectors called the *standard basis vectors*. While they are important quite generally, we define them now because they play a fundamental role in an algorithm for finding the inverse of a matrix.
 
-Let $i\in\{1,2,\ldots,n\}$. We define the $i^{\text{th}}$ standard basis vector $\vect{e}_j$ by 
+Let $i\in\{1,2,\ldots,n\}$. We define the $i^{\text{th}}$ standard basis vector $\vect{e}_i$ by 
 $$
 [\vect{e}_i]_j = \begin{cases}
 1 & \text{if } i=j \\
@@ -516,12 +517,12 @@ $$
 \end{cases}
 $$
 
-Note that, that these standard basis vectors are direct analogies of the vectors $\vect{i}$, $\vect{j}$, and $\vect{k}$ in $\mathbb{R}^3$. In fact, if $n=3$, then $\vect{e}_1 = \vect{i}$, $\vect{e}_2 = \vect{j}$, and $\vect{e}_3 = \vect{k}$.
+Note that these standard basis vectors are direct analogies of the vectors $\vect{i}$, $\vect{j}$, and $\vect{k}$ in $\mathbb{R}^3$. In fact, if $n=3$, then $\vect{e}_1 = \vect{i}$, $\vect{e}_2 = \vect{j}$, and $\vect{e}_3 = \vect{k}$.
 
 ## The columns of $A^{-1}$
 
 Now, suppose that $\vect{x}$ solves the matrix equation 
-$$A\vect{x}=\vec{e}_i.$$
+$$A\vect{x}=\vect{e}_i.$$
 I guess that means that
 $$A^{-1}\vect{e}_i=\vect{x}.$$
 But, $A^{-1}\vect{e}_i$ tells us exactly the $i^{\text{th}}$ column of $A^{-1}$. 
@@ -540,10 +541,173 @@ If $A$ isn't transformed into $I$ in that process, then there wasn't a solution 
 
 Better yet, we could form the augmented matrix 
 $$[A|I],$$ 
-effectively setting the columns in the augmented portion to all $n$ standard basis vectors at once. If we row reduce that, then there are two possiblities:
+effectively setting the columns in the augmented portion to all $n$ standard basis vectors at once. If we row reduce that, then there are two possibilities:
 
 1. We land at $[I|A^{-1}]$, in which case we have $A^{-1}$ or 
-2. We don't land there since $A$ does not row reduct to $I$. In this case, $A$ is not invertible.
+2. We don't land there since $A$ does not row reduce to $I$. In this case, $A$ is not invertible.
+
+## Invertibility vs singularity
+
+Recall that last time, we defined a square matrix $A$ to be *non-singular* when the equation $A\vect{x}=\vect{0}$ has only the zero solution.  Otherwise, the matrix is singular.
+
+Another way to express this is to say that $A$ is invertible.
 
 # Examples 
 
+This column of slides shows a few examples illustrating the process of finding the inverse of a matrix by computing the reduced row echelon form of 
+$$[A|I].$$ 
+The algorithm works exactly when the matrix is non-singular. Thus, this technique provides a way to test for singularity as well.
+
+## A $2\times2$ non-singular matrix
+
+Here's the typical situation for a $2\times2$ matrix:
+
+$$
+\begin{aligned}
+&\left[\begin{array}{cc|cc}
+1&2&1&0\\
+3&4&0&1
+\end{array}\right]
+\xrightarrow{\;R_2\leftarrow R_2-3R_1\;}
+\left[\begin{array}{cc|cc}
+1&2&1&0\\
+0&-2&-3&1
+\end{array}\right]  \\[1em]
+&\xrightarrow{\;R_2\leftarrow -\tfrac12 R_2\;}
+\left[\begin{array}{cc|cc}
+1&2&1&0\\
+0&1&\tfrac32&-\tfrac12
+\end{array}\right]
+\xrightarrow{\;R_1\leftarrow R_1-2R_2\;}
+\left[\begin{array}{cc|cc}
+1&0&-2&1\\
+0&1&\tfrac32&-\tfrac12
+\end{array}\right]
+\end{aligned}
+$$
+
+## A $2\times2$ singular matrix
+
+In this case, the second row of $A$ is exactly $3$ times the first. Thus, the matrix is singular and we expect the technique to fail. Here's what that looks like:
+
+$$
+\begin{aligned}
+&\left[\begin{array}{cc|cc}
+1&2&1&0\\
+3&6&0&1
+\end{array}\right]
+\xrightarrow{\;R_2\leftarrow R_2-3R_1\;}
+\end{aligned}
+\left[\begin{array}{cc|cc}
+1&2&1&0\\
+0&0&-3&1
+\end{array}\right]
+$$
+
+At this point, we see that there's no way to zero out the entry $a_{12}=2$ so we can't reach the form $[I|A^{-1}]$.
+
+## $3\times3$ example 
+
+$3\times3$ matrices are going to be more work.
+
+$$
+\scriptsize
+\begin{aligned}
+&\left[\begin{array}{ccc|ccc}
+2&1&1&1&0&0\\
+3&-1&2&0&1&0\\
+1&-3&1&0&0&1
+\end{array}\right]
+\xrightarrow{\;R_1\leftrightarrow R_3\;}
+\left[\begin{array}{ccc|ccc}
+1&-3&1&0&0&1\\
+3&-1&2&0&1&0\\
+2&1&1&1&0&0
+\end{array}\right]
+\xrightarrow{\;\substack{R_2\leftarrow R_2-3R_1\\ R_3\leftarrow R_3-2R_1}\;}
+\left[\begin{array}{ccc|ccc}
+1&-3&1&0&0&1\\
+0&8&-1&0&1&-3\\
+0&7&-1&1&0&-2
+\end{array}\right] \\[1em]
+&\xrightarrow{\;R_2\leftarrow \tfrac18 R_2\;}
+\left[\begin{array}{ccc|ccc}
+1&-3&1&0&0&1\\
+0&1&-\tfrac18&0&\tfrac18&-\tfrac38\\
+0&7&-1&1&0&-2
+\end{array}\right]
+\xrightarrow{\;R_3\leftarrow R_3-7R_2\;}
+\left[\begin{array}{ccc|ccc}
+1&-3&1&0&0&1\\
+0&1&-\tfrac18&0&\tfrac18&-\tfrac38\\
+0&0&-\tfrac18&1&-\tfrac78&\tfrac58
+\end{array}\right] \\[1em]
+&\xrightarrow{\;R_3\leftarrow -8R_3\;}
+\left[\begin{array}{ccc|ccc}
+1&-3&1&0&0&1\\
+0&1&-\tfrac18&0&\tfrac18&-\tfrac38\\
+0&0&1&-8&7&-5
+\end{array}\right]
+\xrightarrow{\;\substack{R_1\leftarrow R_1-R_3\\ R_2\leftarrow R_2+\tfrac18 R_3}\;}
+\left[\begin{array}{ccc|ccc}
+1&-3&0&8&-7&6\\
+0&1&0&-1&1&-1\\
+0&0&1&-8&7&-5
+\end{array}\right] \\[1em]
+&\xrightarrow{\;R_1\leftarrow R_1+3R_2\;}
+\left[\begin{array}{ccc|ccc}
+1&0&0&5&-4&3\\
+0&1&0&-1&1&-1\\
+0&0&1&-8&7&-5
+\end{array}\right]
+\end{aligned}
+$$
+
+## General $2\times2$
+
+Let's apply the technique to an arbitrary $2\times2$ matrix.
+
+$$
+\small
+\begin{aligned}
+&\left[\begin{array}{cc|cc}
+a&b&1&0\\
+c&d&0&1
+\end{array}\right]
+\xrightarrow{\;R_2\leftarrow aR_2-cR_1\;}
+\left[\begin{array}{cc|cc}
+a&b&1&0\\
+0&ad-bc&-c&a
+\end{array}\right] \\[1em]
+&\xrightarrow{\;R_2\leftarrow \tfrac{1}{ad-bc}\,R_2\;}
+\left[\begin{array}{cc|cc}
+a&b&1&0\\
+0&1&-\tfrac{c}{ad-bc}&\tfrac{a}{ad-bc}
+\end{array}\right] \\[1em]
+&\xrightarrow{\;R_1\leftarrow R_1-bR_2\;}
+\left[\begin{array}{cc|cc}
+a&0&1+\tfrac{bc}{ad-bc}&-\tfrac{ab}{ad-bc}\\
+0&1&-\tfrac{c}{ad-bc}&\tfrac{a}{ad-bc}
+\end{array}\right] \\[1em]
+&\xrightarrow{\;R_1\leftarrow \tfrac1a\,R_1\;}
+\left[\begin{array}{cc|cc}
+1&0&\tfrac{d}{ad-bc}&-\tfrac{b}{ad-bc}\\
+0&1&-\tfrac{c}{ad-bc}&\tfrac{a}{ad-bc}
+\end{array}\right].
+\end{aligned}
+$$
+
+## A $2\times2$ formula 
+
+The previous example yields the general formula for the inverse of a $2\times2$ matrix:
+$$
+A^{-1} = \frac1{ad-bc}
+\begin{bmatrix}
+d & -b \\ -c & a 
+\end{bmatrix}
+$$
+It's easy enough to check that this formula always works.
+
+When the expression in the denominator is zero, the formula fails since the matrix is singular.
+
+That expression $ad-bc$ is called the *determinant* of the matrix and will be our main focus next time.
