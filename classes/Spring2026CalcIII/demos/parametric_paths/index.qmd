@@ -1,0 +1,46 @@
+---
+title: Parametric paths
+format:
+    html:
+        page-layout: article
+---
+
+Here are a couple of dynamic visualizations that illustrate how circles and lines can be mixed and matched to powerful effect.
+
+
+
+## A cycloid
+
+A point on a rolling circle traces out a path called a cycloid. The simplest form of a cycloid is 
+$$
+\begin{aligned}
+  \vec{p}(t) &= \langle 
+    t-\sin\left(t\right),
+    1-\cos\left(t\right) 
+  \rangle \\ 
+  &= \langle t,1 \rangle - \langle \sin(t), \cos(t) \rangle.
+\end{aligned}
+$$
+Note how the vector formulation shows how the path arises as the combination of a linear motion and a circular motion.
+
+::: {fig-cap="The cycloid" style="width: 600px; margin: 0 auto;"}
+
+<iframe src="https://www.desmos.com/calculator/4b697a7834?embed" width="600" height="300" style="border: 1px solid #ccc" frameborder=0></iframe>
+
+:::
+
+## A helix
+
+A helix also arises as the combination of a linear motion and a circular motion. This time, though, the linear motion is orthogonal to the plane of the circular motion.
+
+<div id="observablehq-combined_helix_anim-c22994da"></div>
+<div style="display: none" id="observablehq-run-c22994da"></div>
+
+<script type="module">
+import {Runtime, Inspector} from "https://cdn.jsdelivr.net/npm/@observablehq/runtime@5/dist/runtime.js";
+import define from "https://api.observablehq.com/d/4ec64634d7ceba47.js?v=4";
+new Runtime().module(define, name => {
+  if (name === "combined_helix_anim") return new Inspector(document.querySelector("#observablehq-combined_helix_anim-c22994da"));
+  if (name === "run") return new Inspector(document.querySelector("#observablehq-run-c22994da"));
+});
+</script>
