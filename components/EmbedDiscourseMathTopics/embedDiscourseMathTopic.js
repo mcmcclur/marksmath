@@ -174,7 +174,8 @@ export async function embedDiscourseMathTopic(topicId) {
           const emojiMap = {
             '+1': '👍',
             'heart': '❤️',
-            'poop': '💩'
+            'poop': '💩',
+            'thinking': '🤔'
             // Add more mappings as needed
           };
           const reactions_row = reply_container
