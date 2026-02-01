@@ -65,3 +65,13 @@ Of course, I learned most of this material many years ago and some of the presen
     Last time, we talked about linear systems and how they to the concept of a *matrix*. Today, we'll focus on matrices themselves and their reduced row echelon form.
   </div>
 </details>
+
+- Mon, Feb 2: Linear transformations and inverse matrices
+  - [Presentation](./Lecture05-LinearTransformations/){target=_blank}
+  -
+<details>
+  <summary>Comments</summary>
+  <div>
+    We've moved from systems of equations to their matrix representation. Now, we're going to focus on matrix multiplication and how it can be used to describe certain types of functions called *linear transformations*. A key step along the way is the construction of the inverse transformation.
+  </div>
+</details>

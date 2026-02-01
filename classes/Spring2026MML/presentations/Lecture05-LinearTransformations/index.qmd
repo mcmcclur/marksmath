@@ -272,7 +272,9 @@ Given a matrix $A\in\mathbb R^{m\times n}$, we can define a function $T:\mathbb 
 $$T(\vect{u}) = A\vect{u}.$$
 The distributive law and the compatibility of matrix multiplication with scalar multiplication are the fundamental ways that we are permitted to algebraically manipulate these functions.
 
-These types of functions are important enough to be given their own name. That is, a function $T:\mathbb R^n \to \mathbb R^m$ that satisfies 
+These types of functions are important enough to be given their own name. 
+
+**Definition**: A function $T:\mathbb R^n \to \mathbb R^m$ that satisfies 
 $$
 \begin{aligned}
 T(\vect{u}+\vect{v}) &= T(\vect{u}) + T(\vect{v}) \text{ and}\\
