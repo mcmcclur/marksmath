@@ -1,0 +1,121 @@
+---
+title: Matrix inverses with Sage
+date: 2026-02-02
+format:
+  html:
+    toc: true
+    page-layout: article
+    include-in-header: 
+        text: |
+            <script src="https://sagecell.sagemath.org/static/embedded_sagecell.js"></script>
+            <script>sagecell.makeSagecell({"inputLocation": ".sage"});</script>
+            <link rel="stylesheet" type="text/css" href="https://sagecell.sagemath.org/static/sagecell_embed.css">
+---
+
+Here are a few examples illustrating the computation of with Sage. After recalling the definition, we'll show how to perform these computations directly and via the Reduced Row Echelon Form command
+
+## The definition
+
+Recall that a square matrix $M$ is called *invertible* if there's a matrix $M^{-1}$ of the same dimension such that 
+$$MM^{-1} = I.$$
+In this case, $M^{-1}$ is called the *inverse* of $M$.
+
+### Example
+
+Let 
+$$
+M = \left[\begin{array}{rrr}
+1 & 2 & 3 \\
+2 & 3 & 4 \\
+3 & 4 & 6
+\end{array}\right].
+$$
+Then
+$$
+M^{-1} = \left[\begin{array}{rrr}
+-2 & 0 & 1 \\
+0 & 3 & -2 \\
+1 & -2 & 1
+\end{array}\right],
+$$
+since 
+$$
+\left[\begin{array}{rrr}
+1 & 2 & 3 \\
+2 & 3 & 4 \\
+3 & 4 & 6
+\end{array}\right]
+\left[\begin{array}{rrr}
+-2 & 0 & 1 \\
+0 & 3 & -2 \\
+1 & -2 & 1
+\end{array}\right] = 
+\left[\begin{array}{rrr}
+1 & 0 & 0 \\
+0 & 1 & 0 \\
+0 & 0 & 1
+\end{array}\right]
+$$
+
+
+## Computing inverses
+
+You can find the inverse of a matrix $M$ by setting up the augmented matrix 
+$$[M|I],$$
+placing it in reduced row echelon form, and examining the results. If the $M$ transforms to another copy of $I$, then the $I$ will have transformed to $M^{-1}$. That is,
+$$
+[M|I] \xrightarrow{RREF} [I|M^{-1}].
+$$
+If $M$ is not invertible, then you'll find that $M$ doesn't row reduce to $I$.
+
+As a simple example to illustrate this second point,
+$$
+\left[\begin{array}{rrrr}
+1 & 2 & 1 & 0 \\
+2 & 4 & 0 & 1
+\end{array}\right]
+\xrightarrow{RREF}
+\left[\begin{array}{rrrr}
+1 & 2 & 0 & \frac{1}{2} \\
+0 & 0 & 1 & -\frac{1}{2}
+\end{array}\right].
+$$
+Thus, 
+$$
+\left[\begin{array}{rr}
+1 & 2 \\
+2 & 4
+\end{array}\right]
+$$
+is not invertible.
+
+
+## Using SageMath
+
+Employing the strategy described above, we can compute of our first $3\times3$ example using the following Sage code:
+
+<div class="sage">
+  <script type="text/x-sage">
+MI = matrix([
+    [1,2,3,1,0,0],
+    [2,3,4,0,1,0], 
+    [3,4,6,0,0,1]
+])
+MI.rref()
+  </script>
+</div>
+
+It's worth mentioning that Sage matrices have a built in `inverse` method. Thus, we could compute, display, and check an inverse computation as follows:
+
+<div class="sage">
+  <script type="text/x-sage">
+M = matrix([
+    [1,2,3],
+    [2,3,4], 
+    [3,4,6]
+])
+MInv = M.inverse()
+pretty_print(MInv)
+pretty_print(MInv*M)
+  </script>
+</div>
