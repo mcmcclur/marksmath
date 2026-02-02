@@ -1,0 +1,64 @@
+/* css styles */
+
+.reveal.smaller .slides pre {
+  font-size: 1.8rem;
+}
+
+.reveal.smaller .slides .title-lead > h1 {
+  font-size: 6rem important!;
+}
+
+.reveal.smaller .slides h1:not(.title-lead > h1) {
+  font-size: 4.5rem;
+}
+
+.reveal.smaller .slides h2 {
+  font-size: 3.5rem;
+}
+.reveal.smaller .slides h3 {
+  font-size: 2.5rem;
+  margin-top: 30px;
+}
+.reveal.smaller section.slide p,
+.reveal.smaller .slide ul li {
+  font-size: 2rem;
+}
+.reveal.smaller section.slide table th,
+.reveal.smaller section.slide table td {
+  font-size: 1.5rem;
+}
+
+.reveal .slide details summary {
+  font-size: 50%;
+}
+
+.centered-iframe {
+  text-align: center
+}
+.centered, .centered-x3d {
+  width: 500px;
+  margin: 0 auto;
+}
+.centered-wide {
+  width: 800px;
+  margin: 0 auto;
+}
+
+div.X3D {
+  overflow-y: clip;
+}
+
+div.spacer {
+  height: 30px;
+}
+
+.hide-scroll-input .cell-output {
+  overflow-x: clip !important;
+}
+.hide-scroll-input input {
+  display: none !important;
+}
+
+form table tr th input, form table tr td input{
+  display: none;
+}

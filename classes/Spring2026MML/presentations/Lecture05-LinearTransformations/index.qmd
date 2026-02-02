@@ -3,7 +3,8 @@ title: Linear transformations <br> and their inverses
 date: 2026-02-02
 format:  
   revealjs:
-    css: ../classnote-style.css 
+    chalkboard: true
+    css: ['../../RevealPres-style.css', '../classnote-style.css']
     controls: true
     controls-layout: bottom-right
     navigation-mode: vertical
