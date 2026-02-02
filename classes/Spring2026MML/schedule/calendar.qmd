@@ -79,7 +79,7 @@ css: calendar_style.css
     initialView: 'dayGridMonth',
     fixedWeekCount: false,
     showNonCurrentDates: false,
-    initialDate: '2026-01-01',
+    // initialDate: '2026-01-01',
     hiddenDays: [0,6],
     height: 'auto',
     events,
