@@ -1,0 +1,740 @@
+---
+title: Determinants <br> and their geometry
+date: 2026-02-04
+format:  
+  revealjs:
+    css: ../classnote-style.css
+    controls: true
+    controls-layout: bottom-right
+    navigation-mode: vertical
+    smaller: true
+    history: true
+    transition: slide
+    keyboard: true
+    date-format: ddd, MMM DD, YYYY
+    html-math-method: mathjax
+    author: "Portions copyright Rob Beezer ([GFDL](https://www.gnu.org/licenses/fdl-1.3.en.html){target='_blank'})"
+    # echo: true
+    # eval: true
+    # output: true
+    # code-fold: true
+---
+
+# Recap and look ahead 
+
+Last time, we talked about inverse matrices and we met a formula for the inverse of a $2\times2$ matrix:
+$$
+\begin{bmatrix}
+a&b\\c&d 
+\end{bmatrix}^{-1} = 
+\frac{1}{ad-bc}
+\begin{bmatrix}
+d&-b\\-c&a 
+\end{bmatrix}.
+$$
+
+That expression $ad-bc$ that you see in the denominator is called the determinant for a $2\times2$ matrix. Today, we'll learn about all the wonderful things that a determinant tells about a matrix, why it tells us those things, and how to generalize this concept to higher dimensions
+
+$$
+\newcommand{\vect}[1]{\mathbf{#1}}
+\newcommand{\rowopswap}[2]{R_{#1}\leftrightarrow R_{#2}}
+\newcommand{\rowopmult}[2]{#1R_{#2}}
+\newcommand{\rowopadd}[3]{#1R_{#2}+R_{#3}}
+\newcommand\aug{\fboxsep=-\fboxrule\!\!\!\fbox{\strut}\!\!\!}
+\newcommand{\matrixentry}[2]{\left\lbrack#1\right\rbrack_{#2}}
+\newcommand{\detname}[1]{\det\left(#1\right)}
+\newcommand{\submatrix}[3]{#1\left(#2|#3\right)}
+\newcommand{\detbars}[1]{\left\lvert#1\right\rvert}
+\newcommand{\elemswap}[2]{E_{#1,#2}}
+\newcommand{\elemmult}[2]{E_{#2}\left(#1\right)}
+\newcommand{\elemadd}[3]{E_{#2,#3}\left(#1\right)}
+$$
+
+# Algebraic definition 
+
+The expression $ad-bc$ for the determinant of a $2\times2$ matrix can be defined in useful and consistent way for matrices of any dimension. The technique for doing so is called *cofactor expansion* is defined in a recursive fashion. We'll show how to do so in this column of slides.
+
+To be clear, this is the way we actually compute determinants.
+
+## Submatrices
+
+Determinants are defined in a recursive fashion. Once we've defined the notion of determinant for matrices of size $n-1$, we extend it to matrices of size $n$ using the concept of submatrices.
+
+**Def:** Suppose that $A$ is an $n\times n$ matrix. Then the submatrix $\submatrix{A}{i}{j}$ is the $(n-1)\times (n-1)$ matrix obtained from $A$ by removing row $i$ and column $j$.
+
+## Example 
+
+Given the following matrix 
+
+\begin{equation*}
+A=
+\begin{bmatrix}
+1 & -2 & 3 & 9\\
+4 & -2 & 0 & 1\\
+3 & 5 & 2 & 1
+\end{bmatrix},
+\end{equation*}
+
+we have the following submatrices:
+
+\begin{align*}
+\submatrix{A}{2}{3}
+=
+\begin{bmatrix}
+1 & -2 & 9\\
+3 & 5 & 1
+\end{bmatrix}&&
+\submatrix{A}{3}{1}
+=
+\begin{bmatrix}
+-2 & 3 & 9\\
+-2 & 0 & 1
+\end{bmatrix}\text{.}
+\end{align*}
+
+
+## Definition of Determinants
+
+Suppose $A$ is a square matrix. Then its determinant, $\det(A)=|A|$, is the real number defined recursively by:
+
+1. If $A$ is a $1\times1$ matrix, then $\det(A)=[A]_{11}$.
+2. If $A$ is a matrix of size $n$ with $n\geq2$, then
+
+\begin{align*}
+\detname{A}&=
+\matrixentry{A}{11}\detname{\submatrix{A}{1}{1}}
+-\matrixentry{A}{12}\detname{\submatrix{A}{1}{2}}
++\matrixentry{A}{13}\detname{\submatrix{A}{1}{3}}-\\
+&\quad \matrixentry{A}{14}\detname{\submatrix{A}{1}{4}}
++\cdots
++(-1)^{n+1}\matrixentry{A}{1n}\detname{\submatrix{A}{1}{n}}\text{.}
+\end{align*}
+
+
+## Example
+
+$$
+\begin{align*}
+\detname{A}=\detbars{A}
+&=\begin{vmatrix}
+3 & 2 & -1\\
+4 & 1 & 6\\
+-3 & -1 & 2
+\end{vmatrix}\\
+&=
+3
+\begin{vmatrix}
+1 & 6\\
+-1 & 2
+\end{vmatrix}
+-2
+\begin{vmatrix}
+4 & 6\\
+-3 & 2
+\end{vmatrix}
++(-1)
+\begin{vmatrix}
+4 & 1\\
+-3 & -1
+\end{vmatrix}\\
+&=
+3\left(
+1\begin{vmatrix}
+2\\
+\end{vmatrix}
+-6\begin{vmatrix}
+-1
+\end{vmatrix}\right)
+-2\left(
+4\begin{vmatrix}
+2
+\end{vmatrix}
+-6\begin{vmatrix}
+-3
+\end{vmatrix}\right)
+-\left(
+4\begin{vmatrix}
+-1
+\end{vmatrix}
+-1\begin{vmatrix}
+-3
+\end{vmatrix}\right)\\
+&=
+3\left(1(2)-6(-1)\right)
+-2\left(4(2)-6(-3)\right)
+-\left(4(-1)-1(-3)\right)\\
+&=24-52+1\\
+&=-27\text{.}
+\end{align*}
+$$
+
+
+
+## Expansion about other rows or columns
+
+Actually, you can expand about any row or column. That is, we have 
+
+**Row expansion**
+
+\begin{align*}
+\detname{A}&=
+(-1)^{i+1}\matrixentry{A}{i1}\detname{\submatrix{A}{i}{1}}+
+(-1)^{i+2}\matrixentry{A}{i2}\detname{\submatrix{A}{i}{2}}\\
+&\quad+(-1)^{i+3}\matrixentry{A}{i3}\detname{\submatrix{A}{i}{3}}+
+\cdots+
+(-1)^{i+n}\matrixentry{A}{in}\detname{\submatrix{A}{i}{n}}
+\end{align*}
+
+and 
+
+**Column expansion**
+
+\begin{align*}
+\detname{A}&=
+(-1)^{1+j}\matrixentry{A}{1j}\detname{\submatrix{A}{1}{j}}+
+(-1)^{2+j}\matrixentry{A}{2j}\detname{\submatrix{A}{2}{j}}\\
+&\quad+(-1)^{3+j}\matrixentry{A}{3j}\detname{\submatrix{A}{3}{j}}+
+\cdots+
+(-1)^{n+j}\matrixentry{A}{nj}\detname{\submatrix{A}{n}{j}}
+\end{align*}
+
+## Example: expansion about the last row
+
+\begin{equation*}
+\tiny A=\begin{bmatrix}
+-2 & 3 & 0 & 1\\
+9 & -2 & 0 & 1\\
+1 & 3 & -2 & -1\\
+4 & 1 & 2 & 6
+\end{bmatrix}\text{.}
+\end{equation*}
+
+
+\begin{align*}
+\detbars{A}
+&=
+(4)(-1)^{4+1}
+\begin{vmatrix}
+3 & 0 & 1\\
+-2 & 0 & 1\\
+3 & -2 & -1
+\end{vmatrix}
++(1)(-1)^{4+2}
+\begin{vmatrix}
+-2 &  0 & 1\\
+9 &  0 & 1\\
+1 &  -2 & -1
+\end{vmatrix}\\
+&\quad\quad+(2)(-1)^{4+3}
+\begin{vmatrix}
+-2 & 3 &  1\\
+9 & -2 &  1\\
+1 & 3  & -1
+\end{vmatrix}
++(6)(-1)^{4+4}
+\begin{vmatrix}
+-2 & 3 & 0 \\
+9 & -2 & 0 \\
+1 & 3 & -2
+\end{vmatrix}\\
+&=
+(-4)(10)+(1)(-22)+(-2)(61)+6(46)=92\text{.}
+\end{align*}
+
+## Example: expansion about third column
+
+\begin{equation*}
+\tiny A=\begin{bmatrix}
+-2 & 3 & 0 & 1\\
+9 & -2 & 0 & 1\\
+1 & 3 & -2 & -1\\
+4 & 1 & 2 & 6
+\end{bmatrix}\text{.}
+\end{equation*}
+
+\begin{align*}
+\detbars{A}
+&=
+(0)(-1)^{1+3}
+\begin{vmatrix}
+9 & -2 & 1\\
+1 & 3 & -1\\
+4 & 1 & 6
+\end{vmatrix}
++
+(0)(-1)^{2+3}
+\begin{vmatrix}
+-2 & 3 & 1\\
+1 & 3 & -1\\
+4 & 1 & 6
+\end{vmatrix}
++\\
+&\quad\quad(-2)(-1)^{3+3}
+\begin{vmatrix}
+-2 & 3 & 1\\
+9 & -2 & 1\\
+4 & 1 & 6
+\end{vmatrix}
++
+(2)(-1)^{4+3}
+\begin{vmatrix}
+-2 & 3 & 1\\
+9 & -2 & 1\\
+1 & 3 & -1
+\end{vmatrix}\\
+&=0+0+(-2)(-107)+(-2)(61)=92\text{.}
+\end{align*}
+
+## A couple comments
+
+### Idea behind the proof
+
+It's easy to see these alternate expansions should be true for all $2\times2$ matrices (try it!).
+
+The result extends to higher dimensions using induction.
+
+### Special matrices
+
+Sometimes, the specific form of a matrix may make one row or column easier to expand about.
+
+As we'll see in our next example...
+
+## Upper triangular example 
+
+The determinant of a triangular matrix is always the product of the terms on the diagonal; you can see why by expanding along the first row or column.
+
+\begin{align*}
+&\begin{vmatrix}
+2 & 3 & -1 & 3 & 3\\
+0 & -1 & 5 & 2 & -1\\
+0 & 0 & 3 & 9 & 2\\
+0 & 0 & 0 & -1 & 3\\
+0 & 0 & 0 & 0 & 5
+\end{vmatrix}
+=2(-1)^{1+1}
+\begin{vmatrix}
+-1 & 5 & 2 & -1\\
+0 & 3 & 9 & 2\\
+0 & 0 & -1 & 3\\
+0 & 0 & 0 & 5
+\end{vmatrix} \\
+&=2(-1)(-1)^{1+1}
+\begin{vmatrix}
+3 & 9 & 2\\
+0 & -1 & 3\\
+0 & 0 & 5
+\end{vmatrix}
+=2(-1)(3)(-1)^{1+1}
+\begin{vmatrix}
+-1 & 3\\
+0 & 5
+\end{vmatrix}\\
+&=2(-1)(3)(-1)(-1)^{1+1}
+\begin{vmatrix}
+5
+\end{vmatrix}
+=2(-1)(3)(-1)(5)=30
+\end{align*}
+
+## Upper triangular comments 
+
+
+The process of triangulation followed by multiplication along the diagonal is actually a rather efficient way to compute the determinant for large matrices.
+
+The triangular form also connects the determinant to area much more directly.
+
+Our next step, in fact, will be to use a special class of matrices to keep track of the row reduction process to allow us to gain a better understanding of the connection between the determinant and area.
+
+
+# What good is the determinant?
+
+- The determinant gives us a quick check to see if a matrix is invertible/nonsingular (at least in the $2\times2$ case).
+- The determinant appears in formulae for inverses.
+- The determinant tells us somethings about the geometric action of a linear transformation:
+  - The sign of the determinant tells us whether that action preserves orientation
+  - The magnitude of the determinant tells us how much it distorts area, volume or their $n$-dimensional generalization.
+- The determinant is quite handy for computing cross products in $\mathbb R^3$.
+
+## But...
+
+- The determinant is terribly inefficient to compute from its definition.
+- That computation also tends to introduce numerical instability.
+- Anything you want to compute from the determinant can be done using more direct methods involving Gaussian elimination and/or the RREF.
+- These same things can be said of the inverse.
+
+Ultimately, the primary utility of inverse matrices and determinants is their theoretical framework to help us understand linear transformations. They are not used in well-written numerical software.
+
+
+
+# Row reduction and determinants
+
+The elementary row operations, it turns out, affect the value of a determinant in predictable ways. In fact,
+
+- A row swap $R_i \leftrightarrow R_j$ changes the sign of the determinant,
+- Multiplying a row by $\alpha$ changes the value of the determinant by that factor,
+- A row add $\alpha R_i + R_j \to R_j$ doesn't change the determinant at all.
+
+Thus, another way to compute a determinant is to
+
+- triangulate the matrix using the above types of operations,
+- multiply the terms on the diagonal, and finally
+- account for the sign using the number of swaps.
+
+## Elementary matrices
+
+Each of the elementary row operations can be expressed in terms of matrices called the *elementary matrices*, each of which is generated by applying an elementary row operation to the identity matrix. 
+
+Furthermore, the effect of multiplication by an elementary matrix is equivalent to applying the elementary row operation in the first place!
+
+
+## Example 
+
+Here's an example illustrating the correspondence between elementary row operations and elementary matrices for a $3\times4$ matrix.
+
+$$\tiny 
+A=
+\begin{bmatrix}
+2 & 1 & 3 & 1\\
+1 & 3 & 2 & 4\\
+5 & 0 & 3 & 1
+\end{bmatrix}$$
+
+
+\begin{align*}
+\tiny
+\rowopswap{1}{3}:\ &
+\tiny
+\begin{bmatrix}
+5 & 0 & 3 & 1\\
+1 & 3 & 2 & 4\\
+2 & 1 & 3 & 1
+\end{bmatrix}
+&
+\tiny
+\elemswap{1}{3}:\ &
+\tiny
+\begin{bmatrix}
+0 & 0 & 1\\
+0 & 1 & 0\\
+1 & 0 & 0
+\end{bmatrix}
+\begin{bmatrix}
+2 & 1 & 3 & 1\\
+1 & 3 & 2 & 4\\
+5 & 0 & 3 & 1
+\end{bmatrix}
+=
+\begin{bmatrix}
+5 & 0 & 3 & 1\\
+1 & 3 & 2 & 4\\
+2 & 1 & 3 & 1
+\end{bmatrix}\\
+\tiny
+\rowopmult{2}{2}:\ &
+\tiny
+\begin{bmatrix}
+5 & 0 & 3 & 1\\
+2 & 6 & 4 & 8\\
+2 & 1 & 3 & 1
+\end{bmatrix}
+&
+\tiny
+\elemmult{2}{2}:\ &
+\tiny
+\begin{bmatrix}
+1 & 0 & 0\\
+0 & 2 & 0\\
+0 & 0 & 1
+\end{bmatrix}
+\begin{bmatrix}
+5 & 0 & 3 & 1\\
+1 & 3 & 2 & 4\\
+2 & 1 & 3 & 1
+\end{bmatrix}
+=
+\begin{bmatrix}
+5 & 0 & 3 & 1\\
+2 & 6 & 4 & 8\\
+2 & 1 & 3 & 1
+\end{bmatrix}\\
+\tiny
+\rowopadd{2}{3}{1}:\ &
+\tiny
+\begin{bmatrix}
+9 & 2 & 9 & 3\\
+2 & 6 & 4 & 8\\
+2 & 1 & 3 & 1
+\end{bmatrix}
+&
+\tiny
+\elemadd{2}{3}{1}:\ &
+\tiny
+\begin{bmatrix}
+1 & 0 & 2\\
+0 & 1 & 0\\
+0 & 0 & 1
+\end{bmatrix}
+\begin{bmatrix}
+5 & 0 & 3 & 1\\
+2 & 6 & 4 & 8\\
+2 & 1 & 3 & 1
+\end{bmatrix}
+=
+\begin{bmatrix}
+9 & 2 & 9 & 3\\
+2 & 6 & 4 & 8\\
+2 & 1 & 3 & 1
+\end{bmatrix}
+\end{align*}
+
+
+## Properties of elementary matrices 
+
+- Every nonsingular matrix can be expressed as a product of elementary matrices.
+- It's easy to understand the affect of an elementary matrix on area or $n$-dimensional volume.
+- The determinant is multiplicative on the elementary matrices. That is
+$$\det(E_1E_2) = \det(E_1)\det(E_2)$$
+whenever $E_1$ and $E_2$ are $n\times n$ elementary matrices.
+- Those two taken together can be used to show that the determinant is multiplicative on the set of all $n\times n$ matrices.
+- Furthermore, we can understand why the determinant measures area distortion since it's the cumulative multiplicative effect of the elementary matrices
+
+## Row add
+
+Adding a constant times one row to another simply skews the picture, which preserves the area.
+
+```{ojs}
+//| panel: input
+//| layout-ncol: 3
+viewof add_step = Inputs.button(tex`\text{Add }2R_2 + R_1`);
+add_mat = {
+  const step = add_step % 2;
+  if (step == 0) {
+    return tex.block`\begin{bmatrix}1&0\\0&1\end{bmatrix}`;
+  }
+  return tex.block`${math
+    .parse(math.matrix(add_pic.data.steps[0].emInv).toString())
+    .toTex()}`;
+}
+add_op = {
+  const step = add_step % add_pic.data.steps.length;
+  if (step == 0) {
+    return md`Initial configuration`;
+  } else {
+    return md`${add_pic.data.steps[step - 1].opInv}`;
+  }
+}
+```
+
+::: {.centered style="width: 600px;"}
+
+```{ojs}
+add_pic = make_transition_pic(
+  [
+    [1, 2],
+    [0, 1]
+  ],
+  true
+)
+```
+
+:::
+
+::: {style="display: none"}
+
+```{ojs}
+add_response = add_pic.update(add_step % add_pic.data.steps.length)
+```
+
+:::
+
+
+## Row swap 
+
+Swapping rows preserves area but changes orientation.
+
+```{ojs}
+//| panel: input
+//| layout-ncol: 3
+viewof swap_step = Inputs.button("Swap rows");
+swap_mat = {
+  const step = swap_step % swap_pic.data.steps.length;
+  return tex.block`${math
+    .parse(math.matrix(swap_pic.data.steps[step].em).toString())
+    .toTex()}`;
+}
+swap_op = {
+  const step = swap_step % swap_pic.data.steps.length;
+  if (step == 0) {
+    return md`Initial configuration`;
+  } else {
+    return md`${swap_pic.data.steps[step - 1].opInv}`;
+  }
+}
+```
+
+::: {.centered style="width: 600px;"}
+
+```{ojs}
+swap_pic = make_transition_pic(
+  [
+    [0, 1],
+    [1, 0]
+  ],
+  true
+);
+```
+
+:::
+
+::: {style="display: none"}
+
+```{ojs}
+swap_pic.update(swap_step % swap_pic.data.steps.length);
+```
+
+:::
+
+## Row mult
+
+Multiplying a row by a constant affects the area by that same multiplicative factor.
+
+```{ojs}
+//| panel: input
+//| layout-ncol: 3
+viewof mult_step = Inputs.button(tex`\text{One row }\times2`);
+mult_mat = {
+  const step = mult_step % 2;
+  if (step == 0) {
+    return tex.block`\begin{bmatrix}1&0\\0&1\end{bmatrix}`;
+  }
+  return tex.block`${math
+    .parse(math.matrix(mult_pic.data.steps[0].emInv).toString())
+    .toTex()}`;
+}
+mult_op = {
+  const step = mult_step % mult_pic.data.steps.length;
+  if (step == 0) {
+    return md`Initial configuration`;
+  } else {
+    return md`${mult_pic.data.steps[step - 1].opInv}`;
+  }
+}
+```
+
+::: {.centered style="width: 600px;"}
+
+```{ojs}
+mult_pic = make_transition_pic(
+  [
+    [2, 0],
+    [0, 1]
+  ],
+  true
+);
+```
+
+:::
+
+::: {style="display: none"}
+
+```{ojs}
+mult_response = mult_pic.update(mult_step % mult_pic.data.steps.length)
+```
+
+:::
+
+## Row ops are 2D
+
+The row operations affect just two dimensions at a time. Thus, we can perform the same row operations to get the determinant.
+
+The next slide shows an example illustrating the effect of the elementary operation $2R_2+R3 \to R3$ to get the 3D elementary matrix
+$$
+\begin{bmatrix}
+  1&0&0 \\
+  0&1&0 \\
+  0&2&1
+\end{bmatrix}.
+$$
+
+The effect should be to skew the cube and preserve the area.
+
+## The next slide
+
+::: {.panel-tabset}
+
+## Cube
+
+```{ojs}
+cube
+```
+
+## Parallelepiped 
+
+```{ojs}
+parallelepiped
+```
+
+:::
+
+# Singularity 
+
+What happens when the matrix $A$ is singular?
+
+In this case, when we row reduce $A$, we no longer get the identity. Thus, $A\vect{x}=\vect{0}$ has infinitely many solutions and the null space has positive dimension.
+
+As a result, the column space of $A$ and range of the associated linear transformation cannot be all of $\mathbb R^n$. Thus, the matrix cannot be invertible.
+
+This should all be reflected in the geometric behavior of the linear transformation.
+
+
+## Geometric singularity 
+
+Here's a look at the geometric effect of multiplication by the matrix 
+$$
+A = \begin{bmatrix}2&4\\1&2\end{bmatrix}.
+$$
+
+```{ojs}
+viewof one_step2 = Inputs.button("Apply")
+```
+
+::: {.centered style="width: 600px;"}
+
+```{ojs} 
+pic1step2 = make_one_step_transition_pic(
+  [[2,4],[1,2]]
+);
+```
+
+:::
+
+The "squishing" of the two-dimensional space into one is exactly why the range cannot be all of $\mathbb R^2$.
+
+::: {style="display: none"}
+
+```{ojs}
+pic1step2.update(one_step2)
+```
+
+:::
+
+## Ways to tell when a matrix is singular
+
+It's often easy to see when a small matrix is singular. A matrix is certainly singular if
+
+- One row or column contains only zeros,
+- Two rows or columns are the same,
+- One row or column is a multiple of another,
+- One row or column is a linear combination of the others.
+
+
+```{ojs}
+import {
+  make_transition_pic,
+  math
+} from '6c5687c2f7b8cb8b';
+import {cube, parallelepiped} from '@mcmcclur/plotx3d';
+import {
+  make_one_step_transition_pic,
+} from './components/transitionPics2D.js';
+```
