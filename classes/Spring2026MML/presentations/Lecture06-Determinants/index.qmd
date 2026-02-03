@@ -33,7 +33,7 @@ d&-b\\-c&a
 \end{bmatrix}.
 $$
 
-That expression $ad-bc$ that you see in the denominator is called the determinant for a $2\times2$ matrix. Today, we'll learn about all the wonderful things that a determinant tells about a matrix, why it tells us those things, and how to generalize this concept to higher dimensions
+That expression $ad-bc$ that you see in the denominator is called the determinant for a $2\times2$ matrix. Today, we'll learn about all the wonderful things that a determinant tells about a matrix, why it tells us those things, and how to generalize this concept to higher dimensions.
 
 $$
 \newcommand{\vect}[1]{\mathbf{#1}}
@@ -52,7 +52,7 @@ $$
 
 # Algebraic definition 
 
-The expression $ad-bc$ for the determinant of a $2\times2$ matrix can be defined in useful and consistent way for matrices of any dimension. The technique for doing so is called *cofactor expansion* is defined in a recursive fashion. We'll show how to do so in this column of slides.
+The expression $ad-bc$ for the determinant of a $2\times2$ matrix can be defined in a useful and consistent way for matrices of any dimension. The technique for doing so is called *cofactor expansion* and is defined in a recursive fashion. We'll show how to do so in this column of slides.
 
 To be clear, this is the way we actually compute determinants.
 
@@ -289,7 +289,7 @@ and
 
 ### Idea behind the proof
 
-It's easy to see these alternate expansions should be true for all $2\times2$ matrices (try it!).
+It's easy to see that these alternate expansions should be true for all $2\times2$ matrices (try it!).
 
 The result extends to higher dimensions using induction.
 
@@ -350,7 +350,7 @@ Our next step, in fact, will be to use a special class of matrices to keep track
 
 - The determinant gives us a quick check to see if a matrix is invertible/nonsingular (at least in the $2\times2$ case).
 - The determinant appears in formulae for inverses.
-- The determinant tells us somethings about the geometric action of a linear transformation:
+- The determinant tells us some things about the geometric action of a linear transformation:
   - The sign of the determinant tells us whether that action preserves orientation
   - The magnitude of the determinant tells us how much it distorts area, volume or their $n$-dimensional generalization.
 - The determinant is quite handy for computing cross products in $\mathbb R^3$.
@@ -491,7 +491,7 @@ A=
 ## Properties of elementary matrices 
 
 - Every nonsingular matrix can be expressed as a product of elementary matrices.
-- It's easy to understand the affect of an elementary matrix on area or $n$-dimensional volume.
+- It's easy to understand the effect of an elementary matrix on area or $n$-dimensional volume.
 - The determinant is multiplicative on the elementary matrices. That is
 $$\det(E_1E_2) = \det(E_1)\det(E_2)$$
 whenever $E_1$ and $E_2$ are $n\times n$ elementary matrices.
@@ -647,7 +647,7 @@ mult_response = mult_pic.update(mult_step % mult_pic.data.steps.length)
 
 The row operations affect just two dimensions at a time. Thus, we can perform the same row operations to get the determinant.
 
-The next slide shows an example illustrating the effect of the elementary operation $2R_2+R3 \to R3$ to get the 3D elementary matrix
+The next slide shows an example illustrating the effect of the elementary operation $2R_2+R_3 \to R_3$ to get the 3D elementary matrix
 $$
 \begin{bmatrix}
   1&0&0 \\
