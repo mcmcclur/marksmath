@@ -21,7 +21,7 @@ format:
     # code-fold: true
 ---
 
-# Recap and look ahead
+# Recap and look ahead 
 
 The last topic we discussed before the exam concerned the matrix representation of linear systems. We discussed reduced row echelon form and how we can use matrix multiplication to represent an arbitrary system in the very compact form $A\mathbf{x}=\mathbf{b}$.
 
@@ -111,8 +111,8 @@ $$
 Many (though not all) of the algebraic properties of real numbers are passed on to the corresponding matrix operations. Given matrices $A$, $B$, and $C$, for example, and scalars $\alpha$ and $\beta$, we have statements like
 
 - $A+B = B+A$,
-- $(A+B)+C = A+(B+C)$,
-- $(\alpha + \beta)A = \alpha A + \beta A$,
+- $(A+B)+C = A+(B+C)$, and
+- $(\alpha + \beta)A = \alpha A + \beta A$.
 
 We'll see more after we get to matrix multiplication.
 
@@ -209,7 +209,7 @@ Thus, we can represent systems using a compact matrix multiplication.
 
 If $A$ is $m\times n$ and $B$ is $n\times 1$, then we might think of $B$ as a column vector in $\mathbb R^n$ and we might even denote it as $\vect{v}$.
 
-Note then that $A\vect{v}$ is an $m\times 1$ column vector thus, the function
+Note then that $A\vect{v}$ is an $m\times 1$ column vector; thus, the function
 $$\vect{v} \to A\vect{v}$$ 
 maps $\mathbb R^n \to \mathbb R^m$.
 
@@ -473,7 +473,7 @@ In particular, the function $T^{-1}$ is, indeed, the functional inverse of $T$.
 
 # Computing inverses 
 
-Given a matrix and a purported inverse, it's not hard (in principle) to check to see if it they are, in fact inverses or not. For example:
+Given a matrix and a purported inverse, it's not hard (in principle) to check to see if it they are, in fact, inverses or not. For example:
 
 $$
 \left[
