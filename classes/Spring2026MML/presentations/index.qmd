@@ -75,3 +75,13 @@ Of course, I learned most of this material many years ago and some of the presen
     We've moved from systems of equations to their matrix representation. Now, we're going to focus on matrix multiplication and how it can be used to describe certain types of functions called *linear transformations*. A key step along the way is the construction of the inverse transformation.
   </div>
 </details>
+
+- Wed, Feb 4: Determinants
+  - [Presentation](./Lecture06-Determinants/){target=_blank}
+  -
+<details>
+  <summary>Comments</summary>
+  <div>
+    Today we're going talk about the determinant: a single number that tells us how a linear transformation induced by a square matrix distorts the space on which it acts. Among other things, this gives us a simple test for singularity.
+  </div>
+</details>
