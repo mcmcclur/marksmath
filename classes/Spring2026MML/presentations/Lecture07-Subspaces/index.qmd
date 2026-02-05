@@ -21,7 +21,7 @@ format:
 
 # Recap and look ahead 
 
-Over the last couple of classes, we've focused functions mapping one $\mathbb{R}^n \to \mathbb{R}^m$ that are defined by matrix multiplication and called *linear transformations*. Today, we're going to focus on certain subsets of Euclidean space that are derived from linear transformations. The subsets are examples of so-called *subspaces*.
+Over the last couple of classes, we've focused on functions mapping one $\mathbb{R}^n \to \mathbb{R}^m$ that are defined by matrix multiplication and called *linear transformations*. Today, we're going to focus on certain subsets of Euclidean space that are derived from linear transformations. The subsets are examples of so-called *subspaces*.
 
 $$
 \newcommand{\vect}[1]{\mathbf{#1}}
@@ -59,32 +59,26 @@ That's what we're building towards. We'll focus on range today and on perpendicu
 
 # Linear combinations
 
-**Definition**: Given $m$ vectors 
-$$\vect{v}_1, \vect{v}_2, \vect{v}_3, \ldots, \vect{v}_m$$
-from $\mathbb R^n$, and $m$ scalars $\alpha_1,\alpha_2,\alpha_3,\ldots\alpha_m$, the expression 
-$$\sum_{i=1}^m \alpha_i\vect{v}_i = \alpha_1\vect{v}_1 + \alpha_2\vect{v}_2 + \alpha_3\vect{v}_3 + \cdots + \alpha_m\vect{v}_m$$
+**Definition**: Given $n$ vectors 
+$$\vect{v}_1, \vect{v}_2, \vect{v}_3, \ldots, \vect{v}_n$$
+from $\mathbb R^m$, and $n$ scalars $\alpha_1,\alpha_2,\alpha_3,\ldots,\alpha_n$, the expression 
+$$\sum_{i=1}^n \alpha_i\vect{v}_i = \alpha_1\vect{v}_1 + \alpha_2\vect{v}_2 + \alpha_3\vect{v}_3 + \cdots + \alpha_n\vect{v}_n$$
 is called a *linear combination*.
 
 ## Example
 
-If $m=n=4$, $\alpha_1=1,\alpha_2=-4,\alpha_3=2,\alpha_4=-1$, and 
+If $m=4$ and $n=3$, $\alpha_1=2,\alpha_2=-1,\alpha_3=1$, and 
 
-$$\vect{v_1} = \colvector{2\\4\\-3\\1}, \:
-\vect{v_2} = \colvector{6\\3\\0\\-2}, \: 
-\vect{v_3} = \colvector{-5\\2\\1\\1}, \: 
-\vect{v_4} = \colvector{3\\2\\-5\\7},$$
+$$\vect{v}_1 = \colvector{2\\4\\-3\\1}, \:
+\vect{v}_2 = \colvector{6\\3\\0\\-2}, \: 
+\vect{v}_3 = \colvector{-5\\2\\1\\1},$$
 
 then our linear combination would be
 
-$$ \small \colvector{2\\4\\-3\\1}
--4\colvector{6\\3\\0\\-2}+
-2\colvector{-5\\2\\1\\1}
--\colvector{3\\2\\-5\\7}
-=\colvector{2\\4\\-3\\1}+
-\colvector{-24\\-12\\0\\8}+
-\colvector{-10\\4\\2\\2}+
-\colvector{-3\\-2\\5\\-7}
-=\colvector{-35\\-6\\4\\4}
+$$ \small 2\colvector{2\\4\\-3\\1}
+-\colvector{6\\3\\0\\-2}
++\colvector{-5\\2\\1\\1}
+=\colvector{-7\\7\\-5\\5}
 $$
 
 
@@ -240,7 +234,7 @@ has a non-trivial solution. (That is, not all the $\alpha_i$s are zero.)
 Otherwise, the set $S$ is linearly independent.
 
 <hr>
-Note that, when a set is linear dependent, we can always express at least one of the vectors as a linear combination of the others.
+Note that, when a set is linearly dependent, we can always express at least one of the vectors as a linear combination of the others.
 
 ## Examples of linear (in)dependence 
 
@@ -305,13 +299,17 @@ do *not* form a basis of $\mathbb{R}^3$. They do, however, form a basis of the s
 
 # Determining linear independence
 
-Given $n$ vectors in $\mathbb R^n$, there's a simple algorithm to determine their linear dependence or independence. 
+Given $n$ vectors in $\mathbb R^m$, there's a simple algorithm to determine their linear dependence or independence. 
 
-Simply form the matrix whose columns are the given vectors and place it in reduced row echelon form. If the result has only zeros off the diagonal and only ones or zeros on the diagonal, then the vectors are linearly independent. Otherwise, the vectors are linearly dependent.
+Simply form the matrix whose columns are the given vectors and place it in reduced row echelon form. If the the block form of this matrix is 
+$$
+\begin{bmatrix}I_n \\ 0 \end{bmatrix},
+$$
+Then, the vectors are linearly independent. Otherwise, the vectors are linearly dependent.
 
-## Example 1 for checking linear independence
+## Example 1: checking linear independence
 
-Consider three column vectors that form the matrix $A$ shown on the left below. The reduced row echelon form $R$ of $A$ is shown on the right, as [we can check using SageMath](https://sagecell.sagemath.org/?q=ccauam){target="_blank"}. Given the form of $R$, the columns of $A$ must be linearly independent.
+Consider three column vectors that form the matrix $A$ shown on the left below. The reduced row echelon form $R$ of $A$ is shown on the right, as [we can check using SageMath](https://sagecell.sagemath.org/?q=apubes){target="_blank"}. Given the form of $R$, the columns of $A$ must be linearly independent.
 
 ::: {layout="[[1,1]]"}
 
@@ -321,9 +319,9 @@ $$R = \left[\begin{matrix}1 & 0 & 0\\0 & 1 & 0\\0 & 0 & 1\\0 & 0 & 0\end{matrix}
 
 :::
 
-## Example 2 for checking linear independence
+## Example 2: checking linear independence
 
-Now, consider the three vectors that form the columns of the matrix $B$ shown on the left below. (Note that the middle entry in the final row is different.) The reduced row echelon form $E$ of $B$ is shown on the right, as [we can again check](https://sagecell.sagemath.org/?q=nutzet){target="_blank"}. Given the form of $E$, the columns of $B$ must be linearly dependent.
+Now, consider the three vectors that form the columns of the matrix $B$ shown on the left below. (Note that the middle entry in the final row is different.) The reduced row echelon form $E$ of $B$ is shown on the right, as [we can again check](https://sagecell.sagemath.org/?q=gpubxb){target="_blank"}. Given the form of $E$, the columns of $B$ must be linearly dependent.
 
 ::: {layout="[[1,1]]"}
 
@@ -433,7 +431,7 @@ Finally, it's worth mentioning another subspace defined by linear transformation
 
 **Definition**: Let $T:\mathbb{R}^n\to\mathbb{R}^m$ be a linear transformation. The *null space* of $T$ is the set of all vectors $\vect{x}\in\mathbb{R}^n$ such that $T(\vect{x}) = \vect{0}$.
 
-*Note*: The null space is, in fact, a subspace of $\vect{x}\in\mathbb{R}^n$. To show this, let $\vect{x},\vect{y}\in\mathbb{R}^n$ and let $\alpha$ and $\beta$ be scalars. Then, by the linearity of $T$,
+*Note*: The null space is, in fact, a subspace of $\mathbb{R}^n$. To show this, let $\vect{x},\vect{y}\in\mathbb{R}^n$ and let $\alpha$ and $\beta$ be scalars. Then, by the linearity of $T$,
 $$
 T(\alpha\vect{x} + \beta\vect{y}) = \alpha T(\vect{x}) + \beta T(\vect{y}) = \vect{0}.
 $$
