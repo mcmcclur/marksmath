@@ -85,3 +85,13 @@ Of course, I learned most of this material many years ago and some of the presen
     Today we're going talk about the determinant: a single number that tells us how a linear transformation induced by a square matrix distorts the space on which it acts. Among other things, this gives us a simple test for singularity.
   </div>
 </details>
+
+- Fri, Feb 6: Subspaces
+  - [Presentation](./Lecture07-Subspaces/){target=_blank}
+  -
+<details>
+  <summary>Comments</summary>
+  <div>
+    Today we'll talk about the concept of a subspace and show that the range of a linear transformation is a subspace that's equal to span of the columns of the corresponding matrix. Ultimately, we'll solve the corresponding linear regression problem by projecting onto the range.
+  </div>
+</details>
