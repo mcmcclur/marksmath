@@ -1,0 +1,451 @@
+---
+title: Subspaces
+date: 2026-02-06
+format:  
+  revealjs:
+    css: ../classnote-style.css
+    controls: true
+    controls-layout: bottom-right
+    navigation-mode: vertical
+    smaller: true
+    history: true
+    transition: slide
+    date-format: ddd, MMM DD, YYYY
+    html-math-method: mathjax
+    author: "Portions copyright Rob Beezer ([GFDL](https://www.gnu.org/licenses/fdl-1.3.en.html){target='_blank'})"
+    # echo: true
+    # eval: true
+    # output: true
+    # code-fold: true
+---
+
+# Recap and look ahead 
+
+Over the last couple of classes, we've focused functions mapping one $\mathbb{R}^n \to \mathbb{R}^m$ that are defined by matrix multiplication and called *linear transformations*. Today, we're going to focus on certain subsets of Euclidean space that are derived from linear transformations. The subsets are examples of so-called *subspaces*.
+
+$$
+\newcommand{\vect}[1]{\mathbf{#1}}
+\newcommand{\colvector}[1]{\begin{bmatrix}#1\end{bmatrix}}
+\newcommand{\vectorlist}[2]{\vect{#1}_{1},\,\vect{#1}_{2},\,\vect{#1}_{3},\,\ldots,\,\vect{#1}_{#2}}
+\newcommand{\spn}[1]{\left\langle#1\right\rangle}
+\newcommand{\setparts}[2]{\left\lbrace#1\,\middle|\,#2\right\rbrace}
+\newcommand{\lincombo}[3]{#1_{1}\vect{#2}_{1}+#1_{2}\vect{#2}_{2}+\cdots +#1_{#3}\vect{#2}_{#3}}
+$$
+
+## Looking further ahead 
+
+Our main objective at this point in the course is to put ourselves into a good position to understand linear regression in the context of linear algebra. This is quite a bit more general than the simple case of fitting a line through a few dots in the plane and understanding this generalized perspective might help us understand why we're exploring the specific topics that we are now.
+
+## Linear regression 
+
+One main topic of linear algebra is the solution of linear systems of the form 
+$$
+A\vect{x} = \vect{b}.
+$$
+What if there's no solution, though? What's the best we might do?
+
+## Best choice 
+
+Lacking a solution to $A\vect{x}=\vect{b}$, we might content ourselves to find a vector $\hat{\vect{x}}$ such that 
+$$
+\|A\hat{\vect{x}} - \vect{b}\|
+$$
+is as small as possible. 
+
+In English, this says that we'd like the distance between $A\hat{\vect{x}}$ and  $\vect{b}$ to be as small as possible. The efficient way to do this within linear algebra is to find the perpendicular projection of $\vect{b}$ onto the range of the linear transformation induced by $A$.
+
+That's what we're building towards. We'll focus on range today and on perpendicular projection next time.
+
+
+# Linear combinations
+
+**Definition**: Given $m$ vectors 
+$$\vect{v}_1, \vect{v}_2, \vect{v}_3, \ldots, \vect{v}_m$$
+from $\mathbb R^n$, and $m$ scalars $\alpha_1,\alpha_2,\alpha_3,\ldots\alpha_m$, the expression 
+$$\sum_{i=1}^m \alpha_i\vect{v}_i = \alpha_1\vect{v}_1 + \alpha_2\vect{v}_2 + \alpha_3\vect{v}_3 + \cdots + \alpha_m\vect{v}_m$$
+is called a *linear combination*.
+
+## Example
+
+If $m=n=4$, $\alpha_1=1,\alpha_2=-4,\alpha_3=2,\alpha_4=-1$, and 
+
+$$\vect{v_1} = \colvector{2\\4\\-3\\1}, \:
+\vect{v_2} = \colvector{6\\3\\0\\-2}, \: 
+\vect{v_3} = \colvector{-5\\2\\1\\1}, \: 
+\vect{v_4} = \colvector{3\\2\\-5\\7},$$
+
+then our linear combination would be
+
+$$ \small \colvector{2\\4\\-3\\1}
+-4\colvector{6\\3\\0\\-2}+
+2\colvector{-5\\2\\1\\1}
+-\colvector{3\\2\\-5\\7}
+=\colvector{2\\4\\-3\\1}+
+\colvector{-24\\-12\\0\\8}+
+\colvector{-10\\4\\2\\2}+
+\colvector{-3\\-2\\5\\-7}
+=\colvector{-35\\-6\\4\\4}
+$$
+
+
+## Linear span 
+
+**Definition**
+Given a set of vectors $S$ in $\mathbb R^n$, their *span* $\spn{S}$ is the set of all linear combinations of those vectors.
+
+Written symbolically, if $S=\{\vectorlist{u}{p}\}$,
+\begin{align*}
+\spn{S}&=\setparts{\lincombo{\alpha}{u}{p}}{\alpha_i\in\mathbb R,\,1\leq i\leq p}\\
+&=\setparts{\sum_{i=1}^{p}\alpha_i\vect{u}_i}{\alpha_i\in\mathbb R,\,1\leq i\leq p}\text{.}
+\end{align*}
+
+## Example
+
+In $\mathbb R^3$, the span of $\vect{i} = \begin{bmatrix}1&0&0\end{bmatrix}^{\mathsf{T}}$ and $\vect{j} = \begin{bmatrix}0&1&0\end{bmatrix}^{\mathsf{T}}$ is exactly the $xy$-plane.
+
+```{ojs}
+{
+  const u = [1, 0, 0];
+  const v = [0, 1, 0];
+  return show_x3d([
+    create_arrow([0, 0, 0], u, {
+      v_length: 1,
+      color: "red"
+    }),
+    create_arrow([0, 0, 0], v, {
+      v_length: 1,
+      color: "blue"
+    }),
+    create_surface(
+      (s, t) => [s * u[0] + t * v[0], s * u[1] + t * v[1], s * u[2] + t * v[2]],
+      [-2, 2.2],
+      [-2, 2.2]
+    )
+  ], 
+  {
+    extent: {zmin:-0.6,zmax:0.6, xmin:-2,xmax:2, ymin:-2,ymax:2},
+    viewpoint: {position: '3.617409103883025 1.2058658046217154 1.1402802446715559', orientation: '0.3955482593129179 0.5483898755880154 0.7367564854869495,2.1659181463877286'}
+  }
+  );
+}
+```
+
+## Illustration
+
+Here's an illustration of span of a pair of vectors $\vect{u}$ and $\vect{v}$ in $\mathbb{R}^3$:
+
+$$
+{\color{red}\vect{u} = 
+\begin{bmatrix}
+2 & 2 & -2
+\end{bmatrix}^{\mathsf{T}}}
+\text{ and }
+{\color{blue}\vect{v} = 
+\begin{bmatrix}
+2 & -1 & -2
+\end{bmatrix}^{\mathsf{T}}}.
+$$
+
+```{ojs}
+{
+  const u = [2, 2, -2];
+  const v = [2, -1, -2];
+  return show_x3d([
+    create_arrow([0, 0, 0], u, {
+      v_length: 2 * Math.sqrt(3),
+      color: "red",
+      v_radius: 0.04,
+      h_radius: 0.1
+    }),
+    create_arrow([0, 0, 0], v, {
+      v_length: 3,
+      color: "blue",
+      v_radius: 0.04,
+      h_radius: 0.1
+    }),
+    create_surface(
+      (s, t) => [s * u[0] + t * v[0], s * u[1] + t * v[1], s * u[2] + t * v[2]],
+      [-0.9, 1.1],
+      [-0.9, 1.1]
+    )
+  ], {
+    viewpoint: {position: '11.345301827271598 13.445296624513658 2.560713750714764', orientation: '0.21700217052400333 0.6326271374857586 0.7434332269306007,2.6014413351807653'}
+  });
+}
+```
+
+
+## Subspaces
+
+Note that the span of a set of vectors in $\mathbb R^n$ is an example of a *subspace* of $\mathbb R^n$.
+
+**Definition**: A *subspace* $S$ of a $\mathbb{R}^n$ is a non-empty subset that is closed under linear combinations.
+
+*Comment*: The span of a set of vectors is always a subspace. Thus, our previous examples of spans are subspace examples as well. There are other ways to form subspaces, though.
+
+
+# Bases 
+
+From an intuitive perspective, a *basis* for a vector space (like $\mathbb{R}^n$ or one of its subspaces) is a collection of vectors that can be used to efficiently reach any vector in the space. That is, any vector in the whole space can be uniquely described as a linear combination of vectors chosen from the *basis*.
+
+Our next task is to make that idea more precise. While doing so, it's important to keep in mind that we aren't restricting this discussion to just $\mathbb{R}^n$; rather, we wish to construct bases for more general vector spaces. This includes arbitrary subspaces of $\mathbb{R}^n$ as well.
+
+## Spanning sets 
+
+Recall the definition of the span $\spn{S}$ of a set of vectors $S$ as the set of all linear combinations of those vectors.
+
+**Definition**: We say that $S$ spans a vector space $\cal V$ if 
+$$
+\spn{S} = \cal V.
+$$
+Such a set is called a *spanning set* for $\cal V$.
+
+## Example spanning sets 
+
+The sets 
+
+- $\{
+  \begin{bmatrix}1&0\end{bmatrix}^{\mathsf{T}},
+  \begin{bmatrix}0&1\end{bmatrix}^{\mathsf{T}}
+  \}$,
+- $\{
+  \begin{bmatrix}1&1\end{bmatrix}^{\mathsf{T}},
+  \begin{bmatrix}-1&1\end{bmatrix}^{\mathsf{T}}
+  \}$, and 
+- $\{
+  \begin{bmatrix}1&0\end{bmatrix}^{\mathsf{T}},
+  \begin{bmatrix}0&1\end{bmatrix}^{\mathsf{T}},
+  \begin{bmatrix}1&1\end{bmatrix}^{\mathsf{T}},
+  \begin{bmatrix}-1&1\end{bmatrix}^{\mathsf{T}}
+  \}$
+
+all span $\mathbb{R}^2$.
+
+::: {.fragment}
+
+---
+
+The last one seems like overkill, though.
+
+:::
+
+## Linear independence
+
+We say that a set of vectors $S=\{\vectorlist{u}{n}\}$, is *linearly dependent* if the equation
+$$
+\lincombo{\alpha}{u}{n}=\vect{0}
+$$
+has a non-trivial solution. (That is, not all the $\alpha_i$s are zero.)
+
+Otherwise, the set $S$ is linearly independent.
+
+<hr>
+Note that, when a set is linear dependent, we can always express at least one of the vectors as a linear combination of the others.
+
+## Examples of linear (in)dependence 
+
+The sets 
+
+- $\{
+  \begin{bmatrix}1&0\end{bmatrix}^{\mathsf{T}},
+  \begin{bmatrix}0&1\end{bmatrix}^{\mathsf{T}}
+  \}$ and
+- $\{
+  \begin{bmatrix}1&1\end{bmatrix}^{\mathsf{T}},
+  \begin{bmatrix}-1&1\end{bmatrix}^{\mathsf{T}}
+  \}$
+
+are linear independent in $\mathbb{R}^2$. The set 
+
+- $\{
+  \begin{bmatrix}1&0\end{bmatrix}^{\mathsf{T}},
+  \begin{bmatrix}0&1\end{bmatrix}^{\mathsf{T}},
+  \begin{bmatrix}1&1\end{bmatrix}^{\mathsf{T}},
+  \begin{bmatrix}-1&1\end{bmatrix}^{\mathsf{T}}
+  \}$
+
+is not.
+
+## Spanning sets and linear independence
+
+I guess the concept of a spanning set is somewhat complementary to linear independence. The more vectors you have, the more likely they are to span the space but the less likely they are to be linearly independent.
+
+The sweet spot is a linearly independent spanning set. This type of set is called a *basis*.
+
+**Definition**: A *basis* for a vector space $\cal V$ is a linearly independent subset of $\cal V$ that spans $\cal V$.
+
+## Examples of bases
+
+The following are bases for $\mathbb{R}^2$:
+
+- $\{
+  \begin{bmatrix}1&0\end{bmatrix}^{\mathsf{T}},
+  \begin{bmatrix}0&1\end{bmatrix}^{\mathsf{T}}
+  \}$ and
+- $\{
+  \begin{bmatrix}1&1\end{bmatrix}^{\mathsf{T}},
+  \begin{bmatrix}-1&1\end{bmatrix}^{\mathsf{T}}
+  \}$
+
+These vectors
+
+$$
+{\vect{u} = 
+\begin{bmatrix}
+2 & 2 & -2
+\end{bmatrix}^{\mathsf{T}}}
+\text{ and }
+{\vect{v} = 
+\begin{bmatrix}
+2 & -1 & -2
+\end{bmatrix}^{\mathsf{T}}}.
+$$
+
+do *not* form a basis of $\mathbb{R}^3$. They do, however, form a basis of the subspace illustrated in [this example](#illustration).
+
+# Determining linear independence
+
+Given $n$ vectors in $\mathbb R^n$, there's a simple algorithm to determine their linear dependence or independence. 
+
+Simply form the matrix whose columns are the given vectors and place it in reduced row echelon form. If the result has only zeros off the diagonal and only ones or zeros on the diagonal, then the vectors are linearly independent. Otherwise, the vectors are linearly dependent.
+
+## Example 1 for checking linear independence
+
+Consider three column vectors that form the matrix $A$ shown on the left below. The reduced row echelon form $R$ of $A$ is shown on the right, as [we can check using SageMath](https://sagecell.sagemath.org/?q=ccauam){target="_blank"}. Given the form of $R$, the columns of $A$ must be linearly independent.
+
+::: {layout="[[1,1]]"}
+
+$$A = \left[\begin{matrix}1 & 2 & 3\\4 & 5 & 6\\7 & 8 & 9\\1 & 0 & 1\end{matrix}\right]$$
+
+$$R = \left[\begin{matrix}1 & 0 & 0\\0 & 1 & 0\\0 & 0 & 1\\0 & 0 & 0\end{matrix}\right]$$
+
+:::
+
+## Example 2 for checking linear independence
+
+Now, consider the three vectors that form the columns of the matrix $B$ shown on the left below. (Note that the middle entry in the final row is different.) The reduced row echelon form $E$ of $B$ is shown on the right, as [we can again check](https://sagecell.sagemath.org/?q=nutzet){target="_blank"}. Given the form of $E$, the columns of $B$ must be linearly dependent.
+
+::: {layout="[[1,1]]"}
+
+$$B = \left[\begin{matrix}1 & 2 & 3\\4 & 5 & 6\\7 & 8 & 9\\1 & 1 & 1\end{matrix}\right]$$
+
+$$E = \left[\begin{matrix}1 & 0 & -1\\0 & 1 & 2\\0 & 0 & 0\\0 & 0 & 0\end{matrix}\right]$$
+
+:::
+
+
+
+## Example 2 (cont) 
+
+Continuing with
+
+::: {layout="[[1,1]]"}
+
+$$B = \left[\begin{matrix}1 & 2 & 3\\4 & 5 & 6\\7 & 8 & 9\\1 & 1 & 1\end{matrix}\right]$$
+
+$$E = \left[\begin{matrix}1 & 0 & -1\\0 & 1 & 2\\0 & 0 & 0\\0 & 0 & 0\end{matrix}\right]$$
+
+:::
+
+We can read the solutions of $B\vect{x}=\vect{0}$ from $E$. We find that $x_3$ is free and that
+$$
+x_1 = x_3 \text{ and } x_2 = -2x_3.
+$$
+For example, $\vect{x} = \langle 1,-2,1 \rangle$ is a solution. It's easy to check that this linear combination of the columns yields $\vect{0}$.
+
+
+## Extracting a linearly independent set
+
+Suppose I've got a list of a bunch of vectors. Perhaps like so:
+
+$$
+\left\{
+\left[\begin{array}{r}
+1 \\
+-2 \\
+3
+\end{array}\right], \left[\begin{array}{r}
+-2 \\
+4 \\
+-6
+\end{array}\right], \left[\begin{array}{r}
+1 \\
+-1 \\
+1
+\end{array}\right], \left[\begin{array}{r}
+2 \\
+-3 \\
+4
+\end{array}\right], \left[\begin{array}{r}
+1 \\
+1 \\
+-3
+\end{array}\right]
+\right\}
+$$
+
+As we've got five vectors in $\mathbb{R}^3$ these can't be linearly independent. We'd like to extract a linearly independent subset whose span is the same as the span of the whole set.  Put another way, we'd like to extract a basis for the span of the set. 
+
+## Extracting a linearly independent set 2
+
+Let's form the matrix whose columns are the vectors from the previous slide:
+
+$$
+\left[\begin{array}{rrrrr}
+1 & -2 & 1 & 2 & 1 \\
+-2 & 4 & -1 & -3 & 1 \\
+3 & -6 & 1 & 4 & -3
+\end{array}\right]
+$$
+
+As it turns out, the pivot columns form a basis for the span of these columns. To find them, simply place the matrix in reduced row echelon form:
+
+$$
+\left[\begin{array}{rrrrr}
+1 & -2 & 0 & 1 & -2 \\
+0 & 0 & 1 & 1 & 3 \\
+0 & 0 & 0 & 0 & 0
+\end{array}\right]
+$$
+
+Thus, the first and third columns form a basis for the span of all the columns.
+
+
+
+# Range
+
+**Definition**: The *range* of a linear transformation $T:\mathbb{R}^n \to \mathbb{R}^m$ is exactly the set of all vectors $\vect{b}\in\mathbb{R}^m$ such that $\vect{b} = T(\vect{x})$ for some $\vect{x}\in\mathbb{R}^n$.
+
+*Note*: This is exactly the same notion of range that you learn for functions in precalculus. We are studying a different type of function, though, and there's a very nice way to characterize the range in terms of the matrix representation of the linear transformation.
+
+## Column space 
+
+**Definition**: Let $A$ be an $m\times n$ matrix. The *column space* of $A$ is the span of the set of columns of $A$.
+
+Now, recall that matrix multiplication $A\vect{x}$ yields exactly the linear combination of the columns of $A$ using the entries of $\vect{x}$ as the coefficients. Thus, $\vect{b}$ is in the column space of $A$ exactly when there's an $\vect{x}$ in the domain of the linear transformation induced by $A$ such that $A\vect{x}=\vect{b}$.
+
+That is, the range of a linear transformation is exactly the column space of the matrix that induces that linear transformation.
+
+
+# Null space 
+
+Finally, it's worth mentioning another subspace defined by linear transformations.
+
+**Definition**: Let $T:\mathbb{R}^n\to\mathbb{R}^m$ be a linear transformation. The *null space* of $T$ is the set of all vectors $\vect{x}\in\mathbb{R}^n$ such that $T(\vect{x}) = \vect{0}$.
+
+*Note*: The null space is, in fact, a subspace of $\vect{x}\in\mathbb{R}^n$. To show this, let $\vect{x},\vect{y}\in\mathbb{R}^n$ and let $\alpha$ and $\beta$ be scalars. Then, by the linearity of $T$,
+$$
+T(\alpha\vect{x} + \beta\vect{y}) = \alpha T(\vect{x}) + \beta T(\vect{y}) = \vect{0}.
+$$
+Thus, $\alpha\vect{x} + \beta\vect{y}$ is also in the null space which is, therefore, closed under linear combinations.
+
+
+```{ojs}
+import {
+  show_x3d,
+  create_arrow,
+  create_surface,
+  style
+} from "@mcmcclur/plotx3d";
+style
+```
