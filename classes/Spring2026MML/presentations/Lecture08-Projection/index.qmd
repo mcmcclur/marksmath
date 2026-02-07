@@ -1,5 +1,6 @@
 ---
 title: Projections
+subtitle: and the dot product
 date: 2026-02-09
 format:  
   revealjs:
@@ -14,7 +15,6 @@ format:
     html-math-method: 
       method: mathjax
       url: https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js
-    author: "Portions copyright Rob Beezer ([GFDL](https://www.gnu.org/licenses/fdl-1.3.en.html){target='_blank'})"
     # echo: true
     # eval: true
     # output: true
@@ -23,7 +23,7 @@ format:
 
 # Recap and look ahead 
 
-Last time, we talked about subspaces. Our main objective today is to talk about how we project vectors onto those tools. To do so, we'll introduce a key tool called the dot product.
+Last time, we talked about subspaces. Our main objective today is to talk about how we project vectors onto those subspaces. To do so, we'll introduce a key tool called the dot product.
 
 $$
 \newcommand{\vect}[1]{\mathbf{#1}}
@@ -43,7 +43,7 @@ $$
 \vectorentry{\vect{u}}{2}\vectorentry{\vect{v}}{2}+
 \vectorentry{\vect{u}}{3}\vectorentry{\vect{v}}{3}+
 \cdots+
-\vectorentry{\vect{u}}{m}\vectorentry{\vect{v}}{m}\
+\vectorentry{\vect{u}}{m}\vectorentry{\vect{v}}{m}
 =
 \sum_{i=1}^{m}\vectorentry{\vect{u}}{i}\vectorentry{\vect{v}}{i}.
 \end{equation*}
@@ -105,7 +105,7 @@ We often say that two vectors are *orthogonal* when their dot product is zero.
 
 ## Higher dimensions
 
-If we place two non-parallel vectors with their tips at the same point, then that point with the tips of the vectors determine a plane. Thus, the idea of perpendicularity extends to any dimension.
+If we place two non-parallel vectors with their tips at the same point, then that point, together with the tips of the vectors, determine a plane. Thus, the idea of perpendicularity extends to any dimension.
 
 For example,
 $$
@@ -115,7 +115,7 @@ $$
 so the vectors are perpendicular in $\mathbb R^5$.
 
 
-## Orthonormal bases 
+# Orthonormal bases 
 
 Recall that a basis for a vector space is a linearly independent set of vectors that span the whole space.
 
@@ -123,7 +123,7 @@ Even *better*, the vectors could be orthogonal to one another.
 
 **Ideally**, those orthogonal vectors are normalized so that the each has length one. 
 
-A basis of normalized, orthogonal vectors is called *orthnormal*.
+A basis of normalized, orthogonal vectors is called *orthonormal*.
 
 
 ## Why orthonormal??
@@ -139,14 +139,72 @@ $$
 \vect{u}_j\cdot\vect{v} = \vect{u}_j\cdot(\alpha_1\vect{u}_1 + \alpha_2 \vect{u}_2 + \cdots + \alpha_n\vect{u}_n) = \alpha_j.
 $$
 
+## Example of an orthonormal basis
 
-# Projection 
+Note that the collection of vectors 
+$$
+\left\{
+  \frac{1}{3}\begin{bmatrix}2\\2\\-1\end{bmatrix},
+  \frac{1}{3}\begin{bmatrix}2\\-1\\2\end{bmatrix},
+  \frac{1}{3}\begin{bmatrix}-1\\2\\2\end{bmatrix}
+\right\}
+$$
+forms an orthonormal base for $\mathbb{R}^3$.
+
+Suppose we'd like to express another vector as a linear combination of these - a common task when dealing with bases.
+
+## Ortho example (cont)
+
+More concretely, suppose that 
+$\vect{v}=\begin{bmatrix} 11&-1&2 \end{bmatrix}^{\mathsf{T}}$. Thus, we seek scalars $\alpha_1$, $\alpha_2$, and $\alpha_3$ such that 
+
+$$
+\begin{bmatrix} 11\\-1\\2 \end{bmatrix} =
+\frac{\alpha_1}{3}\begin{bmatrix}2\\2\\-1\end{bmatrix}+
+\frac{\alpha_2}{3}\begin{bmatrix}2\\-1\\2\end{bmatrix}+
+\frac{\alpha_3}{3}\begin{bmatrix}-1\\2\\2\end{bmatrix}.
+$$
+
+I suppose we could set up a linear system of three equations in the three unknowns $\alpha_1$, $\alpha_2$, and $\alpha_3$ and then solve that system.
+
+Or...
+
+## Ortho example (cont 2)
+
+We can simply compute the dot product between the target $\begin{bmatrix}11&−1&2\end{bmatrix}^{\mathsf{T}}$ and the three basis vectors. We find,
+$$
+\begin{bmatrix} 11&-1&2 \end{bmatrix}
+\begin{bmatrix}2/3\\2/3\\-1/3\end{bmatrix} = 6.
+$$
+$$
+\begin{bmatrix} 11&-1&2 \end{bmatrix}
+\begin{bmatrix}2/3\\-1/3\\2/3\end{bmatrix} = 9.
+$$
+$$
+\begin{bmatrix} 11&-1&2 \end{bmatrix}
+\begin{bmatrix}-1/3\\2/3\\2/3\end{bmatrix} = -3.
+$$
+
+## Ortho example (cont 3)
+
+The previous computation indicates that 
+$$
+\begin{bmatrix} 11\\-1\\2 \end{bmatrix} = 
+6\begin{bmatrix}2/3\\2/3\\-1/3\end{bmatrix} +
+9\begin{bmatrix}2/3\\-1/3\\2/3\end{bmatrix} -
+3\begin{bmatrix}-1/3\\2/3\\2/3\end{bmatrix}.
+$$
+
+
+
+
+# What is projection?
 
 Now, let's suppose we've got an $m$-dimensional subspace $U$ of $\mathbb R^n$. Our objective is to find a function $P:\mathbb R^n \to U$ that represents "orthogonal projection", whatever that means...
 
 A linear transformation $P:\mathbb R^n \to \mathbb R^n$ is called a *projection*, if $P^2=P$. Intuitively, this means that once you apply $P$ to a vector $\vect{x}$, reapplication of $P$ doesn't move the result further: $P(P(\vect{x})) = P(\vect{x})$.
 
-When we say that $P$ is not just a projection but an *orthgonal* projection, we mean that $P$ maps perpendicularly to the subspace. Algebraically,
+When we say that $P$ is not just a projection but an *orthogonal* projection, we mean that $P$ maps perpendicularly to the subspace. Algebraically,
 $$(P(\vect{x})- \vect{x}) \cdot P(\vect{x}) = 0.$$
 
 
@@ -193,14 +251,14 @@ $$P(\vect{x}) = \lambda \vect{b}$$
 for some scalar $\lambda$. The orthogonality condition then implies that 
 $$
 (P(\vect{x})-\vect{x}) \cdot \vect{b} =
-(\lambda\vect{x}-\vect{x}) \cdot \vect{b} = 0.
+(\lambda\vect{b}-\vect{x}) \cdot \vect{b} = 0.
 $$
 We can solve that for $\lambda$ to get 
 $$
 \lambda = \frac{\vect{b} \cdot \vect{x}}{ \vect{b}\cdot\vect{b}} \text{ so that } P(\vect{x}) = \frac{\vect{b}\cdot\vect{x}}{\vect{b}\cdot\vect{b}} \vect{b}.
 $$
 
-## Example
+## Example 1D projection
 
 Suppose we wish to project $\mathbf{x}$ onto $\mathbf{b}$, where
 $$
@@ -208,27 +266,30 @@ $$
 $$
 Note that 
 
-- $\vect{b}\cdot\vect{x} = \mathbf{b}^T\mathbf{b} = 9$ and 
-- $\vect{b}\cdot\vect{b} = \mathbf{b}^T\mathbf{b} = 6$, thus 
+- $\vect{b}\cdot\vect{x} = \mathbf{b}^{\mathsf{T}}\mathbf{x} = 9$ and 
+- $\vect{b}\cdot\vect{b} = \mathbf{b}^{\mathsf{T}}\mathbf{b} = 6$, thus 
 
-$$P(\vect{x}) = \frac{9}{6}[1,-1,2]^T = [3/2,-3/2,6]^T.$$ 
-
+$$
+P(\vect{x}) = 
+\frac{9}{6}\begin{bmatrix} 1&-1&2 \end{bmatrix}^{\mathsf{T}} = 
+\begin{bmatrix} 3/2&-3/2&6 \end{bmatrix}^{\mathsf{T}}.
+$$
 
 
 ## Finding the projection matrix 
 
 Projection is a linear operation so we should be able to find a matrix $B$ with the property that $P(\vect{x}) = B\vect{x}$. To do so, we'll need a matrix representation of the inner product so let's suppose that it's just the regular dot product given by
 $$
-\vect{x}\cdot\vect{y} = \mathbf{x}^T\mathbf{y},
+\vect{x}\cdot\vect{y} = \mathbf{x}^{\mathsf{T}}\mathbf{y},
 $$
 Then, our formula becomes
 $$\begin{aligned}
-P(\mathbf{x}) = \frac{\mathbf{b}\cdot\mathbf{x}}{\mathbf{b}\cdot\mathbf{b}} \mathbf{b} = \mathbf{b}\frac{\mathbf{b}^T\mathbf{x}}{\mathbf{b}^T\mathbf{b}} =  \frac{\mathbf{b}\mathbf{b}^T}{\mathbf{b}^T\mathbf{b}}\mathbf{x}
+P(\mathbf{x}) = \frac{\mathbf{b}\cdot\mathbf{x}}{\mathbf{b}\cdot\mathbf{b}} \mathbf{b} = \mathbf{b}\frac{\mathbf{b}^{\mathsf{T}}\mathbf{x}}{\mathbf{b}^{\mathsf{T}}\mathbf{b}} =  \frac{\mathbf{b}\mathbf{b}^{\mathsf{T}}}{\mathbf{b}^{\mathsf{T}}\mathbf{b}}\mathbf{x}
 \end{aligned}$$
 Thus, 
 $$
 B =
-\frac{\mathbf{b}\mathbf{b}^T}{\mathbf{b}^T\mathbf{b}}.
+\frac{\mathbf{b}\mathbf{b}^{\mathsf{T}}}{\mathbf{b}^{\mathsf{T}}\mathbf{b}}.
 $$
 
 ## Example 
@@ -237,9 +298,9 @@ Continuing with our working example
 $$
 \mathbf{b} = \begin{bmatrix} 1 \\ -1 \\ 2 \end{bmatrix} \quad \text{and} \quad \mathbf{x} = \begin{bmatrix} 3 \\ 4 \\ 5 \end{bmatrix},
 $$
-note that $\mathbf{b}^T\mathbf{b} = 6$ and 
+note that $\mathbf{b}^{\mathsf{T}}\mathbf{b} = 6$ and 
 $$
-\mathbf{b}\mathbf{b}^T = \begin{bmatrix} 1 \\ -1 \\ 2 \end{bmatrix}\begin{bmatrix} 1 & -1 & 2 \end{bmatrix} =\begin{bmatrix} 1 & -1 & 2 \\ -1 & 1 & -2 \\ 2 & -2 & 4 \end{bmatrix}.
+\mathbf{b}\mathbf{b}^{\mathsf{T}} = \begin{bmatrix} 1 \\ -1 \\ 2 \end{bmatrix}\begin{bmatrix} 1 & -1 & 2 \end{bmatrix} =\begin{bmatrix} 1 & -1 & 2 \\ -1 & 1 & -2 \\ 2 & -2 & 4 \end{bmatrix}.
 $$
 
 
@@ -259,7 +320,7 @@ We now turn to the question of projecting a point in $\mathbb R^n$ onto an $m$-d
 $$\vect{b}_1,\vect{b}_2,\ldots,\vect{b}_m$$ 
 that span $U$. Now, if $\vect{x}\in\mathbb R^n$ and $P:\mathbb R^n \to U$ is a projection, then we have 
 $$
-P(\vect{x}) = \lambda_1\vect{b}_1 + \lambda_2\vect{b}_2 + \cdots + \lambda_m\vect{b}_n.
+P(\vect{x}) = \lambda_1\vect{b}_1 + \lambda_2\vect{b}_2 + \cdots + \lambda_m\vect{b}_m.
 $$
 
 ## Subspace projection 
@@ -271,35 +332,39 @@ $$
 expresses the fact that $P(\vect{x})$ is a linear combination of the $m$ basis vectors for the subspace $U$. Thus, we could write 
 $$P(\vect{x}) = B\vect{\lambda},$$
 where the columns of $B$ are exactly the basis vectors of $U$. Note that $B$ is $n\times m$ and that the orthogonality condition translates to 
-$$B^T (\vect{x}-B\vect{\lambda}) = \vect{0}.$$
+$$B^{\mathsf{T}} (\vect{x}-B\vect{\lambda}) = \vect{0}.$$
 
 ## Double checking the formula 
 
 We've arrived at 
-$B^T (B\vect{\lambda}-\vect{x}) = \vect{0},$
+$B^{\mathsf{T}} (B\vect{\lambda}-\vect{x}) = \vect{0},$
 where 
 
 - $B$ is $n\times m$, and
 - $\vect{\lambda}$ is $m\times 1$, so that 
 - $B\vect{\lambda}$ is $n\times 1$, which matches
 - $\vect{x}$, which is also $n\times 1$, so that 
-- we can multiply by $B^T$, which is $m\times n$, to get 
+- we can multiply by $B^{\mathsf{T}}$, which is $m\times n$, to get 
 - the $m$-dimensional zero vector $\vect{0}$.
 
 Of course, this looks a lot like our one-dimensional formula 
-$(\lambda\vect{x}-\vect{x})\cdot\vect{b} = 0$, if we wrote that as $\vect{b}^T (\lambda\vect{x}-\vect{x})=0$. In fact, the higer dimensional formula is exactly a list of $m$ of the one-dimensional formulae codified into a matrix.
+$(\lambda\vect{x}-\vect{x})\cdot\vect{b} = 0$, if we wrote that as $\vect{b}^{\mathsf{T}} (\lambda\vect{x}-\vect{x})=0$. In fact, the higher dimensional formula is exactly a list of $m$ of the one-dimensional formulae codified into a matrix.
 
 ## Finding the projection 
 
-Finally, we can rewrite $B^T (B\vect{\lambda}-\vect{x}) = \vect{0}$ as
-$$B^TB\vect{\lambda} = B^T\vect{x}.$$
+Finally, we can rewrite $B^{\mathsf{T}} (B\vect{\lambda}-\vect{x}) = \vect{0}$ as
+$$B^{\mathsf{T}}B\vect{\lambda} = B^{\mathsf{T}}\vect{x}.$$
 We can solve that equation for $\lambda$ quite efficiently using row reduction and back-substitution; then $B\vect{\lambda}$ is the projection of $\vect{x}$ onto the subspace $U$.
 
-<hr>
+::: {.fragment}
 
-If one really wants the projection matrix, they could invert $B^TB$ to solve for $\lambda$ to express 
-$$B\vect{\lambda} = B(B^TB)^{-1}B^T\vect{x}.$$
-Thus, $B(B^TB)^{-1}B^T$ is the projection matrix. While that's of theoretical interest, it's rarely done, since matrix inversion is very inefficient.
+<hr />
+
+If one really wants the projection matrix, they could invert $B^{\mathsf{T}}B$ to solve for $\lambda$ to express 
+$$B\vect{\lambda} = B(B^{\mathsf{T}}B)^{-1}B^{\mathsf{T}}\vect{x}.$$
+Thus, $B(B^{\mathsf{T}}B)^{-1}B^{\mathsf{T}}$ is the projection matrix. While that's of theoretical interest, it's rarely done, since matrix inversion is very inefficient.
+
+:::
 
 ## Example 
 
@@ -311,7 +376,7 @@ $$
 $$
 We do so by solving the normal equations
 $$
-B^T B \vect{\lambda} = B^T x
+B^{\mathsf{T}} B \vect{\lambda} = B^{\mathsf{T}} \vect{x}
 $$
 and then computing $B\vect{\lambda}$.
 
@@ -319,7 +384,7 @@ and then computing $B\vect{\lambda}$.
 
 Well, 
 $$
-B^T B =
+B^{\mathsf{T}} B =
 \begin{bmatrix} 
 1 & 2 & 3 \\ 
 2 & -1 & 1 
@@ -337,7 +402,7 @@ B^T B =
 $$
 and 
 $$
-B^T x =
+B^{\mathsf{T}} x =
 \begin{bmatrix} 
 1 & 2 & 3 \\ 
 2 & -1 & 1 
@@ -440,13 +505,13 @@ x_1 & 1 \\ x_2 & 1 \\ \vdots & \vdots \\ x_N & 1
 \end{bmatrix},
 \quad 
 Y = \begin{pmatrix}
-y_1 \\ y_2 \\ \vdots  \\ y_n
+y_1 \\ y_2 \\ \vdots  \\ y_N
 \end{pmatrix}, \quad 
 \vect{a} = \begin{bmatrix} a_1 \\ a_0 \end{bmatrix}.
 $$
 We'll then solve the least squares problem 
 $$
-X\vect{a}=Y \text{ by solving } X^TX\vect{a} = X^T\vect{Y}.
+X\vect{a}=Y \text{ by solving } X^{\mathsf{T}}X\vect{a} = X^{\mathsf{T}}\vect{Y}.
 $$
 
 ## Example (programmatic matrix setup)
@@ -468,7 +533,7 @@ Now, the `scipy.linalg` module has a `solve` function, that's built specifically
 solve(A,b)
 ```
 
-Of course, we need to apply this to our system $X^TX\vect{a} = X^T\vect{Y}$:
+Of course, we need to apply this to our system $X^{\mathsf{T}}X\vect{a} = X^{\mathsf{T}}\vect{Y}$:
 
 <hr>
 
