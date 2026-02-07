@@ -12,6 +12,9 @@ format:
     history: false
     transition: slide
     date-format: ddd, MMM DD, YYYY
+    html-math-method: 
+      method: mathjax
+      url: https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js
 ---
 
 
