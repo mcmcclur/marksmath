@@ -95,3 +95,13 @@ Of course, I learned most of this material many years ago and some of the presen
     Today we'll talk about the concept of a subspace and show that the range of a linear transformation is a subspace that's equal to span of the columns of the corresponding matrix. Ultimately, we'll solve the corresponding linear regression problem by projecting onto the range.
   </div>
 </details>
+
+- Mon, Feb 9: Orthogonal projection via the dot product
+  - [Presentation](./Lecture09-OrthogonalProjection/){target=_blank}
+  -
+<details>
+  <summary>Comments</summary>
+  <div>
+    Today we'll introduce the dot project with a very important application - namely, orthogonal projection.
+  </div>
+</details>
