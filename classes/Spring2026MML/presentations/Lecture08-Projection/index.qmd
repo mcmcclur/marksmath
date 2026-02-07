@@ -1,0 +1,496 @@
+---
+title: Projections
+date: 2026-02-09
+format:  
+  revealjs:
+    css: ../classnote-style.css
+    controls: true
+    controls-layout: bottom-right
+    navigation-mode: vertical
+    smaller: true
+    history: true
+    transition: slide
+    date-format: ddd, MMM DD, YYYY
+    html-math-method: 
+      method: mathjax
+      url: https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js
+    author: "Portions copyright Rob Beezer ([GFDL](https://www.gnu.org/licenses/fdl-1.3.en.html){target='_blank'})"
+    # echo: true
+    # eval: true
+    # output: true
+    # code-fold: true
+---
+
+# Recap and look ahead 
+
+Last time, we talked about subspaces. Our main objective today is to talk about how we project vectors onto those tools. To do so, we'll introduce a key tool called the dot product.
+
+$$
+\newcommand{\vect}[1]{\mathbf{#1}}
+\newcommand{\dotproduct}[2]{#1 \cdot #2}
+\newcommand{\vectorentry}[2]{\left\lbrack#1\right\rbrack_{#2}}
+\newcommand{\transpose}[1]{#1^{\mathsf{T}}}
+$$
+
+# The dot product 
+
+Algebraically, the *dot product* of two vectors can be defined using our matrix entry notation as
+
+$$
+\begin{equation*}
+\dotproduct{\vect{u}}{\vect{v}}=
+\vectorentry{\vect{u}}{1}\vectorentry{\vect{v}}{1}+
+\vectorentry{\vect{u}}{2}\vectorentry{\vect{v}}{2}+
+\vectorentry{\vect{u}}{3}\vectorentry{\vect{v}}{3}+
+\cdots+
+\vectorentry{\vect{u}}{m}\vectorentry{\vect{v}}{m}\
+=
+\sum_{i=1}^{m}\vectorentry{\vect{u}}{i}\vectorentry{\vect{v}}{i}.
+\end{equation*}
+$$
+
+This literally just tells us to multiply termwise and add the results. Note that this can also be expressed as matrix multiplication. For example,
+
+$$
+\begin{bmatrix}1&2&3\end{bmatrix}
+\begin{bmatrix}1\\2\\3\end{bmatrix}
+= [1+4+9] = [14]
+$$
+
+## Algebraic properties
+
+The dot product obeys the familiar properties of commutativity, distributivity over vector addition, and compatibility with scalar multiplication.
+
+- $\vect{u}\cdot\vect{v} = \vect{v}\cdot\vect{u}$
+- $\vect{u}\cdot(\vect{v}+\vect{w}) = \vect{u}\cdot\vect{v}+\vect{u}\cdot\vect{w}$
+- $(\lambda\vect{u})\cdot\vect{v} = \lambda(\vect{u}\cdot\vect{ v})$
+
+These all follow from the corresponding facts properties for matrix multiplication, which we've already proved!  In addition, the dot product of a vector with itself is mostly, always postive:
+$$
+\vect{u}\cdot\vect{u} \geq 0,
+$$
+the only exception being when $\vect{u}=\vect{0}$.
+
+## Relationship with magnitude 
+
+If $\vect{u}\in\mathbb{R}^n$, then
+
+$$
+\sqrt{\vect{u}\cdot\vect{u}} = 
+\sqrt{\vectorentry{\vect{u}}{1}\vectorentry{\vect{u}}{1}+
+\vectorentry{\vect{u}}{2}\vectorentry{\vect{u}}{2}+
+\vectorentry{\vect{u}}{3}\vectorentry{\vect{u}}{3}+
+\cdots+
+\vectorentry{\vect{u}}{n}\vectorentry{\vect{u}}{n}}.
+$$
+
+This is just the standard Pythagorean length of the vector, which we often call the *norm* of the vector, denoted by $\|\vect{u}\|$.
+
+Put another way, 
+$$
+\vect{u}\cdot\vect{u} = \|\vect{u}\|^2.
+$$
+
+## Relationship with angles
+
+Another wonderful geometric property of the dot product is 
+$$
+\vect{u}\cdot\vect{v} = \|\vect{u}\|\|\vect{v}\|\cos(\theta),
+$$
+where $\theta$ is the angle between the two vectors.
+
+In particular, two nonzero vectors are perpendicular precisely when their dot product is zero. The dot product is, in fact, very often used as a test for perpendicularity.
+
+We often say that two vectors are *orthogonal* when their dot product is zero.
+
+## Higher dimensions
+
+If we place two non-parallel vectors with their tips at the same point, then that point with the tips of the vectors determine a plane. Thus, the idea of perpendicularity extends to any dimension.
+
+For example,
+$$
+\begin{bmatrix} 1&2&3&4&5 \end{bmatrix}
+\begin{bmatrix} 1\\1\\1\\1\\-10 \end{bmatrix} = 0
+$$
+so the vectors are perpendicular in $\mathbb R^5$.
+
+
+## Orthonormal bases 
+
+Recall that a basis for a vector space is a linearly independent set of vectors that span the whole space.
+
+Even *better*, the vectors could be orthogonal to one another.
+
+**Ideally**, those orthogonal vectors are normalized so that the each has length one. 
+
+A basis of normalized, orthogonal vectors is called *orthnormal*.
+
+
+## Why orthonormal??
+
+The great thing about an orthonormal basis is that it's easy to express arbitrary vectors in terms of the basis vectors.
+
+To see this, suppose that $\{\vect{u}_1, \vect{u}_2,\ldots,\vect{u}_n\}$ form an orthonormal basis for $\mathbb R^n$ and $\vect{v} \in \mathbb R^n$ is a vector satisfying
+$$
+\vect{v} = \alpha_1\vect{u}_1 + \alpha_2 \vect{u}_2 + \cdots + \alpha_n\vect{u}_n.
+$$
+Then, for any $j$,
+$$
+\vect{u}_j\cdot\vect{v} = \vect{u}_j\cdot(\alpha_1\vect{u}_1 + \alpha_2 \vect{u}_2 + \cdots + \alpha_n\vect{u}_n) = \alpha_j.
+$$
+
+
+# Projection 
+
+Now, let's suppose we've got an $m$-dimensional subspace $U$ of $\mathbb R^n$. Our objective is to find a function $P:\mathbb R^n \to U$ that represents "orthogonal projection", whatever that means...
+
+A linear transformation $P:\mathbb R^n \to \mathbb R^n$ is called a *projection*, if $P^2=P$. Intuitively, this means that once you apply $P$ to a vector $\vect{x}$, reapplication of $P$ doesn't move the result further: $P(P(\vect{x})) = P(\vect{x})$.
+
+When we say that $P$ is not just a projection but an *orthgonal* projection, we mean that $P$ maps perpendicularly to the subspace. Algebraically,
+$$(P(\vect{x})- \vect{x}) \cdot P(\vect{x}) = 0.$$
+
+
+## Illustration in 3D 
+
+All this makes a fair bit more sense, once you see an illustration. And note that, in the picture below, the projection $P(\vect{x})$ is the point on the plane that is *closest* to $\vect{x}$.
+
+```{python}
+from graphics import make_projection_3d
+make_projection_3d()
+```
+
+## Comments
+
+- The condition that $P^2 = P$ ensures that the space that we're projecting onto is fixed.
+
+- The condition that 
+$$(P(\vect{x})- \vect{x}) \cdot P(\vect{x}) = 0$$
+ensures that the projection is perpendicular.
+
+- We're going to use these conditions to
+  1. Find a formula for projection onto a one-dimensional subspace and then
+  2. Extend that result to higher dimensional subspaces using orthonormal bases for those subspaces.
+
+
+# Projection onto one-dimension
+
+Since two vectors determine a plane, we can visualize the projection onto a one-dimensional subspace in a two-dimensional picture:
+
+::: {.centered}
+
+```{python}
+from graphics import make_projection_2d
+make_projection_2d()
+```
+
+:::
+
+
+## Finding the projected vector  
+
+Since $P(\vect{x})$ lies on the the subspace determined by $\vect{b}$, we can write 
+$$P(\vect{x}) = \lambda \vect{b}$$
+for some scalar $\lambda$. The orthogonality condition then implies that 
+$$
+(P(\vect{x})-\vect{x}) \cdot \vect{b} =
+(\lambda\vect{x}-\vect{x}) \cdot \vect{b} = 0.
+$$
+We can solve that for $\lambda$ to get 
+$$
+\lambda = \frac{\vect{b} \cdot \vect{x}}{ \vect{b}\cdot\vect{b}} \text{ so that } P(\vect{x}) = \frac{\vect{b}\cdot\vect{x}}{\vect{b}\cdot\vect{b}} \vect{b}.
+$$
+
+## Example
+
+Suppose we wish to project $\mathbf{x}$ onto $\mathbf{b}$, where
+$$
+\mathbf{b} = \begin{bmatrix} 1 \\ -1 \\ 2 \end{bmatrix} \quad \text{and} \quad \mathbf{x} = \begin{bmatrix} 3 \\ 4 \\ 5 \end{bmatrix}.
+$$
+Note that 
+
+- $\vect{b}\cdot\vect{x} = \mathbf{b}^T\mathbf{b} = 9$ and 
+- $\vect{b}\cdot\vect{b} = \mathbf{b}^T\mathbf{b} = 6$, thus 
+
+$$P(\vect{x}) = \frac{9}{6}[1,-1,2]^T = [3/2,-3/2,6]^T.$$ 
+
+
+
+## Finding the projection matrix 
+
+Projection is a linear operation so we should be able to find a matrix $B$ with the property that $P(\vect{x}) = B\vect{x}$. To do so, we'll need a matrix representation of the inner product so let's suppose that it's just the regular dot product given by
+$$
+\vect{x}\cdot\vect{y} = \mathbf{x}^T\mathbf{y},
+$$
+Then, our formula becomes
+$$\begin{aligned}
+P(\mathbf{x}) = \frac{\mathbf{b}\cdot\mathbf{x}}{\mathbf{b}\cdot\mathbf{b}} \mathbf{b} = \mathbf{b}\frac{\mathbf{b}^T\mathbf{x}}{\mathbf{b}^T\mathbf{b}} =  \frac{\mathbf{b}\mathbf{b}^T}{\mathbf{b}^T\mathbf{b}}\mathbf{x}
+\end{aligned}$$
+Thus, 
+$$
+B =
+\frac{\mathbf{b}\mathbf{b}^T}{\mathbf{b}^T\mathbf{b}}.
+$$
+
+## Example 
+
+Continuing with our working example
+$$
+\mathbf{b} = \begin{bmatrix} 1 \\ -1 \\ 2 \end{bmatrix} \quad \text{and} \quad \mathbf{x} = \begin{bmatrix} 3 \\ 4 \\ 5 \end{bmatrix},
+$$
+note that $\mathbf{b}^T\mathbf{b} = 6$ and 
+$$
+\mathbf{b}\mathbf{b}^T = \begin{bmatrix} 1 \\ -1 \\ 2 \end{bmatrix}\begin{bmatrix} 1 & -1 & 2 \end{bmatrix} =\begin{bmatrix} 1 & -1 & 2 \\ -1 & 1 & -2 \\ 2 & -2 & 4 \end{bmatrix}.
+$$
+
+
+## Illustration of our computation
+
+Here's an image of the projection of the point/vector $\vect{x}$ onto the line spanned by $\vect{b}$:
+
+```{python}
+from graphics import make_projection_matrix_3d
+make_projection_matrix_3d()
+```
+
+
+# Projection onto a higher dimensional subspace 
+
+We now turn to the question of projecting a point in $\mathbb R^n$ onto an $m$-dimensional subspace $U \subset \mathbb R^n$. Generally, the subspace $U$ is expressed as the span of a collection of basis vectors; thus, we'll assume that we have vectors 
+$$\vect{b}_1,\vect{b}_2,\ldots,\vect{b}_m$$ 
+that span $U$. Now, if $\vect{x}\in\mathbb R^n$ and $P:\mathbb R^n \to U$ is a projection, then we have 
+$$
+P(\vect{x}) = \lambda_1\vect{b}_1 + \lambda_2\vect{b}_2 + \cdots + \lambda_m\vect{b}_n.
+$$
+
+## Subspace projection 
+
+Note the last line of the previous slide
+$$
+P(\vect{x}) = \lambda_1\vect{b}_1 + \lambda_2\vect{b}_2 + \cdots + \lambda_m\vect{b}_m.
+$$
+expresses the fact that $P(\vect{x})$ is a linear combination of the $m$ basis vectors for the subspace $U$. Thus, we could write 
+$$P(\vect{x}) = B\vect{\lambda},$$
+where the columns of $B$ are exactly the basis vectors of $U$. Note that $B$ is $n\times m$ and that the orthogonality condition translates to 
+$$B^T (\vect{x}-B\vect{\lambda}) = \vect{0}.$$
+
+## Double checking the formula 
+
+We've arrived at 
+$B^T (B\vect{\lambda}-\vect{x}) = \vect{0},$
+where 
+
+- $B$ is $n\times m$, and
+- $\vect{\lambda}$ is $m\times 1$, so that 
+- $B\vect{\lambda}$ is $n\times 1$, which matches
+- $\vect{x}$, which is also $n\times 1$, so that 
+- we can multiply by $B^T$, which is $m\times n$, to get 
+- the $m$-dimensional zero vector $\vect{0}$.
+
+Of course, this looks a lot like our one-dimensional formula 
+$(\lambda\vect{x}-\vect{x})\cdot\vect{b} = 0$, if we wrote that as $\vect{b}^T (\lambda\vect{x}-\vect{x})=0$. In fact, the higer dimensional formula is exactly a list of $m$ of the one-dimensional formulae codified into a matrix.
+
+## Finding the projection 
+
+Finally, we can rewrite $B^T (B\vect{\lambda}-\vect{x}) = \vect{0}$ as
+$$B^TB\vect{\lambda} = B^T\vect{x}.$$
+We can solve that equation for $\lambda$ quite efficiently using row reduction and back-substitution; then $B\vect{\lambda}$ is the projection of $\vect{x}$ onto the subspace $U$.
+
+<hr>
+
+If one really wants the projection matrix, they could invert $B^TB$ to solve for $\lambda$ to express 
+$$B\vect{\lambda} = B(B^TB)^{-1}B^T\vect{x}.$$
+Thus, $B(B^TB)^{-1}B^T$ is the projection matrix. While that's of theoretical interest, it's rarely done, since matrix inversion is very inefficient.
+
+## Example 
+
+Suppose we're working in $\mathbb R^3$ and we'd like to project the vector $\vect{x}$ onto the two-dimensional subspace spanned by $\vect{b}_1$ and $\vect{b}_2$, where 
+$$
+\vect{x} = \begin{bmatrix} 4 \\ 5 \\ 6 \end{bmatrix}, \quad
+\vect{b}_1 = \begin{bmatrix} 1 \\ 2 \\ 3 \end{bmatrix}, \text{ and } 
+\vect{b}_2 = \begin{bmatrix} 2 \\ -1 \\ 1 \end{bmatrix}.
+$$
+We do so by solving the normal equations
+$$
+B^T B \vect{\lambda} = B^T x
+$$
+and then computing $B\vect{\lambda}$.
+
+## Example (cont)
+
+Well, 
+$$
+B^T B =
+\begin{bmatrix} 
+1 & 2 & 3 \\ 
+2 & -1 & 1 
+\end{bmatrix}
+\begin{bmatrix} 
+1 & 2 \\ 
+2 & -1 \\ 
+3 & 1 
+\end{bmatrix}
+=
+\begin{bmatrix} 
+14 & 3 \\ 
+3 & 6 
+\end{bmatrix}
+$$
+and 
+$$
+B^T x =
+\begin{bmatrix} 
+1 & 2 & 3 \\ 
+2 & -1 & 1 
+\end{bmatrix}
+\begin{bmatrix} 
+4 \\ 
+5 \\ 
+6 
+\end{bmatrix}
+=
+\begin{bmatrix} 
+32 \\ 
+9 
+\end{bmatrix}
+$$
+
+## Example (cont)
+
+Thus, we've got to solve
+$$
+\begin{bmatrix} 14 & 3 \\ 3 & 6 \end{bmatrix}
+\begin{bmatrix} \lambda_1 \\ \lambda_2 \end{bmatrix}
+=
+\begin{bmatrix} 32 \\ 9 \end{bmatrix}
+$$
+and we find that 
+$$
+\lambda_1 = \frac{11}{5}, \quad \lambda_2 = \frac{2}{5}.
+$$
+Thus, finally,
+$$
+P(\vect{x}) = B \vect{\lambda} =
+\begin{bmatrix} 1 & 2 \\ 2 & -1 \\ 3 & 1 \end{bmatrix}
+\begin{bmatrix} \frac{11}{5} \\ \frac{2}{5} \end{bmatrix}
+=
+\begin{bmatrix} 3 \\ 4 \\ 7 \end{bmatrix}
+$$
+
+## Illustration 
+
+```{python}
+from graphics import make_multi_proj_example
+make_multi_proj_example()
+```
+
+# Application to least squares
+
+Now, let's recall the basic linear regression problem. We're given data represented as a list of points: 
+
+$$
+\{(x_i,y_i)\}_{i=1}^N = \{(x_1,y_1),(x_2,y_2),(x_3,y_3),\ldots,(x_N,y_N)\}.
+$$
+
+We model that data with a function $f(x) = ax+b$ and wish to minimize the error as a function of the parameters $a$ and $b$:
+
+$$
+E(a,b) = \sum_{i=1}^N \left((a\,x_i + b) - y_i\right)^2
+$$
+
+## Reformulation using linear algebra
+
+Note that the expression for the error 
+$$
+E(a,b) = \sum_{i=1}^N \left((a\,x_i + b) - y_i\right)^2
+$$
+is exactly equivalent to
+$$
+\left\|\begin{pmatrix}
+x_1 & 1 \\ x_2 & 1 \\ \vdots & \vdots \\ x_N & 1
+\end{pmatrix}
+\begin{bmatrix} a \\ b \end{bmatrix} -
+\begin{pmatrix}
+y_1 \\ y_2 \\ \vdots  \\ y_N
+\end{pmatrix}\right\|^2.
+$$
+Thus, to minimize the error, we should minimize that norm, which is equivalent to orthogonal projection.
+
+## Example 
+
+Suppose we wish to find the least square line approximating the points below. Be sure to examine the code!
+
+```{python}
+#| echo: true 
+#| code-fold: true
+import matplotlib.pyplot as plt
+import numpy as np
+
+np.random.seed(1)
+xs = np.random.uniform(-10,10,20)
+ys = [x/2 + 1 + np.random.normal(0,1) for x in xs]
+plt.plot(xs,ys, '.')
+```
+
+## Example (algebraic matrix setup)
+
+To solve this, we'll setup the matrices $X$ and $Y$ together with the vector $\vect{a}$ defined by 
+$$
+X = \begin{bmatrix}
+x_1 & 1 \\ x_2 & 1 \\ \vdots & \vdots \\ x_N & 1
+\end{bmatrix},
+\quad 
+Y = \begin{pmatrix}
+y_1 \\ y_2 \\ \vdots  \\ y_n
+\end{pmatrix}, \quad 
+\vect{a} = \begin{bmatrix} a_1 \\ a_0 \end{bmatrix}.
+$$
+We'll then solve the least squares problem 
+$$
+X\vect{a}=Y \text{ by solving } X^TX\vect{a} = X^T\vect{Y}.
+$$
+
+## Example (programmatic matrix setup)
+
+Here's the setup of the matrix $X$ in code:
+
+```{python}
+#| echo: true 
+#| code-fold: false
+X = np.array([xs,np.ones(len(xs))]).transpose()
+X.tolist()
+```
+
+## Example (solution)
+
+Now, the `scipy.linalg` module has a `solve` function, that's built specifically for linear systems. If the python variables `A` and `b` store the matrix and vector for the mathematical system $A\vect{x}=\vect{b}$, then we simply call 
+
+```
+solve(A,b)
+```
+
+Of course, we need to apply this to our system $X^TX\vect{a} = X^T\vect{Y}$:
+
+<hr>
+
+```{python}
+#| echo: true 
+#| code-fold: false
+from scipy.linalg import solve
+a,b = solve(X.transpose().dot(X), X.transpose().dot(ys))
+a,b
+```
+
+This indicates that our regression line is $y=0.48795x+0.86086$.
+
+## Example (plot)
+
+Naturally, we want to see a plot to make sure this works!
+
+```{python}
+#| echo: true 
+#| code-fold: false
+def f(x): return a*x+b
+fy = [f(x) for x in xs]
+plt.plot(xs,ys, '.')
+plt.plot(xs, fy)
+```
