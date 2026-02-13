@@ -2,13 +2,15 @@
 title: Massey ratings
 format:
   html:
+    include-in-header:
+      - ../../../../components/includes/latex-macros.html
     css: style.css
     page-layout: article
     toc: true
     code-copy: true
     echo: true
 ---
- 
+
 This web page outlines a technique based in linear algebra to rate teams playing games in a common league based on the score differences that we see in the games. The basic idea is to perform a linear regression where the input consists of games and the output is the set of score differences.
 
 This technique dates back to Ken Massey's 1997 senior honors thesis at Bluefield College. My understanding of the technique is based mostly on Chapter 2 of [Langville and Meyer's text on sports ranking](https://press.princeton.edu/books/hardcover/9780691154220/whos-1).
@@ -35,7 +37,7 @@ from scipy.linalg import solve
 
 ## Description of the algorithm
 
-Let's describe the algorithm and take a look at a relatively simple example
+Let's describe the algorithm and take a look at a relatively simple example.
 
 ### The general problem
 
@@ -43,20 +45,20 @@ In general, we've got $m$ games played between $n$ teams. Let's suppose that in 
 $$r_i - r_j = y_k.$$
 To put it another way, we'd like our ratings of teams $i$ and $j$ to indicate the expected score difference between the teams, if they play again.
 
-If $\vec{r}$ is the vector of ratings and $\vec{y}$ is the vector of point differences, then we can express this as the matrix equation
-$$X\vec{r} = \vec{y},$$
+If $\vect{r}$ is the vector of ratings in $\mathbb{R}^n$ and $\vect{y}$ is the vector of point differences in $\mathbb{R}^m$, then we can express this as the matrix equation
+$$X\vect{r} = \vect{y},$$
 where $X_{ki} = 1$, $X_{kj} = -1$, and all other entries are zero.
 
-Now, there are generally many more games than teams so that the system we've written down is likely overdetermined. Nonetheless, we can attempt to find an approximate solution in the least squares sense and an efficient way to do so is to solve the so-called *normal equations* obtained by multiplying both sides by the transpose of $X$:
-$$X^T X\vec{r} = X^T \vec{y},$$
+Now, there are generally many more games than teams so that the system we've written down is likely overdetermined. Nonetheless, we can attempt to find an approximate solution in the least squares sense and an efficient way to do so is to solve the *normal equations* obtained by multiplying both sides by the transpose of $X$:
+$$X^T X\vect{r} = X^T \vect{y},$$
 
 The matrix $M = X^T X$ formed in this process is called the *Massey matrix* and has some interesting properties. Note that each entry in column $i$ of the matrix $X$ is either $1$ (if team $i$ won that game), $-1$ (if team $i$ lost that game), or zero (if team $i$ didn't play in that game).  As a result, $M_{ii}$ (which is obtained by computing the dot product of the $i^{\text{th}}$ column of $X$ with itself) denotes the number of games played by team $i$. Similarly, $M_{ij}$ is the opposite of the number of games played by teams $i$ and $j$. Thus, the sum of each row is zero. Put another way, the columns sum to the zero vector and are therefore linearly dependent. This implies that $M$ is singular so that the normal equations don't have a unique solution.
 
 
 A way to get around this problem is to set all the elements in some row of $M$ equal to 1. This is conventionally done in the last row. We similarly replace the last element of
-$$\vec{p} = X^T y$$
+$$\vect{p} = X^T y$$
 with zero. This implies the constraint that the sum of the ratings must be zero. Furthermore, the resulting system
-$$M \vec{r} = \vec{p}$$
+$$M \vect{r} = \vect{p}$$
 can be shown to have a unique solution.
 
 ### A simple working example
@@ -79,11 +81,16 @@ dot.edge("C", "A", label="1")
 dot
 ```
 
-Note that a directed edge from team $i$ to team $j$ indicates that team $i$ defeated team $j$ in that game; the edge labels indicate the score differences. Given the directed graph shown above, how would you rank the teams?
+Note that a directed edge from team $i$ to team $j$ indicates that team $i$ defeated team $j$ in that game; the edge labels indicate the score differences. 
 
+::: {.callout-note appearance="minimal"}
+
+Given the directed graph shown above, how would you rank the teams?
+
+:::
 
 To rank the teams the Massey way, we start with the general equation
-$$X \vec{r} = \vec{y}$$
+$$X \vect{r} = \vect{y}$$
 which takes the specific form
 
 $$
@@ -111,10 +118,10 @@ In particular, note that $r_1 < r_2 < r_0$, which is probably in accordance with
 ### The Massey equation
 
 It's worth noting that the Massey equation
-$$M\vec{r} = \vec{p}$$
-can itself be written down and interpreted without reference to $X$ or $y$. As we've already noted, $M_{ii}$ denotes the number of games played by team $i$ and $M_{ij}$ is the opposite of the number of games played by teams $i$ and $j$. Similarly, the entries of $\vec{p}$ are the set of score differences for each team.
+$$M\vect{r} = \vect{p}$$
+can itself be written down and interpreted without reference to $X$ or $y$. As we've already noted, $M_{ii}$ denotes the number of games played by team $i$ and $M_{ij}$ is the opposite of the number of games played by teams $i$ and $j$. Similarly, the entries of $\vect{p}$ are the set of score differences for each team.
 
-For example, if we expand the first term in the product $M\vec{r}$ and set that equal to the first entry of $\vec{p}$, we get
+For example, if we expand the first term in the product $M\vect{r}$ and set that equal to the first entry of $\vect{p}$, we get
 $$4r_0 - 2r_1 - 2r_2 = 7.$$
 This indicates that team $0$ played four games, two against each other team, and that it outscored its opponents by a combined score of seven. If we solve for $r_0$, we get
 $$r_0 = \frac{1}{2}r_1 + \frac{1}{2}r_2 + \frac{7}{2}.$$
@@ -157,8 +164,10 @@ Let's take a look at a somewhat bigger example, namely the current Big South. I 
 ```{python}
 games = pd.read_csv('https://marksmath.org/data/BigSouthBasketball2026.csv')  
 m = len(games)
-games.head(8) 
+games.tail(8) 
 ```
+
+It looks like there have been 51 games played so far. Let's see how many teams there are:
 
 ```{python}
 wteams = games.name1
@@ -166,7 +175,10 @@ lteams = games.name2
 teams = pd.concat([wteams, lteams]).drop_duplicates().sort_values()
 team_to_idx_dict = dict([(v,i) for i,v in enumerate(teams)])
 n = len(teams)
+n
 ```
+
+So, there are 9 teams. Our design matrix $X$ will have 51 rows and 9 columns. It will map 9 dimensional space into 51 dimensional space and the solution to the regression problem will be the nine-dimensional vector of ratings. Here's how to setup and solve the regression problem using the `scipy.linalg.solve` function:
 
 ```{python}
 X = np.zeros([m,n])
@@ -187,6 +199,8 @@ r = solve(M,p)
 r
 ```
 
+Finally, we'll sort those teams by their ratings in descending order to get a ranking:
+
 ```{python}
 teams = pd.DataFrame(teams)
 teams.columns = ['TeamName']
@@ -198,3 +212,5 @@ teams.reset_index(inplace=True)
 teams.drop('index', inplace=True, axis=1)
 teams
 ```
+
+Not bad!
