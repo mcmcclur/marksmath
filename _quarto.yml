@@ -2,6 +2,8 @@ project:
   type: website 
   resources:
     - favicon.ico
+    - components/includes/latex-macros.html
+    - components/includes/latex-macros.tex
 
 website:
   title: "Mark's Math"
