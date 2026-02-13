@@ -178,7 +178,12 @@ n = len(teams)
 n
 ```
 
-So, there are 9 teams. Our design matrix $X$ will have 51 rows and 9 columns. It will map 9 dimensional space into 51 dimensional space and the solution to the regression problem will be the nine-dimensional vector of ratings. Here's how to setup and solve the regression problem using the `scipy.linalg.solve` function:
+We could plot the directed graph but it's a bit busy. The same information is displayed by a chord diagram, though:
+
+<iframe width="100%" height="700" frameborder="2"
+  src="https://observablehq.com/embed/cbbe8ab362fb60e2?cells=big_south_chord_diagram"></iframe>
+
+So, we've got 9 teams who played 51 games. Our design matrix $X$ will have 51 rows and 9 columns. It will map 9 dimensional space into 51 dimensional space and the solution to the regression problem will be the nine-dimensional vector of ratings. Here's how to setup and solve the regression problem using the `scipy.linalg.solve` function:
 
 ```{python}
 X = np.zeros([m,n])
