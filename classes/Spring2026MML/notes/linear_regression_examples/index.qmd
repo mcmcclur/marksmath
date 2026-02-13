@@ -1,0 +1,404 @@
+---
+title: Linear Regression 
+subtitle: Theory and practice
+format:
+  html:
+    css: style.css
+    page-layout: article
+    toc: true
+    code-copy: true
+    echo: true
+---
+
+This set of class notes presents linear regression in both theory and practice. That is,
+
+- we'll talk about the general linear regression problem from the perspective of linear algebra,
+- we'll discuss how to solve that problem using the "normal equations" that arise from the dot product and orthogonal projection, and 
+- we'll see multiple examples that actually apply these ideas in code.
+
+## General linear regression 
+
+The general linear regression problem is to solve 
+$$
+A\mathbf{x} = \mathbf{b}
+$$
+as "closely" as you can. We do this by solving the so-called *normal equations*:
+$$
+A^{\mathsf{T}}A\mathbf{x} = A^{\mathsf{T}}\mathbf{b}.
+$$
+If we write that as 
+$$
+A^{\mathsf{T}}(A\mathbf{x} - \mathbf{b}) = \mathbf{0},
+$$
+then we can see that this literally says that every column of $A$ is perpendicular to $A\mathbf{x} - \mathbf{b}$. That happens exactly when $A\mathbf{x}$ is as close as possible to $\mathbf{b}$.
+
+### Example 
+
+Suppose we wish to solve the system 
+$$
+\begin{bmatrix}1&0\\2&-1\\1&1\end{bmatrix}
+\begin{bmatrix}x_1\\x_2\end{bmatrix} = 
+\begin{bmatrix}1\\0\\3\end{bmatrix}.
+$$
+The system is overdetermined so we expect there's no solution. We also recognize it as a least squares problem with 
+$$
+A = \begin{bmatrix}1&0\\2&-1\\1&1\end{bmatrix}
+\text{ and }
+\mathbf{b} = \begin{bmatrix}1\\0\\3\end{bmatrix}.
+$$
+We multiply both sides by $A^{\mathsf{T}}$ to get 
+$$
+\begin{bmatrix}1&2&1\\0&-1&1\end{bmatrix}
+\begin{bmatrix}1&0\\2&-1\\1&1\end{bmatrix}
+\begin{bmatrix}x_1\\x_2\end{bmatrix} = 
+\begin{bmatrix}1&2&1\\0&-1&1\end{bmatrix}
+\begin{bmatrix}1\\0\\3\end{bmatrix}
+$$
+or 
+$$
+\begin{bmatrix}6&-1\\-1&2\end{bmatrix}
+\begin{bmatrix}x_1\\x_2\end{bmatrix} =
+\begin{bmatrix}4\\3\end{bmatrix}.
+$$
+
+By construction, this system *always* has a solution, though, it might have more than one solution. That happens only when the columns of $A$ are linearly dependent. It's pretty easy to see that 
+$$
+\begin{bmatrix}x_1\\x_2\end{bmatrix} =
+\begin{bmatrix}1\\2\end{bmatrix}
+$$
+is the unique solution in this case.
+
+Geometrically, this means that the point $[1\:\:\:2]^{\mathsf{T}}$ maps to the point in the range of the linear transformation induced by $A$ that is closest to the target point $[1\:\:\:0\:\:\:3]^{\mathsf{T}}$.
+
+### Simple linear regression
+
+Simple linear regression refers to the process of fitting a line through a list of $n$ data points of the form 
+$$
+\{(x_1, y_1), (x_2, y_2), \ldots, (x_n, y_n)\}.
+$$
+We suppose that the model function has the form
+$$
+f(x) = ax+b.
+$$
+We can then quantify the total squared error from this estimate as 
+$$
+E(a,b)=\sum_{i=1}^n (ax_i+b-y_i)^2.
+$$
+We translate that to the linear algebra setting by defining
+$$
+X = \begin{bmatrix}
+  x_1 & 1 \\ x_2 & 1 \\ \vdots & \vdots \\ x_n & 1
+\end{bmatrix} \text{ and } 
+Y = \begin{bmatrix}
+  y_1 \\ y_2 \\ \vdots \\ y_n
+\end{bmatrix} 
+$$
+The matrix $X$ is often called the *design matrix*.
+We can then rewrite the total error as 
+$$
+E(a,b) = 
+\left\|X\begin{bmatrix}a \\ b\end{bmatrix} - Y\right\|^2.
+$$
+From the linear algebra perspective, we are looking for the orthogonal projection of $Y$ onto the column space of $X$ because that's the point of the form 
+$X[a \: \: b]^{\mathsf{T}}$ 
+that's closest to $Y$. Thus, we recognize this as a special case of linear regression so we solve the normal equations
+$$
+X^{\mathsf{T}}X \begin{bmatrix}a \\ b\end{bmatrix} = 
+X^{\mathsf{T}}Y.
+$$
+
+### Other variants
+
+There are lots of variations on this theme.
+
+#### Multiple linear regression 
+
+Let's suppose we have $n$ points in space of the form 
+$$
+(x_1,y_1,z_1),(x_2,y_2,z_2),\ldots,(x_n,y_n,z_n).
+$$
+If we wish to approximate these with a plane, we might suppose that the form of that plane is 
+$$
+f(x,y) = ax+by+c.
+$$
+
+The quick, linear algebra way to plug all those $(x,y)$ points into $f$ and see how close the results are to the $z$ is to set up the design matrix and multiply that times $[a\:\:\:b\:\:\:c]^{\mathsf{T}}$:
+
+$$
+\begin{bmatrix}
+x_1 & y_1 & 1 \\ x_2 & y_2 & 1 \\
+\vdots & \vdots & \vdots \\
+x_n & y_n & 1
+\end{bmatrix}
+\begin{bmatrix}
+a \\ b \\ c 
+\end{bmatrix}
+=
+\begin{bmatrix}
+z_1 \\ z_2 \\ \vdots \\ z_n 
+\end{bmatrix}.
+$$
+
+It's probably easy to believe that the dimension of the domain can be as large as you want. The dimension of the range can be as large as you want, as well.
+
+#### Polynomial regression 
+
+We can use more complicated model functions, like polynomials. Suppose, again, that we've got data like 
+$$
+\{(x_1, y_1), (x_2, y_2), \ldots, (x_n, y_n)\}.
+$$
+Now, though, we'd like to fit a function of the form 
+$$
+f(x) = a_mx^m + a_{m-1}x^{m-1} + \cdots + a_1x + a_0.
+$$
+We expect that we might be able to use linear regression since this is a linear combination of the functions
+$$
+\{1,x,x^2,\ldots,x^m\}.
+$$
+In fact we can set up our model using a design matrix:
+$$
+\begin{bmatrix}
+x_1^m & x_1^{m-1} & \cdots & x_1 & 1 \\
+x_2^m & x_2^{m-1} & \cdots & x_2 & 1 \\
+\vdots & \vdots & \ddots & \vdots & \vdots \\
+x_n^m & x_n^{m-1} & \cdots & x_n & 1 \\
+\end{bmatrix}
+\begin{bmatrix}a_m \\ a_{m-1} \\ \vdots \\ a_1 \\ a_0\end{bmatrix}
+=
+\begin{bmatrix}y_1 \\ y_2 \\ \vdots \\ y_n\end{bmatrix}.
+$$
+
+If we solve this in the least squares sense, we should get a good polynomial fit to the data.
+
+
+## Examples - in code
+
+Now, we're going to take a look at several examples illustrating these ideas. Note that these are *real* examples with *real* data and, as such, they tend to be large. Thus, we won't solve these by hand but on the computer. 
+
+More, we'll use SciKit Learn, which is genuine, machine learning software. As such, many of the details we've just discussed will be concealed under the hood. Those details are still there and, if you ever become a machine learning developer, you'd need to know those details to work with the source code. Even as a user, there are often times where knowledge of the algorithms come in handy.
+
+### Imports
+
+Let's begin by importing the libraries we'll use.
+
+```{python}
+# Numerics and data
+import numpy as np
+import pandas as pd
+
+# Graphics
+import plotly.express as px
+import plotly.graph_objects as go
+import matplotlib.pyplot as plt
+
+# SciKit Learn Magic
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error
+```
+
+### Data 
+
+Our first couple of examples will work with a simple version of the well-known Palmer Penguin data set. Let's read that into our kernel right now:
+
+```{python}
+penguin_data = pd.read_csv('https://marksmath.org/data/penguins.csv').dropna()
+penguin_data.head(3)
+```
+
+Looks like there are four numerical variables. We can get a rough sense of their distribution using the `describe` method:
+
+```{python}
+penguin_data[[
+  'culmen_length_mm','culmen_depth_mm', 'flipper_length_mm', 'body_mass_g'
+]].describe()
+```
+
+### Simple linear regression
+
+A natural application of simple linear regression is to estimate body mass from one of the other numerical variables. Let's try to do so using culmen length (which is length of the beak).
+
+```{python}
+# The design matrix, which has one column;
+# Constants are handled automatically
+X = penguin_data[['culmen_length_mm']].to_numpy()
+
+# The target vector
+Y = penguin_data["body_mass_g"].to_numpy()
+
+
+# Define and fit the model
+# An important general pattern
+model = LinearRegression(fit_intercept=True)
+model.fit(X, Y)
+
+# Print out the model function
+a,b = model.coef_[0], model.intercept_
+print(f"ax + b = {a:0.3f} x + {b:0.3f}")
+
+# Print out the residual
+pred = model.predict(X)
+res1 = np.sum((Y - pred)**2)
+print("Residual:", res1)
+
+# And the mean squared error
+print("MSE:", mean_squared_error(Y, pred))
+
+# Plot the data
+plt.plot(X, Y, 'ok', markersize=2)
+
+# Define an plot the model function
+def f(x):
+    return a*x + b
+xmin = min(X)
+xmax = max(X)
+plt.plot([xmin,xmax], [f(xmin), f(xmax)])
+```
+
+### Multiple regression 
+
+The process is almost identical to perform multiple regression. Naturally, we do need to indicate which variables we want to use; perhaps, we'll add flipper length on. The nature of our model function is different, if we want to display it. In practice, we would typically use the `model.predict` method to compute values with the model.
+
+```{python}
+# Design and target; X has two variables
+X = penguin_data[['flipper_length_mm', 'culmen_length_mm']]
+Y = penguin_data["body_mass_g"]
+
+# Same pattern to fit the model:
+model = LinearRegression(fit_intercept=True)
+model.fit(X, Y)
+
+# Print out the model function
+a,b,c = model.coef_[0], model.coef_[1], model.intercept_
+print(f"a x_1 + b x_2 + c = {a:0.1f} x_1 + {b:0.1} x_2 - {-c:0.1f}")
+
+# Print out the metrics
+pred = model.predict(X)
+res2 = np.sum((Y - pred)**2)
+print("Res:", res2)
+print("MSE:", mean_squared_error(Y, pred))
+```
+
+We are still in the range where we can plot the model function with the data.
+
+```{python}
+x = penguin_data["flipper_length_mm"]
+y = penguin_data["culmen_length_mm"]
+
+x_range = np.linspace(x.min(), x.max(), 40)
+y_range = np.linspace(y.min(), y.max(), 40)
+X_grid, Y_grid = np.meshgrid(x_range, y_range)
+Z_grid = a*X_grid +b*Y_grid + c
+
+fig = px.scatter_3d(
+    penguin_data,
+    x="flipper_length_mm",
+    y="culmen_length_mm",
+    z="body_mass_g",
+    opacity=0.75
+)
+fig.add_trace(
+    go.Surface(
+        x=X_grid,
+        y=Y_grid,
+        z=Z_grid,
+        opacity=0.45,
+        showscale=False
+    )
+)
+fig.update_layout(
+    scene=dict(
+        xaxis_title="Flipper length (mm)",
+        yaxis_title="Culmen length (mm)",
+        zaxis_title="Body mass (g)"
+    ),
+    width=650,
+    height=650
+)
+fig.show(config={"displayModeBar": False})
+```
+
+### Galileo's ramp
+
+As mentioned, you can fit higher order polynomials to data using linear regression as well. It's generally a mistake to use more complicated functions without a good theoretical foundation. One situation where that should work is in the study of objects in free fall.
+
+This example is based on Galileo's 1595 experiments on projectile motion. In one such experiment, he let a ball roll down an inclined ramp right off of a table and measured its vertical distance traveled. He did this for several ramp heights and thus obtained a relationship between the height at which he released the ball and the vertical distance that the ball traveled.  
+
+Galileo's actual data was published in this paper:
+- [Teaching Statistics with Data of Historic Significance: Galileo's Gravity and Motion Experiments](https://amstat.tandfonline.com/doi/full/10.1080/10691898.1995.11910483).
+
+I've got that data stored on my website so that we can load and view it directly with Python like so:
+
+```{python}
+g_data = pd.read_csv('https://marksmath.org/data/galileos_ramp.csv')
+g_data
+```
+
+The unit of distance is the "punti", according to the source. Here's a plot of the data:
+
+```{python}
+D = g_data[['D']].to_numpy()
+H = g_data.H.to_numpy()
+plt.plot(D,H, '.')
+```
+
+
+While this rather flips the role of what we might call *explanatory* and *response*, it does look like height released is related to distance traveled via a quadratic - that is,
+$$H = a D^2 + b D + c.$$
+
+Note that this is a situation where an understanding of the design matrix is quite useful!
+
+```{python}
+X = np.array([g_data.D**2, g_data.D]).transpose()
+Y = g_data.H
+model = LinearRegression(fit_intercept=True)
+model.fit(X, Y)
+
+a,b = model.coef_
+c = model.intercept_
+print(f"f(x) = {a:0.5f} x^2 - {-b:0.5f} x + {c:0.2f}")
+
+def f(x):
+  return a*x**2 + b*x + c 
+xs = np.linspace(250,600)
+ys = f(xs)
+plt.plot(xs,ys)
+plt.plot(g_data.D,g_data.H, '.')
+```
+
+
+### Overfitting
+
+Finally, let's end this with an illustration of the very important topic of *overfitting*. This happens when we use an overly complicated model function that might fit the specific data well but doesn't fit similar data well at all. The root cause is use of a model whose structure is not justfied by the data.
+
+Here's some data generated by the function 
+$$
+f(x) = \frac{1}{1+x^2}.
+$$
+
+```{python}
+plt.figure(figsize=(8,3))
+N = 9
+f = lambda x: 1/(1+x**2)
+xs = np.linspace(-8.2,8.2,200)
+ys = f(xs)
+plt.plot(xs,ys, '-')
+x = np.linspace(-8,8,N)
+y = f(x)
+plt.plot(x,y, 'ok')
+```
+
+Suppose we try to fit that function with a polynomial. If we use enough terms, we should be able to fit the data *exactly*!  Let's try.
+
+```{python}
+X = np.array([x**(N-1-p) for p in range(len(x))]).T
+model = LinearRegression(fit_intercept=True)
+model.fit(X, y)
+
+c = model.coef_
+def F(x):
+    return sum([c[i]*x**(N-1-i) for i in range(N)]) + model.intercept_
+xs = np.linspace(-8.2,8.2,200)
+plt.plot(xs,f(xs))
+plt.plot(xs,F(xs))
+plt.plot(x,y, 'ok')
+```
