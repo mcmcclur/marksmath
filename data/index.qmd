@@ -21,6 +21,11 @@ Sample datasets
 - Galileo's Ramp 
   - Description: Supposedly, some of Galileo's actual inclined ramp data taken from [Teaching Statistics with Data of Historic Significance: Galileo's Gravity and Motion Experiments](https://amstat.tandfonline.com/doi/full/10.1080/10691898.1995.11910483).
   - [CSV](galileos_ramp.csv)
+- Housing prices
+  - Description: Data from [Kaggle's House Prices competition](https://www.kaggle.com/competitions/house-prices-advanced-regression-techniques/){target=_blank}. There's also training data for own my variation on the contest.
+  - [Training CSV](./house-prices/train.csv)
+  - [Testing CSV](./house-prices/test.csv)
+  - [Training variation CSV](./house-prices/reconstructed_train.csv)
 - NCAA Basketball data (multiple files for sports analytics)
   - The Big South 2026 Regular Season 
     - Description: Game by game results of the Mens's 2026 Big South regular season (through Feb 12).
@@ -51,6 +56,3 @@ Sample datasets
   - Description: This is a modified version of the data obtained from SciKit Learn's `sklearn.datasets.load_wine` function. I simply renamed the "target" variable to "variety" and placed it all in one CSV file to obtain a nice classification example.
   - [CSV](./wine.csv)
 
-- Ames housing prices
-  - Description: Training data for my variation on [Kaggle's House Prices competition](https://www.kaggle.com/competitions/house-prices-advanced-regression-techniques/){target=_blank}
-  - [CSV](./reconstructed_train.csv)

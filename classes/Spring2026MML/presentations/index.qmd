@@ -126,3 +126,11 @@ Of course, I learned most of this material many years ago and some of the presen
     Today, we'll summarize general linear regression from the perspective of linear algebra and take a look at a bunch of examples.
   </div>
 </details>
+
+- Mon, Feb 16: Practical issues
+  - [Presentation](./Lecture10-PracticalIssues){target=_blank}
+<details>
+  <summary>Comments</summary>
+  <div>
+    Today, we'll take a look at some of the practical issues that arise when you attempt actual work with messy, real-world data. We'll do so in the context of a Kaggle competition that we'll try ourselves next week.
+</details>

@@ -1,0 +1,490 @@
+---
+title: Practical issues
+subtitle: in dealing with data
+date: 2026-02-16
+format:  
+  revealjs:
+    css: ../classnote-style.css
+    controls: true
+    controls-layout: bottom-right
+    navigation-mode: vertical
+    smaller: true
+    history: true
+    transition: slide
+    date-format: ddd, MMM DD, YYYY
+    html-math-method: 
+      method: mathjax
+      url: https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js
+    echo: true
+    eval: true
+    output: true
+    code-fold: false
+---
+
+# Recap and look ahead 
+
+- Look at regression competition 
+- Scaling data
+- Missing data
+- Encoding categorical variables
+- Regularization 
+- Variable selection and the LASSO
+- Cross-validation
+- Managing all this into a pipeline
+
+We've talked *plenty* about linear regression. It's almost time to actually do a real-world problem. Before doing so, though, we need to mention a few other issues that often arise in the context of real world problems. 
+
+Most of these issues are not super complicated - at least, not at the level of linear regression as we've worked on to this point. It's also the case that a good library, like SciKit Learn, will take care of most of this automatically. These things do require a bit of discussion, though.
+
+## Imports
+
+Here are the libraries we'll be using in this presentation.
+
+```{python}
+import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
+
+from numpy.random import random, seed
+from scipy.optimize import minimize
+import pickle
+from matplotlib.patches import Polygon, Circle
+
+from sklearn.linear_model import LinearRegression, Ridge
+# from sklearn.preprocessing import StandardScaler, OneHotEncoder, OrdinalEncoder
+# from sklearn.pipeline import Pipeline
+# from sklearn.compose import ColumnTransformer
+# from sklearn.impute import SimpleImputer, KNNImputer
+# from sklearn.metrics import mean_squared_error
+```
+
+# Data
+
+We're going to work with some real data taken from [Kaggle's House Prices competition](https://www.kaggle.com/competitions/house-prices-advanced-regression-techniques) for part of this presentation. 
+
+The original dataset was taken from the Ames, Iowa Assessor's Office, which maintains detailed property records used for tax assessment. Dean De Cock, a statistics professor at Truman State, took that data and prepared it for use in intro statistics around 2011.
+
+Kaggle started using the data set in 2016 and licenses it under the open source MIT license.
+
+## Reading the data
+
+I've got the data on my website so we can easily read it into Python. There are 81 variables across 1460 observations. We'll read all of the data but display just a bit:
+
+```{python}
+train = pd.read_csv('https://marksmath.org/data/house-prices/train.csv')
+my_variables = ["Neighborhood", "GrLivArea", "BedroomAbvGr", "FullBath", "HalfBath", "KitchenQual", "GarageCars", "SalePrice"]
+print([len(train), len(train.columns)])
+train.head(4)[my_variables]
+```
+
+# Missing data
+
+It turns out that there's a lot of missing data. 
+
+- Thirty eight houses have no information on a basement. 
+- Six hundred ninety houses have no assessment on the condition of the fireplace.
+- Only 7 houses have information in the pool.
+- One house has no electrical information.
+
+It's likely that most of that information is simply because it's not applicable to a given house and nobody checked the N/A box. Nonetheless, we need a strategy to deal with it, if we want to use this data to make predictions on other houses.
+
+## KNN Imputation
+
+The strategy for dealing with missing data is pretty simple. Use a K-Nearest Neighbors algorithm to find similar houses and simply replace the missing data with the average (for numerical data) or most common occurrence (for categorical data).
+
+This process is called *imputation*.
+
+# Categorical encoding
+
+Ultimately, most machine learning algorithms work with numbers. When working with categorical data, there needs to be some sensible way to translate values into numbers. The standard technique for doing so depends on whether the variable is 
+
+- Ordinal (it can be ordered in sensible way) or 
+- Nominal (the data cannot be so ordered).
+
+## An ordinal example
+
+Consider the `KitchenQual` which takes on the values
+
+ - Ex for Excellent,
+ - Gd for Good,
+ - TA for Typical or Average,
+ - Fa for Fair, and
+ - Po for Poor.
+
+In this case, a simple 1 through 5 should work just fine.
+
+
+## A nominal example
+
+Many categorical variables cannot be ordered in that fashion; these are called *nominal*. A simple example could be color, which might take on one of four values 
+
+```
+  red, yellow, blue, purple
+```
+
+While I, personally, think that purple is the best others may differ. There's no natural ranking of the colors leading to a sensible order.
+
+## One-hot encoding
+
+The most commonly used encoding strategy is called *one-hot encoding*.
+
+The strategy of one-hot encoding is to replace a single categorical variable (which I'll call the *main variable*) with a vector of variables (that I'll call *slots*). 
+
+If the main variable has $n$ possible values, then corresponding vector of slots has length $n-1$. Each of those slots refers to $1$ of the main values and the value in each slot can be either $1$ or $0$, depending on whether the main variable takes on that value or not.
+ 
+There's a default value so that all zeros indicates that the variable takes on that default value.
+
+## Example
+
+Let's suppose I've got a variable called `color`, which can take on one of the four values 
+```
+  red, yellow, blue, purple
+```
+If we choose purple to be the default value, then our new "color" vector could take on the values 
+
+- $[1\:\:\:0\:\:\:0]^{\mathsf{T}}$ for red,
+- $[0\:\:\:1\:\:\:0]^{\mathsf{T}}$ for yellow,
+- $[0\:\:\:0\:\:\:1]^{\mathsf{T}}$ for blue, or
+- $[0\:\:\:0\:\:\:0]^{\mathsf{T}}$ for purple.
+
+## Neighborhood in the housing data
+
+The Neighborhood variable in the housing data is a good example of nominal variable. It takes on 25 possible values including names like 'Blmngtn', 'BrkSide', 'CollgCr', 'Sawyer', and 'Veenker'.
+
+# $L^2$ regularization 
+
+Overfitting is a constant problem in machine learning; it's an issue with just about every ML algorithm. Conversely, every such algorithm should have standard techniques to deal with it.
+
+The standard technique to combat overfitting in the context of linear regression is called *regularization*.
+
+## The process
+
+Regularization to counter overfitting is based on the observation that the coefficients of a polynomial fit tend to grow as the order of the polynomial grows. Thus, to avoid overfitting, we place a penalty on the size of the coefficients.
+
+In functional terms, we might minimize
+$$
+\|X\mathbf{a} - \mathbf{y}\|^2 + \lambda \|\mathbf{a}\|^2.
+$$
+
+The constant $\lambda$ is a parameter that influences the process. The larger $\lambda$, the stronger the impact on regularization. Generally, $\lambda$ is determined experimentally or even as part of the fitting process.
+
+## Overfit example
+
+Recall that a high degree polynomial doesn't work well here:
+
+```{python}
+#| code-fold: true
+plt.figure(figsize=(8,3))
+N = 9
+f = lambda x: 1/(1+x**2)
+x = np.linspace(-8,8,N)
+y = f(x)
+xs = np.linspace(-8.2,8.2,200)
+ys = f(xs)
+plt.plot(xs,ys, '-')
+linear_model = LinearRegression(fit_intercept=True)
+X = np.array([x**(N-1-p) for p in range(len(x))]).T
+linear_model.fit(X, y)
+coefs = np.round(linear_model.coef_, 4)
+print("Non-zero coefs: ", coefs[coefs != 0])
+Xs = np.array([xs**(N-1-p) for p in range(len(x))]).T
+Ys = linear_model.predict(Xs)
+plt.plot(xs,Ys, '-')
+plt.plot(x,y, 'ok')
+```
+
+## Overfit with regularization
+
+Here's what it looks like, if we apply ridge regularization:
+
+```{python}
+#| code-fold: true
+plt.figure(figsize=(8,3))
+plt.plot(xs,ys, '-')
+ridge_model = Ridge(alpha=10, fit_intercept=True)
+X = np.array([x**(N-1-p) for p in range(len(x))]).T
+ridge_model.fit(X, y)
+coefs = np.round(ridge_model.coef_, 4)
+print("Non-zero coefs: ", coefs[coefs != 0])
+Xs = np.array([xs**(N-1-p) for p in range(len(x))]).T
+Ys = ridge_model.predict(Xs)
+plt.plot(xs,Ys, '-')
+plt.plot(x,y, 'ok')
+ax = plt.gca()
+ax.set_ylim([-1.6,1.6])
+```
+
+# Measuring size and distance
+
+Recall that we have the following expression for the norm of a vector $\mathbf{x} = [x_1\:\:\:x_2\:\:\:\cdots\:\:\:x_n]^{\mathsf{T}}$:
+
+$$
+\|\mathbf{x}\| = \sqrt{x_1^2+x_2^2+\cdots+x_n^2}.
+$$
+
+## The use of distance 
+
+We use the concept of distance frequently in numerical analysis and machine learning. For example, we quantify the error $E$ of a model $\mathbf{F}$ given input $\mathbf{x}$ with expected output $\mathbf{y}$ as
+$$E = \|\mathbf{F}(\mathbf{x}) - \mathbf{y}\|.$$
+It turns out that there are other ways magnitude can be measured that can affect the results and efficiency of a model. This leads to a generalization of the notion of magnitude called a "norm".
+
+## The Manhattan norm
+
+The *Manhattan norm* of $\mathbf{x}\in\mathbb R^n$ is defined by
+$$
+\|\mathbf{x}\|_1 = |x_1| + |x_2|+\cdots+|x_n|.
+$$
+We might think of the Manhattan norm as the distance from the tip of a vector back to its origin as measured along a grid of streets in space. I've also seen it called the "taxicab norm".
+
+::: {.centered style="width: 570px"}
+
+```{python}
+#| echo: false
+from graphics import draw_taxicab
+draw_taxicab() 
+```
+ 
+:::
+
+## Notation
+
+You might notice that we denoted the Manhattan norm as $\|\mathbf{x}\|_1$. 
+
+It's also common to denote the standard Euclidean norm as $\|\mathbf{x}\|_2$.
+
+In fact, they both lie in whole family of norms called the $L_p$ norms. The parameter $p$ can be any real number in $[1,\infty]$, both "endpoints" included!
+
+
+## Portraits of the unit ball 
+
+Given a vector space $V$ with norm $\|\cdot\|$, the corresponding unit ball is
+$$
+\{\vec{x}\in V: \|\vec{x}\| \leq 1\}.
+$$
+The shape of the ball depends on the norm, as well as on the space itself. Here are pictures of the unit ball in $\mathbb R^2$ with respect to three different norms.
+
+As we'll see, the shape of the unit ball in $L_1$ norm is of particular interest.
+
+::: {.panel-tabset .centered style="width: 500px"} 
+
+## $L_2$
+
+```{python}
+#| echo: false
+from graphics import draw_unit_circle
+draw_unit_circle()
+```
+
+## $L_1$
+
+```{python}
+#| echo: false
+from graphics import draw_diamond
+draw_diamond()
+```
+
+## $L_{\infty}$
+
+```{python}
+#| echo: false
+from graphics import draw_square
+draw_square()
+```
+
+:::
+
+
+
+# Variable selection
+
+A large number of input variables can lead to several problems, including
+
+- Overfitting (as we just saw),
+- increased computation time, and 
+- ill-conditioned equations (arising from matrices that are close to singular).
+
+Thus, we have good reason to attempt to reduce the number of variables, where appropriate.
+
+## Regularization and variable selection
+
+It turns out that the process of regularization can shed light on variable selection and L1 regularization is particularly well suited for this task.
+
+The common term LASSO, which refers to L1 regularization is an acronym standing for 
+
+> Least Absolute Shrinkage and Selection Operator
+
+In this column of slides, we'll illustrate how this might work.
+
+## Reformulation
+
+In order to understand how variable selection works, it helps to reformulate the regularized minimization problem as follows: 
+
+> We minimize $$\|X\mathbf{a} - \mathbf{y}\|^2 \text{ subject to } \|\mathbf{a}\| \leq s,$$ where $s$ is a parameter related to $\lambda$ from our original formulation.
+
+This reformulation leads to a nice visualization illustrating why this might work.
+
+
+## Setup for visualization
+
+Now, let's suppose we have a list of data points $\{(x_i,y_i)\}$ and we hope to fit a line of the form $f_{a,b}(x)=ax+b$ to that data. In this case,
+$$
+E(a,b) = \|X\mathbf{a} - \mathbf{y}\|^2
+$$
+will be a quadratic $z=f(a,b)$ and its graph in three-dimensional space will be a paraboloid opening up. 
+
+## Error contours
+
+The contours of the Error function appear to be ellipses that collapse down to the minimum: 
+
+```{python}
+#| echo: false
+seed(1)
+X = np.array([i + random()/4 for i in range(3)])
+Y = np.array([i + random()/4 for i in range(3)])
+def F(coeff, x): # First order polynomial
+    return np.dot(coeff, [x**p for p in range(2)])
+def sse(coeff): # Sum squared error
+    return sum((F(coeff, X) - Y)**2)
+xmin, ymin = minimize(sse, [1,1]).x
+xmin2, ymin2 = minimize(
+  lambda c: sse(c) + sum(c**2), [1,1]).x
+xmin1, ymin1 = minimize(
+  lambda c: sse(c) + sum(np.abs(c)), [1,1]).x
+value1 = sse([xmin1,ymin1])
+value2 = sse([xmin2,ymin2])
+
+SSE = np.vectorize(lambda x, y: sse([x, y]))
+x = np.linspace(-1.5,1.5, 100)
+y = np.linspace(-1, 2, 100)
+X_grid, Y_grid = np.meshgrid(x, y)
+Z = SSE(X_grid, Y_grid)
+
+fig, ax = plt.subplots(figsize=(6,6))
+contour = ax.contour(
+  X_grid, Y_grid, Z, cmap='Blues',
+  levels=[-1, value1, value2, 0.4, 0.8])
+ax.plot([xmin], [ymin], 'ok')
+
+ax.grid(True)
+ax.set_aspect('equal')
+plt.axhline(color='black')
+plt.axvline(color='black')
+
+serialized_fig = pickle.dumps(fig)
+plt.show()
+```
+
+## Contours and a ball in L2 
+
+Now, the L2 regularized minimum occurs at the point of tangency between a contour and a circle in the L2 norm. If the $x$ and $y$ inputs have a common scale, then it certainly seems that the $y$-coordinate is the more important of the two.
+
+```{python}
+#| echo: false
+fig = pickle.loads(serialized_fig)
+ax = fig.axes[0]
+r = np.sqrt(xmin2**2 + ymin2**2)
+circle = Circle((0, 0), 
+    radius=r, edgecolor='red', 
+    facecolor=(1,0,0,0.2), linewidth=2
+)
+ax.add_patch(circle)
+ax.plot([xmin2], [ymin2], 'ok')
+plt.show()
+```
+
+## Contours and a ball in L1
+
+Here's the corresponding picture in the L1 norm. We can see that the $x$-coordinate is effectively zero and (presumably) much less important than the $y$-coordinate. More importantly, we can see *why* this happens.
+
+```{python}
+#| echo: false
+fig = pickle.loads(serialized_fig)
+ax = fig.axes[0]
+
+polygon = Polygon([
+  (ymin1,0), (0,ymin1), (-ymin1,0), (0,-ymin1)
+], edgecolor='red', 
+    facecolor=(1,0,0,0.2), linewidth=2)
+ax.add_patch(polygon)
+ax.plot([xmin1], [ymin1], 'ok')
+
+plt.show()
+```
+
+## Key observation
+
+Here's the key observation coming out of all this:
+
+::: {.callout-note appearance="minimal"}
+
+Regularization with the LASSO can be very effective at identifying variables that can be removed from the data without serious degradation of results.
+
+:::
+
+Often $L_1$ regularization (the LASSO) is used in combination with $L_2$ regularization. SciKit Learn has functions to automate all of this, including 
+
+- `sklearn.linear_model.Ridge` for $L_2$ regularization,
+- `sklearn.linear_model.Lasso` for $L_1$ regulaization,
+- `sklearn.linear_model.ElasticNet` for a combination.
+
+These all have `CV` versions, which brings us (almost) to our last topic.
+
+# Scaling data 
+
+Our last two topics are brief and much simpler.
+
+First, it is very common practice to scale data before passing it to a machine learning algorithm. This is very simple, given numerical data - which all data is, once encoded; we simply scale it so that its mean is zero and its standard deviation is one.
+
+Think of it this way: Culmen length should contribute more to a model than flipper length, if you happen to measure one in millimeters and the other in meters.
+
+That's it.
+
+
+# Cross-validation
+
+Finally, let's mention a bit about cross-validation.
+
+Generally, you *fit* your model to the training data but you *evaluate* your model with testing data.
+
+In the context of a Kaggle competition, they ultimately evaluate your model using the testing data that they provide. There's no reason you can attempt to evaluate your model on your own, though.
+
+## Strategy 
+
+For the rest of this column, let's refer to the two types of data as
+
+- *labeled* data and 
+- *unlabeled* data.
+
+The idea is to fit *and* evaluate your model using the labeled data. Ultimately, you want to use it on unlabeled data.
+
+To fit and evaluate a model using labeled data, we'll break it into two parts:
+
+- Training data and 
+- Testing data.
+
+We'll fit the training data and evaluate using the ([labeled]{style="color: lightgray"}) testing data.
+
+## **Cross**-validation
+
+In $k$-fold cross-validation, we randomly partition the labeled data into $k$ pieces. We then set aside $1$ piece for testing and use the other $k-1$ pieces for training. This is done $k$ times using each of the $k$ pieces for testing.
+
+For $5$-fold cross-validation, we run the process five times training with 80% of the data and testing with 20% each time.
+
+## Cross-validation in SciKit-Learn 
+
+Functions like `ElasticNetCV` in scikit-learn automate this procedure. A few select parameters (like regularization coefficients or L1 ratio) can be optimized using the cross-validation information. The final fit is then obtained by fitting the *full* data using the non-coefficient parameters.
+
+In addition, information on the cross-validation results are returned in the regression object.
+
+## Detecting overfitting
+
+You can detect overfitting in the context of linear regression quite concretely using cross-validation. Suppose we've got $n$ observations and $p$ predictors. If TRAIN_MSE and TEST_MSE denote the Mean Square Error for the Train and Test sets, then we can prove that the expected value of TRAIN_MSE is
+$$
+\text{TRAIN_MSE} = \frac{n-p-1}{n+p+1} \times \text{TEST_MSE}.
+$$
+Thus, a significantly smaller value of TRAIN_MSE indicates overfitting.
+
+
+## Remember
+
+So much of this will make so much more sense, once we really play with it in the lab!
