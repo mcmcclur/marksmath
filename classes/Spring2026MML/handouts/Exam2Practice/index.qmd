@@ -1,0 +1,74 @@
+---
+title: "MML: Practice for Exam 2"
+date: 2026-02-18
+date-format: ddd, MMM DD
+format:
+  pdf:
+    mainfont: "Times New Roman"
+    output-file: Exam2Practice
+    include-in-header:
+      text: |
+        \pagenumbering{gobble}
+---
+
+We have our second exam in a couple of days this Friday, February 20. The exam will have 6 or 7 problems, 4 or 5 of which will be closely related one of the following.
+
+
+1. Consider the numeric data $\{1, 2, 3, 6\}$.
+   a. Write down the computation showing that the mean is $3$.
+   b. Write down the computation showing that the standard deviation is $\sqrt{7/2}$.
+
+2. Compute the determinant of 
+$$
+\begin{bmatrix}
+1 & 0 & 0 & 0 & 0 \\ 
+a & 2 & 0 & 0 & 0 \\
+b & c & 3 & 0 & 0 \\
+d & e & f & 4 & 0 \\
+g & h & i & j & k 
+\end{bmatrix}
+$$
+Your answer might involve a parameter.
+
+3. Show that the range of a linear transformation mapping $\mathbb R^n \to \mathbb R^m$ is closed under linear combinations and is, therefore, a subspace of $\mathbb R^n$.
+
+4. Find the least squares solution to the overdetermined linear system
+$$
+\begin{bmatrix}
+ 1 & 1 \\
+ -2 & 0 \\
+ 1 & 2 \\
+\end{bmatrix}
+\begin{bmatrix}
+x_1\\x_2
+\end{bmatrix}
+\approx
+\begin{bmatrix}
+0\\-2\\-1 
+\end{bmatrix}.
+$$
+
+\newpage
+
+5. Suppose that the matrix $A$ and its reduced row echelon form $R$ are
+$$
+A = \left[\begin{array}{rrrrrrrr}
+0 & 3 & 15 & 5 & 10 & -4 & -12 & -16 \\
+0 & 14 & 70 & 20 & 40 & -24 & -72 & -96 \\
+0 & 7 & 35 & 10 & 20 & -12 & -36 & -48 \\
+0 & 2 & 10 & 3 & 6 & -4 & -12 & -16 \\
+0 & -3 & -15 & 1 & 2 & -2 & -6 & -8
+\end{array}\right]
+\quad 
+R = \left[\begin{array}{rrrrrrrr}
+0 & 1 & 5 & 0 & 0 & 0 & 0 & 0 \\
+0 & 0 & 0 & 1 & 2 & 0 & 0 & 0 \\
+0 & 0 & 0 & 0 & 0 & 1 & 3 & 4 \\
+0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+0 & 0 & 0 & 0 & 0 & 0 & 0 & 0
+\end{array}\right]
+$$
+   a. Provide a basis for the range of $A$.
+   b. Provide a basis for the null space of $A$.
+
+6. Show that the null space of a linear transformation mapping $\mathbb R^n \to \mathbb R^m$ is closed under linear combinations and is, therefore, a subspace of $\mathbb R^n$.
