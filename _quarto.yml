@@ -8,6 +8,7 @@ project:
 website:
   title: "Mark's Math"
   search: false
+  site-url: https://marksmath.org/
   page-footer: "Written, owned, hosted, and copyright 2025, Mark McClure"
   navbar:
     collapse-below: md
