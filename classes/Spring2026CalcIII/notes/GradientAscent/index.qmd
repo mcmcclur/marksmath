@@ -1,0 +1,229 @@
+---
+title: Gradient ascent and descent
+page-layout: article
+date: 2026-02-20
+date-format: ddd, MMM D
+format:
+  html:
+    toc: true
+    css: ../note-styles.css
+---
+
+Gradient ascent is a fun way to find *local* maxima and minima of multivariate functions. 
+
+## Contours
+
+Let's briefly review contours before we get to how the gradient fits in. 
+
+
+A *contour* of a function $z=f(x,y)$ is formed by intersecting a horizontal plane with the three-dimensional graph of $f.$ Algebraically, a contour is the graph of an equation of the form 
+$$f(x,y)=c,$$
+where $c\in\mathbb{R}$ is constant.
+
+As a simple but important example, let's play with $f(x,y)=x^2+y^2$. The graph of this function looks like so:
+
+
+```{ojs}
+show_x3d(
+  [
+    create_surface(
+      (r,t) => [
+        r*Math.cos(t),r*Math.sin(t), r**2
+      ],
+      [0,2],
+      [0,2*Math.PI]
+    )
+  ],
+  {
+    viewpoint: {position: '8.543744527128801 5.714266554147143 6.204882972338412', orientation: '0.3033774143396647 0.5198780005207393 0.7985543244157738,2.3272826559868935'}
+  }
+)
+```
+
+The mesh on the graph that function is generated using polar coordinates, which we'll talk about later this semester. Of importance for us now is the fact that the graph displays a rotational symmetry. The circles that we see are curves of the form 
+$$
+x^2+y^2 = c.
+$$
+
+If we plot a bunch of those curves together and plot them in a plane, we get a *contour diagram* for the function:
+
+::: {style="margin: 0 auto; max-width: 500px;"}
+
+```{ojs}
+contour_gradient_plot(
+  (x, y) => x**2 + y**2,
+  {xdomain: [-2,2], ydomain: [-2,2], legend: false}
+)
+```
+
+:::
+
+When we see closed loops like these, they generally enclose some local extreme - either a local maximum or a local minimum.
+
+## Gradient vectors
+
+We've also learned recently about the gradient. Algebraically, the gradient of a function $f(x,y)$ is defined by 
+$$
+\nabla f = \left\langle \frac{\partial f}{\partial x}, \frac{\partial f}{\partial y} \right\rangle.
+$$
+Since it's a vector, geometrically, the gradient is described by two properties:
+- *Direction*: The gradient points in the direction of greatest increase of $f$ and 
+- *Magnitude*: The magnitude tells you the rate of increase in that direction.
+
+## Two great tastes that taste great together 
+
+It turns out that something nice happens if we plot contours and gradients together. Here, for example, we do that with our basic paraboloid $f(x,y)=x^2+y^2$:
+
+::: {style="max-width: 500px; margin: 0 auto"}
+
+```{ojs}
+contour_gradient_plot((x,y) => x**2 + y**2,
+  {
+    g: (x,y) => [2*x,2*y], 
+    xdomain: [-3,3], ydomain: [-3,3], 
+    legend: false
+  }
+)
+```
+
+:::
+
+Note that the gradient vectors are generally perpendicular to the contours. This is a consequence of the fact that the gradient points in the direction of greatest increase, while the contour travels along a direction of constant value. Thus, this perpendicularity is true fairly generally.
+
+## The peaks function
+
+We've met the peaks function before:
+
+$$
+f(x,y) = 3 \, (1-x)^2 e^{-x^2-(y+1)^2}-10 \, e^{-x^2-y^2} \left(-x^3+\frac{x}{5}-y^5\right)-\frac{1}{3} \, e^{-(x+1)^2-y^2}.
+$$
+
+The graph of the peaks function looks like so:
+
+```{ojs}
+show_x3d(
+  [create_surface((x, y) => [x, y, peaks([x, y]) / 5], [-3, 3], [-3, 3])],
+  {
+    viewpoint: {
+      position: "7.521341066830035 4.203025772735254 2.448244782773455",
+      orientation:
+        "0.3326653588088579 0.5783659752820691 0.7448668053313922,2.3030069445810764"
+    }
+  }
+) 
+```
+
+Here's a contour plot:
+
+::: {style="max-width: 500px; margin: 0 auto"}
+
+```{ojs}
+contour_gradient_plot((x,y) => peaks([x,y]),
+  {
+    xdomain: [-3,3], ydomain: [-3,3], 
+    legend: false, s: 0.05
+  }
+)
+```
+
+:::
+
+And here are some gradient vectors on top of the contour plot:
+
+::: {style="max-width: 500px; margin: 0 auto"}
+
+```{ojs}
+contour_gradient_plot((x,y) => peaks([x,y]),
+  {
+    g: (x,y) => [
+      3 * Math.exp(-(x**2 + (y + 1)**2)) * (-2 * x * (1 - x)**2 - 2 * (1 - x)) + (2 * (x + 1) / 3) * Math.exp(-((x + 1)**2 + y**2)) - 10 * Math.exp(-(x**2 + y**2)) * (-2 * x * (x / 5 - x**3 - y**5) + (1 / 5 - 3 * x**2)),
+      -6 * (y + 1) * (1 - x)**2 * Math.exp(-(x**2 + (y + 1)**2)) + (2 * y / 3) * Math.exp(-((x + 1)**2 + y**2)) - 10 * Math.exp(-(x**2 + y**2)) * (-2 * y * (x / 5 - x**3 - y**5) - 5 * y**4)
+    ], 
+    xdomain: [-3,3], ydomain: [-3,3], 
+    legend: false, s: 0.05
+  }
+)
+```
+
+:::
+
+
+## Gradient ascent 
+
+Again, gradient vectors generally point *away* from minima and *towards* maxima. Thus, if you follow gradient vectors, then you will either 
+
+- diverge to infinity or
+- eventually find yourself at a local maximum.
+
+That leads to a maximization technique called *gradient ascent*.
+
+Here's what that looks like for the peaks function:
+
+::: {style="max-width: 500px; margin: 0 auto"}
+
+```{ojs}
+gradient_ascent_pic
+```
+
+:::
+
+Naturally, you can walk backwards. Doing so leads to gradient *descent*, which finds minima.
+
+Here's gradient descent for peaks:
+
+::: {style="max-width: 500px; margin: 0 auto"}
+
+```{ojs}
+gradient_descent_pic
+```
+
+:::
+
+<!-- Just code below here -->
+<!--  -->
+<!--  -->
+
+
+```{ojs}
+import {
+  show_x3d,
+  create_surface,
+  create_indexedLineSet,
+  create_indexedFaceSet,
+  create_sphere,
+  create_text,
+  create_tube,
+  style
+} from "@mcmcclur/plotx3d"
+```
+
+```{ojs}
+import {
+  gradient_ascent_pic, 
+  gradient_descent_pic
+} from 'ec5aa7100cf0c5e7'
+```
+
+```{ojs}
+import { contour_plot } from "@mcmcclur/contour-plots"
+```
+
+```{ojs}
+import { contour_gradient_plot } from "./components/contour_gradient_plot.js"
+```
+
+```{ojs}
+function peaks([x, y]) {
+  return (
+    3 * Math.exp(-(x ** 2 + (y + 1) ** 2)) * (1 - x) ** 2 -
+    Math.exp(-((x + 1) ** 2 + y ** 2)) / 3 -
+    10 * Math.exp(-(x ** 2 + y ** 2)) * (x / 5 - x ** 3 - y ** 5)
+  );
+}
+```
+
+
+
+
+
+

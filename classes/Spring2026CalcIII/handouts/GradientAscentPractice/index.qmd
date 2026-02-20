@@ -1,0 +1,21 @@
+---
+title: Gradient ascent practice
+subtitle: with peaks-like functions
+format:
+  html:
+    css: '../handout_style.css'
+    page-layout: article
+    format-links: [pdf]
+  pdf:
+    mainfont: "Times New Roman"
+    output-file: PeaksLikeGradients
+    include-in-header:
+      text: |
+        \pagenumbering{gobble}
+---
+
+It's not hard to generate functions with the same general characteristics as the peaks function. On our next quiz and/or exam, I'm likely to do so and then ask you to draw some gradient vectors emanating from a few specified points.
+
+Here's an example for you to try out:
+
+![Peaks-like function with points](peaks-pic.png){fig-align="center" width="420px"}
