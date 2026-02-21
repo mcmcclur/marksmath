@@ -1,0 +1,104 @@
+---
+title: NCAA Predictions
+format: 
+  html:
+    page-layout: custom
+css: kaggle.css
+---
+
+
+::: {.content} 
+
+[Kaggle](https://www.kaggle.com/) is a company owned by Google that runs Machine Learning contests. One contest that I've competed in most years over the last decade is their [March Madness Competition](https://www.kaggle.com/competitions/mens-march-mania-2022), which requires you to make probabilistic predictions for the NCAA basketball tournaments held each March and April. 
+
+The bracket below let's competitors visualize their predictions; there are also several example submission files so that you can see how it works without creating your own.
+
+::: {.controls}
+
+```{ojs}
+input 
+```
+
+:::
+
+::: {.viz-container}
+
+::::: {.score-container}
+
+```{ojs}
+log_loss_display
+```
+
+```{ojs}
+brier_display
+```
+
+:::::
+
+```{ojs}
+brackets
+```
+
+:::
+
+## Description
+
+The idea behind the competition is to make a probabilistic prediction for each game. If you select the "Men's eigenbracket 2022" from the menu, for example, and hover over the Duke-Carolina semifinal game, you'll see that I gave North Carolina only a 30% chance of winning. UNC *did* win, though, which is why the game is shaded red.
+
+The average log-loss and Brier score give measures of how close the predictions were; smaller is better. If you look at [the 2022 scoreboard](https://www.kaggle.com/competitions/mens-march-mania-2022/leaderboard), you might find that the eigenbracket finished 64th out of 930 entries.
+
+## Data 
+
+This is a *data-based* competition and Kaggle curates and provides plenty of data to get you started. In fact, their data for last years competition included 32 data files that serve all manner of purposes, like to
+
+- identify teams, conferences, and locations and to
+- to indicate regular season and tournament results,
+- for both the men's and women's tournaments.
+
+The table below shows just one of those files, namely MNCAATourneyDetailedResults.csv, which gives detailed data on every tournament game from 2003 to 2023. (The competition year, 2024, can't be included since the competition stars prior to the tournament.) 
+
+::: {#tbl-data}
+
+```{ojs}
+{
+  const data = await 
+    FileAttachment("./MNCAATourneyDetailedResults.csv").csv();
+  return Inputs.table(data)
+}
+```
+
+NCAA Tournament Data
+
+:::
+
+They provide similar data for every regular season game, including the competition year. The objective is to use the regular season and tournament game prior to the competition year to figure out how to predict game results and, then, to apply that to the current year's tournament.
+
+The eigenbracket uses eigenvectors (that we'll learn about while discussing linear algebra) to rate the teams and then logistic regression to translate those ratings to probabilities.
+
+
+
+```{ojs}
+styles
+```
+
+
+```{ojs}
+import {
+  input, 
+  brackets, 
+  brier_display, 
+  log_loss_display, 
+  styles
+} from '1c65a571f10b43d5'
+```
+
+```{ojs}
+{
+  if(width < 1300) {
+    d3.select('.score-container')
+      .style('transform', `scale(${width/1300})`)
+  }
+}
+```
+
+:::

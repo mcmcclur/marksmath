@@ -1,0 +1,31 @@
+---
+title: NCCAA Basketball tournaments
+format: 
+  html:
+    page-layout: custom
+css: tourney-style.css
+---
+
+<div class="content">
+<div class="text-container" id="observablehq-topmatter-fe316fef"></div>
+<div class="text-container" id="observablehq-viewof-men_or_women-fe316fef"></div>
+<div class="text-container" id="observablehq-viewof-year-fe316fef"></div>
+<div class="wide-container" id="observablehq-brackets-fe316fef"></div>
+<div class="text-container" id="observablehq-breakdown-fe316fef"></div>
+<div class="text-container" id="observablehq-styles-fe316fef"></div>
+</div> 
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@observablehq/inspector@5/dist/inspector.css">
+<script type="module">
+import {Runtime, Inspector} from "https://cdn.jsdelivr.net/npm/@observablehq/runtime@5/dist/runtime.js";
+import define from "https://api.observablehq.com/@mcmcclur/ncaa-brackets.js?v=4";
+new Runtime().module(define, name => {
+  if (name === "topmatter") return new Inspector(document.querySelector("#observablehq-topmatter-fe316fef"));
+  if (name === "viewof men_or_women") return new Inspector(document.querySelector("#observablehq-viewof-men_or_women-fe316fef"));
+  if (name === "viewof year") return new Inspector(document.querySelector("#observablehq-viewof-year-fe316fef"));
+  if (name === "brackets") return new Inspector(document.querySelector("#observablehq-brackets-fe316fef"));
+  if (name === "breakdown") return new Inspector(document.querySelector("#observablehq-breakdown-fe316fef"));
+  if (name === "styles") return new Inspector(document.querySelector("#observablehq-styles-fe316fef"));
+  return ["this_years_results","this_years_seeds","team_map","get_scores","get_team","tourney","round1_info","tourney_tree","make_brackets"].includes(name);
+});
+</script>

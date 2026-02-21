@@ -1,0 +1,38 @@
+.content {
+  padding-left: 0px;
+  padding-right: 0px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 40px;
+  max-width: 1300px;
+}
+.controls {
+  margin: 20px;
+}
+p {
+  max-width: 900px;
+}
+
+h1.title {
+  margin-left: 50px;
+}
+
+.viz-container {
+  position: relative;
+  margin-bottom: 50px;
+}
+.score-container {
+  position: absolute;
+  top: 20px;
+  left: 40%;
+}
+div.score-container div.cell-output {
+  height: 30px;
+}
+
+.observablehq--undefined {
+  display: none;
+}
+td > input, th > input {
+  display: none;
+}
