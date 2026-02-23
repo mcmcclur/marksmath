@@ -1,0 +1,214 @@
+---
+title: Linear regression
+page-layout: article
+date: 2026-02-23
+date-format: ddd, MMM D
+format:
+  html:
+    toc: true
+    css: ../note-styles.css
+---
+
+In this set of notes, we're going to meet Linear Regression - one of the most basic machine learning algorithms and an important application of multivariate optimization.
+
+::: {.callout-note}
+## The basic question 
+
+Suppose we've got data with two numeric variables that we suspect have a close to linear relationship. How can we best model that relationship?
+
+:::
+
+## Working example
+
+Consider the following very simple data:  
+$$\{(0, 0),(1, 0),(1, 1),(2, 1),(2, 2),(3, 2)\}.$$
+We wish to fit that data with a function of the form $f(x)=ax+b$, where the symbols $a$ and $b$ represent real numbers. The question is, how do we measure the error of our approximation and how small can we make that error. 
+
+To illustrate the idea, you can fiddle with the sliders below.
+
+::: {.small-label}
+
+<style>
+  .small-label label {
+    width: 30px !important
+  }
+  .quarto-layout-cell {
+    max-width: 30%;
+  }
+</style>
+
+```{ojs}
+//| panel: input
+//| layout-ncol: 3
+viewof a = (reset, Inputs.range([0, 2], {
+  step: 0.01, label: "a:", value: 0.73 
+}));
+viewof b = (reset, Inputs.range([-2, 2], { 
+  step: 0.01, label: "b:", value: -0.09
+}));
+viewof reset = Inputs.button("reset")
+```
+
+:::
+
+::: {.centered style = "width: 800px; border: solid 1px slategray; border-radius: 4px; background-color: #f8f9fa; margin-top: 10px;"}
+
+```{ojs}
+{
+  let l = (x) => a * x + b;
+
+  let pts = [
+    [0, 0],
+    [1, 0],
+    [1, 1],
+    [2, 1],
+    [2, 2],
+    [3, 2]
+  ]
+
+  let error = d3.sum(pts.map(([x, y]) => (y - l(x)) ** 2));
+
+  return Plot.plot({
+    width: 800,
+    height: 300,
+    x: { domain: [-0.05, 3.2] },
+    y: { domain: [-0.05, 2.2] },
+    marks: [
+      Plot.dot(pts, { fill: "black" }),
+      Plot.line([
+        [-0.2, l(-0.2)],
+        [3.2, l(3.2)]
+      ], {strokeWidth: 3}),
+      Plot.text([{ x: 0.1, y: 1.65 }], {
+        x: "x",
+        y: "y",
+        textAnchor: "start",
+        fontSize: 14,
+        text: () => `f(x) = ${a == 1 ? '' : a}x ${b<0 ? '-' : b==0 ? '' : '+'} ${b == 0 ? '' : Math.abs(b)}`
+      }),
+      Plot.text([{ x: 0.1, y: 1.5 }], {
+        x: "x",
+        y: "y",
+        textAnchor: "start",
+        fontSize: 14,
+        text: () => `Total squared error = ${d3.format("0.5f")(error)}`
+      }),
+      Plot.ruleX([0]), Plot.ruleY([0])
+    ]
+  });
+}
+```
+
+:::
+ 
+
+## Total squared error
+
+In general, we've got data represented as a list of points:
+$$
+\{(x_i,y_i)\}_{i=1}^N = \{(x_1,y_1),(x_2,y_2),(x_3,y_3),\ldots,(x_N,y_N)\}.
+$$
+
+If we model that data with a function $y=f(x)$, then the *total squared error* is defined by
+$$
+E = \sum_{i=1}^N \left(y_i - f(x_i)\right)^2.
+$$
+The objective is to choose the parameters defining $f$ to minimize $E$.
+
+
+More specifically, we model the data with a first order polynomial $f(x) = ax+b$. Thus, our formula takes on the more specific form 
+$$
+E(a,b) = \sum_{i=1}^N \left(y_i - (a\,x_i + b)\right)^2.
+$$
+Note that the data is fixed but we have control over the parameters. Thus, we can treat $E$ as a function of the two variables $a$ and $b$ and use the techniques of multivariable calculus to perform the minimization.
+
+Even more specifically, recall that the data consists of these points:
+
+```{python} 
+pts = [[0, 0],[1, 0],[1, 1],[2, 1],[2, 2],[3, 2]]
+pts
+```
+
+and the error $E$ as a function of $a$ and $b$ is
+
+$$
+E(a,b) = \sum_{i=1}^6 \left(y_i - f(x_i)\right)^2.
+$$
+
+Writing that out in full, we get:
+
+```{python}
+from IPython.display import Math
+import matplotlib.pyplot as plt
+import numpy as np
+from sympy import symbols, latex, S, solve
+a,b,x = symbols('a,b,x')
+
+sympy_expr = S(0)
+latex_expr = r'\begin{aligned} E(a,b) &='
+da_expr = r'\begin{aligned} \frac{\partial E}{\partial a} &='
+db_expr = r'\begin{aligned} \frac{\partial E}{\partial b} &='
+for i, pt in enumerate(pts):
+  latex_expr = latex_expr + f'({pt[1]} - (a\\times{pt[0]} + b))^2'
+  current_sympy_expr = (pt[1] - (pt[0]*a + b))**2
+  sympy_expr = sympy_expr + current_sympy_expr
+  da_expr = da_expr + '(' + latex(current_sympy_expr.diff(a)) + ')'
+  db_expr = db_expr + '(' + latex(current_sympy_expr.diff(b)) + ')'
+  if (i+1)%3 == 0 and i < len(pts)-1:
+    latex_expr = latex_expr + r'\\ &+'
+    da_expr = da_expr + r'\\ &+'
+    db_expr = db_expr + r'\\ &+'
+  elif i<len(pts)-1:
+    latex_expr = latex_expr + '+'
+    da_expr = da_expr + '+'
+    db_expr = db_expr + '+'
+latex_expr = latex_expr + r'\end{aligned}$$'
+da_expr = da_expr + r'\\ &='
+da_expr = da_expr + latex(sympy_expr.diff(a))
+da_expr = da_expr + r'\end{aligned}$$'
+db_expr = db_expr + r'\\ &='
+db_expr = db_expr + latex(sympy_expr.diff(b))
+db_expr = db_expr + r'\end{aligned}$$'
+
+Math(latex_expr)
+```
+
+## Minimizing the total squared error
+
+We can differentiate our error function $E$ with respect to $a$ to get
+
+```{python}
+Math(da_expr)
+```
+
+And with respect to $b$ to get
+
+```{python}
+Math(db_expr)
+```
+
+Setting $\partial E/\partial a = \partial E/\partial b$ = 0, we get the system
+
+$$\begin{aligned}
+38a + 18b &= 26 \\ 
+18a + 12b &= 12.
+\end{aligned}$$
+
+Multiply the second by 3/2 to get the new system
+$$\begin{aligned}
+38a + 18b &= 26 \\ 
+27a + 18b &= 18.
+\end{aligned}$$
+
+Subtract the first minus the second to get 
+$$11a = 8 \text{ or } a = 8/11.$$
+
+Plug that back into either of the others to get $b=-1/11$
+
+
+The formula for the line with the *least* total squared error is thus 
+$$f(x) = \frac{8}{11} x - \frac{1}{11} = 0.\overline{72}x - 0.\overline{09}.$$
+
+That appears to be in line with our dynamic illustration.
+
+Note that the geometric nature of the problem guarantees that we've found a minimum, rather than a local max or saddle point.
