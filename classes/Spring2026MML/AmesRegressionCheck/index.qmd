@@ -1,0 +1,156 @@
+---
+title: Kaggle Housing Regression Check
+format:
+  html:
+    page-layout: article
+    toc: true
+    minimal: false
+---
+
+One of Kaggle's long running "Knowledge" competitions is its [House Prices competition](https://www.kaggle.com/competitions/house-prices-advanced-regression-techniques) for "Advanced Regression Techniques". The idea behind that competition is pretty simple, even if the competition itself is not. Kaggle provides two data sets:
+
+- a data set named "train" with which to *train* an algorithm and
+- A data set named "test" with which to *test* an algorithm.
+
+The data sets are very similar. They both contain about 1460 rows, each corresponding to the sale of a house in Ames Iowa over the five year period from 2006 to 2010. Each row contains about 80 variables, including
+
+- Numeric variables, like square footage, lot area, lot frontage, etc.
+- Nominal variables, like neighborhood, Zoning type, log shape, etc. and
+- Ordinal variables, like overall quality and condition.
+
+One key difference between the datasets is that the training dataset includes the sale price for each house, while the testing dataset does not. To participate in the competition, you develop an algorithm that predicts the selling prices of the houses in the test set based on the other variables. You upload those predictions to Kaggle and they compare those predictions to the actual values - which they, of course, have. They then score your submission based on the root mean squared error between the logarithm of the predicted value and the logarithm of the observed sales price. That is, if there are $n$ data points and the true sale price of the $i^{\text{th}}$ data point is $y_i$, while your predicted price is $\hat{y}_i$, then your score is
+$$\sqrt{\frac{1}{n}\sum_{i=1}^n (\log(\hat{y}_i) - \log(y_i))^2}.$$
+Kaggle states that taking logs means that errors in predicting expensive houses and cheap houses will affect the result equally. We'll be able to see why that might make sense when we perform a regression.
+
+The idea behind this webpage is to emulate that competition, thus allowing folks to try their hand at basic machine learning, without the need to register with Kaggle or anyone else. I've set it up primarily for my own students but I suppose anyone could try it.
+
+## This version
+
+To try to predict housing prices here, start by downloading the train and test data sets:
+
+- [reconstructed_train.csv](https://marksmath.org/data/reconstructed_train.csv)
+- [reconstructed_test.csv](https://marksmath.org/data/reconstructed_test.csv)
+
+These files are very close to Kaggle's train and test files but they are not exactly the same. Kaggle's data is based on an article by Dean De Cock that appeared Volume 19 of the Journal of Statistics Education. The paper and data are freely available:
+
+- [The paper on the journal's website](http://jse.amstat.org/v19n3/decock.pdf)
+- [The data on OpenIntro's website](https://www.openintro.org/data/index.php?data=ames)
+
+I created the data files here by matching rows from the original source data to Kaggle's data. Like Kaggle, I was able to grab the actual selling prices for the test data and create a tool for you to score your predictions, even though the prices have been removed from the test data.
+
+The data files here are not exactly the same as Kaggle's; it's really not my desire or intention for them to be the same. They are close enough, though, that your score here should give you some indication of what you might score in Kaggle's competition. The column names here are exactly the same as those in Kaggle's data - though, in a different order. That should make it easy to port your code over to Kaggle's competition, if you want. You can also read the data documentation here:
+
+- [Data documentation](https://www.kaggle.com/competitions/house-prices-advanced-regression-techniques/data)
+
+### Some starter code
+
+Kaggle provides plenty of tutorials to get you started on all of their data science competitions. I've written my own intro for beginning stats students with at least a knowledge of linear regression. This is available as the following Colab notebook:
+
+- [Linear regression for house prices on Colab](https://colab.research.google.com/drive/1bhy4u5DAKB6h7Yz9SLFgySRtp2VqXQva?usp=sharing#forceEdit=true&sandboxMode=true)
+
+### Scoring it
+
+To score your predictions, you should generate a predictions file in CSV format whose form looks like so:
+
+|Id|SalePrice|
+|:---:|:---:|
+|1461|123456|
+| 1462|123457|
+| ⋮ | ⋮ |
+|2916|654321|
+
+The starter notebook above generates files in exactly this format.
+
+Once you've generated your prediction file, you can upload it using the file browser below. Your score should automagically appear.
+
+```{ojs}
+viewof predictions_file = Inputs
+  .file({label: "File broswer:", accept: ".csv", required: false})
+```
+
+Your score will be a non-negative number; it should be positive, since your score will be zero only if you've predicted every sales price exactly correctly. Note that smaller is better.
+
+
+```{ojs}
+score = {
+  let score;
+  let result = html` `;
+  result.score = false;
+  if(predictions_file) {
+    let predictions = await predictions_file.csv({ typed: true });
+    if(predictions.length == test_prices.length) {
+      predictions = d3.sort(predictions, o => o.Id);
+      let idcheck = true;
+      let s = 0;
+      for(let i = 0; i < predictions.length && idcheck; i++) {
+        if(predictions[i].Id == test_prices[i].Id) {
+          let log_y_true = Math.log(test_prices[i].SalePrice);
+          let log_y_predicted = Math.log(predictions[i].SalePrice)
+          s = s + (log_y_predicted - log_y_true)**2
+        }
+        else {
+          idcheck = false;
+        }
+      }
+      score = Math.sqrt(s/predictions.length)
+      if(idcheck) {
+        result = html`Your score is ${score}.`
+      }
+      else {
+        result = html`ID Mismatch`
+      }
+      result.score = score;
+    }
+    else {
+      result = html`You have ${predictions.length} predictions but ${test_prices.length} predictions are required.`
+    }  
+  }
+  return result
+}
+```
+
+
+```{ojs}
+{  
+  let marks = [
+    Plot.rectY(
+      leaderboard,
+      Plot.binX(
+        {
+          y: "count",
+        },
+        { x: "Score", thresholds: d3.range(0,0.5,0.01), fill: 'steelblue' }
+      )
+    ),
+    Plot.ruleY([0])
+  ];
+  if(score.score) {
+    console.log(`Push ${score.score}`)
+    marks.push(Plot.ruleX([score.score]))
+  }
+  return Plot.plot({
+    y: {
+      grid: true
+    },
+    x: {domain: [0,0.5]},
+    marks: marks
+  })
+}
+```
+
+The histogram illustrates the scores on [Kaggle's leaderboard for the competition](https://www.kaggle.com/competitions/house-prices-advanced-regression-techniques/leaderboard) as of the evening of May 6, 2024. Thus, you can use it to get a rough idea where your skill stand.  There are a few things to keep in mind, though:
+
+- There are ${leaderboard.length} total scores on the leaderboard.
+- A lot of folks used techniques other linear regression.
+- The scores are skewed heavily to the right. ${leaderboard.filter(o => o.Score > 0.5).length} of them are larger than 0.5, the largest of which is ${d3.max(leaderboard, o => o.Score)}; I don't think that's very good.
+- Worse, are all the scores less than 0.1. There are around 50 scores that are effectively zero. Those folks certainly all cheated by using the publicly available Ames data.
+- The leaderboard continually rolls. My place of 1608 out of 4642 as of 7:04 AM on Tuesday, May 7 will certainly change during class.
+
+```{ojs}
+leaderboard = FileAttachment("leaderboard.02.24.2026.csv")
+  .csv({typed: true});
+```
+
+```{ojs}
+test_prices = FileAttachment("test_prices.csv").csv({typed: true});
+```
