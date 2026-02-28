@@ -59,8 +59,14 @@ sidebar: CalcISpring2026
     },
     {
       title  : 'Quiz 2',
-      start  : '2026-03-06',
+      start  : '2026-03-04',
       color: '#9a4eae',
+    },
+    {
+      title  : 'No class',
+      start  : '2026-03-06',
+      end: '2026-03-06',
+      color: 'gray',
     },
     {
       title  : 'Final Exam 1',

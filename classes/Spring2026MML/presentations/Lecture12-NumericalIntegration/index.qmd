@@ -31,18 +31,18 @@ Since we just had our first lab (and have already had a couple of "exams"), let'
 
 ## Look ahead 
 
-If we take a look at our course calendar, we might notice that our next ML application is logistic regression. The idea behind logistic regression is predict *probabilties*, as opposed to linear regression where we predicted expected values.
+If we take a look at our course calendar, we might notice that our next ML application is logistic regression. The objective of logistic regression is to predict *probabilties*, as opposed to linear regression where we predicted expected values. Clearly, these should be related and, often, knowledge of expected values can be translated to probabilities. 
 
-Clearly, these should be related and, often, knowledge of expected values can be translated to probabilities. Consider our Massey ratings, for example, which predict score differences of games. If we think UNCA is going to beat Charleston Southern by 20 tomorrow night, then I guess feel pretty confident in their chances. If we think they'll win by 1, then we should hedge our bet.
+Consider our Massey ratings, for example, which predict score differences of games. If we think UNCA is going to beat Charleston Southern by 20 tomorrow afternoon, then I guess feel pretty confident in their chances. If we think they'll win by 1, then we should hedge our bet.
 
 This is exactly what we do in [Kaggle's March Madness competition](https://www.kaggle.com/competitions/march-machine-learning-mania-2026){target=_blank}!
 
 Before we get into all this, though, I guess we need to study some probability theory.
 
 
-# Massey residuals
+# Kaggle-Massey data
 
-Let's begin by taking a look at some data. This is actual game data (provided by Kaggle) for 3893 NCAA Men's basketball games that have been played this season.
+Let's begin by taking a look at some data. This is actual game data (provided by Kaggle) for 3893 NCAA Men's basketball games that have been played this season. It is current up through Feb 4, 2026.
 
 ```{ojs}
 symmetric_game_data = {
@@ -70,6 +70,8 @@ Recall that the idea behind Massey rating is to predict score differences. That 
 - `ActualDiff = Team1Score - Team2Score`  
    is the actual score score difference 
 -  The difference `ActualDiff - RatingDiff` is called the *residual*.
+
+I guess the sum of the squares of the residuals would be our total squared error.
 
 ## Histogram
 
@@ -149,7 +151,7 @@ $$
 \text{residual } = \text{ actual } - \text{ predicted}.
 $$
 
-Let's compress that to $r=a-p$. These numbers are all known in our data but, now, we're trying to use them to make a prediction about a game that hasn't happened yet. That is, we want to know what the actual $a$ will be. So let's solve for it:
+Let's abbreviate that to $r=a-p$. These numbers are all known in our data but, now, we're trying to use them to make a prediction about a game that hasn't happened yet. That is, we want to know what the actual $a$ will be. So let's solve for it:
 $$
 a = p+r.
 $$
@@ -169,7 +171,73 @@ $$
 
 ## Solution (final step 3)
 
-It appears that our question of whether UNCA will defeat Ga Southern boils down to whether a randomly chosen residual $r$ is larger than $-5$. Once we have the correct normal distribution function $f$, we should be able to compute our desired probability as
+It appears that our question of whether UNCA will defeat Ga Southern boils down to whether a randomly chosen residual $r$ is larger than $-5$. We could determine that by simply adding up the areas of the rectangles that lie to the right of $r=-5$ in the histogram.
+
+More generally, once we have the correct normal distribution function $f$, we should be able to compute our desired probability as
 $$
 \int_{-5}^{\infty} f(x) \, dx.
 $$
+
+
+# Challenges and solutions 
+
+<h3>The challenge</h3>
+
+There's one big, big challenge to this approach: [Integration is hard](../../../../visualization/class/integration_is_hard){target=_blank}
+
+<h3>A solution</h3>
+
+In spite of this, we can almost always [estimate integrals numerically](../../../../visualization/class/RiemannSums){target=_blank}.
+
+# Integration in Python 
+
+It's worth seeing how numerical integration works in a common programming language like Python.
+
+```{python}
+#| echo: true 
+import numpy as np
+from scipy.integrate import quad
+from scipy.stats import norm
+
+m = 1; s = 2
+f = lambda x: norm.pdf(x, m, s)
+quad(f, -1,2)
+```
+
+## Illustration 
+
+Here's the corresponding picture.
+
+```{python}
+#| echo: true 
+#| code-fold: true
+import matplotlib.pyplot as plt
+
+x = np.linspace(-5, 7, 500)
+y = f(x)
+plt.figure(figsize=(7, 3))
+plt.plot(x, y)
+
+x_shade = np.linspace(-1, 2, 300)
+y_shade = f(x_shade)
+plt.plot([-5,7],[0,0], 'k-')
+plt.fill_between(x_shade, y_shade, alpha = 0.2, edgecolor = 'black')
+```
+
+## Interesting computations
+
+*The total area under the standard normal is $1$.*
+
+```{python}
+#| echo: true 
+quad(lambda x: norm.pdf(x), -10,10)
+```
+
+<div style="padding: 1em 0"></div>
+
+*$68\%$ of the population lies within one standard deviation of the mean.*
+
+```{python}
+#| echo: true 
+quad(lambda x: norm.pdf(x), -1,1)
+```

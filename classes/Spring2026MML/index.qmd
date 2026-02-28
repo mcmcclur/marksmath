@@ -52,6 +52,7 @@ with professor [Mark McClure](https://marksmath.org/)
 // import {regression_animation} from './components/regression_animation.js'
 // regression_animation();
 data = [
+  [12, 0.144239, 'agolriz'],
   [7, 0.1690946, "narito"],
   [16, 0.142155, "bmartin3"],
   [17, 0.14289, "prsteed"],
