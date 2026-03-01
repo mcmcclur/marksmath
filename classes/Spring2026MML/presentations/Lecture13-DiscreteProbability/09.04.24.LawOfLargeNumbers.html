@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+		<div id="observablehq-c2009695">
+		  <div class="observablehq-sliders"></div>
+		  <div class="observablehq-flip_pic"></div>
+		  <div class="observablehq-setup" style="display: none"></div>
+		</div>
+		<script type="module">
+		  import {Runtime, Inspector} from "https://cdn.jsdelivr.net/npm/@observablehq/runtime@4/dist/runtime.js";
+		  import define from "https://api.observablehq.com/@mcmcclur/law-of-large-numbers.js?v=3";
+		  (new Runtime).module(define, name => {
+		    if (name === "sliders") return Inspector.into("#observablehq-c2009695 .observablehq-sliders")();
+		    if (name === "flip_pic") return Inspector.into("#observablehq-c2009695 .observablehq-flip_pic")();
+		    if (name === "setup") return Inspector.into("#observablehq-c2009695 .observablehq-setup")();
+		  });
+		</script>
+	</body>
+</html>
