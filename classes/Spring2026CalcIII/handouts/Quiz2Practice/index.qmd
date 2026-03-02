@@ -1,0 +1,25 @@
+---
+title: "Calc III: Practice for quiz 2"
+date: 2026-03-02
+date-format: ddd, MMM D
+format:
+  pdf:
+    mainfont: "Times New Roman"
+    output-file: Quiz2Practice
+    include-in-header:
+      text: |
+        \pagenumbering{gobble}
+---
+
+We have our next quiz this Wednesday, March 4. The quiz will have 2 problems, two of which will look like one of the following.
+
+1. In this problem, we'll find an equation of the regression line for the three points 
+$$(0,0), (1, 0), \text{ and} (2, 4).$$ 
+To do so, use the techniques that we've learned to quantify your total squared error $E(a,b)$ and then minimize that error.
+
+
+2. Find and classify the critical points of 
+$$
+f(x,y) = x^2 -\frac{1}{3}y^3 -x y+x.
+$$
+
