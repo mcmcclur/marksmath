@@ -146,12 +146,20 @@ Of course, I learned most of this material many years ago and some of the presen
 </details>
 
 - Friday, Feb 27: Numerical integration and probability
-  - [The normal density function](./Lecture12-NumericalIntegration/){target=_blank}
-  - [Integration is hard](../../../visualization/class/integration_is_hard){target=_blank}
-  - [Riemann type sums](../../../visualization/class/RiemannSums){target=_blank}
+  - [Presentation](./Lecture12-NumericalIntegration){target=_blank}
 <details>
   <summary>Comments</summary>
   <div>
   Today, we're going to take an overview of where we are and start the transition into probability theory so that we can do some logistic regression.    
   </div>
 </details>
+
+- Mon, Mar 2: Discrete probability
+  - [Presentation](./Lecture13-DiscreteProbability){target=_blank}
+<details>
+  <summary>Comments</summary>
+  <div>
+    Recently, we reviewed the basics of integration and then we saw an overview of how that might be applied to probability theory. Today, we start probability theory in earnest with a discussion of discrete probability.
+  </div>
+</details>
+
