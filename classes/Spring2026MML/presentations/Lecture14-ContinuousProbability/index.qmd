@@ -1,0 +1,178 @@
+---
+title: Continuous probability
+date: 2026-03-04
+format:  
+  revealjs:
+    css: ../classnote-style.css
+    controls: true
+    controls-layout: bottom-right
+    navigation-mode: vertical
+    smaller: true
+    history: true
+    transition: slide
+    date-format: ddd, MMM DD, YYYY
+    html-math-method: 
+      method: mathjax
+      url: https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js
+    # echo: true
+    # eval: true
+    # output: true
+    # code-fold: true
+---
+
+# Recap and look ahead 
+
+Last time, we started probability theory in earnest with a discussion of discrete probability. Today, we'll discuss continuous probability with an emphasis on the normal distribution.
+
+
+# The uniform distribution
+
+The *continuous, uniform distribution* is probably the simplest example of a continuous distribution in general. 
+
+Suppose I pick a *real* number between $-1$ and $1$ completely (and uniformly) at random. What does that even mean?
+
+Can we make sense of picking zero? Or $1/2$? Or $-1/\pi$?
+
+## Picking from intervals
+
+It might make more sense to think in terms of picking a number out of some subinterval. For example, it seems like the probability that the number lies in the left half of the interval (i.e. to the left of zero) should be equal to the probability that the number lies in the right half. Phrased in terms of a probability function applied to events, we might write
+
+$$P(X<0) = P(X>0) = \frac{1}{2}.$$
+
+## Probability as relative length
+
+Pushing the previous slide a bit further, suppose we a pick number uniformly at random from an interval $I$. The probability of picking a number from a sub-interval should be proportional to the length of that sub-interval.
+
+If the big interval $I$ has length $L$ and the sub-interval $J$ has length $\ell$, then I guess we should have
+
+$$P(X \text{ is in } J) = \ell/L.$$
+
+<img src="Lengths.png"></img>
+
+## Example
+
+Suppose we pick a number $X$ uniformly at random from the interval $[-10,10].$ What is the probability that the number lies in the interval $[1,3]?$
+
+<div class="fragment">
+
+**Solution**: We simply divide the length of the sub-interval by the length of the larger interval to get
+
+$$P(1<X<3) = \frac{2}{20} = 0.1.$$
+
+Note that we've indicated the event using the inequality $1<X<3$, as we will typically do.
+
+</div>
+
+## Visualizing the continuous uniform distribution
+
+A common way to visualize continuous distributions is to draw the graph of a curve in the top half of the $xy$-plane. The probability that a random value $X$ with that distribution lies in an interval is then the area under the curve and over that interval. This curve is often called the *density function* of the distribution.
+
+
+## Visualization (cont)
+
+In the case of the uniform distribution over an interval $I$, the "curve" is just a horizontal line segment over the interval $I$ at the height 1 over the length of $I$. In the picture below, for example, $I=[0,2]$. On the left, we see just the density function for the uniform distribution over $I$.  On the right, we see the area under that density function and over the interval $[0.5,1]$. The area is $1/4$ since
+$$P(0.5<X<1) = 1/4.$$
+
+<div style="width: 90%; margin: 0 auto;">
+
+```{python}
+from components.figures import uniform_density
+uniform_density()
+```
+
+</div>
+
+## A distribution as a limit
+
+This pictorial view  helps us see how continuous distribution might arise as a *limit* of discrete distributions.
+
+```{python}
+from components.figures import uniform_limit
+uniform_limit()
+```
+
+# Continuous distributions
+
+As we discussed last time, a random variable $X$ is a function that produces random outputs. We know what kinds of outputs $X$ can produce; we just don't know which values actually occur for any particular application of the function.
+
+We can, however, determine the probabilities that certain types of values might be produced. In the case of a continuous random variable, we do so with a Probability Density Function or PDF. 
+
+## Definition
+
+A *Probability Density Function* or PDF is defined by a function $f:\mathbb{R} \to \mathbb R$ that satisfies a couple of properties:
+
+- $f(x)\geq0$ for all $x\in\mathbb{R}$ and 
+- its integral over the real line is $1$, i.e.
+
+$$\int_{-\infty}^{\infty} f(x) \, dx = 1.$$
+
+
+## Distributions for random variables 
+
+When we say that a continuous random variable $X$ has distribution $f$, we mean that $f$ is a PDF that we can use to compute probabilities associated with $X$. We can say, for example, 
+
+$$P(a < X < b) = \int_a^b f(x) \, dx.$$
+
+It is not at all unusual for $a$ or $b$ to be $\pm\infty$.
+
+## Uniform example
+
+Let us suppose that $X$ is uniformly distributed over the interval $[0,2]$. Put another way, $X$ has the distribution 
+$$
+f(x) = \begin{cases}
+\frac{1}{2} & \text{if } 0 \leq x \leq 2 \\
+0 & \text{else.}
+\end{cases}
+$$
+Then, 
+$$P\left(\frac{1}{2} < X < 1\right) = \int_{1/2}^1 \frac{1}{2} dx = \frac{1}{4}.$$
+
+## The exponential distribution 
+
+The exponential distribution is actually a whole family of distributions defined in terms of a positive parameter $\lambda$ by 
+$$
+f_{\lambda}(x) = \begin{cases}
+\lambda e^{-\lambda x} & \text{if } x \geq 0 \\
+0 & \text{else.}
+\end{cases}
+$$
+
+Note that $f$ is a good PDF, since it's nonnegative and
+
+$$
+\begin{aligned}
+\int_{-\infty}^{\infty} f(x) \, dx &= \lambda \lim_{b\to\infty} \int_0^{b} e^{-\lambda x} \, dx \\
+&= -\lim_{b\to\infty} e^{-\lambda x}\bigg\rvert_0^b = 1.
+\end{aligned}
+$$
+
+## Exponential PDF 
+
+Here's a look at the exponential family of distributions. There might be more information in the Desmos implementation.
+
+
+<iframe src="https://www.desmos.com/calculator/o4q5sysz5r?embed" width="800" height="400" style="border: 1px solid #ccc;" frameborder=0></iframe>
+
+## An exponential computation
+
+Here's the probability of generating an exponentially distributed random number in the unit interval:
+$$
+\lambda \int_0^1 e^{-\lambda x} \, dx = - e^{-\lambda x}\bigg\rvert_0^1 = 1-e^{-\lambda}.
+$$
+Note that the result $1-e^{-\lambda}$ is close to zero when $\lambda$ is close to zero and it increases up to $1$ as $\lambda$ increases to $\infty$. Thus, the larger $\lambda$ is, the more mass this distribution places into the unit inverval.
+
+That certainly seems to be in agreement with our interactive distribution image.
+
+
+# Mean and standard deviation 
+
+
+# The normal distribution 
+
+
+# Normal mean and variance 
+
+
+# Approximating binomials 
+
+# $u$-substitution
