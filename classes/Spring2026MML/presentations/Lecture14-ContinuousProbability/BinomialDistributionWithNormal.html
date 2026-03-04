@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+	<head>
+		<meta charset="utf-8">
+		<title>Binomial Distribution</title>
+		<style>
+			input {
+				width: 160px;
+			}
+		</style>
+	</head>
+	<body>
+		<div>
+			<div id="show_normal" style="display: inline-block; width:220px;">
+			</div>
+			<div id="p" style="display: inline-block; width:220px;">
+			</div>
+		</div>
+		<div id="binomial_distribution"></div>
+    <script type="module">
+      import {Runtime, Inspector} from "https://cdn.jsdelivr.net/npm/@observablehq/runtime@4/dist/runtime.js";
+      import define from "https://api.observablehq.com/d/3e687413719d2ab6.js?v=3";
+      (new Runtime).module(define, name => {
+        if (name === "binomial_distribution") return Inspector.into("#binomial_distribution")();
+        if (name === "viewof p") return Inspector.into("#p")();
+        if (name === "viewof show_normal") return Inspector.into("#show_normal")();
+      });
+    </script>
+
+	</body>
+</html>
