@@ -28,7 +28,10 @@ Sample datasets
   - [Training variation CSV](./house-prices/reconstructed_train.csv)
   - [Testing variation CSV](./house-prices/reconstructed_test.csv)
 - NCAA Basketball data (multiple files for sports analytics)
-  - The Big South 2026 Regular Season 
+  - The Big South Regular Season with Massey ratings 2026
+    - Description: Game by game results of the Mens's 2026 Big South regular season up to but not including the Big South Tournament. Includes Massey Ratings.
+    - [CSV](BigSouthRegularSeasonWithMasseyRatings2026.csv)
+  - The Big South 2026 Partial Season 
     - Description: Game by game results of the Mens's 2026 Big South regular season (through Feb 12).
     - [CSV](BigSouthBasketball2026.csv)
   - The Big South 2025 Regular Season 
