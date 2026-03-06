@@ -1,0 +1,195 @@
+---
+title: Basics of logistic regression
+date: 2026-03-06
+format:  
+  revealjs:
+    css: ../classnote-style.css
+    controls: true
+    controls-layout: bottom-right
+    navigation-mode: vertical
+    smaller: true
+    history: true
+    transition: slide
+    date-format: ddd, MMM DD, YYYY
+    html-math-method: 
+      method: mathjax
+      url: https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js
+    # echo: true
+    # eval: true
+    # output: true
+    # code-fold: true
+---
+
+# Recap and look ahead 
+
+We've been working to get to this point where we can understand the basics of logistic regression and that's what we'll do today. We'll apply it when we get back together after Spring break.
+
+# Overview
+
+We have data of the form $\{(x_i,y_i)\}_{i=1}^n$, where 
+
+- Each $x_i$ is a continuous, numeric variable and 
+- Each $y_i$ is binary outcome - either $0$ or $1$.
+
+We wish to model this data using a random variable $Y$ that depends on a random variable $X$. We might say that our data consists of observations of the form $(X,Y)$.
+
+## Illustration 
+
+```{ojs}
+import {synthetic_logistic_pic} from './components/interactive_pics.js';
+viewof redraw = Inputs.button("Redraw")
+synthetic_logistic_pic(redraw)
+```
+
+In this picture, the data is drawn as dots at the levels $y=0$ and $y=1$. The curve represents $P(Y=1|X)$, i.e. the probability that $Y=1$ given an $X$ value. As $x$ increases, the outcomes become more likely so that the probability curve is increasing. The probability $P$ must stay between zero and one, though, so we have asymptotic behavior.
+
+## Reasonable data
+
+We expect this simplest type of logistic regression to be applicable when we have a binary output variable that depends upon an input variable. Examples include,
+
+- Successful treatment as a function of dosage,
+- Passing grade as a function of study time,
+- Victory in a competition as a function of rating difference.
+
+There are generalizations that allow for more inputs and outputs. For example, what the next word after I type all of
+
+## The model
+
+We fit the data with a model called the *sigmoid model*, which can be expressed in terms of parameters $a$ and $b$:
+
+$$
+f_{a,b}(x) = \sigma(ax+b) = \frac{1}{1+e^{-(ax+b)}}.
+$$
+
+<iframe src="https://www.desmos.com/calculator/nogkx8tqi2?embed" width="800" height="400" style="border: 1px solid #ccc" frameborder=0></iframe>
+
+## The logistic task
+
+Like linear regression, our objective is to find values for the parameters $a$ and $b$ such that  the model function $\sigma(ax+b)$ provides the "best fit" to given data.
+
+The function $\sigma(x)$ is called the sigmoid and is defined by
+$$
+\sigma(x) = \frac{1}{1+e^{-x}}.
+$$
+
+For some reason, the symbol $\sigma$ was chosen for this function. The fields of probability and statistics are famous for overloading their symbols - none more so than the symbol "P".
+
+# Maximum likelihood
+
+So, what is the "best fit"? When modelling a function that returns a probability and is defined in terms of parameters, it's common to answer this question with the technique of *maximum likelihood*.
+
+Given data, the basic idea is to choose the parameters that maximize the likelihood that our model would've produced that observed data.
+
+Before jumping into this process for logistic regression, let's take a look at a simpler example - one which is intuitive enough for us to "know" the answer right away but which also suggests the computational solution that we'll ultimately apply to more difficult situation of logistic regression.
+
+## Example (for max likelihood)
+
+::: {.callout-note appearance=minimal}
+I have a (potentially) weighted coin that comes up heads with probability $p$ or tails with probability $1-p$. Suppose I flip the coin 100 times and it comes up heads 62 times. What is your best guess for the the value of $p$?
+:::
+
+::: {.fragment style="margin-top: 60px"}
+I suppose that the obvious answer is $p\approx0.62$. Let's explore a computational approach that yields that exact value.
+:::
+
+## Max likelihood computation (1)
+
+First, the probability that we get a head on one flip is something; we'll call it $p$.
+
+Next, from our discussion of the binomial distribution, we know that the probability that we get 62 heads in 100 flips is
+
+$$
+f(p) = \binom{100}{62} \, p^{62}(1-p)^{38}.
+$$
+
+The idea is to choose $p$ so that this quantity is maximized. 
+
+## Max likelihood computation (2)
+
+When dealing with a product of powers that we wish to optimize, it's common to apply the log first. Since the logarithm is increasing, the maximum of $\log(f(p))$ occurs at the same place as it does for $f(p)$. Thus, we compute
+
+$$
+\log\left(\binom{100}{62} \, p^{62}(1-p)^{38}\right) = 
+\log \binom{100}{62} + 62\,\log(p) + 38\, \log(1-p)
+$$
+
+This expression is called the *log-likelihood* and that is what we will maximize.
+
+## Max likelihood computation (3)
+
+Now, to maximize the log-likelihood, we compute the derivative:
+
+$$\begin{align}
+\frac{d}{dp} (\log(f(p))) &= \frac{d}{dp} \left(
+    \log \binom{100}{62} + 62\,\log(p) + 38\, \log(1-p)\right) \\
+    &= \frac{62}{p} - \frac{38}{1-p} = \frac{100 p-62}{(p-1) p}.
+\end{align}$$
+
+This last expression is zero precisely when $p=0.62$; thus, this is the choice of $p$ that maximizes the probability that our observed data could actually happen.
+
+## Logarithms???
+
+Is it really easier to take logarithms? In this simple example, perhaps not. 
+
+In logistic regression, though, the number of terms corresponds to the amount of data. These terms are all less than one so their product is sure to lead to underflow. Thus, this step is really essential.
+
+To make things more complicated, the log-likelihood is typically multiplied by $-1$ to yield an expression called the "log-loss". Most statisticians solve the logistic regression problem by *minimizing* the log loss.
+
+As far as I know, this is translation to log-loss is done simply because so much software is already written to minimize function in this context.
+
+
+
+# Application to logistic regression
+
+We now apply maximum likelihood to optimize logistic regression. Again, we have data 
+
+$$\{(x_1,y_1), (x_2,y_2), \ldots, (x_n,y_n)\}.$$
+
+We're assuming that 
+$$
+P(y_i = 1 \mid x_i) = \sigma(a x_i + b)
+$$
+
+## A too cute formula
+
+Let's denote that last probability by $p_i$, that is $p_i=\sigma(a x_i + b)$. Thus,
+$$
+P(y_i = 1) = p_i 
+\: \text{ and } \:
+P(y_i = 0) = 1 - p_i.
+$$
+This allows us to write 
+$$
+P(y_i \mid x_i) = p_i^{y_i} (1 - p_i)^{1 - y_i}.
+$$
+This is semi-tricky little formula. It's true because 
+
+- when $y_i=1$, we get $p_i$ and 
+- when $y_i=1-i$, we get $1-p_i$.
+
+Both as expected.
+
+## Logistic log-likelihood
+
+We now derive the formula for log-likelihood. This should be a function of $a$ and $b$ that we denote by $L(a,b)$:
+$$
+L(a,b) = \prod_{i=1}^n p_i^{y_i} (1 - p_i)^{1 - y_i}.
+$$
+
+We take the logarithm to generate the log-likelihood:
+$$
+\ell(a,b) = \log L(a,b) = \sum_{i=1}^n
+\left(y_i \log p_i + (1 - y_i)\log(1 - p_i)\right).
+$$
+This is a function of $a$ and $b$ because $p_i$ is a function of $a$ and $b$. 
+
+This is the function that we maximize!
+
+# Example??
+
+
+# Why sigmoid?
+
+
+# Generalizations??
+
