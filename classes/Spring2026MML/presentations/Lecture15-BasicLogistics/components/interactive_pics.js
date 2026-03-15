@@ -1,6 +1,56 @@
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
 import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm";
 
+
+export function big_south_logistic_plot(raw_data, include_fit) {
+  const flipped_data = raw_data.map(function (o) {
+    const oo = {};
+    oo.date = o.date;
+    oo.name1 = o.name2;
+    oo.score1 = o.score2;
+    oo.rating1 = o.rating2;
+    oo.name2 = o.name1;
+    oo.score2 = o.score1;
+    oo.rating2 = o.rating1;
+    return oo;
+  });
+  const data = raw_data.concat(flipped_data);
+  data.forEach(function (o) {
+    o.rating_difference = o.rating1 - o.rating2;
+    o.Outcome = o.score1 > o.score2 ? 1 : 0;
+  });
+
+  const logreg = (x) => 1 / (1 + Math.exp(-0.198 * x));
+  const pts = d3.range(-30, 30, 0.1).map((x) => [x, logreg(x)]);
+  const marks = [
+    Plot.ruleY([0]),
+    Plot.axisY({ x: 0, ticks: 5 }),
+    Plot.ruleX([0]),
+    Plot.dot(data, {
+      x: "rating_difference",
+      y: "Outcome",
+      fill: "black",
+      r: 4,
+      opacity: 0.3,
+      tip: true,
+      channels: {
+        "Team 1:": (d) => `${d.name1} ${d.score1}`,
+        "Team 2:": (d) => `${d.name2} ${d.score2}`
+      }
+    })
+  ];
+  if(include_fit) {
+    marks.push(Plot.line(pts))
+  }
+
+  return Plot.plot({
+    width: 800,
+    height: 300,
+    x: { domain: [-30, 30] },
+    marks
+  })
+}
+
 export function synthetic_logistic_pic() {
   const a = d3.randomUniform(0.5, 1.2)();
   const b = d3.randomUniform(-1,1)();

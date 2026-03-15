@@ -14,7 +14,7 @@ format:
     html-math-method: 
       method: mathjax
       url: https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js
-    # echo: true
+    echo: true
     # eval: true
     # output: true
     # code-fold: true
@@ -36,6 +36,7 @@ We wish to model this data using a random variable $Y$ that depends on a random 
 ## Illustration 
 
 ```{ojs}
+//| echo: false
 import {synthetic_logistic_pic} from './components/interactive_pics.js';
 viewof redraw = Inputs.button("Redraw")
 synthetic_logistic_pic(redraw)
@@ -158,11 +159,11 @@ P(y_i = 1) = p_i
 \: \text{ and } \:
 P(y_i = 0) = 1 - p_i.
 $$
-This allows us to write 
+This allows us to write either probability as
 $$
-P(y_i \mid x_i) = p_i^{y_i} (1 - p_i)^{1 - y_i}.
+p_i^{y_i} (1 - p_i)^{1 - y_i}.
 $$
-This is semi-tricky little formula. It's true because 
+This semi-tricky little formula is true because 
 
 - when $y_i=1$, we get $p_i$ and 
 - when $y_i=1-i$, we get $1-p_i$.
@@ -171,7 +172,7 @@ Both as expected.
 
 ## Logistic log-likelihood
 
-We now derive the formula for log-likelihood. This should be a function of $a$ and $b$ that we denote by $L(a,b)$:
+We now derive the formula for likelihood and log-likelihood. These should be functions of $a$ and $b$. The likelihood is
 $$
 L(a,b) = \prod_{i=1}^n p_i^{y_i} (1 - p_i)^{1 - y_i}.
 $$
@@ -181,15 +182,218 @@ $$
 \ell(a,b) = \log L(a,b) = \sum_{i=1}^n
 \left(y_i \log p_i + (1 - y_i)\log(1 - p_i)\right).
 $$
-This is a function of $a$ and $b$ because $p_i$ is a function of $a$ and $b$. 
+These are functions of $a$ and $b$ because $p_i$ is a function of $a$ and $b$. 
 
 This is the function that we maximize!
 
-# Example??
+# Example
+
+Let's take a look at what this looks like in code for an interesting example. 
+
+I've got a data file with all the games for Big South Regular season this year. The file includes the schools, the scores, and the Massey ratings for each team.
+
+We can read the file, concatenate it with itself where the rolls of the first and second teams are switched, and add columns for the outcomes and ratings difference.
+
+The result is on the next slide.
 
 
-# Why sigmoid?
+## The data
+
+```{python}
+#| code-fold: true 
+import pandas as pd
+df = pd.read_csv("https://marksmath.org/data/BigSouthRegularSeasonWithMasseyRatings2026.csv")
+df_swapped = df.copy()
+df_swapped = df_swapped.rename(columns={
+    "name1": "name2", "score1": "score2", "rating1": "rating2",
+    "name2": "name1", "score2": "score1", "rating2": "rating1"})
+df_full = pd.concat([df, df_swapped], ignore_index=True)
+df_full["rating_difference"] = df_full["rating1"] - df_full["rating2"]
+df_full["win"] = (df_full["score1"] > df_full["score2"]).astype(int)
+print(f"Total number of rows: {len(df_full)}")
+df_full.sample(4, random_state=1)
+```
+
+## Quick check
+
+Looks like we've got 144 rows. Does that make sense?
+
+::: {.fragment}
+
+There are 9 teams in the Big South so there are 
+$$
+\binom{9}{2} = \frac{9!}{7!\times2!} = 36 \text{ pairs of schools.}
+$$
+Each pair of teams plays twice and each game appears twice for a total of 
+$$
+4\times4\times36 = 144 \text{ rows.}
+$$
+:::
+
+## A dot plot
+
+Here's a look at just the data. You can hover over the points to see what's what and who's who.
+
+```{ojs}
+//| echo: false
+import {big_south_logistic_plot} from './components/interactive_pics.js';
+data = await FileAttachment(
+  "../../../../data/BigSouthRegularSeasonWithMasseyRatings2026.csv"
+).csv({typed: true});
+big_south_logistic_plot(data)
+```
+
+## Objective
+
+Our objective is to fit a function of the form 
+$$
+f(x) = \frac{1}{1+e^{-(ax+b)}}
+$$
+to this data. We expect that $b=0$, due to the symmetry of the data but we'll leave that up to the code.
+
+To fit the function, we find the minimum of 
+$$
+\text{Loss(a)} = \sum_{i=1}^n
+\left(y_i \log(1/(1+e^{-ax_i})) + (1 - y_i)\log(1 - (1/(1+e^{-ax_i}))\right).
+$$
+
+## Optimization illustration
+
+Here's a plot of that function. It looks like the min is around $a=0.2.$
 
 
-# Generalizations??
+```{python}
+#| echo: false
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.linear_model import LogisticRegression
+
+X = df_full[["rating_difference"]]
+y = df_full["win"]
+model = LogisticRegression()
+model.fit(X, y)
+df_full["predicted_win_prob"] = model.predict_proba(X)[:, 1]
+
+
+# rating differences and outcomes from your dataframe
+X = df_full["rating_difference"].values
+y = df_full["win"].values
+
+def sigmoid(z):
+    return 1/(1 + np.exp(-z))
+
+def log_loss_w(w):
+    p = sigmoid(w * X)
+    eps = 1e-12                     # numerical stability
+    p = np.clip(p, eps, 1-eps)
+    return -np.mean(y*np.log(p) + (1-y)*np.log(1-p))
+
+# evaluate loss over a range of slopes
+ws = np.linspace(-1, 1, 400)
+losses = [log_loss_w(w) for w in ws]
+
+# fitted coefficient from scikit-learn
+w_hat = model.coef_[0][0]
+
+plt.figure(figsize=(9,5))
+plt.plot(ws, losses)
+plt.axvline(w_hat, linestyle="--")
+plt.xlabel("a")
+plt.ylabel("Log-loss")
+# plt.title("Logistic regression objective")
+plt.show()
+```
+
+
+## Doing it
+
+Here's how to fit the model with SciKit Learn:
+
+```{python}
+from sklearn.linear_model import LogisticRegression
+X = df_full[["rating_difference"]]
+y = df_full["win"]
+model = LogisticRegression()
+model.fit(X, y)
+df_full["predicted_win_prob"] = model.predict_proba(X)[:, 1]
+
+print("Intercept:", model.intercept_[0])
+print("Coefficient:", model.coef_[0][0])
+```
+
+## Interpretation
+
+To be clear, the 
+```
+Coefficient: 0.198269477600324
+```
+Indicates that $a=0.198269$ and $b$, of course, is zero. Thus our model function is 
+$$
+f(x) = \frac{1}{1+e^{-0.198269 x}}.
+$$
+We can use that function to make probabilistic predictions for new games, once we know the Massey rating difference.
+
+## Final plot
+
+Here's another graph of the data that includes the model function:
+
+```{ojs}
+//| echo: false
+big_south_logistic_plot(data, true)
+```
+
+## The tournament
+
+We can apply this to make predictions for actual games - like the Big South Tournament that's going on right now!
+
+<iframe width="100%" height="500" frameborder="0"
+  src="./components/tournament.html"></iframe>
+
+
+# Comments
+
+Here are some comments to (hopefully) clarify a few points, like
+
+- How does the optimization happen?
+- Why use the "sigmoid"?
+- How does this generalize?
+
+## Optimization
+
+When studying linear regression, we study the optimization procedure itself quite closely. 
+
+- We begin by using partial derivatives to see how a linear system naturally occurs and solve small examples by hand.
+- After a deep dive into linear algebra, we express the same problem in terms of orthogonal projection to yield a system called the normal equations that we can again solve in small cases.
+
+Logistic regression is more complicated and, in particular, leads to non-linear optimization problems. These are typically solved using gradient descent or some other iterative algorithm. We don't do this by hand.
+
+
+## Why the sigmoid?
+
+The sigmoid at least looks like a good CDF but, other than that, it came a bit out of nowhere. Why not a CDF for a normal distribution?
+
+Linear is known to work great when residuals are normally distributed about the predicted value. Thus, there will be values above and below the curve in the neighborhood of any point.
+
+That condition is not satisfied in logistic regression; rather, the curve is below the data to the right and above it to the left.
+
+## Log-odds
+
+Give a random event with probability $p$, the expression $p/(1-p)$ is called the *odds* for that event. Thus, $\log(p/1-p)$ is called the log-odds.
+
+Logistic regression can be shown to well when the log-odds are approximately linear. That is,
+$$
+\log \frac{p}{1 - p} = a x + b.
+$$
+Solve for $p$, we get the sigmoid-based expression 
+$$
+p = \frac{1}{1 + e^{-(a x + b)}}.
+$$
+
+## Generalizations
+
+On Monday after break we'll talk about how to
+
+- Take more inputs into account, 
+- deal with more classes, 
+- and more!
 

@@ -1,0 +1,18 @@
+<html>
+    <body>
+<div id="observablehq-bracket-a1f834fc"></div>
+<div id="observablehq-bracket_style-a1f834fc"></div>
+<div id="observablehq-tippy_style-a1f834fc"></div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@observablehq/inspector@5/dist/inspector.css">
+<script type="module">
+import {Runtime, Inspector} from "https://cdn.jsdelivr.net/npm/@observablehq/runtime@5/dist/runtime.js";
+import define from "https://api.observablehq.com/d/ae6dbcabdbe6f5fb.js?v=4";
+new Runtime().module(define, name => {
+  if (name === "bracket") return new Inspector(document.querySelector("#observablehq-bracket-a1f834fc"));
+  if (name === "bracket_style") return new Inspector(document.querySelector("#observablehq-bracket_style-a1f834fc"));
+  if (name === "tippy_style") return new Inspector(document.querySelector("#observablehq-tippy_style-a1f834fc"));
+});
+</script>
+    </body>
+</html>
