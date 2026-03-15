@@ -1,0 +1,48 @@
+---
+title: Multiple integrals
+page-layout: article
+date: 2026-03-16
+date-format: ddd, MMM D
+format:
+  html:
+    toc: true
+    page-layout: article
+---
+
+<div class="content">
+<div id="observablehq-title-69b052d9"></div>
+<div id="observablehq-motivation-69b052d9"></div>
+<div id="observablehq-first_pic-69b052d9">
+<img class="pure-img" width="900" height="600" src="first_pic.png" alt="">
+</div>
+<div id="observablehq-key_question-69b052d9"></div>
+<div id="observablehq-double_integral-69b052d9"></div>
+<div class="control" id="observablehq-viewof-mn-69b052d9"></div>
+<div id="observablehq-sum-69b052d9"></div>
+<div id="observablehq-box_pic-69b052d9"></div>
+<div id="observablehq-double_conclusion-69b052d9"></div>
+<div id="observablehq-iterated_integrals-69b052d9"></div>
+<div class="control" id="observablehq-n-69b052d9"></div>
+<div id="observablehq-slice_pic-69b052d9"></div>
+<div id="observablehq-iterated_explanation-69b052d9"></div>
+</div>
+
+<script type="module">
+import {Runtime, Inspector} from "https://cdn.jsdelivr.net/npm/@observablehq/runtime@4/dist/runtime.js";
+import define from "https://api.observablehq.com/d/a1e526e49c93ec10.js?v=3";
+new Runtime().module(define, name => {
+    if (name === "title") return new Inspector(document.querySelector("#observablehq-title-69b052d9"));
+    if (name === "motivation") return new Inspector(document.querySelector("#observablehq-motivation-69b052d9"));
+    if (name === "first_pic") return new Inspector(document.querySelector("#observablehq-first_pic-69b052d9"));
+    if (name === "key_question") return new Inspector(document.querySelector("#observablehq-key_question-69b052d9"));
+    if (name === "double_integral") return new Inspector(document.querySelector("#observablehq-double_integral-69b052d9"));
+    if (name === "viewof mn") return new Inspector(document.querySelector("#observablehq-viewof-mn-69b052d9"));
+    if (name === "sum") return new Inspector(document.querySelector("#observablehq-sum-69b052d9"));
+    if (name === "box_pic") return new Inspector(document.querySelector("#observablehq-box_pic-69b052d9"));
+    if (name === "double_conclusion") return new Inspector(document.querySelector("#observablehq-double_conclusion-69b052d9"));
+    if (name === "iterated_integrals") return new Inspector(document.querySelector("#observablehq-iterated_integrals-69b052d9"));
+    if (name === "n") return new Inspector(document.querySelector("#observablehq-n-69b052d9"));
+    if (name === "slice_pic") return new Inspector(document.querySelector("#observablehq-slice_pic-69b052d9"));
+    if (name === "iterated_explanation") return new Inspector(document.querySelector("#observablehq-iterated_explanation-69b052d9"));
+});
+</script>
