@@ -1,0 +1,225 @@
+---
+title: Practical logistics
+date: 2026-03-16
+format:  
+  revealjs:
+    css: ../classnote-style.css
+    controls: true
+    controls-layout: bottom-right
+    navigation-mode: vertical
+    smaller: true
+    history: true
+    transition: slide
+    date-format: ddd, MMM DD, YYYY
+    html-math-method: 
+      method: mathjax
+      url: https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js
+    echo: true
+    # eval: true
+    # output: true
+    # code-fold: true
+---
+
+# Recap
+
+Let's start today with a somewhat more in depth recap of the things we've learned recently. We'll even go back a bit farther to see how this all fits together.
+
+## Linear Regression
+
+We discussed the general linear regression problem of "solving"
+$$
+A\mathbf{x} = \mathbf{b}
+$$ 
+as closely as we can by solving the so-called normal equations
+$$
+A^{\mathsf{T}}A\mathbf{x} = A^{\mathsf{T}}\mathbf{b}.
+$$
+As abstract as this sounds, it provides a framework for computional efficiency.
+
+In addition, the matrix $A$ can be quite high dimensional, allowing for multiple regression and a lot of potential predictor variables.
+
+## Linear regression examples
+
+We've seen several examples of this in practice
+
+- [Multiple examples](https://marksmath.org/classes/Spring2026MML/notes/linear_regression_examples/) including
+  - Simple linear regression of Body mass from culmen length for penguins
+  - Multiple regression of Body mass from culmen length and flipper length
+  - Polynomial regression for Galileo's data
+  - Overfitting
+- [Massey ratings](https://marksmath.org/classes/Spring2026MML/notes/massey_ratings/)
+- [Kaggle's housing data](https://colab.research.google.com/drive/1AD9QD6Ey89jSLZi8rjNmvyUKnpGwGBCm?usp=sharing#sandboxMode=true) in our first lab
+
+## Practical linear regression
+
+In the process, several practical issues and potential solutions arose, as described in our [presentation on practical regression](../Lecture10-PracticalIssues/). These include
+
+- Imputation of missing data,
+- Encoding of categorical data,
+- Scaling of all data,
+- Regularization to deal with overfitting and variable selection
+- Cross-validation to find hyperparameters.
+
+All these same concepts play a role in logistic regression, as well. In fact, they play a role across all kinds of machine learning algorithms.
+
+# Notation for linear regression
+
+Let's remind ourselves how this all looks in the context of linear regression using notation that's common in machine learning. In that context, we often write the regression problem as 
+$$
+X\mathbf{w} \approx \mathbf{y},
+$$
+where
+
+- $X \in \mathbb{R}^{n\times p}$ is the design matrix containing observational data,
+- $\mathbf{w} \in \mathbb{R}^p$ is the unknown vector of coefficients, and
+- $\mathbf{y} \in \mathbb{R}^n$ is the target vector.
+
+The entries of $\mathbf{w}$ are sometimes called *weights* or *parameters*.
+
+## The minimization problem
+
+In linear regression, the objective is to find the "best" vector $\mathbf{w}$ of weights. We quantify "best" in terms of Mean Square Error or MSE:
+$$
+\mathrm{MSE}(\mathbf{w}) =\frac{1}{n}\|\mathbf{y} - X\mathbf{w}\|^2.
+$$
+You should recognize that 
+$$
+\|\mathbf{y} - X\mathbf{w}\|^2 = \sum_i (y_i - f_{\mathbf{w}}(x_i))^2.
+$$
+That's the expression we would minimize in the most basic formulation of linear regression.
+
+## L2 regularization for linear regression
+
+The idea behind regularization is to add a penalty if the coefficients are too large. Thus, we write
+
+$$
+\mathrm{MSE}_\lambda(\mathbf{w}) = 
+\frac{1}{n}\|\mathbf{y}-X\mathbf{w}\|^2 +
+\lambda \|\mathbf{w}\|_2^2.
+$$
+
+The symbol $\lambda$ is the regularization constant; the larger $\lambda$, the stronger the regularization.
+
+The right value of $\lambda$ to use for a particular problem can be difficult to determine. We often estimate it using cross-validation. 
+
+Parameters like $\lambda$ are typically distinguished from the entries of $\mathbf{w}$; we refer to $\lambda$ as a *hyperparameter*.
+
+## L1 regularization for variable selection
+
+We might also consider 
+$$
+\mathrm{MSE}_\lambda(\mathbf{w}) = 
+\frac{1}{n}\|\mathbf{y}-X\mathbf{w}\|^2 +
+\lambda \|\mathbf{w}\|_1^2.
+$$
+The only difference is the use of the L1 norm on the weight vector, rather than L2. This tends to have the effect of zeroing out some weights that are less important.
+
+## Elastic regularization
+
+Elastic regularization refers to a mix of L1 and L2. Thus, we might minimize
+$$ 
+L_{\lambda,\alpha}(\mathbf{w}) =
+\frac{1}{n}\|\mathbf{y}-X\mathbf{w}\|^2 +
+\lambda \left(\alpha\|\mathbf{w}\|_1 +
+(1-\alpha)\|\mathbf{w}\|_2^2\right).
+$$
+Note that this offers more flexibility and, potentially, better results. It also introduces a second hyperparameter and more computational complexity.
+
+
+# Notation for logistic regression
+
+Let's take a look at how the corresponding notation progresses in the context of logistic regression. 
+
+## The picture
+
+We're no longer trying to approximate $(x,y)$ data that lies close to a line. Rather, we're trying to approximate $(x,y)$ data where each $y$ is zero or one, like so:
+
+```{ojs}
+//| echo: false
+import {synthetic_logistic_pic} from '../Lecture15-BasicLogistics/components/interactive_pics.js';
+synthetic_logistic_pic()
+```
+
+
+## Probability prediction
+
+In logistic regression, we don't predict $y$ values directly; we predict $p$ values - the probability that $y=1$ given an $x$ value.
+
+To do so, define $\sigma$ by
+$$
+\sigma(z)=\frac{1}{1+e^{-z}}.
+$$
+Then, $p_i=\sigma(\mathbf{x}_i^{\mathsf T}\mathbf{w})$
+
+To do so, we minimize the log-loss obtained from a maximum likelihood estimate:
+$$
+L(\mathbf{w}) = -\frac{1}{n}
+\sum_{i=1}^n \left[y_i\log p_i + (1-y_i)\log(1-p_i)\right].
+$$
+
+## Regularization
+
+With L2 regularization, this formula becomes
+$$
+L_\lambda(\mathbf{w}) =
+-\frac{1}{n} \sum_{i=1}^n
+\left[ y_i\log p_i + (1-y_i)\log(1-p_i) \right] +
+\lambda\|\mathbf{w}\|_2^2.
+$$
+
+And, with elastic regularization
+$$
+\begin{aligned}
+L_{\lambda,\alpha}(\mathbf{w}) &=
+-\frac{1}{n} \sum_{i=1}^n
+\left[ y_i\log p_i + (1-y_i)\log(1-p_i) \right] \\ &+
+\lambda\left(\alpha\|\mathbf{w}\|_1 + (1-\alpha)\|\mathbf{w}\|_2^2\right).
+\end{aligned}
+$$
+We again have hyperparameters that are generally determined with cross-validation.
+
+# Cross-validation
+
+Let's try to specify how cross-validation works a bit more clearly. 
+Generally, we have a loss function
+$$L_{\alpha,\lambda}(\mathbf{w})$$
+that we're trying to minimize. For fixed hyperparameters $\alpha$ and $\lambda$, there's a standard procedure to find the optimal weights $\mathbf{w}$. For example,
+
+- linear regression uses linear algebra,
+- logistic regression typically uses gradient descent.
+
+These optimization procedures are well established.
+
+The hyperparameters, $\alpha$ and $\lambda$, live outside the scope of that minimization technique, though. That's where cross-validation comes in.
+
+## Folding the data
+
+Recall that the loss function is defined using data. Cross-validation works by repeatedly splitting the data into training and validation sets.
+
+1. Choose an evaluation metric (MSE, log-loss, whatever).
+2. Divide the dataset into $k$ subsets called folds.
+3. Choose a grid of possible hyperparameter values.
+4. For each tuple of hyperparameters, do the following:
+   a. For each fold $i=1,\dots,k$:
+      - Use fold $i$ as the validation set.
+      - Use the remaining $k-1$ folds as the training set.
+      -  Evaluate the model on the validation set using the chosen metric.
+    b. Compute the average validation score over all $k$ folds.
+5. Select the hyperparameters that give the best average validation score.
+
+## Summary
+
+A simple fact to know:
+
+::: {.callout-note appearance=minimal}
+
+Cross-validation is a computationally intense procedure used to choose hyperparameters for machine learning algorithms. It works by breaking the data into smaller parts, repeatedly fitting the algorithm using most of the data, and evaluating the resulting model on the remaining held-out part.
+
+:::
+
+# Feature engineering
+
+There's one more practical trick we'll learn and apply soon called  
+*feature engineering*. 
+
+You can read about it in our [Titanic Intro](https://colab.research.google.com/drive/13awlut4wVRnSfrHLLfh6SEDNqmocs3cP?usp=sharing#sandboxMode=true){target=_blank}!
