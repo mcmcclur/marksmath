@@ -13,33 +13,21 @@ css: kaggle.css
 
 The bracket below let's competitors visualize their predictions; there are also several example submission files so that you can see how it works without creating your own.
 
-::: {.controls}
-
 ```{ojs}
-input 
-```
-
-:::
-
-::: {.viz-container}
-
-::::: {.score-container}
-
-```{ojs}
-log_loss_display
-```
-
-```{ojs}
-brier_display
-```
-
-:::::
-
-```{ojs}
+input
+viewof projection
+viewof projection_type
+viewof display
+overall_brier_display
+selected_brier_display
 brackets
 ```
 
-:::
+```{ojs}
+style 
+styles
+```
+
 
 ## Description
 
@@ -77,20 +65,6 @@ The eigenbracket uses eigenvectors (that we'll learn about while discussing line
 
 
 
-```{ojs}
-styles
-```
-
-
-```{ojs}
-import {
-  input, 
-  brackets, 
-  brier_display, 
-  log_loss_display, 
-  styles
-} from '1c65a571f10b43d5'
-```
 
 ```{ojs}
 {
@@ -102,3 +76,11 @@ import {
 ```
 
 :::
+
+
+```{ojs}
+import {
+  input, viewof projection, viewof projection_type, viewof display,
+  overall_brier_display, selected_brier_display, brackets, style, styles
+} from 'e8129da42f3b11fd';
+```

@@ -1,0 +1,28 @@
+<div id="observablehq-input-0cb56845"></div>
+<div id="observablehq-viewof-projection-0cb56845"></div>
+<div id="observablehq-viewof-projection_type-0cb56845"></div>
+<div id="observablehq-viewof-display-0cb56845"></div>
+<div id="observablehq-overall_brier_display-0cb56845"></div>
+<div id="observablehq-selected_brier_display-0cb56845"></div>
+<div id="observablehq-brackets-0cb56845"></div>
+<div id="observablehq-comments-0cb56845"></div>
+<div id="observablehq-styles-0cb56845"></div>
+<p>Credit: <a href="https://observablehq.com/d/e8129da42f3b11fd">Kaggle brackets for March Madness by Mark McClure</a></p>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@observablehq/inspector@5/dist/inspector.css">
+<script type="module">
+import {Runtime, Inspector} from "https://cdn.jsdelivr.net/npm/@observablehq/runtime@5/dist/runtime.js";
+import define from "https://api.observablehq.com/d/e8129da42f3b11fd.js?v=4";
+new Runtime().module(define, name => {
+  if (name === "input") return new Inspector(document.querySelector("#observablehq-input-0cb56845"));
+  if (name === "viewof projection") return new Inspector(document.querySelector("#observablehq-viewof-projection-0cb56845"));
+  if (name === "viewof projection_type") return new Inspector(document.querySelector("#observablehq-viewof-projection_type-0cb56845"));
+  if (name === "viewof display") return new Inspector(document.querySelector("#observablehq-viewof-display-0cb56845"));
+  if (name === "overall_brier_display") return new Inspector(document.querySelector("#observablehq-overall_brier_display-0cb56845"));
+  if (name === "selected_brier_display") return new Inspector(document.querySelector("#observablehq-selected_brier_display-0cb56845"));
+  if (name === "brackets") return new Inspector(document.querySelector("#observablehq-brackets-0cb56845"));
+  if (name === "comments") return new Inspector(document.querySelector("#observablehq-comments-0cb56845"));
+  if (name === "styles") return new Inspector(document.querySelector("#observablehq-styles-0cb56845"));
+  return ["tourney","round1_info","get_team","set_setup","tourney_tree","make_brackets","game_container","display_results","display_brier_score"].includes(name);
+});
+</script>
