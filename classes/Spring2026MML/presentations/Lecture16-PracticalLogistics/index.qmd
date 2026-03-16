@@ -22,7 +22,7 @@ format:
 
 # Recap
 
-Let's start today with a somewhat more in depth recap of the things we've learned recently. We'll even go back a bit farther to see how this all fits together.
+Let's start today with a recap of the things we've learned recently that's somewhat broader than we usually see. We'll even go back to linear regression to see how this all fits together.
 
 ## Linear Regression
 
@@ -84,7 +84,7 @@ $$
 $$
 You should recognize that 
 $$
-\|\mathbf{y} - X\mathbf{w}\|^2 = \sum_i (y_i - f_{\mathbf{w}}(x_i))^2.
+\|\mathbf{y} - X\mathbf{w}\|^2 = \sum_{i=1}^n (y_i - f_{\mathbf{w}}(x_i))^2.
 $$
 That's the expression we would minimize in the most basic formulation of linear regression.
 
@@ -151,7 +151,7 @@ $$
 $$
 Then, $p_i=\sigma(\mathbf{x}_i^{\mathsf T}\mathbf{w})$.
 
-To do so, we minimize the log-loss obtained from a maximum likelihood estimate:
+Then, we minimize the log-loss obtained from a maximum likelihood estimate:
 $$
 L(\mathbf{w}) = -\frac{1}{n}
 \sum_{i=1}^n \left[y_i\log p_i + (1-y_i)\log(1-p_i)\right].
@@ -181,7 +181,7 @@ We again have hyperparameters that are generally determined with cross-validatio
 # Cross-validation
 
 Let's try to specify how cross-validation works a bit more clearly. 
-Generally, we have a loss function
+Generally, we have a regularized loss function
 $$L_{\alpha,\lambda}(\mathbf{w})$$
 that we're trying to minimize. For fixed hyperparameters $\alpha$ and $\lambda$, there's a standard procedure to find the optimal weights $\mathbf{w}$. For example,
 
@@ -201,9 +201,9 @@ Recall that the loss function is defined using data. Cross-validation proceeds b
 3. Choose a grid of possible hyperparameter values.
 4. For each tuple of hyperparameters, do the following:
    a. For each fold $i=1,\dots,k$:
-      - Use fold $i$ as the validation set.
-      - Use the remaining $k-1$ folds as the training set.
-      - Evaluate the model on the validation set using the chosen metric.
+      i. Use fold $i$ as the validation set.
+      ii. Use the remaining $k-1$ folds as the training set.
+      iii. Evaluate the model on the validation set using the chosen metric.
     b. Compute the average validation score over all $k$ folds.
 5. Select the hyperparameters that give the best average validation score.
 
@@ -244,4 +244,11 @@ Here are a few more realistic examples of feature engineering.
 - We might aggregate features. For example, we might compute average points per game from a total points column.
 - Financial data is often transformed by the logarithm to account for the exponential distribution of wealth.
 - We might bin a continuous variable into a categorical variable. For example, we might convert age into a single variable with values like "child", "adult", and "senior".
+
+# Notebooks
+
+We'll see all of this in practice in our 
+[Titanic Notebook](https://colab.research.google.com/drive/13awlut4wVRnSfrHLLfh6SEDNqmocs3cP?usp=sharing#sandboxMode=true)!
+
+We'll use these ideas next time when approaching Kaggle's NCAA Competition!!
 
