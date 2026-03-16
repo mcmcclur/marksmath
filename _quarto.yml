@@ -4,6 +4,8 @@ project:
     - favicon.ico
     - components/includes/latex-macros.html
     - components/includes/latex-macros.tex
+    - data/temp/titanic/test.csv
+    - data/temp/titanic/train.csv
 
 website:
   title: "Mark's Math"
