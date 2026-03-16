@@ -28,27 +28,27 @@ Let's start today with a somewhat more in depth recap of the things we've learne
 
 We discussed the general linear regression problem of "solving"
 $$
-A\mathbf{x} = \mathbf{b}
+A\mathbf{x} \approx \mathbf{b}
 $$ 
 as closely as we can by solving the so-called normal equations
 $$
 A^{\mathsf{T}}A\mathbf{x} = A^{\mathsf{T}}\mathbf{b}.
 $$
-As abstract as this sounds, it provides a framework for computional efficiency.
+As abstract as this sounds, it provides a framework for computational efficiency.
 
 In addition, the matrix $A$ can be quite high dimensional, allowing for multiple regression and a lot of potential predictor variables.
 
 ## Linear regression examples
 
-We've seen several examples of this in practice
+We've seen several examples of this in practice:
 
-- [Multiple examples](https://marksmath.org/classes/Spring2026MML/notes/linear_regression_examples/) including
-  - Simple linear regression of Body mass from culmen length for penguins
-  - Multiple regression of Body mass from culmen length and flipper length
-  - Polynomial regression for Galileo's data
-  - Overfitting
 - [Massey ratings](https://marksmath.org/classes/Spring2026MML/notes/massey_ratings/)
 - [Kaggle's housing data](https://colab.research.google.com/drive/1AD9QD6Ey89jSLZi8rjNmvyUKnpGwGBCm?usp=sharing#sandboxMode=true) in our first lab
+- [Several more](https://marksmath.org/classes/Spring2026MML/notes/linear_regression_examples/) including
+  - Simple linear regression of body mass from culmen length for penguins
+  - Multiple regression of body mass from culmen length and flipper length
+  - Polynomial regression for Galileo's data
+  - Overfitting
 
 ## Practical linear regression
 
@@ -110,15 +110,15 @@ We might also consider
 $$
 \mathrm{MSE}_\lambda(\mathbf{w}) = 
 \frac{1}{n}\|\mathbf{y}-X\mathbf{w}\|^2 +
-\lambda \|\mathbf{w}\|_1^2.
+\lambda \|\mathbf{w}\|_1.
 $$
-The only difference is the use of the L1 norm on the weight vector, rather than L2. This tends to have the effect of zeroing out some weights that are less important.
+The difference between this slide and the last is the use of the L1 norm on the weight vector, rather than L2. This tends to have the effect of zeroing out some weights that are less important.
 
 ## Elastic regularization
 
 Elastic regularization refers to a mix of L1 and L2. Thus, we might minimize
 $$ 
-L_{\lambda,\alpha}(\mathbf{w}) =
+\text{MSE}_{\lambda,\alpha}(\mathbf{w}) =
 \frac{1}{n}\|\mathbf{y}-X\mathbf{w}\|^2 +
 \lambda \left(\alpha\|\mathbf{w}\|_1 +
 (1-\alpha)\|\mathbf{w}\|_2^2\right).
@@ -143,13 +143,13 @@ synthetic_logistic_pic()
 
 ## Probability prediction
 
-In logistic regression, we don't predict $y$ values directly; we predict $p$ values - the probability that $y=1$ given an $x$ value.
+In logistic regression, we don't predict $y$ values directly; we predict a probability $p$ that $y=1$ given an $x$ value.
 
-To do so, define $\sigma$ by
+To do so, define the logistic (or sigmoid) function
 $$
 \sigma(z)=\frac{1}{1+e^{-z}}.
 $$
-Then, $p_i=\sigma(\mathbf{x}_i^{\mathsf T}\mathbf{w})$
+Then, $p_i=\sigma(\mathbf{x}_i^{\mathsf T}\mathbf{w})$.
 
 To do so, we minimize the log-loss obtained from a maximum likelihood estimate:
 $$
@@ -194,7 +194,7 @@ The hyperparameters, $\alpha$ and $\lambda$, live outside the scope of that mini
 
 ## Folding the data
 
-Recall that the loss function is defined using data. Cross-validation works by repeatedly splitting the data into training and validation sets.
+Recall that the loss function is defined using data. Cross-validation proceeds by repeatedly splitting the data into training and validation sets. We
 
 1. Choose an evaluation metric (MSE, log-loss, whatever).
 2. Divide the dataset into $k$ subsets called folds.
@@ -203,17 +203,19 @@ Recall that the loss function is defined using data. Cross-validation works by r
    a. For each fold $i=1,\dots,k$:
       - Use fold $i$ as the validation set.
       - Use the remaining $k-1$ folds as the training set.
-      -  Evaluate the model on the validation set using the chosen metric.
+      - Evaluate the model on the validation set using the chosen metric.
     b. Compute the average validation score over all $k$ folds.
 5. Select the hyperparameters that give the best average validation score.
 
 ## Summary
 
-A simple fact to know:
+Here's a reasonably simple way to think about it:
 
 ::: {.callout-note appearance=minimal}
 
-Cross-validation is a computationally intense procedure used to choose hyperparameters for machine learning algorithms. It works by breaking the data into smaller parts, repeatedly fitting the algorithm using most of the data, and evaluating the resulting model on the remaining held-out part.
+Cross-validation is a computationally intense procedure used to choose hyperparameters for machine learning algorithms. 
+
+It works by breaking the data into smaller parts, repeatedly fitting the algorithm using most of the data, and evaluating the resulting model on the remaining held-out part.
 
 :::
 
@@ -222,4 +224,24 @@ Cross-validation is a computationally intense procedure used to choose hyperpara
 There's one more practical trick we'll learn and apply soon called  
 *feature engineering*. 
 
-You can read about it in our [Titanic Intro](https://colab.research.google.com/drive/13awlut4wVRnSfrHLLfh6SEDNqmocs3cP?usp=sharing#sandboxMode=true){target=_blank}!
+Feature engineering is the process of using existing data to generate new variables that more directly align with the prediction target. Typically, this draws on domain expertise rather than anything obvious in the data itself.
+
+
+## Overly simple example
+
+Here's an overly simple example that, hopefully, gets the idea across. 
+
+Suppose we want to develop an algorithm to assess the value of the lots in a city grid. The lots are all rectangular and we know their length and width. As a developer, we know that people really care about **area**. So...
+
+We devise a new feature from the length and width and simply store that in a new column called area. Our expectation is that this new variable is likely to correlate more strongly with the value of the lot.
+
+This new type of feature is sometimes called an interaction feature. Interaction features are quite common in sports analytics. For example, we might compute rating difference between two teams.
+
+## More examples
+
+Here are a few more realistic examples of feature engineering.
+
+- We might aggregate features. For example, we might compute average points per game from a total points column.
+- Financial data is often transformed by the logarithm to account for the exponential distribution of wealth.
+- We might bin a continuous variable into a categorical variable. For example, we might convert age into a single variable with values like "child", "adult", and "senior".
+
