@@ -6,12 +6,22 @@ format:
 css: kaggle.css
 ---
 
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@observablehq/inspector@5/dist/inspector.css">
+
+<style>
+.observablehq--error, .observablehq--undefined, .observablehq--null {
+  display: none !important;
+}
+</style>
+
 
 ::: {.content} 
 
-[Kaggle](https://www.kaggle.com/) is a company owned by Google that runs Machine Learning contests. One contest that I've competed in most years over the last decade is their [March Madness Competition](https://www.kaggle.com/competitions/mens-march-mania-2022), which requires you to make probabilistic predictions for the NCAA basketball tournaments held each March and April. 
+[Kaggle](https://www.kaggle.com/) is a company owned by Google that runs Machine Learning contests. One contest that I've competed in most years over the last dozen years is their [March Madness Competition](https://www.kaggle.com/competitions/mens-march-mania-2022), which requires you to make probabilistic predictions for the NCAA basketball tournaments held each March and April. 
 
 The bracket below let's competitors visualize their predictions; there are also several example submission files so that you can see how it works without creating your own.
+
+You can also choose to project the tournament based on predicted probabilities to estimate your best and worst possible outcomes from either the beginning or the current tournament status.
 
 ```{ojs}
 input
@@ -35,35 +45,38 @@ The idea behind the competition is to make a probabilistic prediction for each g
 
 The average log-loss and Brier score give measures of how close the predictions were; smaller is better. If you look at [the 2022 scoreboard](https://www.kaggle.com/competitions/mens-march-mania-2022/leaderboard), you might find that the eigenbracket finished 64th out of 930 entries.
 
-## Data 
 
-This is a *data-based* competition and Kaggle curates and provides plenty of data to get you started. In fact, their data for last years competition included 32 data files that serve all manner of purposes, like to
+## Logistic Massey ratings
 
-- identify teams, conferences, and locations and to
-- to indicate regular season and tournament results,
-- for both the men's and women's tournaments.
+The example files are built on predictions using logistic regression applied to Massey ratings. [Here is a description of how to compute Massey ratings](/classes/Spring2026MML/notes/massey_ratings/){target=_blank}; this is pretty easy to do with basic linear algebra.
 
-The table below shows just one of those files, namely MNCAATourneyDetailedResults.csv, which gives detailed data on every tournament game from 2003 to 2023. (The competition year, 2024, can't be included since the competition stars prior to the tournament.) 
+Using the data provided by Kaggle, we can compute the team-by-team Massey ratings for any given season. We can then attach those ratings to the game-by-game tournament data for that season and attempt to relate the probability that one team beats another to the difference between the teams' Massey ratings.
 
-::: {#tbl-data}
+For example, there were 1449 tournament games played from 2003 to 2025. Each dot in the figure below corresponds to one of those games. The horizontal axis represents the first team's Massey rating minus the second team's. The vertical axis represents the outcome of the game, either zero (if team 1 lost) or one (if team 1 won). Each game appears twice; once from the perspective of each team. That explains the clear symmetry in the figure. You can hover over the dots to get information on the corresponding games.
 
 ```{ojs}
-{
-  const data = await 
-    FileAttachment("./MNCAATourneyDetailedResults.csv").csv();
-  return Inputs.table(data)
-}
+import {logisticMasseyPlot} from './logisticMasseyPlot.js';
+data = await FileAttachment(
+  "./tournamentResultsWithMasseyRatings.csv"
+).csv({typed: true});
+logisticMasseyPlot(data)
 ```
 
-NCAA Tournament Data
+The idea behind logistic regression for symmetric data like this is to fit a curve of the form
+$$
+f(x) = \frac{1}{1+e^{-ax}}
+$$
+to the data. We then use $f$ to compute the probability that a given outcome $y$ is 1 in terms of the input $x$. That is: 
+$$P(Y = 1 \mid X = x) = f(x).$$
+The value of $a$ for the curve in the figure was determined by scikit-learn's `LogisticRegression` to be $a=0.10729123$. Thus, for example, if Team 1 has a Massey rating that's 10 more than Team 2's, we would compute 
+$$
+P(\text{Team 1 wins}) = \frac{1}{1+e^{-0.10729123\times10}} \approx 0.74515036.
+$$
+Thus, we expect that Team 1 has a nearly 75% chance of winning.
 
-:::
+---
 
-They provide similar data for every regular season game, including the competition year. The objective is to use the regular season and tournament game prior to the competition year to figure out how to predict game results and, then, to apply that to the current year's tournament.
-
-The eigenbracket uses eigenvectors (that we'll learn about while discussing linear algebra) to rate the teams and then logistic regression to translate those ratings to probabilities.
-
-
+This technique is never going to be in the money for the Kaggle competition. It does provide a solid baseline, though.
 
 
 ```{ojs}
@@ -73,7 +86,7 @@ The eigenbracket uses eigenvectors (that we'll learn about while discussing line
       .style('transform', `scale(${width/1300})`)
   }
 }
-```
+``` 
 
 :::
 

@@ -1,7 +1,11 @@
 .content, h1 {
   max-width: 1300px;
-  margin-left: auto;
-  margin-right: auto
+  margin-left: 5px;
+  margin-right: 5px
+}
+.more-content {
+  max-width: 900px;
+  margin-left: 20px;
 }
 
 /* Wide responsive container */
@@ -32,4 +36,37 @@
 .text-container h2,
 .text-container h3 {
   margin-top: 1.4em;
+}
+
+
+body.quarto-light .top_team {
+  background-color: #efefef;
+}
+
+body.quarto-light .bot_team {
+  background-color: #dedede;
+}
+
+body.quarto-light .upset {
+  background-color: #dd9999;
+}
+
+body.quarto-light .champion {
+  background-color: #ffd700;
+}
+
+body.quarto-dark .top_team {
+  background-color: #2a2a2a;
+}
+
+body.quarto-dark .bot_team {
+  background-color: #1f1f1f;
+}
+
+body.quarto-dark .upset {
+  background-color: #7a3a3a;
+}
+
+body.quarto-dark .champion {
+  background-color: #b89600;
 }

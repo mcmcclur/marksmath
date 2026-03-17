@@ -6,16 +6,31 @@ format:
 css: tourney-style.css
 ---
 
-<div class="content">
+<div class="content"> 
 <div class="text-container" id="observablehq-topmatter-fe316fef"></div>
 <div class="text-container" id="observablehq-viewof-men_or_women-fe316fef"></div>
 <div class="text-container" id="observablehq-viewof-year-fe316fef"></div>
 <div class="wide-container" id="observablehq-brackets-fe316fef"></div>
+
+<div class="more-content">
+
+## Championship breakdown
+
 <div class="text-container" id="observablehq-breakdown-fe316fef"></div>
-<div class="text-container" id="observablehq-styles-fe316fef"></div>
+
+## Data 
+
+The data all comes from [Kaggle's NCAA tournament competition](https://www.kaggle.com/competitions/march-machine-learning-mania-2026).  If you compete in that competition, you might also be interested in my [Kaggle Brackets](./KaggleBrackets/).
+
+</div>
+
 </div> 
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@observablehq/inspector@5/dist/inspector.css">
+
+
+
+
+<div class="text-container" id="observablehq-styles-fe316fef"></div>
 <script type="module">
 import {Runtime, Inspector} from "https://cdn.jsdelivr.net/npm/@observablehq/runtime@5/dist/runtime.js";
 import define from "https://api.observablehq.com/@mcmcclur/ncaa-brackets.js?v=4";
