@@ -1,27 +1,26 @@
 ---
-title: NCAA Predictions
+title: NCAA Prediction Brackets
 format: 
   html:
     page-layout: custom
 css: kaggle.css
 ---
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@observablehq/inspector@5/dist/inspector.css">
-
-<style>
-.observablehq--error, .observablehq--undefined, .observablehq--null {
-  display: none !important;
-}
-</style>
-
 
 ::: {.content} 
+
+
+::::: {style="margin-left: 20px"}
+
 
 [Kaggle](https://www.kaggle.com/) is a company owned by Google that runs Machine Learning contests. One contest that I've competed in most years over the last dozen years is their [March Madness Competition](https://www.kaggle.com/competitions/mens-march-mania-2022), which requires you to make probabilistic predictions for the NCAA basketball tournaments held each March and April. 
 
 The bracket below let's competitors visualize their predictions; there are also several example submission files so that you can see how it works without creating your own.
 
 You can also choose to project the tournament based on predicted probabilities to estimate your best and worst possible outcomes from either the beginning or the current tournament status.
+
+If you just want to peruse the tournament, you can always check out my [NCAA Brackets](../).
+
 
 ```{ojs}
 input
@@ -30,6 +29,11 @@ viewof projection_type
 viewof display
 overall_brier_display
 selected_brier_display
+```
+
+:::::
+
+```{ojs}
 brackets
 ```
 
@@ -38,6 +42,7 @@ style
 styles
 ```
 
+::::: {style="margin-left: 20px"}
 
 ## Description
 
@@ -77,6 +82,9 @@ Thus, we expect that Team 1 has a nearly 75% chance of winning.
 ---
 
 This technique is never going to be in the money for the Kaggle competition. It does provide a solid baseline, though.
+
+
+::::: 
 
 
 ```{ojs}
