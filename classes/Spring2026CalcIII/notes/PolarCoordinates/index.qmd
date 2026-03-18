@@ -1,0 +1,55 @@
+---
+title: Polar coordinates
+page-layout: article
+toc: false
+date: 2026-03-18
+date-format: ddd, MMM D
+---
+
+<div class="content">
+  <div id="observablehq-comment1-45a793e3"></div>
+  <div id="observablehq-upside_down_paraboloid-45a793e3"></div>
+  <div id="observablehq-cartesion_domain-45a793e3"></div>
+  <div id="observablehq-cartesion_domain_picture-45a793e3"></div>
+  <div id="observablehq-cartesion_integral-45a793e3"></div>
+  <div id="observablehq-polar_coords-45a793e3"></div>
+  <div id="observablehq-polar_definition_pic-45a793e3"></div>
+  <div id="observablehq-relationship_with_xy-45a793e3"></div>
+  <div id="observablehq-relationship-45a793e3"></div>
+  <div id="observablehq-polar_points-45a793e3"></div>
+  <div id="observablehq-points-45a793e3"></div>
+  <div id="observablehq-polar_regions-45a793e3"></div>
+  <div id="observablehq-rectangle-45a793e3"></div>
+  <div id="observablehq-polar_domain_description-45a793e3"></div>
+  <div id="observablehq-polar_domain_picture-45a793e3"></div>
+  <div id="observablehq-unit_disk_description-45a793e3"></div>
+  <div id="observablehq-unit_disk-45a793e3"></div>
+  <div id="observablehq-polar_integral-45a793e3"></div>
+  <div id="observablehq-translation-45a793e3"></div>
+</div>
+
+<script type="module">
+import {Runtime, Inspector} from "https://cdn.jsdelivr.net/npm/@observablehq/runtime@5/dist/runtime.js";
+import define from "https://api.observablehq.com/d/a88baba32673306a.js?v=3";
+new Runtime().module(define, name => {
+  if (name === "comment1") return new Inspector(document.querySelector("#observablehq-comment1-45a793e3"));
+  if (name === "upside_down_paraboloid") return new Inspector(document.querySelector("#observablehq-upside_down_paraboloid-45a793e3"));
+  if (name === "cartesion_domain") return new Inspector(document.querySelector("#observablehq-cartesion_domain-45a793e3"));
+  if (name === "cartesion_domain_picture") return new Inspector(document.querySelector("#observablehq-cartesion_domain_picture-45a793e3"));
+  if (name === "cartesion_integral") return new Inspector(document.querySelector("#observablehq-cartesion_integral-45a793e3"));
+  if (name === "polar_coords") return new Inspector(document.querySelector("#observablehq-polar_coords-45a793e3"));
+  if (name === "polar_definition_pic") return new Inspector(document.querySelector("#observablehq-polar_definition_pic-45a793e3"));
+  if (name === "relationship_with_xy") return new Inspector(document.querySelector("#observablehq-relationship_with_xy-45a793e3"));
+  if (name === "relationship") return new Inspector(document.querySelector("#observablehq-relationship-45a793e3"));
+  if (name === "polar_points") return new Inspector(document.querySelector("#observablehq-polar_points-45a793e3"));
+  if (name === "points") return new Inspector(document.querySelector("#observablehq-points-45a793e3"));
+  if (name === "polar_regions") return new Inspector(document.querySelector("#observablehq-polar_regions-45a793e3"));
+  if (name === "rectangle") return new Inspector(document.querySelector("#observablehq-rectangle-45a793e3"));
+  if (name === "polar_domain_description") return new Inspector(document.querySelector("#observablehq-polar_domain_description-45a793e3"));
+  if (name === "polar_domain_picture") return new Inspector(document.querySelector("#observablehq-polar_domain_picture-45a793e3"));
+  if (name === "unit_disk_description") return new Inspector(document.querySelector("#observablehq-unit_disk_description-45a793e3"));
+  if (name === "unit_disk") return new Inspector(document.querySelector("#observablehq-unit_disk-45a793e3"));
+  if (name === "polar_integral") return new Inspector(document.querySelector("#observablehq-polar_integral-45a793e3"));
+  if (name === "translation") return new Inspector(document.querySelector("#observablehq-translation-45a793e3"));
+});
+</script>
