@@ -1,0 +1,467 @@
+---
+title: Eigenvalues and eigenvectors
+date: 2026-03-20
+echo: false
+format:
+  revealjs:
+    include-in-header:
+      - text: <link href="../../images/M.svg"> <link href="../../images/MInv.svg">
+    css: ../classnote-style.css
+    controls: true
+    controls-layout: bottom-right
+    navigation-mode: vertical
+    smaller: true
+    history: true
+    transition: slide
+    keyboard: true
+    date-format: ddd, MMM DD, YYYY
+#    author: "Portions copyright Rob Beezer ([GFDL](https://www.gnu.org/licenses/fdl-1.3.en.html){target='_blank'})"
+    # eval: true
+    # output: true
+    # code-fold: true
+---
+
+# Recap and look ahead
+
+We've pretty much finished up linear and logistic regression. We'll start on our last major supervised learning algorithm (namely, neural networks) in a couple weeks. 
+
+Before we get to that, though, we should discuss a really powerful dimensional reduction algorithm called Principal Component Analysis or PCA. There's no way to understand that, though, without one more topic in linear algebra, which is hugely important in it's own right, namely Eigenvalues and Eigenvectors!
+
+
+# The general idea 
+
+When we study a linear transformation $T:\mathbb R^n \to \mathbb R^n$, there are often many invariant subspaces. We can simplify the transformation by studying how it acts on those smaller, invariant spaces.
+
+Eigenvectors and their associated eigenvalues are the algebraic tools for formulating this process. Furthermore, there's a very geometric way to view these concepts as well.
+
+Application of these tools will come quickly as we move to Google page rank next time and PCA later.
+
+$$
+\newcommand{\vect}[1]{\mathbf{#1}}
+$$
+
+## Basic definitions
+
+Throughout this presentation $T$ will denote a linear transformation mapping $\mathbb R^n \to \mathbb R^n$. We'll generally suppose that $T$ has the matrix representation
+$$T(\vect{x}) = A\vect{x}.$$
+
+We say that $\vect{x}$ is an eigenvector of $T$ with eigenvalue $\lambda$ if
+$$T(\vect{x}) = A\vect{x} = \lambda \vect{x}.$$
+
+## Real eigenvalues 
+
+As we'll see, there are good reasons to consider the possibilites that the scalar $\lambda$ might be a real or a complex eigenvalue.
+
+In the case where $\lambda$ is real, the equation 
+$$T(\vect{x}) = A\vect{x} = \lambda \vect{x}$$
+immediately implies that the one-dimensional subspace of $\mathbb R^n$ spanned by $\vect{x}$ $\text{span}(\{\vect{x}\})$ is invariant under the action of $T$.
+
+The sign and magnitude of $\lambda$ dictate the geometric properties of the transformation on that invariant space:
+
+- $|\lambda|<1$ implies that $T$ compresses $\text{span}(\{\vect{x}\})$,
+- $|\lambda|>1$ implies that $T$ stretches out $\text{span}(\{\vect{x}\})$,
+- $\lambda<0$ implies that $T$ reflects $\text{span}(\{\vect{x}\})$.
+
+
+## Complex eigenvalues
+
+Eigenvalues can be complex numbes, meaning that they hav the form 
+$$\lambda = a + b i,$$
+where $a,b\in\mathbb R$ and is the imaginary unit satisfying $i^2 = -1$.
+
+We might talk about this a bit after our exam but our main applications involve real eigenvalues.
+
+# Examples
+
+We're going to start with several examples in $\mathbb R^2$
+
+## Example 1
+
+```{ojs} 
+//| panel: input
+//| layout-ncol: 2
+viewof apply1 = (reset1, apply_switch({ invertible: true }))
+viewof reset1 = Inputs.button('Reset')
+```
+
+::: {layout-ncol=2}
+
+```{ojs}
+pic1 = {
+  reset1;
+  return eigen_pic(
+    [
+      [2, 0],
+      [0, 0.5]
+    ],
+    [
+      [1, 0],
+      [0, 1]
+    ],
+    { dd: 0.2 }
+  )
+}
+``` 
+
+<div>
+The action of $$M = \begin{bmatrix}2&0\\0&1/2\end{bmatrix}$$ preserves the subspace of $\mathbb R^2$ spanned by $[ 1,0 ]^T$ and the subspace spanned by $[ 0,1 ]^T$.
+
+- $[ 1,0 ]^T$ is an eigevector with eigenvalue $2$ and 
+- $[ 0,1 ]^T$ is an eigevector with eigenvalue $1/2$.
+</div>
+
+:::
+
+
+## Example 2
+
+```{ojs} 
+//| panel: input
+//| layout-ncol: 2
+viewof apply2 = (reset2, apply_switch({ invertible: true }))
+viewof reset2 = Inputs.button('Reset')
+```
+
+::: {layout-ncol=2}
+
+```{ojs}
+pic2 = {
+  reset2;
+  return eigen_pic(
+    [
+      [1, 1],
+      [1/2, 3/2]
+    ],
+    [
+      [1, 1],
+      [-2, 1]
+    ],
+    { dd: 0.2 }
+  )
+}
+``` 
+
+<div>
+The action of $$M = \begin{bmatrix}1&1\\1/2&3/2\end{bmatrix}$$ preserves the subspace of $\mathbb R^2$ spanned by $[ 1,1 ]^T$ and the subspace spanned by $[ -2,1 ]^T$.
+
+The first has eigenvalue $2$ and the second has eigenvalue $1/2$.
+</div>
+
+:::
+
+## Double checking example 2
+
+Checking to see if a real number $\lambda$ and vector $\vect{x}$ forms an eigenvalue/eigenvector pair is generally easy. Just compute. For example,
+$$
+\begin{bmatrix}1&1\\1/2&3/2\end{bmatrix}
+\begin{bmatrix}1\\1\end{bmatrix} = 
+\begin{bmatrix}1+1\\1/2+3/2\end{bmatrix} = 
+\begin{bmatrix}2\\2\end{bmatrix} =
+2\begin{bmatrix}1\\1\end{bmatrix}
+$$
+and 
+$$
+\begin{bmatrix}1&1\\1/2&3/2\end{bmatrix}
+\begin{bmatrix}-2\\1\end{bmatrix} = 
+\begin{bmatrix}-2+1\\-1+3/2\end{bmatrix} = 
+\begin{bmatrix}-1\\1/2\end{bmatrix} = 
+\frac{1}{2}\begin{bmatrix}-2\\1\end{bmatrix}
+$$
+
+
+## Example 3
+
+```{ojs} 
+//| panel: input
+//| layout-ncol: 2
+viewof apply3 = (reset3, apply_switch({ invertible: true }))
+viewof reset3 = Inputs.button('Reset')
+```
+
+::: {layout-ncol=2}
+
+```{ojs}
+pic3 = {
+  reset3;
+  return eigen_pic(
+    [
+      [1, 1],
+      [0, 1]
+    ],
+    [
+      [1, 0]
+    ],
+    { dd: 0.2 }
+  )
+}
+``` 
+
+<div>
+The action of $$M = \begin{bmatrix}1&1\\0&1\end{bmatrix}$$ preserves the subspace of $\mathbb R^2$ spanned by $[ 1,0 ]^T$ and that's it.
+
+I guess that $[ 1,0 ]^T$ is the only (non-zero) eigenvector and its eigenvalue is $1$.
+</div>
+
+:::
+
+## Example 4
+
+```{ojs} 
+//| panel: input
+//| layout-ncol: 2
+viewof apply4 = (reset4, apply_switch({ invertible: true }))
+viewof reset4 = Inputs.button('Reset')
+```
+
+::: {layout-ncol=2}
+
+```{ojs}
+pic4 = {
+  reset4;
+  return eigen_pic(
+    [
+      [1, 3],
+      [3, 1]
+    ],
+    [
+      [1, 1],
+      [-1,1]
+    ],
+    { dd: 0.2 }
+  )
+}
+``` 
+
+<div>
+The action of $$M = \begin{bmatrix}1&3\\3&1\end{bmatrix}$$ preserves and stretches the subspace of $\mathbb R^2$ spanned by $[ 1,1 ]^T$ and preserves but flips the subspace spanned by $[ -2,1 ]^T$.
+
+The first has eigenvalue $2$ and the second has eigenvalue $-1$.
+</div>
+
+:::
+
+## Example 5
+
+```{ojs} 
+//| panel: input
+//| layout-ncol: 2
+viewof apply5 = (reset5, apply_switch({ invertible: false }))
+viewof reset5 = Inputs.button('Reset')
+```
+
+::: {layout-ncol=2}
+
+```{ojs}
+pic5 = {
+  reset5;
+  return eigen_pic(
+    [
+      [4/5, 2/5],
+      [2/5, 1/5]
+    ],
+    [
+      [2, 1]
+    ],
+    { dd: 0.2 }
+  )
+}
+``` 
+
+The action of $$M = \begin{bmatrix}4/5&2/5\\2/5&1/5\end{bmatrix}$$ projects $\mathbb R^2$ onto the subspace spanned by $[ 2,1 ]^T$.
+
+:::
+
+
+# Finding eigenvalues
+
+There's an surprisingly easy way to find eigenvalues. Let's begin by supposing that
+$$A\vect{x} = \lambda \vect{x}.$$
+Let's bring both terms to one side to obtain
+$$A\vect{x} - \lambda \vect{x} = \vect{0}.$$
+We could rewrite this as
+\begin{aligned}
+A\vect{x} - \lambda \vect{x} &= A\vect{x} - \lambda I\vect{x} \\ 
+&= \left(A-\lambda I\right)\vect{x} = \vect{0}.
+\end{aligned}
+
+## Finding eigenvalues (cont)
+
+Once we've arrived at
+$$\left(A-\lambda I\right)\vect{x} = \vect{0},$$
+Note that this implies that $A-\lambda I$ is singular. Of course, there's a simple test for singularity, namely
+$$\det(A-\lambda I) = 0.$$
+The expression on the left is generally a polynomial in the variable $\lambda$; it is called the *characteristic polynomial* of $A$.
+
+The characteristic polynomial gives us a simple algebraic criterion on $\lambda$ that we can use to solve for $\lambda$; we simply find its roots.
+
+## Example 
+
+Recall that 
+$$M = \begin{bmatrix}1&1\\1/2&3/2\end{bmatrix}$$
+has the eigenvalues $\lambda=2$ and $\lambda =1/2$. Let's show how we can use the characteristic polynomial to find those eigenvalues.
+
+The first step will be to find the matrix $M-\lambda I$, which can be otained by simply sutracting $1$s off the diagonal of $M$. Thus,
+$$M-\lambda I = \begin{bmatrix}1-\lambda&1\\1/2&3/2-\lambda\end{bmatrix}.$$
+
+## Example (cont)
+
+We now find the determinant
+\begin{aligned}
+  \left|M-\lambda I\right| &= 
+  \begin{vmatrix}1-\lambda&1\\1/2&3/2-\lambda\end{vmatrix}
+  = (1-\lambda)\left(\frac{3}{2}-\lambda\right) - \frac{1}{2} \\ 
+  &=\lambda^2-5\frac{\lambda }{2}+\frac{3}{2} - \frac{1}{2}
+  = \lambda^2-5\frac{\lambda }{2}+1 \\ 
+  &= \frac{1}{2}\left(2\lambda^2 - 5\lambda + 2\right) = 
+  \frac{1}{2}(x-2)(2x-1).
+\end{aligned}
+
+From the factored form, we can see easily that the eigenvalues are 
+$$\lambda=2 \text{ and } \lambda=1/2.$$
+
+# Finding eigenvectors 
+
+Once you've got an eigenvalue, finding the corresponding eigenvectors boils down to solving the system
+$$A\vect{x} = \lambda \vect{x},$$
+where $\lambda$ is now known. Equivalently, we find the null space of $A-\lambda I$.
+
+## Example 
+
+Let's continue with the example 
+$$M = \begin{bmatrix}1&1\\1/2&3/2\end{bmatrix}$$
+with eigenvalues $\lambda=2$ and $\lambda =1/2$. 
+
+## Example (cont)
+
+For $\lambda = 2$, we form the matrix 
+$$M - 2I = \begin{bmatrix}1-2&1\\\frac{1}{2}&\frac{3}{2}-2\end{bmatrix}
+= \begin{bmatrix}-1&1\\1/2&-1/2\end{bmatrix}.$$
+It's pretty easy to see that's singular and that $[1 \quad 1]^T$ is in the null space so that the null space is just the span of that vector.
+
+## Example (cont 2)
+
+For $\lambda = 1/2$, we form the matrix 
+$$M - \frac{1}{2}I = \begin{bmatrix}1-\frac{1}{2}&1\\\frac{1}{2}&\frac{3}{2}-\frac{1}{2}\end{bmatrix}
+= \begin{bmatrix}1/2&1\\1/2&1\end{bmatrix}.$$
+It is again pretty easy to see that's singular and that now $[-2 \quad 1]^T$ is in the null space so that the null space is just the span of that vector.
+
+# Interpreting real eigenvalues 
+
+We now turn to the question of interpreting eigenvalues with a focus on *real* eigenvalues for the time being. A summary might look like:
+
+- The set of all eigenvectors for a single eigenvalue form a subspace, 
+- Eigenvectors for distinct eigenvalues are linearly independent,
+- The dimension of the subspace for an eigenvalue cannot exceed the algebraic multiplicity of the eigenvalue (obviously) but repeated eigenvalues can be a bit tricky.
+
+While the intuition gained from our examples in $\mathbb R^2$ should hep a lot, it's important to realize that this is all happening in $\mathbb R^n$, where $n$ is potentially large.
+
+## Eigenspaces
+
+It's pretty easy to show that the set of all eigenvectors for a single eigenvalue form a subspace. If $\vect{x}$ and $\vect{y}$ are eigenvectors for the eigenvector $\lambda$ and $\alpha$ and $\beta$ are scalars, then 
+\begin{aligned}
+A(\alpha\vect{x} + \beta\vect{y}) &= 
+  \alpha A\vect{x} + \beta A\vect{y} \\ 
+  &= \alpha \lambda \vect{x} + \beta\lambda \vect{y} \\ 
+  &= \lambda (\alpha\vect{x} + \beta\vect{y}).
+\end{aligned}
+Thus, $\alpha\vect{x} + \beta\vect{y}$ is also an eigenvector with eigenvalue $\lambda$.
+
+
+## Linear independence for distinct eigenvalues
+
+Suppose that $\vect{x}$ and $\vect{y}$ are eigenvectors for the eigenvalues $\lambda_1$ and $\lambda_2$. Suppose also, that one of the eigenvectors is a constant multiple of the other, say 
+$$\vect{x} = c\vect{y}.$$
+Then,
+$$\lambda_1 (c\vect{y}) = A (c\vect{y}) = c(A\vect{y})
+= c(\lambda_2\vect{y}) = \lambda_2(c\vect{y}).$$
+So, we must have $\lambda_1 = \lambda_2$.
+
+## Repeated eigenvalues 
+
+Consider the matrices 
+$$
+A = \begin{bmatrix}1&0\\0&1\end{bmatrix}
+\quad 
+B = \begin{bmatrix}1&1\\0&1\end{bmatrix}.
+$$
+Both $A$ and $B$ have the characteristic polynomial $(\lambda-1)^2$; we say that $\lambda=1$ is a repeated eigenvalue. It's easy to see that the corresponding eigenspace of $A$ is all of $\mathbb R^2$. For $B$, though 
+$$\begin{bmatrix}1&1\\0&1\end{bmatrix}
+\begin{bmatrix}x\\y\end{bmatrix}
+= \begin{bmatrix}x+y\\y\end{bmatrix}.
+$$
+Thus, $[x \quad y]^T$ is an eigenvector only when $y=0$.
+
+It's worth mentioning that we've already explored the geometric action of $B$.
+
+# Still to come 
+
+- Power iteration to find the dominant eigenvector 
+- Diagonalization
+- Principal component Analysis
+
+
+::: {.hidden}
+
+```{ojs}
+{
+  if (apply1[1]) {
+    if (apply1[1] == "M") {
+      pic1.step("forward");
+    } else if (apply1[1] == "MInv") {
+      pic1.step(0);
+    }
+  }
+}
+```
+```{ojs}
+{
+  if (apply2[1]) {
+    if (apply2[1] == "M") {
+      pic2.step("forward");
+    } else if (apply2[1] == "MInv") {
+      pic2.step(0);
+    }
+  }
+}
+```
+```{ojs}
+{
+  if (apply3[1]) {
+    if (apply3[1] == "M") {
+      pic3.step("forward");
+    } else if (apply3[1] == "MInv") {
+      pic3.step(0);
+    }
+  }
+}
+```
+```{ojs}
+{
+  if (apply4[1]) {
+    if (apply4[1] == "M") {
+      pic4.step("forward");
+    } else if (apply4[1] == "MInv") {
+      pic4.step(0);
+    }
+  }
+}
+```
+```{ojs}
+{
+  if (apply5[1]) {
+    if (apply5[1] == "M") {
+      pic5.step("forward");
+    } else if (apply5[1] == "MInv") {
+      pic5.step(0);
+    }
+  }
+}
+```
+
+
+::: 
+
+
+```{ojs}
+import { eigen_pic, apply_switch } from "../../components/eigenPic.js"
+```

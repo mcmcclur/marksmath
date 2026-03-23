@@ -210,3 +210,23 @@ Of course, I learned most of this material many years ago and some of the presen
   - [NCAA brackets](../../../visualization/data/NCAABrackets/){target=_blank}
   - [Kaggle prediction brackets](../../../visualization/data/NCAABrackets/KaggleBrackets/){target=_blank}
   - [The lab notebook](https://colab.research.google.com/drive/1vekA2CZksPkxWEm93-WE1xdDtxVbzGhN?usp=sharing#sandboxMode=true){target=_blank} 
+
+- Fri, Mar 20: Eigenspaces
+  - [Presentation](./Lecture17-Eigenspaces){target=_blank}
+<details>
+  <summary>Comments</summary>
+  <div>
+    We've pretty much finished up linear and logistic regression. Today, we'll discuss the very basics of eigenvalues and eigenvectors, which is the last stuff on our exam next week. We should also be sure to take a quick look at the [Review for Exam III](../handouts/Exam3Review)
+  </div>
+</details>
+
+- Mon, Mar 23: Eigenrating
+  - [Notes](../notes/eigenrating/){target=_blank}
+<details>
+  <summary>Comments</summary>
+  <div>
+    Now that we've learned about eigenvalues and eigenvectors, we're going to see our first data based application, namely *eigenrating*.
+
+    While this material is again expressed in terms of the ranking of sports teams, it's worth mentioning that the same technique also has application of to networks. When we apply this basic idea to the world wide web, in fact, we get Google's Page Rank algorithm!
+  </div>
+</details>

@@ -1,0 +1,192 @@
+---
+title: Eigenratings
+format:
+  html:
+    include-in-header:
+      - ../../../../components/includes/latex-macros.html
+    css: style.css
+    page-layout: article
+    toc: true
+    code-copy: true
+    echo: true
+---
+
+This web page outlines a technique based in linear algebra to rate teams playing games in a common league based on the number of points each team scores in the actual game. The idea is to construct a directed graph to keep track of those points. It turns out the dominant eigenvector of the adjacency matrix of the resulting graph is a good set of ratings.
+
+Whatever that means.
+
+I learned this algorithm in [The Perron-Frobenius Theorem and the Ranking of Football Teams](http://www.jstor.org/stable/2132526) by [James Keener](http://www.math.utah.edu/~keener/), though the idea dates back to at least the 1930s when similar ideas were applied to the ranking of chess players. The following outline follows Keener's most basic version.
+
+You can also read about this technique in Chapter 4 of [Langville and Meyer's text on sports ranking](https://www.jstor.org/stable/j.ctt7rwdt), where it's called Keener's method. These same authors published another text called [Google Pagerank and Beyond](https://www.jstor.org/stable/j.ctt7t8z9), where this exact algorithm is revealed to be exactly the technique that Google first used to rank the importance of webpages.
+
+## Imports 
+
+Let's import the functionality that we need:
+
+```{python}
+import numpy as np
+import pandas as pd 
+import graphviz as gv 
+from scipy.linalg import eig
+from scipy.sparse.linalg import eigs
+```
+
+## A basic example
+
+Let's suppose that three competitors or teams (numbered zero, one, and two) compete against each other twice each. How might we rank them based on the results that we see? For concreteness, suppose the results are the following:
+
+ - Team zero beat team one twice and team two once,
+ - Team one beat team two once,
+ - Team two beat team zero and team one once each.
+
+We might represent this diagrammatically as follows:
+
+
+```{python}
+#| classes: centered
+dot = gv.Digraph()
+dot.graph_attr.update({'rankdir': 'LR'})
+dot.edge("0", "1", label="2")
+dot.edge("0", "2", label="1")
+dot.edge("1", "2", label="1")
+dot.edge("2", "1", label="1")
+dot.edge("2", "0", label="1")
+dot
+```
+
+This configuration is called a *directed graph* or *digraph*. We construct it by placing an edge from team $i$ to team $j$ and labeling that edge with the number of times that team $i$ beat team $j$. We supress zero edges. 
+
+It seems reasonably clear that team zero should be ranked the highest, having beaten both competitors a total of 3 times out of 4 possible tries. Team one, on the other hand, won only 1 game out of its four tries, while team two seems to be in the middle, having split it's game with both competitors. Certainly, the teams listed from worst to first should be: $1$, $2$, $0$. 
+
+## Eigen-formulation
+
+There's an obvious matrix associated with a digraph called the *adjacency matrix*. The rows and columns will be indexed by the teams. In row $i$ and column $j$, we place the label on the edge from team $i$ to team $j$. The adjacency matrix for this digraph is
+
+$$\begin{bmatrix}
+  0 & 2 & 1 \\
+  0 & 0 & 1 \\
+  1 & 1 & 0
+\end{bmatrix}.$$
+
+It turns out there's a lovely way to get at this exact ranking using the eigensystem of the adjacency matrix associated with the directed graph. Let's suppose we have $N$ participants in a collection of contests - football, basketball, tiddly winks, what have you. We also suppose there is a vector $\mathbf{r}$ of rankings with positive entries $r_j$. Conceptually, $r_j$ represents the actual strength of the $j^{\text{th}}$ competitor. We wish to assign a positive score $s_i$ to each competitor. If competitor $i$ beats competitor $j$, we expect that to contribute positively to the score of competitor $i$. Furthermore, the stronger competitor $j$ was, the more we expect the contribution to be.  Symbolically, we might write:
+
+$$s_i = \frac{1}{n_i}\sum_{j=1}^N a_{ij}r_j.$$
+
+Thus, $s_i$ is a linear combination of the strengths of its opponents. The normalization factor $n_i$ is the number of games that team $i$ played; we include it because we don't want a team's ranking to be higher simply because it played more games.
+
+A key issue, of course, is how should the matrix of coefficients $A=(a_{ij})$ be chosen? Certainly, if team $i$ defeated team $j$ every time they played (there might be more than one contest between the two), then we expect $a_{ij}>0$. Beyond that, there's a lot of flexibility and the precise choice is one for experimentation and (hopefully) optimization. In the simple approach that follows, we'll take $a_{ij}$ to simply be the number of times that team $i$ defeated team $j$.
+
+Finally, it seems reasonable to hope that our score $s_i$ of the $i^{\text{th}}$ team should be related to the actual strength $r_i$ of that team. Let's assume that they are, in fact, proportional: $\mathbf{s} = \lambda \mathbf{r}$. Put another way, we have
+$$A\mathbf{r} = \lambda\mathbf{r}.$$
+That is, the actual ranking of strengths vector $\mathbf{r}$ is an eigenvector of $A$!
+
+## The Perron-Frobenius theorem
+
+At this point, we turn to some mathematical theory to guide us in our choice of eigenvector.
+
+**Theorem**: If the square matrix $A$ has nonnegative entries, then it has an eigenvector $\mathbf{r}$ with nonnegative entries corresponding to a positive eigenvalue $\lambda$. If $A$ is irreducible, then $\mathbf{r}$ has strictly positive entries, is unique, simple, and the corresponding eigenvalue is the one of largest absolute value.
+
+This all seems good because we certainly want a vector of positive rankings and the theorem tells us which one to choose. This eigenvalue/eigenvector pair is sometimes called *dominant*. 
+
+To some readers, the notion of an *irreducible* matrix is quite possibly new. There are a number of equivalent characterizations including:
+
+ - $A\mathbf{v}>0$, whenever $\mathbf{v}>0$,
+ - There is no permutation of the rows and columns of $A$ transforming the matrix into a block matrix of the form
+ $$\begin{bmatrix}
+   A_{11} & A_{12} \\
+   0 & A_{22}
+ \end{bmatrix},$$
+ where $A_{11}$ and $A_{22}$ are square.
+ - The associated digraph is strongly connected, i.e. there is a path from any vertex to any other.
+
+I find the last characterization easiest to work with and it's easy to believe that it's likely to be satisfied, if teams play each other enough. Even if the matrix is *not* irreducible, the eigenranking approach can work. If not, it's often sufficient to work with the appropriate strongly connected component of the digraph.
+
+## The basic example revisited
+
+Recall that the adjacency matrix associated with our simple example, written in code, is:
+
+```{python}
+M = np.matrix([
+    [0,2,1],
+    [0,0,1],
+    [1,1,0]
+])
+```
+
+According to the theory, this should have a unique positive eigenvalue whose magnitude is larger than the magnitude of any other eigenvalue. There should be an associated eigenvector with all positive entries. Of course, if $\mathbf{v}$ is an eigenvector, then so is $-\mathbf{v}$ (or any constant multiple). The theory tells us that we might as well just take the absolute value.
+
+Here's the dominant eigenvalue/eigenvector pair for our simple example:
+
+```{python}
+eig(M)
+```
+
+The result is a pair: a list of the eigenvalues and a matrix whose columns are the eigenvectors. Note that the last displayed eigenvalue, about $1.769$, has zero imaginary part and is clearly larger in absolute value than the other two, which are complex conjugates. The corresponding eigenvector has components all with the same sign. The absolute value of that eigenvector should be reasonable strengths associated with the teams, approximately:
+$$0.7235, \; 0.3396, \; 0.6009.$$
+As expected, the zeroth team is the strongest, while the middle team is the weakest.
+
+## The Big South 
+
+I've got a data table on my webspace that lists the results for every Big South conference game played this year. We used this exact file before when we applied logistic regression to Massey ratings; we don't need the Massey ratings now so we'll grab just the columns that we do need.
+
+```{python}
+bigSouth2026 = pd.read_csv(
+  "https://marksmath.org/data/BigSouthRegularSeasonWithMasseyRatings2026.csv"
+);
+games = bigSouth2026[["name1", "score1", "name2", "score2"]].copy()
+games
+```
+
+Here's a directed graph representation of this data:
+
+```{python}
+#| echo: false
+games['winner'] = games.apply(
+    lambda r: r['name1'] if r['score1'] > r['score2'] else r['name2'],
+    axis=1)
+games['loser'] = games.apply(
+    lambda r: r['name2'] if r['score1'] > r['score2'] else r['name1'],
+    axis=1)
+edge_weights = (
+    games
+    .groupby(['winner', 'loser'])
+    .size()
+    .reset_index(name='count'))
+
+dot = gv.Digraph()
+for _, row in edge_weights.iterrows():
+    dot.edge(row['winner'], row['loser'], label=str(row['count']))
+dot
+```
+
+We need a matrix so that the entry in row $i$ and column $j$ contains the number of times that team $i$ defeated team $j$. A Pandas dataframe has an incredibly convenient tool for generating this called a `crosstab`. We can use it like so:
+
+```{python}
+wteams = games.name1
+lteams = games.name2
+teams = pd.concat([wteams, lteams]).unique()
+teams.sort()
+A = pd.crosstab(games['winner'], games['loser']).reindex(index=teams, columns=teams, fill_value=0)
+A 
+```
+
+Now, we use `eigs` to find just the dominant eigenvalue/eigenvector pair for this matrix.
+
+```{python}
+A = A.to_numpy()
+val,vec = eigs(A,1)
+print(val)
+print('---')
+print(vec)
+```
+
+That looks like we would expect. Here's the corresponding ranking:
+
+```{python}
+vec = abs(vec[:,0])
+ranking = np.argsort(abs(vec)).tolist()
+ranking.reverse()
+[teams[i] for i in ranking]
+```
+
+Looks good!
