@@ -15,7 +15,9 @@ format:
     transition: slide
     keyboard: true
     date-format: ddd, MMM DD, YYYY
-#    author: "Portions copyright Rob Beezer ([GFDL](https://www.gnu.org/licenses/fdl-1.3.en.html){target='_blank'})"
+    html-math-method: 
+      method: mathjax
+      url: https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js
     # eval: true
     # output: true
     # code-fold: true
