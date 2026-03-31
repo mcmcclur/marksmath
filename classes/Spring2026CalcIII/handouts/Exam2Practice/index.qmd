@@ -1,0 +1,47 @@
+---
+title: "Practice for Exam 2"
+format:
+  html:
+    css: ['../handout_style.css', '/components/EmbedDiscourseMathTopics/embedDiscourseMathTopic.css']
+    page-layout: article
+    toc: true
+    format-links: [pdf]
+  pdf:
+    mainfont: "Times New Roman"
+    output-file: Exam2Practice
+    include-in-header:
+      text: |
+        \pagenumbering{gobble}
+---
+
+We have our second exam in two days - this Friday, April 3. These problems form an opportunity for you to write down a few solutions for me to see.
+
+Of course, you should still work out the full review for exam 2 to the best of your ability, since it represents the full gamut of material you might expect. We already practiced th material on the new coordinate systems in class on Monday. This sheet focuses on prior material and a couple of other tricky items. Inclusion or exclusion on this sheet makes a problem no more or less likely to appear on the exam itself.
+
+
+## The problems
+
+
+1. Let $f(x,y)= 2x^2 y^4$.
+   a. Compute $\nabla f$.
+   b. From the point $(1,2)$, in what direction $\vec{u}$ is $f$changing the fastest?
+   c. From the point $(1,2)$, is there any direction $\vec{u}$ so that $D_{\vec{u}}f(1,2)=10$?  
+   Why?
+
+
+4. Find the equation of the plane tangent to the graph of
+	$x^{2}-3y^{2}+2z^{2}=3$ at the point $(2,-1,1)$.
+
+
+6. Evaluate the following double integrals.
+   a. $\displaystyle \iint_{D} xy \, dA$, where $D$ is the region stuck between the line $y=x$ and the parabola $y=x^2$.
+   \vspace{2mm}
+   b. $\displaystyle \int_0^1 \int_y^1 \sqrt{1+x^2} \, dx \, dy$
+
+7. Let $R$ denote the solid pyramid with vertices located at $(1,0,0)$, $(0,2,0)$, $(0,0,4)$, and the origin. Set up an iterated integral to represent the volume of $R$.
+
+
+13. Express $(-2-2i)^{400}$ as a real number.
+
+14. Find the roots of $x^2 + x + 2 = 0$.
+
