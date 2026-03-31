@@ -1,0 +1,485 @@
+---
+title: Matrix diagonalization
+date: 2026-03-30
+echo: false
+format:
+  revealjs:
+    include-in-header:
+      - text: <link href="/images/M.svg"> <link href="/images/MInv.svg">
+    css: ../classnote-style.css
+    controls: true
+    controls-layout: bottom-right
+    navigation-mode: vertical
+    smaller: true
+    history: true
+    transition: slide
+    date-format: ddd, MMM DD, YYYY
+    html-math-method: 
+      method: mathjax
+      url: https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js
+    # eval: true
+    # output: true
+    # code-fold: true
+---
+
+# Matrix diagonalization
+
+Just before our last exam, we learned about eigenvalues and eigenvectors of $n$ dimensional matrices and how they help us identify various subspaces of $\mathbb R^n$ that are invariant under the action of the matrix. Today, we're going to discuss how that allows us to express matrices in various forms, depending upon the *basis* that we use to describe $\mathbb R^n$. The simplest such form is as a *diagonal* matrix.
+
+$$
+\newcommand{\vect}[1]{\mathbf{#1}}
+\newcommand{\inverse}[1]{#1^{-1}}
+\newcommand{\similar}[2]{\inverse{#2}#1#2}
+$$
+
+# Eigen-Recap
+
+Recall that $T$ generally denotes a linear transformation mapping $\mathbb R^n \to \mathbb R^n$ and that $T$ has some matrix representation, which we write
+$$T(\vect{x}) = A\vect{x}.$$
+
+We've defined a vector $\vect{x}$ to be an eigenvector of $T$ with eigenvalue $\lambda$ if
+$$T(\vect{x}) = A\vect{x} = \lambda \vect{x}.$$
+
+## Geometric interpretation
+
+A real eigenvector spans a one-dimensional subspace that is invariant under the action of the matrix.
+
+A collection of real eigenvectors with the same eigenvalue forms a (potentially) multi-dimensional subspace that is invariant under the action of the matrix.
+
+Complex eigenvalues and eigenvectors are more complicated but it turns out that they lead to a transformation involving rotation within a two-dimensional subspace of $\mathbb R^n$; that transformation might also involve scaling.
+
+<hr/>
+
+We saw quite a few examples of eigenvalue/eigenvector pairs a couple of weeks ago. Let's revisit two very simple examples that really get at the heart of the issue that's relevant for us here today.
+
+## Example 1
+
+
+```{ojs} 
+//| panel: input
+//| layout-ncol: 2
+viewof apply1 = (reset1, apply_switch({ invertible: true, matrix_symbol: "A" }))
+viewof reset1 = Inputs.button('Reset')
+```
+
+::: {layout-ncol=2}
+
+```{ojs}
+pic1 = {
+  reset1;
+  return eigen_pic(
+    [
+      [2, 0],
+      [0, 0.5]
+    ],
+    [
+      [1, 0],
+      [0, 1]
+    ],
+    { dd: 0.2 }
+  )
+}
+``` 
+
+<div>
+The action of $$A = \begin{bmatrix}2&0\\0&1/2\end{bmatrix}$$ preserves the subspace of $\mathbb R^2$ spanned by $[ 1,0 ]^T$ and the subspace spanned by $[ 0,1 ]^T$.
+
+- $[ 1,0 ]^T$ is an eigevector with eigenvalue $2$ and 
+- $[ 0,1 ]^T$ is an eigevector with eigenvalue $1/2$.
+</div>
+
+:::
+
+
+## Example 2
+
+```{ojs} 
+//| panel: input
+//| layout-ncol: 2
+viewof apply2 = (reset2, apply_switch({ invertible: true, matrix_symbol: "B" }))
+viewof reset2 = Inputs.button('Reset')
+```
+
+::: {layout-ncol=2}
+
+```{ojs}
+pic2 = {
+  reset2;
+  return eigen_pic(
+    [
+      [1, 1],
+      [1/2, 3/2]
+    ],
+    [
+      [1, 1],
+      [-2, 1]
+    ],
+    { dd: 0.2 }
+  )
+}
+``` 
+
+<div>
+The action of $$B = \begin{bmatrix}1&1\\1/2&3/2\end{bmatrix}$$ preserves the subspace of $\mathbb R^2$ spanned by $[ 1,1 ]^T$ and the subspace spanned by $[ -2,1 ]^T$.
+
+The first has eigenvalue $2$ and the second has eigenvalue $1/2$.
+</div>
+
+:::
+
+## Double checking example 2
+
+Recall that it's easy to see if a real number $\lambda$ and vector $\vect{x}$ forms an eigenvalue/eigenvector pair is generally easy. Just compute. For example 2 we have,
+$$
+\begin{bmatrix}1&1\\1/2&3/2\end{bmatrix}
+\begin{bmatrix}1\\1\end{bmatrix} = 
+\begin{bmatrix}1+1\\1/2+3/2\end{bmatrix} = 
+\begin{bmatrix}2\\2\end{bmatrix} =
+2\begin{bmatrix}1\\1\end{bmatrix}
+$$
+and 
+$$
+\begin{bmatrix}1&1\\1/2&3/2\end{bmatrix}
+\begin{bmatrix}-2\\1\end{bmatrix} = 
+\begin{bmatrix}-2+1\\-1+3/2\end{bmatrix} = 
+\begin{bmatrix}-1\\1/2\end{bmatrix} = 
+\frac{1}{2}\begin{bmatrix}-2\\1\end{bmatrix}
+$$
+
+## Key observation
+
+The matrices $A$ and $B$ act on $\mathbb R^2$ in a similar way, though along different directions. By linearity, it appears that the rest of the space moves along with the eigenvectors in a similar fashion.
+
+We might say that the two matrices are *similar*.
+
+The action of $B$ is more transparent, though.
+
+# Matrix similarity
+
+**Definition**: We say that a matrix $A$ is *similar* to the matrix $B$ if there is a non-singular matrix $S$ such that 
+$$
+A = SBS^{-1}.
+$$
+
+When $A$ is similar to $B$, then $B$ is also similar to $A$. Thus, we might refer to $A$ and $B$ as similar matrices.
+
+## Example 
+
+Let $A$ and $S$ be the matrices 
+
+\begin{align*}
+A=\begin{bmatrix}
+-13 & -8 & -4 \\
+12 & 7 & 4 \\
+24 & 16 & 7
+\end{bmatrix}&&
+S=\begin{bmatrix}
+1 & 1 & 2 \\
+-2 & -1 & -3 \\
+1 & -2 & 0
+\end{bmatrix}\text{.}
+\end{align*}
+
+You can check easily enough that 
+$$
+S^{-1} = \begin{bmatrix}
+-6 & -4 & -1 \\
+-3 & -2 & -1 \\
+5 & 3 & 1
+\end{bmatrix}
+$$
+
+## Example (cont)
+
+As it turns out,
+$$
+\begin{align*}
+\similar{A}{S}&=
+\begin{bmatrix}
+-6 & -4 & -1 \\
+-3 & -2 & -1 \\
+5 & 3 & 1
+\end{bmatrix}
+\begin{bmatrix}
+-13 & -8 & -4 \\
+12 & 7 & 4 \\
+24 & 16 & 7
+\end{bmatrix}
+\begin{bmatrix}
+1 & 1 & 2 \\
+-2 & -1 & -3 \\
+1 & -2 & 0
+\end{bmatrix}\\
+&=
+\begin{bmatrix}
+-1 & 0 & 0 \\
+0 & 3 & 0 \\
+0 & 0 & -1
+\end{bmatrix}\text{.}
+\end{align*}
+$$
+Thus, that last matrix is similar to $A$.
+
+<div class="fragment">
+<hr/>
+Note nice the form of the new matrix is!
+</div>
+
+## Advantages of diagonal matrices 
+
+Diagonal matrices are very easy to compute with. We can 
+
+- Compute the determinant very easily,
+- Compute powers of the matrix very easily,
+- Find the characteristic polynomial very easily, and 
+- Compute the eigenvalues very easily.
+
+Thus, if we can re-express a matrix as a diagonal matrix, it allows us to understand the original matrix more easily.
+
+## Similarity and eigenvalues
+
+Let's be explicit about one of the claims on the previous slide:
+
+**Theorem**: If $A$ and $B$ are similar matrices, then they have the same set of eigenvalues.
+
+*Proof*: Suppose that $A$ and $B$ are similar via $S$, so $AS=SB$. Let $\vect{x}\neq0$ be an eigenvector of $B$ for the eigenvalue $\lambda$. Then,
+$$
+A\left(S\vect{x}\right) = \left(AS\right)\vect{x} = \left(SB\right)\vect{x} = S\left(B\vect{x}\right) = S\left(\lambda\vect{x}\right) = \lambda\left(S\vect{x}\right)
+$$
+It's worth mentioning that $S\vect{x}$ is non-zero, since $S$ is nonsingular. Thus, we've found a non-zero eigenvector $S\vect{x}$ for $A$ with the same eigenvalue $\lambda$.
+
+
+## Multiplicity
+
+More is true. If $A$ and $B$ are similar with eigenvalue $\lambda$, then $\lambda$ has the same geometric multiplicity for both matrices. 
+
+That is
+$$\{\vect{x}\in\mathbb R^n: A\vect{x} = \lambda \vect{x}\}
+\: \text{ and } \:
+\{\vect{x}\in\mathbb R^n: B\vect{x} = \lambda \vect{x}\}$$
+have the same dimension.
+
+More evidence that $A$ and $B$ behave in the same manner!
+
+## Equivalence
+
+Similarity of matrices forms an equivalence relation. That is,
+
+- $A$ is similar to itself,
+- $A$ is similar to $B$ iff $B$ is similar to $A$,
+- If $A$ is similar to $B$ and $B$ is similar to $C$, then $A$ is similar to $C$.
+
+# Diagonalization
+
+Suppose we have a matrix $A$ of size $n$ and we suspect that it is similar to a diagonal matrix. How can we find that similarity relationship?
+
+More precisely, how can we find a nonsingular matrix $S$ and a square $D$ (both of size $n$) such that 
+
+$$D = \inverse{S}AS?$$
+
+This process is called *diagonalization*.
+
+## Eigenvalues on the diagonal 
+
+Recall the following two facts:
+
+- If $A$ and $D$ are similar, then they must have the same eigenvalues and 
+- If $D$ is diagonal, then the eigenvalues of $D$ are exactly the entries on the diagonal. 
+
+Thus, if we suspect that $A$ is diagonalizable, then the resulting diagonal matrix must have exactly the eigenvalues of $A$ on the diagonal!
+
+## Eigenvectors in $S$
+
+If the eigenvalues of $A$ play a role in this process by forming the diagonal of $D$, then it makes sense that the eigenvectors of $A$ should somehow play a role as well. In fact they form the columns of $S$.
+
+---
+
+**Theorem**: Suppose that $A$ is a square matrix of size $n$ and that the set
+$$\{\vect{x}_1, \vect{x}_2,\ldots,\vect{x}_n\}$$
+forms a linearly independent set of eigenvectors of $A$ with eigenvalues $\{\lambda_1,\lambda_2,\cdots,\lambda_n\}$. Let 
+$$S = \begin{bmatrix}\vect{x}_1 & \vect{x}_2 & \cdots & \vect{x}_n\end{bmatrix}$$
+be the matrix whose columns are the eigenvectors of $A$ and let 
+$$D = \begin{bmatrix}
+\lambda_1 & 0 & \cdots & 0 \\ 
+0 & \lambda_2 & \cdots & 0 \\ 
+\vdots & \vdots & \ddots & \dots \\ 
+0 & 0 & \cdots & \lambda_n
+\end{bmatrix}.$$
+Then $D = \inverse{S}AS$.
+
+## Proof 
+
+Let $\vect{e}_j$ denote the $j^{\text{th}}$ standard unit basis vector of $\mathbb R^n$ and recall that a matrix is entirely defined by it's action on those basis vectors. In fact, 
+$$A\vect{e}_j$$ is exactly the $j^{\text{th}}$ column of $A$.
+So, let's show that 
+$$\inverse{S}AS\vect{e}_j = D\vect{e}_j.$$
+Well,
+$$
+ \inverse{S}AS\vect{e}_j = \inverse{S}A\vect{x}_j
+ = \inverse{S}(\lambda_j \vect{x}_j) = \lambda_j \inverse{S}\vect{x}_j = \lambda \vect{e}_j = D\vect{e}_j.
+$$
+ 
+## Example 2D
+ 
+Recall that 
+$$
+D = \begin{bmatrix}1&1\\1/2&3/2\end{bmatrix}
+$$
+satisfies
+$$
+\begin{bmatrix}1&1\\1/2&3/2\end{bmatrix}
+\begin{bmatrix}1\\1\end{bmatrix} =
+2\begin{bmatrix}1\\1\end{bmatrix}
+\: \text{ and } \: 
+\begin{bmatrix}1&1\\1/2&3/2\end{bmatrix}
+\begin{bmatrix}-2\\1\end{bmatrix} =
+\frac{1}{2}\begin{bmatrix}-2\\1\end{bmatrix}.
+$$
+Thus, we must have
+$$
+\begin{bmatrix}1 & -2 \\ 1 & 1\end{bmatrix}^{-1}
+\begin{bmatrix}1&1\\1/2&3/2\end{bmatrix}
+\begin{bmatrix}1 & -2 \\ 1 & 1\end{bmatrix}
+=
+\begin{bmatrix}2 & 0 \\ 0 & 1/2\end{bmatrix}.
+$$
+
+## Example 3D
+
+Suppose we'd like to diagonalize 
+$$A = \left(
+\begin{array}{ccc}
+ 3 & -2 & 0 \\
+ 4 & -6 & -3 \\
+ -4 & 8 & 5 \\
+\end{array}
+\right)
+$$
+First, let's find the eigenvalues and eigenvectors:
+
+## Code for eigenstuff
+
+```{python}
+#| echo: true
+import numpy as np
+from scipy.linalg import eig, inv
+A = [
+    [3, -2, 0],
+    [4, -6, -3],
+    [-4, 8, 5]
+]
+eig(A)
+```
+
+## Code (cont)
+
+It looks to me like we can take $S$ and $D$ to be 
+
+```{python}
+#| echo: true
+S = np.matrix([
+  [1,-1,2],
+  [1,-2,1],
+  [-1,2,0]
+])
+D = np.diag([1,-1,2])
+```
+
+Let's find out!
+
+```{python}
+#| echo: true
+inv(S).dot(A).dot(S)
+```
+
+## One more 
+
+Here's another fun example on Math.StackExchange, though kinda backwards:
+
+[https://math.stackexchange.com/q/1119668](https://math.stackexchange.com/q/1119668){target="_blank"}
+
+::: {.hidden}
+
+```{ojs}
+{
+  if (apply1[1]) {
+    if (apply1[1] == "M") {
+      pic1.step("forward");
+    } else if (apply1[1] == "MInv") {
+      pic1.step(0);
+    }
+  }
+}
+```
+```{ojs}
+{
+  if (apply2[1]) {
+    if (apply2[1] == "M") {
+      pic2.step("forward");
+    } else if (apply2[1] == "MInv") {
+      pic2.step(0);
+    }
+  }
+}
+```
+```{ojs}
+{
+  if (apply3[1]) {
+    if (apply3[1] == "M") {
+      pic3.step("forward");
+    } else if (apply3[1] == "MInv") {
+      pic3.step(0);
+    }
+  }
+}
+```
+```{ojs}
+{
+  if (apply4[1]) {
+    if (apply4[1] == "M") {
+      pic4.step("forward");
+    } else if (apply4[1] == "MInv") {
+      pic4.step(0);
+    }
+  }
+}
+```
+```{ojs}
+{
+  if (apply5[1]) {
+    if (apply5[1] == "M") {
+      pic5.step("forward");
+    } else if (apply5[1] == "MInv") {
+      pic5.step(0);
+    }
+  }
+}
+```
+```{ojs}
+{
+  if (applyRot1[1]) {
+    if (applyRot1[1] == "M") {
+      picRot1.step("forward");
+    } else if (applyRot1[1] == "MInv") {
+      picRot1.step(0);
+    }
+  }
+}
+```
+```{ojs}
+{
+  if (applyRot2[1]) {
+    if (applyRot2[1] == "M") {
+      picRot2.step("forward");
+    } else if (applyRot2[1] == "MInv") {
+      picRot2.step(0);
+    }
+  }
+}
+```
+
+```{ojs}
+import { eigen_pic, apply_switch } from "../../components/eigenPic.js"
+```
+
+::: 
