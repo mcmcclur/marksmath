@@ -1,0 +1,97 @@
+---
+title: Power iteration 
+page-layout: article
+date: 2026-03-30
+format:
+  html:
+    toc: true
+    css: ../note-styles.css
+    include-in-header:
+      - text: |
+          <script src="https://sagecell.sagemath.org/static/embedded_sagecell.js"></script>
+          <script>sagecell.makeSagecell({"inputLocation": ".sage"});</script>
+---
+
+Eigenvalues and eigenvectors have a surprising range of application and, sometimes, we need to compute them for *very* large matrices and we might only need a specific few. These computations are generally performed on computers and there are algorithms that can quickly find one eigenvalue/eigenvector pair one at a time. The most basic of these is called *power iteration*.
+
+One famous application of power iteration is the computation of the dominant eigenvector of Google's PageRank matrix. When this was first done in 1998, Google's matrix had around 26 million nodes. Today, it would have nearly 100 billion nodes. Google still uses PagRank today, though, it's now one component of many.
+
+
+## A curious computation
+
+Here's a curious computation:
+
+```{=html}
+<iframe width=600 height=400 src="./power_iteration.html"></iframe>
+```
+
+Let's break this down: 
+
+- A random $n\times n$ matrix and a random vector of size $n$ are chosen.
+- We iterate through a loop 100 times and, at each step, we reset $\mathbf{v}=A\mathbf{v}$ and normalize that result.
+- Finally, we report the eigenvalues of $A$ (as computed by SageMath) and the value of $$\lambda = \frac{\mathbf{v}^{\mathsf T}A\mathbf{v}}{\mathbf{v}^{\mathsf T}\mathbf{v}}.$$
+Mysteriously, the value of $\lambda$ agrees with the largest eigenvalue reported by magnitude.
+
+It appears that we might have a technique to find the largest eigenvalue by absolute value. If you play with input by changing the random seed or the dimension, for example, you'll find that the technique often works but not always.
+
+I wonder what's really going on here?
+
+## Basic analysis 
+
+Motivated by our knowledge of diagonalization, let's play with some simple matrices and see if we can generalize what we see.
+
+What could be easier than something like 
+$$
+A = \begin{bmatrix}1&0&0 \\ 0&-2&0 \\ 0&0&3 \end{bmatrix}.
+$$
+In fact, we can compute matrix powers in closed form pretty easily:
+$$
+A^k \begin{bmatrix}1\\1\\1\end{bmatrix} = \begin{bmatrix}1\\(-2)^k\\3^k\end{bmatrix}.
+$$
+Note that the $3^k$ is by far the largest entry and, when we normalize, the result looks like 
+$$
+\begin{bmatrix}(1/3)^k\\(-2/k)^k\\1\end{bmatrix} \to \begin{bmatrix}0\\0\\1\end{bmatrix}.
+$$
+Thus, we see convergence to the eigenvector.
+
+*BUT*, this only works when there's one single entry on the diagonal that's larger than any other in absolute value. If there are several of the same maximum value (which happens with complex eigenvalues, since they come in conjugate pairs), then the technique can fail.
+
+When there is a single eigenvalue that's larger in absolute value than all of the rest, then that value is called the *dominant eigenvalue* and its corresponding eigenvector is called the *dominant eigenvector*.
+
+## Generalization
+
+Suppose that we've got a diagonalizable matrix with a dominant eigenvalue. Then this same technique should work. To see why, suppose that 
+$$
+A = SDS^{-1}.
+$$ 
+Note that 
+$$
+A^2 = SDS^{-1}SDS^{-1} = SD^2S^{-1}.
+$$
+More generally,
+$$
+A^k = SD^kS^{-1}.
+$$
+As a result, the dominant eigenvector of $A$ dominates the iteration, just as the dominant eigenvector of $D$ does.
+
+Even if the matrix is not diagonalizable, the technique still works when there is a dominant eigenvalue. The existence of that dominant eigenvalue is the key issue.
+
+## Finding the eigenvalue
+
+In the code, the eigenvalue is computed as `l = v*A*v/(v*v)`.  
+I wonder why that should work?
+
+In reality, $\mathbf{v}$ is a column vector and the right way to write this is as 
+$$
+\lambda = \frac{\mathbf{v}^{\mathsf T}A\mathbf{v}}{\mathbf{v}^{\mathsf T}\mathbf{v}}.
+$$
+Note that $\mathbf{v}^{\mathsf T}$ is $1\times n$, $\mathbf{v}$ is $n\times 1$, and the denominator $\mathbf{v}^{\mathsf T}\mathbf{v}$ is really just the dot product. The numerator looks a little more complicated but, remember $A\mathbf{v}=\lambda\mathbf{v}$. Thus,
+$$
+\frac{\mathbf{v}^{\mathsf T}A\mathbf{v}}{\mathbf{v}^{\mathsf T}\mathbf{v}}
+=
+\frac{\mathbf{v}^{\mathsf T}\lambda\mathbf{v}}{\mathbf{v}^{\mathsf T}\mathbf{v}}
+= 
+\lambda \frac{\mathbf{v}^{\mathsf T}\mathbf{v}}{\mathbf{v}^{\mathsf T}\mathbf{v}}
+= \lambda.
+$$
+

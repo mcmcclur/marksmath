@@ -1,0 +1,29 @@
+<html>
+    <head>
+        <script src="https://sagecell.sagemath.org/static/embedded_sagecell.js"></script>
+        <script>sagecell.makeSagecell({
+            "inputLocation": ".sage",
+            evalButtonText: 'Evaluate'});</script>
+        <link rel="stylesheet" type="text/css" href="https://sagecell.sagemath.org/static/sagecell_embed.css">
+    </head>
+    <body>
+        <div class="sage">
+        <script type="text/x-sage">
+set_random_seed(42)
+n = 3
+A = random_matrix(ZZ, n,n)
+v = random_vector(RR, n)
+for i in range(100):
+    v = A*v
+    v = v/norm(v)
+l = v*A*v/(v*v)
+
+print("Sage says lambdas are: ", A.eigenvalues())
+print('---')
+print("Iteration says one lambda is: ", l)
+if norm(A*v - l*v) < 10**-5:
+    print('Found eigenstuff!!')
+        </script>
+        </div>
+    </body>
+</html>
