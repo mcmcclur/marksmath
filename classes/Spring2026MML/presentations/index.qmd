@@ -230,3 +230,15 @@ Of course, I learned most of this material many years ago and some of the presen
     While this material is again expressed in terms of the ranking of sports teams, it's worth mentioning that the same technique also has application of to networks. When we apply this basic idea to the world wide web, in fact, we get Google's Page Rank algorithm!
   </div>
 </details>
+
+- Mon, Mar 30: Diagonalization
+  - [Presentation](./Lecture18-Diagonalization/){target=_blank}
+  - [Notes on power iteration](../notes/power_iteration/){target=_blank}
+<details>
+  <summary>Comments</summary>
+  <div>
+    Today, we're going to discuss a major application of eigenvalues and eigenvectors, namely diagonalization of a matrix. This allows us to relate many matrices to a canonical form whose action is easier to understand. 
+    
+    Among other things, this yields an algorithm to compute the dominant eigenvector of a matrix.
+  </div>
+</details>
