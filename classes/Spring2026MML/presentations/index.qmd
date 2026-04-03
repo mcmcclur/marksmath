@@ -251,3 +251,12 @@ Of course, I learned most of this material many years ago and some of the presen
     Today, we'll discuss principal component analysis (or PCA), which is a dimensional reduction technique that's a bit more advanced than simple variable selection.
   </div>
 </details>
+
+- Fri, Apr 3: Networks
+  - [Presentation](./Lecture20-Networks/){target=_blank}
+<details>
+  <summary>Comments</summary>
+  <div>
+    Networks model pairwise relationships between discrete elements within a system. We've used them a little bit before but, today, we'll solidify our understanding of these important models so that we can use them in our study of Neural networks.
+  </div>
+</details>
