@@ -1,6 +1,6 @@
 ---
 title: Principal Component Analysis
-date: 2025-03-24
+date: 2026-04-01
 format:
   revealjs:
     css: ../classnote-style.css 
@@ -67,7 +67,6 @@ Here's some randomly generated data in two dimensions that should be concentrate
 
 ```{python}
 #| echo: true
-
 x = [random.uniform(0,5) for i in range(20)]
 y = [xx/3 + random.normalvariate(0,0.4) + 1 for xx in x]
 data = np.array([x,y]).T
@@ -101,7 +100,7 @@ fig_data = pickle.dumps(fig)
 
 ## Principal components 2D
 
-The objective of  PCA is to use the data to find the direction of maximum variation. It seems that direction should contain "the most information". If you expand the code below, you should notice that the the computation of that direction involves the eigenvectors of the so-called covariance matrix. It's *not* a regression line!
+The objective of  PCA is to use the data to find the direction of maximum variation. It seems that direction should contain "the most information". If you expand the code below, you should notice that the computation of that direction involves the eigenvectors of the so-called covariance matrix. It's *not* a regression line!
 
 ```{python}
 #| echo: true 
@@ -157,11 +156,64 @@ import {pca3, buildScene} from './components/pca_scene.js';
 
 # A working data set 
 
+We're going to illustrate the ideas behind PCA with some actual data. The particular example we'll use is a classic data set on wine. 
 
+The data set's description says that 
 
-# A little review
+> The data is the results of a chemical analysis of wines grown in the same region in Italy by three different cultivators. There are thirteen different measurements taken for different constituents found in the three types of wine.
 
-PCA is a fairly advanced topic that built on several mathematical concepts. One of those concepts is that of an eigenvalue/eigenvector pair that we discussed quite recently. A couple of other tools date back a bit earlier this semester so let's take a minute to review those.
+## The wine data set
+
+There are 178 wines in the data let's download it and examine the first 5 rows:
+
+```{python}
+#| echo: true
+wine = pd.read_csv('https://marksmath.org/data/wine.csv')
+sample = wine.head(5)
+sample
+```
+
+## The data as a matrix
+
+This particular data set is mostly numeric; thus it's easy to imagine that it could be viewed as a matrix, like so:
+
+```{python}
+from IPython.display import Markdown
+A = (
+    sample
+    .drop(columns=['index', 'variety'], errors='ignore')
+    .select_dtypes(include='number')
+)
+rows = [
+    " & ".join(f"{x:.3f}" for x in row)
+    for row in A.to_numpy()
+]
+n_cols = A.shape[1]
+vdots_row = " & ".join([r"\vdots"] * n_cols)
+rows.append(vdots_row)
+latex_matrix = (
+    r"\begin{bmatrix}"
+    + "\n"
+    + r" \\".join(rows)
+    + "\n"
+    + r"\end{bmatrix}"
+)
+Markdown(f"$$\n\\tiny\n{latex_matrix}\n$$")
+```
+
+Often, there's a bit more to this. Missing data must typically be imputed and categorical data must be encoded. Of particular importance for us is that data is almost always standardized to have mean zero and standard deviation 1. Our presentation of PCA will assume that each data column is at least centered to have mean zero.
+
+## Feature space 
+
+Our data set has 178 rows (corresponding to individual wines or observations) and 14 columns (corresponding to features). Our objective will be to build an algorithm that can predict one of the features (the variety) from the others. Thus, we'll have 13 purely numerical input features and 1 categorical target that can take on the values zero, one or two.
+
+Thus, we have 178 input data points that live in 13 dimensional space. More generally, an $N \times M$ data matrix generates $N$ points that live in $M$ dimensional space.
+
+This space is sometimes called *feature space*.
+
+# A little math review
+
+PCA is built on several mathematical concepts. One of those concepts is that of an eigenvalue/eigenvector pair that we discussed quite recently. A couple of other tools date back a bit earlier this semester so let's take a minute to review those. WE'll also extend one a bit.
 
 ## Orthogonal projection 
 
@@ -183,21 +235,16 @@ $$P(\vect{x}) = \frac{\vect{v}\cdot\vect{x}}{\vect{v}\cdot\vect{v}} \vect{v}.$$
 Note that this simplifies when $\|\vect{v}\| = 1$ to 
 $$P(\vect{x}) = (\vect{v}\cdot\vect{x}) \vect{v}.$$
 
-We'll use that simpler formula for PCA.
+If we have a bunch of vectors that we want to project onto a unit vector, we might place those into rows of a matrix $B$ and simply compute 
+$$B\vect{v}.$$
 
-## Variance and Covariance 
+This is the formula we'll use for PCA.
 
-To understand this stuff, it helps to make sure we understand the basics of variance and covariance. 
+## Mean, variance and covariance 
 
-- *Variance* is a numerical measure of the variation inherint in a single variable as represented by a column vector.
-- *Covariance* measures the joint variability of two related varialbes represented by a pair of column vectors.
-
-## Mean and Variance
-
-Let's get more precise.
-Supose we've got a data vector
+We've already discussed mean and variance quite fully. Here are those definitions as they commonly appear in the context of PCA. We assume we have a data vector
 $$
-  \vect{x} = \left[x_1 \: x_2 \: \cdots \: x_N\right]^T
+  \vect{x} = \left[x_1 \: x_2 \: \cdots \: x_N\right]^{\mathsf{T}}.
 $$
 
 Then, the mean $E(\vect{x})$ and the variance $\var({\vect{x}})$ of $\vect{x}$ are defined by
@@ -209,11 +256,13 @@ E(\vect{x}) &= \frac{1}{N}\sum_{n=1}^N x_n \\
 
 ## Covariance
 
-Now supose we've got two data vectors 
+Where variance is a numerical measure of the variation inherent in a single variable, covariance measures the joint variability of two related variables. In the context of data, variance operates on single column in a data frame, while covariance operates on a pair of columns.
+
+Thus, suppose we've got two data vectors 
 $$
-  \vect{x} = \left[x_1 \: x_2 \: \cdots \: x_N\right]^T
+  \vect{x} = \left[x_1 \: x_2 \: \cdots \: x_N\right]^{\mathsf{T}}
   \text{ and } 
-  \vect{y} = \left[y_1 \: y_2 \: \cdots \: y_N\right]^T
+  \vect{y} = \left[y_1 \: y_2 \: \cdots \: y_N\right]^{\mathsf{T}}
 $$
 with means $E(\vect{x})$ and $E(\vect{y})$. Then, the covariance between them is defined by
 $$
@@ -221,7 +270,17 @@ $$
 (x_n-E(\vect{x}))(y_n-E(\vect{y})).
 $$
 
-Covariance between variables is trickier to understand but maybe some pictures would help!
+## Comments
+
+Covariance between variables is certainly a bit trickier to understand than plain old variance. However, 
+
+- Note that variance is just a special case of covariance; that is 
+  $$\var(\vect{x}) = \text{Cov}(\vect{x}, \vect{x}).$$
+- If the data is centered, so that the means are zero, then the covariance simplifies to 
+  $$
+  \text{Cov}(\vect{x}, \vect{y}) = \frac{1}{N} \sum_{n=1}^N x_ny_n = \frac{1}{N} \vect{x}^{\mathsf{T}} \vect{y}.
+  $$
+- A look at a few pictures of covariance applied to 2D scatter plots should help develop your intuition.
 
 ## Negative covariance 
 
@@ -281,68 +340,107 @@ x_{N1}&x_{N2}&x_{N3}&\cdots&x_{NM}
 
 ## Covariance matrix 
 
-To simplify matters, we shift the data so that the columns have mean zero. We'll assume that's been done for our matrix $X$:
+Assuming the data is centered again, the covariance matrix of $X$ is the matrix 
+$$\Sigma =  \frac{1}{N} X^{\mathsf{T}} X.$$
+It's easy to check that the entry $[\Sigma]_{ij}$ in row $i$ and column $j$ of $\Sigma$ is exactly the covariance of the $i^{\text{th}}$ column with the $j^{\text{th}}$ column of $X$.
 
-$$X = \begin{bmatrix}
-x_{11}&x_{12}&x_{13}&\cdots&x_{1M} \\ 
-x_{21}&x_{22}&x_{23}&\cdots&x_{2M} \\ 
-\vdots & \vdots & \vdots & \ddots & \vdots \\
-x_{N1}&x_{N2}&x_{N3}&\cdots&x_{NM}
-\end{bmatrix}$$
-
-Then, the covariance matrix of $X$ is the matrix 
-$$\Sigma =  \frac{1}{N} X^T X.$$
-It's easy to check that the entry $[\Sigma]_{ij}$ in row $i$ and column $j$ of $\Sigma$ is exactly the covariance of the $i^{\text{th}}$ row with the $j^{\text{th}}$ column of $X$.
-
-## Connection with PCA 
-
+::: {.fragment}
+<hr/>
 It turns out that the principal components are exactly the eigenvectors of the covariance matrix!
+:::
 
 # How PCA works
 
 Again, we've got an $N\times M$ data matrix $X$. The data lives in $M$-dimensional space, since the columns correspond to the features in the data. We'd like to project it onto a lower dimensional subspace that contains maximal variance. We start by considering how to project it onto a one-dimensional subspace with maximal information. 
 
-Put another way, we wish to find a single vector $\vect{v}$ such that $$\var(X\vect{v})$$ is maximized. Of course, we can make that as large as we want by choosing $\vect{v}$ to be as long as we want. Thus, we add the restriction that $\|\vect{v}\| = 1$.
+Put another way, we wish to find a single vector $\vect{v}$ such that 
+$$\var(X\vect{v})$$ 
+is maximized. Of course, we can make that as large as we want by choosing $\vect{v}$ to be as long as we want. Thus, we add the restriction that $\|\vect{v}\| = 1$.
 
 ## The crux of the solution
 
-The key is to write
-$$N\,V(X\vect{v}) = \|X\vect{v}\|^2 = (X\vect{v})^T (X\vect{v}) = \vect{v}^T X^T X \vect{v}.$$
-Now, let's suppose that $\vect{v}$ is a normalized eigenvector of $X^T X$ with eigenvalue $\lambda$ and that $\lambda$ is the largest eigenvalue. Then,
-$$\vect{v}^T X^T X \vect{v} = \lambda \vect{v}^T \vect{v} = \lambda.$$
-At that point, it becomes pretty easy to believe that we've found the direction of maximum variability. This is *certainly* true, if $X^T X$ has a complete set of linearly independent eigenvectors.
-
-## Strategy of the proof 
-
-A complete proof can be found by solving the constrained optimization problem
-$$\begin{aligned}
-&\text{maximize } \vect{v}^T X^T X \vect{v} \\ 
-&\text{subect to } \|\vect{v}\| \leq 1.
-\end{aligned}$$
-That can be done fairly easily using the technique of Lagrange multipliers.
+Since the columns of $X$ have mean zero and $X\vect{v}$ is a linear combination of those columns, the mean of the column vector $X\vect{v}$ must also be zero. Thus,
+$$N\,\var(X\vect{v}) = (X\vect{v})^{\mathsf{T}} (X\vect{v}) = \vect{v}^{\mathsf{T}} X^{\mathsf{T}} X \vect{v}.$$
+Now, let's suppose that $\vect{v}$ is a normalized eigenvector of $X^{\mathsf{T}} X$ with eigenvalue $\sigma$ and that $\sigma$ is the largest eigenvalue. Then,
+$$\vect{v}^{\mathsf{T}} X^{\mathsf{T}} X \vect{v} = \sigma \vect{v}^{\mathsf{T}} \vect{v} = \sigma.$$
+Since $\sigma$ is the maximum eigenvalue, there is no way to make this variance larger. Thus, $\vect{v}$ is exactly the direction of maximum variance.
 
 ## Moving beyond one dimension 
 
 Once you've found the direction of largest variation, you can project the remaining data along that direction onto the $M-1$ dimensional subspace called the orthogonal complement. You can then find the direction of next greatest variability.
 
+Proceeding recursively, you can find as many principal components as you need.
 
-# An applied example
+# Example
 
-Let's look at an example using a classic data set on wine. There are 178 wines in the data but we'll examine just a sample of size 5:
+Here's an example that looks kinda like a [forum problem](https://discourse.marksmath.org/t/small-pca/130){target=_blank} over this material. The idea is to find the principal components for the data set 
+$$
+\{(-1,-1), (-1,1), (0,1), (1,1), (2,0)\}.
+$$
+I'll show you how plot this data and illustrate the first principal component here using the computer. Note that forum problem is certainly workable by hand.
+
+## Plotting the data
+
+Let's place the data into a matrix and plot it:
+
+```{python}
+#| code-fold: true
+#| echo: true
+X = np.matrix([[-1,-1],[-1,1],[0,1],[1,1],[2,0]])
+x = X[:,0]
+y = X[:,1]
+plt.plot(x,y,'ok')
+plt.gca().set_aspect('equal')
+```
+
+## Computing the principal components
+
+The principal components are exactly the eigenvectors ordered by the eigenvalues in decreasing order of magnitude.
 
 ```{python}
 #| echo: true
-wine = pd.read_csv('https://marksmath.org/data/wine.csv')
-wine.sample(5)
+#| code-fold: false
+S = X.transpose()*X
+print("S: ", S)
+eigen_info = eig(S)
+print("eigen_info: ", eigen_info)
 ```
 
-## Description 
+## Interpretation 
 
-The data description says that 
+The output of `eig` is a tuple, the first of which is an array whose entries are the eigenvalues of $S$ and the second of which is an array whose columns are the eigenvectors. Thus, when I see 
 
-> The data is the results of a chemical analysis of wines grown in the same region in Italy by three different cultivators. There are thirteen different measurements taken for different constituents found in the three types of wine.
+```
+array([
+  [ 0.95709203, -0.28978415],
+  [ 0.28978415,  0.95709203]
+])
+```
 
-The idea is to predict the type of wine given the chemical data. The "type" of wine is determined by the grape or grapes used in making it. In Italian wines, those might be Pinot Gris, Merlot, Sangiovese, or any of quite a few others. There's only three types in this data set and we're going to try that type using logistic regression without and with PCA.
+I know that the first principal component must be 
+$$\begin{bmatrix}0.95709203 & 0.28978415\end{bmatrix}^{\mathsf{T}}.$$
+
+## Illustration
+
+Now, we plot the data together with the line determined by the first principal component.
+
+```{python}
+#| echo: true
+#| code-fold: true
+v = np.asarray(eigen_info[1][:, 0]).ravel()
+plt.plot(x,y,'ok')
+plt.plot([-2*v[0],2*v[0]],[-2*v[1],2*v[1]])
+plt.gca().set_aspect('equal')
+```
+
+
+# Applied example
+
+Finally, let's see how PCA is applied in a standard ML workflow. Specifically, we'll apply PCA as a preprocessing step in logistic regression for classification in our wine data set. The mission is still to determine wine variety from our other variables.
+
+```{python}
+wine.head(5)
+```
 
 ## Setting up the data 
 
@@ -350,8 +448,13 @@ Let's split the data into training and testing sets:
  
 ```{python}
 #| echo: true
+# The predictor variables
 X = wine.drop(columns = 'variety')
+
+# The target variable 
 y = wine.variety
+
+# The train/test split
 X_train, X_test, y_train, y_test = train_test_split(
   X, y, test_size=0.33, random_state=1, stratify=y)
 ```
@@ -388,13 +491,13 @@ accuracy_score(y_test, y_pred2)
 
 ## The point 
 
-The first regression attains 98% accuracy using all thirteen variables. The second regression attains only 96% accuracy but uses only two principal compoents as predictors.
+The first regression attains 98% accuracy using all thirteen variables. The second regression attains only 96% accuracy but uses only two principal components as predictors.
 
 In a situation where we have tens of thousands of variables, that could be a huge deal!
 
 ## Principal components
 
-Here are the proportions of variance for each of the 13 principal compoents.
+Here are the proportions of variance for each of the 13 principal components.
 
 ```{python}
 scaler = StandardScaler()

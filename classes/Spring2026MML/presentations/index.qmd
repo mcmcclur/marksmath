@@ -242,3 +242,12 @@ Of course, I learned most of this material many years ago and some of the presen
     Among other things, this yields an algorithm to compute the dominant eigenvector of a matrix.
   </div>
 </details>
+
+- Wed, Apr 1: Principal component Analysis
+  - [Presentation](./Lecture19-PCA/){target=_blank}
+<details>
+  <summary>Comments</summary>
+  <div>
+    Today, we'll discuss principal component analysis (or PCA), which is a dimensional reduction technique that's a bit more advanced than simple variable selection.
+  </div>
+</details>
