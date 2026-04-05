@@ -1,0 +1,132 @@
+---
+title: Expression graphs
+date: 2026-04-03
+format:
+  revealjs:
+    css: [../classnote-style.css, styles.css] 
+    controls: true
+    controls-layout: bottom-right
+    navigation-mode: vertical
+    smaller: true
+    history: true 
+    transition: slide
+    html-math-method: 
+      method: mathjax
+      url: https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js
+    date-format: ddd, MMM DD, YYYY
+    echo: false
+    # eval: true
+    # output: true
+    # code-fold: true
+---
+
+# Recap and look ahead?
+
+Last time, we learned a bit about networks and graph theory. We ended with abstract syntax trees, which provide a graph theoretic way to view algebraic expressions. Since trees can be manipulated as data structures, this yields a framework for us to perform algebra on the computer.
+
+Today, we're going to take a look at an alternative way to represent algebraic expressions as graphs - the so-called *expression graph*, also called a *computation graph*.
+
+# Description
+
+An *expression graph* is a representation of a mathematical expression in the form of a directed acyclic graph or DAG.
+
+- The input nodes represent variables or constants.
+- Intermediate nodes represent primitive computations, such as $+$, $\times$, or exp.
+- Variables can be set to specific values to initiate the computation.
+- The computation flows along the directed edges indicating how the output of one node is used as input to another.
+- The computation ends at a distinguished output node.
+- Values can be reused to avoid recomputing repeated subexpressions.
+
+# First example
+
+Here's the expression graph for 
+$$
+(x+y)\times(x+1):
+$$
+
+
+```{python}
+from components.ExpressionGraphs import ast_to_graphviz
+ast_to_graphviz("(x+y)*(x+1)",x=1,y=2) 
+```
+
+## Initial values
+
+We can plug values in for $x$ and $y$.
+$$
+(2+1)\times(2+1):
+$$
+
+
+```{python}
+ast_to_graphviz(
+    "(x+y)*(x+1)",
+    show_init_values=True,
+    x=2, y=1)
+```
+
+## Propagating values forward
+
+Any values that we plug in propagate forward to produce a final value.
+$$
+(2+1)\times(2+1) = 9:
+$$
+
+```{python}
+ast_to_graphviz(
+    "(x+y)*(x+1)",
+    show_values=True,
+    x=2, y=1)
+```
+
+## Key distinctions from ASTs
+
+This is definitively distinct from a syntax tree, which starts with the top level operator, ends at the inputs, and is in the form of a tree.
+
+![](./images/AnAST.svg) 
+
+# More examples
+
+Let's look at a few more examples - starting with my favorite function:
+
+```{python}
+ast_to_graphviz(
+    "exp(-x**2)",
+    show_values=True,
+    x=2)
+```
+
+## Computation reuse 
+
+If we multiply that last example by $x^2$, we see how that value is reused
+
+```{python}
+ast_to_graphviz(
+    "x**2 * exp(-x**2)",
+    show_values=True,
+    x=2)
+```
+
+## A polynomial
+
+Here's the polynomial
+
+$$
+x^4 - 2x^3 - 3x^2 - 4x - 5.
+$$
+
+```{python}
+ast_to_graphviz(
+    "x**4 - 2*x**3 - 3*x**2 - 4*x - 5",
+    show_values=True,
+    x=2)
+```
+
+## 
+
+```{python}
+ast_to_graphviz(
+    "x**2 * exp(-x**2)",
+    show_values=True,
+    x=1)
+```
