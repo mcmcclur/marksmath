@@ -1,0 +1,37 @@
+.reveal section {
+  text-align: left;
+}
+
+.reveal h1 {
+  font-size: 5rem;
+}
+
+.reveal h2 {
+  font-size: 4rem;
+}
+
+.reveal h3 {
+  font-size: 3rem;
+}
+
+.reveal p,
+.reveal li {
+  font-size: 1.75rem;
+}
+
+.reveal .MathJax {
+  font-size: 1.5rem !important;
+}
+
+.reveal img {
+  max-width: 80%;
+  max-height: 400px;
+}
+
+.centered {
+  text-align: center;
+}
+
+canvas {
+  outline: none;
+}
