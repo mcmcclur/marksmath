@@ -260,3 +260,14 @@ Of course, I learned most of this material many years ago and some of the presen
     Networks model pairwise relationships between discrete elements within a system. We've used them a little bit before but, today, we'll solidify our understanding of these important models so that we can use them in our study of Neural networks.
   </div>
 </details>
+
+- Mon, Apr 6: Expression Graphs
+  - [Presentation](./Lecture21-ExpressionGraphs/){target=_blank}
+<details>
+  <summary>Comments</summary>
+  <div>
+    Last time, we learned a bit about networks and graph theory. We ended with abstract syntax trees, which provide a graph theoretic way to view algebraic expressions. Since trees can be manipulated as data structures, this yields a framework for us to perform algebra on the computer.
+
+    Today, we're going to take a look at an alternative way to represent algebraic expressions as graphs - the so-called *expression graph*, also called a *computation graph*. This alternative is better suited for efficient numerical computation of values and derivatives.
+  </div>
+</details>

@@ -1,9 +1,9 @@
 ---
 title: Expression graphs
-date: 2026-04-03
+date: 2026-04-06
 format:
   revealjs:
-    css: [../classnote-style.css, styles.css] 
+    css: ../classnote-style.css
     controls: true
     controls-layout: bottom-right
     navigation-mode: vertical
@@ -20,7 +20,7 @@ format:
     # code-fold: true
 ---
 
-# Recap and look ahead?
+# Recap and look ahead
 
 Last time, we learned a bit about networks and graph theory. We ended with abstract syntax trees, which provide a graph theoretic way to view algebraic expressions. Since trees can be manipulated as data structures, this yields a framework for us to perform algebra on the computer.
 
@@ -35,7 +35,7 @@ An *expression graph* is a representation of a mathematical expression in the fo
 - Variables can be set to specific values to initiate the computation.
 - The computation flows along the directed edges indicating how the output of one node is used as input to another.
 - The computation ends at a distinguished output node.
-- Values can be reused to avoid recomputing repeated subexpressions.
+- Subexpressions can be reused and shared, which is why they are DAGs rather than trees.
 
 # First example
 
@@ -82,13 +82,13 @@ ast_to_graphviz(
 
 ## Forward propagation
 
-Note how the values and operators combine to form subsequent values and how those values propogate through the directed graph to form a final result of the computation.
+Note how the values and operators combine to form subsequent values and how those values propagate through the directed graph to form a final result of the computation.
 
 This process is called *forward propagation*.
 
 ## Key distinctions from ASTs
 
-Expression graphs concretely distinct from syntax trees, which start with the top level operator, end at the inputs, and is in the form of a tree.
+Expression graphs are concretely distinct from syntax trees, which start with the top level operator, end at the inputs, and is in the form of a tree.
 
 ![](./images/AnAST.svg) 
 
@@ -184,7 +184,7 @@ ast_to_graphviz("exp(-x**2)", x=1/4, show_values=True, show_grads=True)
 
 Read from right to left:
 
-- The gradient at the end is intialized to $1$,
+- The gradient at the end is initialized to $1$,
 - The derivative of an exponential is just that same value ($\frac{d}{dx}e^x = e^x$),
 - The negation contributes $\times(-1)$ to the derivative ($\frac{d}{dx} cx = c$), and 
 - The derivative of $x^2$ contributes $\times2x$, where $x=\frac{1}{4}$.
@@ -208,7 +208,9 @@ ast_to_graphviz("exp(-(x*x))", x=1/4, show_values=True, show_grads=True)
 - the grad in the x node is $\frac{1}{4}\times(-0.939413) + \frac{1}{4}\times(-0.939413)$,  
   rather than $2\times\frac{1}{4}\times(-0.939413)$.
 
-## Rules in code 
+# Rules in code 
+
+In practice, all this takes place during a graph traversal. At any step, there is a `node` under consideration whose function value and grad value are known. There are one or two nodes pointing in whose function values are known but whose grad values are yet to be determined. We then update those grad values according to [these rules](https://github.com/mcmcclur/marksmath/blob/main/classes/Spring2026MML/presentations/Lecture21-ExpressionGraphs/components/ExpressionGraphs.py#L275){target=_blank}:
 
 ```
 if node.op in {"input", "const"}:
@@ -237,6 +239,82 @@ elif node.op == "neg":
     (a,) = node.inputs
     a.grad -= node.grad
 ```
+
+## Addition
+
+Rule for addition:
+```
+if node.op == "add":
+  a, b = node.inputs
+  a.grad += node.grad
+  b.grad += node.grad
+```
+
+Result in practice:
+```{python}
+ast_to_graphviz(
+    "x+y",
+    show_values=True,
+    show_grads=True,
+    x=2, y=3)
+```
+
+## Subtraction
+
+Rule for subtraction:
+```
+if node.op == "sub":
+  a, b = node.inputs
+  a.grad += node.grad
+  b.grad -= node.grad
+```
+
+Result in practice:
+```{python}
+ast_to_graphviz(
+    "x-y",
+    show_values=True,
+    show_grads=True,
+    x=2, y=3)
+```
+
+## Multiplication
+
+Rule for multiplication:
+```
+if node.op == "mul":
+  a, b = node.inputs
+  a.grad += node.grad * b.value
+  b.grad += node.grad * a.value
+```
+Result in practice:
+```{python}
+ast_to_graphviz(
+    "x*y",
+    show_values=True,
+    show_grads=True,
+    x=2, y=3)
+```
+
+## Powers 
+
+Rule for powers:
+```
+elif node.op == "pow_const":
+  (a,) = node.inputs
+  p = node.param
+  a.grad += node.grad * p * (a.value ** (p - 1))
+```
+
+Result in practice:
+```{python}
+ast_to_graphviz(
+    "x**3",
+    show_values=True,
+    show_grads=True,
+    x=2)
+```
+
 
 # More backpropagation examples
 
@@ -270,3 +348,53 @@ ast_to_graphviz(
     show_grads=True,
     x=2, y=1)
 ```
+
+# The sigmoid
+
+The sigmoid function 
+$$
+\sigma(x) = \frac{1}{1+e^{-x}}
+$$
+plays a special role in machine learning. We've already seen how it appears as a cumulative distribution function in logistic regression. 
+
+## Neural activator
+
+The sigmoid is also used as a common "activation function" in neural networks for binary classification. In that context, we represent 
+$$
+\sigma(aw+bx+cy+dz)
+$$
+with something like so:
+
+![](./images/logisticNN.svg)
+
+## The derivative
+
+The bottom line is that we need to be able to incorporate the sigmoid into our expression graphs. This turns out to be easy, since the sigmoid satisfies
+$$
+\sigma'(x) = \sigma(x)(1-\sigma(x)).
+$$
+
+Proving this is a matter of direct computation:
+
+$$
+\begin{aligned}
+\sigma'(x) &= \frac{d}{dx} \frac{1}{1+e^{-x}} = \frac{e^{-x}}{(1+e^{-x})^2} \\
+&= \frac{1}{1+e^{-x}}\frac{e^{-x}}{1+e^{-x}} = \sigma(x)(1-\sigma(x)).
+\end{aligned}
+$$
+
+
+## The sigmoid in an expression graph
+
+Here's what the use of this function in an expression graph looks like:
+
+```{python}
+ast_to_graphviz(
+    "sigmoid(x + y)",
+    show_values=True,
+    show_grads=True,
+    x=1, y=0.5)
+```
+
+Note that the value of the sigmoid after computation is $0.817574$ in this example. When we propagate back, the value of the derivative is 
+$$0.817574(1-0.817574) = 0.149146.$$
