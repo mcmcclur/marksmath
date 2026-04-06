@@ -77,7 +77,7 @@ class GraphBuilder:
 # AST -> graph
 # ============================================================
 
-ALLOWED_FUNCS = {"sin", "cos", "exp", "log", "sigmoid", "relu"}
+ALLOWED_FUNCS = {"sin", "cos", "exp", "log", "sigmoid", "relu", "sqrt"}
 ALLOWED_CONSTS = {"pi": math.pi, "e": math.e}
 
 
@@ -258,6 +258,10 @@ def forward(output_node: Node, env: Dict[str, float]) -> float:
             (a,) = node.inputs
             node.value = max(0.0, a.value)
 
+        elif node.op == "sqrt":
+            (a,) = node.inputs
+            node.value = math.sqrt(a.value)
+
         else:
             raise ValueError(f"Unknown op '{node.op}'")
 
@@ -337,6 +341,10 @@ def backward(output_node: Node):
         elif node.op == "relu":
             (a,) = node.inputs
             a.grad += node.grad * (1.0 if a.value > 0 else 0.0)
+
+        elif node.op == "sqrt":
+            (a,) = node.inputs
+            a.grad += node.grad * (0.5 / node.value)
 
         else:
             raise ValueError(f"Unknown op '{node.op}'")
