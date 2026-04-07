@@ -23,7 +23,7 @@ format:
 
 # Intro to Neural Networks 
 
-Today, we'll take our first real look at neural networks. We'll focus today on the foundational feed forward neural network - how we represent it, how we compute with it, how we code it, and what can do with it.
+Now that we've talked about both general networks and expression graphs, we're in a good spot to discuss neural networks. We'll focus today on the foundational *feedforward neural network* - how we represent it, how we compute with it, how we code it, how it's optimized, and what can do with it. We'll discuss variations on that foundational architecture a bit later.
 
 
 # A mysterious network
@@ -42,7 +42,7 @@ This type of language might serve a reasonable purpose when speaking to laypeopl
 
 ## Demystification
 
-Despite their complexity, neural networks are simply another example of a supervised learning algorithm. Thus,
+Despite their complexity, the neural network concept is simply another example of a supervised learning algorithm. Thus,
 
 - Neural networks consume data with inputs and labels,
 - they build a function that accepts the inputs and depends upon a number of parameters,
@@ -55,12 +55,14 @@ They basic questions are much like we had for linear and logistic regression
 
 # Neural network models
 
-We now jump into the structure of the basic feed-forward neural network. Like all neural networks, that structure consists of several layers of nodes that are connected from left to right. The real purpose of the network is to help us visualize and understand how the network builds its model function and performs a computation.
+We now jump into the structure of the basic feedforward neural network. Like most neural networks, that structure consists of a number of layers of nodes that are connected from left to right. The real purpose of the network is to help us visualize and understand how the network builds its model function and performs a computation.
+
+This overall structure is an example of an architecture. There are certainly variations on that architecture and we'll talk about some of those variations in a week or so.
 
 
-## Network structure
+## The feedforward architecture
 
-Here's a basic illustration of the *structure* of a feed-forward neural network:
+Here's a basic illustration of the *structure* of a feedforward neural network:
 
 ![](./figures/empty_neural_network.png){fig-align="center" fig-alt="An empty neural network intended to illustrate only the network structure"}
 
@@ -92,7 +94,7 @@ We have four columns of nodes. The nodes in the two hidden layers are indexed by
 
 The input and output layers need only one index, though, we'll modify the notation so that they also use two indices soon.
 
-The nodes labeled $1$ allow for a constant term, as we'll see soon.
+The nodes labeled $1$ allow for a constant term, also called the *bias*, as we'll see soon.
 
 ## The edges
 
@@ -222,6 +224,8 @@ Note the large value of the constant weight at the final step. This has the effe
 
 That constant term is often called the *bias*.
 
+In some neural network visualizations, the bias is illustrated as an intrinsic property of the node, rather than as an additional edge.
+
 
 # Layer transformation as matrix multiplication
 
@@ -275,7 +279,7 @@ That's exactly the linear portion in the formula on the previous slide; thus, we
 
 ## Summary
 
-We've got a feed forward neural network with $1$ input layer, $N$ hidden layers, and $1$ output layer. We suppose that layer $i$ has $n_i+1$ nodes numbered $0,1,\ldots,n$ and we want to describe how the values propagate from layer $i-1$ to layer $i$.
+We've got a feedforward neural network with $1$ input layer, $N$ hidden layers, and $1$ output layer. We suppose that layer $i$ has $n_i+1$ nodes numbered $0,1,\ldots,n$ and we want to describe how the values propagate from layer $i-1$ to layer $i$.
 
 Form the matrix $W_i = [w_{i,j,k}]_{j,k}$ of weights from layer $i-1$ to layer $i$. 
 
@@ -285,6 +289,52 @@ $X_i = [1, x_{i-1,1},\ldots, x_{i-1,n_i}]$ is the row vector of values in the $i
 $$X_{i} = g_i(X_{i-1} W_i).$$
 
 This is just the activation function applied termwise to the result of a matrix product. Better yet, $X_0$ could be a matrix of rows of inputs that we want to evaluate; we can then use the same formulae to evaluate a whole slew of inputs en masse.
+
+
+# But... Why?
+
+Why, why, WHY would one do this? 
+
+What possible reason do we have to think that this might be a good idea?
+
+More specifically, why do we think this should be useful for modelling data?
+
+## Because
+
+Here's a train of thought that indicates the motivation behind this to some degree:
+
+1. We can show that linear and logistic regression are both special cases of small neural networks, 
+2. We can show that larger neural networks generalize and expand the capability of the smaller ones, 
+3. We can illustrate specific geometric properties of data that the expanded capacity can handle better, and 
+4. The architecture was originally inspired by the structure of the brain.
+
+## The brain? Really??
+
+Well, yes, but let's not overstate that point.
+
+The architecture was *inspired* by the brain. It was never meant to be a faithful model of the brain. It was just a relatively simple mathematical model that hoped to imitate some basic aspects of cognition.
+
+The [seminal paper](https://www.cs.cmu.edu/~epxing/Class/10715/reading/McCulloch.and.Pitts.pdf){target=_blank} was written in 1943, if you're interested.
+
+
+## The perceptron 
+
+I suppose that the simplest neural network you could imagine would have just the input and output layers but no hidden layers. This type of setup is called a *perceptron* and, schematically, looks like so:
+
+![](./figures/perceptron.png){fig-align="center" fig-alt="Illustration of the perceptron implementation of a logic gate"}
+
+## Algebra of the perceptron 
+
+Applying the neural network interpretation we've developed, we find that the perceptron produces values via the formula
+$$
+y = w_1 \, x_1 + w_2 \, x_2 + w_0.
+$$
+
+As it stands, this is exactly the linear regression formula that we would use to model data with two inputs and a single output.
+
+The neural network architecture allows us to apply a final activation function. For linear regression, we use use just the identity function. If we apply the sigmoid, we obtain logistic regression. If we round that result to 0 or 1, we obtain a classification algorithm.
+
+All with just the simplest possible neural network!
 
 # Logic gates
 
@@ -342,29 +392,16 @@ $$
 </div>
 
 
-## The perceptron 
+## A model 
 
-We can model those first three logic gates with just about the simplest neural network you could imagine. We obviously need the input and output layers but we'll have no hidden layers. In addition, we'll use an activation function that applies the sigmoid and then rounds the result to obtain a $0$ or $1$.
-
-This type of setup is called a *perceptron* and, schematically, looks like so:
+We can model those first three logic gates with the perceptron:
 
 ![](./figures/perceptron.png){fig-align="center" fig-alt="Illustration of the perceptron implementation of a logic gate"}
 
-## Algebra of the perceptron 
-
-Applying the neural network interpretation we've developed, we find that the perceptron produces values via the formula
+Which, after application of an activation function $g$, will produce 
 $$
-y = w_1 \, x_1 + w_2 \, x_2 + w_0.
+y = g(w_1 \, x_1 + w_2 \, x_2 + w_0).
 $$
-This produces a real number. The sigmoid maps that to the open interval $(0,1)$, with zero mapping to the midpoint $1/2$, negative numbers mapping to the bottom half, and positive numbers to the top. Finally, rounding yields a $0$ or $1$ result as desired.
-
-Perhaps a simpler way to describe the result is that the model produces
-
-\begin{aligned}
-0 & \quad \text{ when } y = w_1 \, x_1 + w_2 \, x_2 + w_0 < 0 \text{ and } \\ 
-1 & \quad \text{ when } y = w_1 \, x_1 + w_2 \, x_2 + w_0 > 0.
-\end{aligned}
-
 
 ## Weights for the *And* gate
 
@@ -372,7 +409,9 @@ One way (of many) to pick weights to yield the *And* gate is $w_1=w_2=2$ and $w_
 $$
 y = 2 \, x_1 + 2 \, x_2 - 3
 $$
-and classify according to whether $y<0$ or $y>0$. To see this in action is a simple matter of plugging in:
+and classify according to whether $y<0$ or $y>0$. Put another way, our activation function is just a rounded sigmoid.
+
+To see this in action is a simple matter of plugging in:
 $$
 \begin{aligned}
 y(1,1) &= 1 > 0 \implies \text{output} = 1 \\
@@ -494,24 +533,25 @@ I'm going to implement the neural network in the preceding picture with low-leve
 #| echo: true
 import numpy as np
 sigmoid = lambda x: 1/(1+np.exp(-x))
+step = lambda x: (x > 0).astype(float)
 ```
 ## Definitions in code
 
 ```{python}
 #| echo: true
 # The matrix of inputs
-X = np.array([[0, 0], [0, 1], [1, 0], [1, 1]])
+X = np.array([[0,0], [0, 1], [1, 0], [1, 1]])
 
 # The matrix of weights from the 
 # input layer 0 to hidden layer 1
 W0 = np.array([
-    [-3,-6], # From node 0 - the constant
-    [6,4],   # From node 1
-    [6,4]    # From node 2
+    [-1,-2], # From node 0 - the constant
+    [1,1],   # From node 1
+    [1,1]    # From node 2
 ])
 # The matrix of weights from hidden 
 # layer 1 to output layer 2
-W1 = np.array([[-3],[7],[-8]])
+W1 = np.array([[-1],[2],[-2]])
 ```
 
 ## Computational code 
@@ -521,7 +561,7 @@ Now we perform the computation. At each step, we augment the values with a colum
 ```{python}
 #| echo: true
 X0 = np.column_stack([np.ones(len(X)),X])
-X1 = sigmoid(X0 @ W0)
+X1 = step(X0 @ W0)
 X1 = np.column_stack([np.ones(len(X)), X1])
 X2 = sigmoid(X1 @ W1)
 np.round(X2).flatten()

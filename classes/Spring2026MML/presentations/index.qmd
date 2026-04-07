@@ -271,3 +271,12 @@ Of course, I learned most of this material many years ago and some of the presen
     Today, we're going to take a look at an alternative way to represent algebraic expressions as graphs - the so-called *expression graph*, also called a *computation graph*. This alternative is better suited for efficient numerical computation of values and derivatives.
   </div>
 </details>
+
+- Wed, Apr 8: Neural Networks
+  - [Presentation](./Lecture22-NeuralNetworks/){target=_blank}
+<details>
+  <summary>Comments</summary>
+  <div>
+    Now that we've talked about both general networks and expression graphs, we're in a good spot to discuss neural networks. We'll focus today on the foundational *feed forward neural network* - how we represent it, how we compute with it, how we code it, how it's optimized, and what can do with it. We'll discuss variations on that foundational architecture a bit later.
+  </div>
+</details>
