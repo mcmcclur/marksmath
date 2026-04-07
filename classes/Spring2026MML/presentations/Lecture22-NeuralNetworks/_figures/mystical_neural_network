@@ -1,0 +1,86 @@
+digraph GeneralNeuralNetwork {
+    rankdir=LR; 
+    size="8,5!";
+    ratio = 0.7;
+    node [shape=circle, width=0.2, height=0.2];
+    edge [arrowsize=0.6, color="#00000066"]; // Smaller arrowheads and semi-transparent edges
+    splines=false; // Force straight lines for edges
+
+    // Input Layer
+    subgraph cluster_input {
+        // label="Input";
+        color=none;
+        // x1 [label=<<i>x</i><sub>1</sub>>];
+        // x2 [label=<<i>x</i><sub>2</sub>>];
+        // x3 [label=<<i>x</i><sub>3</sub>>];
+        // x4 [label=<<i>x</i><sub>4</sub>>];
+        // x5 [label=<<i>x</i><sub>5</sub>>];
+        x2 [label=""; style="filled"; fillcolor="#3c3"; width=0.4];
+        x3 [label=""; style="filled"; fillcolor="#3c3"; width=0.4];
+        x4 [label=""; style="filled"; fillcolor="#3c3"; width=0.4];
+        x5 [label=""; style="filled"; fillcolor="#3c3"; width=0.4];
+        x1 [label=""; style="filled"; fillcolor="#3c3"; width=0.4];
+
+    }
+
+    subgraph cluster_hidden1 {
+        // label="Hidden 1";
+        color=none;
+        h1_1 [label=""; style=filled; fillcolor="#ccc"];
+        h1_2 [label=""; style=filled; fillcolor="#ccc"];
+        h1_3 [label=""; style=filled; fillcolor="#ccc"];
+        h1_4 [label=""; style=filled; fillcolor="#ccc"];
+        h1_5 [label=""; style=filled; fillcolor="#ccc"];
+        h1_6 [label=""; style=filled; fillcolor="#ccc"];
+        h1_7 [label=""; style=filled; fillcolor="#ccc"];
+        h1_8 [label=""; style=filled; fillcolor="#ccc"];
+        h1_9 [label=""; style=filled; fillcolor="#ccc"];
+        h1_10 [label=""; style=filled; fillcolor="#ccc"];
+    }
+
+    // Hidden Layer 2
+    subgraph cluster_hidden2 {
+        // label="Hidden 2";
+        color=none;
+        h2_1 [label=""; style=filled; fillcolor="#ccc"];
+        h2_2 [label=""; style=filled; fillcolor="#ccc"];
+        h2_3 [label=""; style=filled; fillcolor="#ccc"];
+        h2_4 [label=""; style=filled; fillcolor="#ccc"];
+        h2_5 [label=""; style=filled; fillcolor="#ccc"];
+        h2_6 [label=""; style=filled; fillcolor="#ccc"];
+        h2_7 [label=""; style=filled; fillcolor="#ccc"];
+        h2_8 [label=""; style=filled; fillcolor="#ccc"];
+    }
+
+    // Hidden Layer 3
+    subgraph cluster_hidden3 {
+        // label="Hidden 3";
+        color=none;
+        h3_1 [label=""; style=filled; fillcolor="#ccc"];
+        h3_2 [label=""; style=filled; fillcolor="#ccc"];
+        h3_3 [label=""; style=filled; fillcolor="#ccc"];
+        h3_4 [label=""; style=filled; fillcolor="#ccc"];
+    }
+
+    // Output Layer
+    subgraph cluster_output {
+        // label="Output";
+        color = none;
+        // y1 [label=<<i>y</i><sub>1</sub>>];
+        // y2 [label=<<i>y</i><sub>1</sub>>];
+        y1 [label=""; width=0.4; style=filled; fillcolor="#d66"]
+        y2 [label=""; width=0.4; style=filled; fillcolor="#d66"]
+    }
+
+    // Connections from Input to Hidden Layer 1
+    {x1,x2,x3,x4,x5} -> {h1_1 h1_2 h1_3 h1_4 h1_5 h1_6 h1_7 h1_8 h1_9 h1_10};
+
+    // Connections from Hidden Layer 1 to Hidden Layer 2
+    {h1_1 h1_2 h1_3 h1_4 h1_5 h1_6 h1_7 h1_8 h1_9 h1_10} -> {h2_1 h2_2 h2_3 h2_4 h2_5 h2_6 h2_7 h2_8};
+
+    // Connections from Hidden Layer 2 to Hidden Layer 3
+    {h2_1 h2_2 h2_3 h2_4 h2_5 h2_6 h2_7 h2_8} -> {h3_1 h3_2 h3_3 h3_4};
+
+    // Connections from Hidden Layer 3 to Output Layer
+    {h3_1 h3_2 h3_3 h3_4} -> {y1 y2};
+}

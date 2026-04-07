@@ -1,0 +1,27 @@
+digraph Perceptron {
+    rankdir=LR; 
+    node [shape=circle];
+    edge [arrowsize=0.6]; 
+    splines=false; 
+
+    subgraph clusterinput {
+        label="Input";
+        color=none;
+        x1 [label=<<i>x</i><sub>1</sub>>];
+        x2 [label=<<i>x</i><sub>2</sub>>];
+        x3 [label="1"];
+    }
+
+    subgraph clusteroutput {
+        label = "Output"
+        color = none;
+        y [label=<<i>y</i>>]
+    }
+
+    z [ label="Post-process" shape=none ]
+
+    x1->y [label=<<i>w</i><sub>1</sub>>];
+    x2->y [label=<<i>w</i><sub>2</sub>>];
+    x3->y [label=<<i>w</i><sub>0</sub>>];
+    y->z;
+}
