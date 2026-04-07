@@ -1,0 +1,22 @@
+digraph ComputationGraph {
+	rankdir=LR
+	node [fontsize=12]
+	n0 [label="x
+val=1" shape=box]
+	n1 [label="y
+val=2" shape=box]
+	n2 [label="×
+val=2" shape=ellipse]
+	n3 [label="3.0
+val=3" shape=box]
+	n4 [label="×
+val=6" shape=ellipse]
+	n5 [label="+
+val=8" shape=ellipse]
+	n0 -> n2
+	n1 -> n2
+	n3 -> n4
+	n1 -> n4
+	n2 -> n5
+	n4 -> n5
+}
