@@ -1,0 +1,47 @@
+digraph smallNN {
+    rankdir=LR; 
+    splines=false;
+    node [shape=circle];
+    edge [arrowsize=0.6]; 
+    splines=true; 
+    ranksep = 1.5;
+    nodesep = 0.5;
+
+    subgraph clusterinput {
+        label="Input";
+        color=none;
+        x1 [label=<<i>x</i><sub>1</sub>>];
+        x2 [label=<<i>x</i><sub>2</sub>>];
+        x0 [label="1"];
+    }
+
+    subgraph clusterhidden {
+        label="Hidden layer";
+        color=none;
+        a1 [label=<<i>h</i><sub>1</sub>>];
+        a2 [label=<<i>h</i><sub>2</sub>>];
+        a0 [label="1"];
+    }
+
+    subgraph clusteroutput {
+        label = "Output"
+        color = none;
+        y [label=<<i>y</i><sub>1</sub>>]
+    }
+
+
+    x1 -> a1 [label=1];
+    x2 -> a1 [label=-1];
+    x0 -> a1 [label="0"];
+    x1 -> a2 [label=-1];
+    x2 -> a2 [label=1]; 
+    x0 -> a2 [label="0"];
+    a1 -> y [label="1"];
+    a2 -> y [label="1"];
+    a0 -> y [label="-1/2"];
+
+    z [ label="Post-process" shape=none ]
+    y -> z
+
+
+}
