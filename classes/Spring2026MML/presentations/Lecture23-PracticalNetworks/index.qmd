@@ -1,0 +1,62 @@
+---
+title: Practical Considerations for Neural Networks
+date: 2026-04-10
+format:
+  revealjs:
+    css: [../classnote-style.css]
+    controls: true
+    controls-layout: bottom-right
+    navigation-mode: vertical
+    smaller: true
+    history: true 
+    transition: slide
+    html-math-method: 
+      method: mathjax
+      url: https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js
+    date-format: ddd, MMM DD, YYYY
+    echo: false
+    # eval: true
+    # output: true
+    # code-fold: true
+---
+
+
+# Recap and look ahead
+
+We just learned about neural networks and have a lab coming up. This is pretty much the same pattern that we had both linear an logistic regression. Just as with both of those topics, there are a some practical issues to consider when we move into the applied setting.
+
+# Pros and cons of neural networks 
+
+Pros:
+
+- Neural networks are natural extensions of some of the tools we already know. Thus, many of the data preparation and model design principles still apply.
+- As complex, non-linear models, though, they can model many challenging data sets.
+- Large language models, which are so important today, are built on neural network concepts
+
+Cons:
+
+- As non-linear models, neural networks typically have *many* local extremes so there's no clear best solution, thus
+- they often invite endless tweaking of hyperparameters but
+- they are computationally extremely expensive.
+- Also, they are easy to overfit.
+
+
+## Test/validation (as opposed to cross-validation)
+
+# Overfitting
+
+## Early stopping
+
+## Bagging / Ensembles
+
+## Dropout
+
+## Max-norm Reg 
+
+## More data 
+
+  - Data augmentation?
+
+
+
+# Softmax
