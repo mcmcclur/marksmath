@@ -1,0 +1,37 @@
+---
+title: Illustrations for the proof of Green's theorem
+page-layout: article
+toc: false
+date: 2026-04-10
+date-format: ddd, MMM D
+---
+<div class="content">
+  <div id="observablehq-topmatter-7f36675a"></div>
+  <div id="observablehq-viewof-new_curve-7f36675a"></div>
+  <div id="observablehq-curve_region-7f36675a"></div>
+  <div id="observablehq-comment1-7f36675a"></div>
+  <div id="observablehq-viewof-new_curve2-7f36675a"></div>
+  <div id="observablehq-viewof-N-7f36675a"></div>
+  <div id="observablehq-curve_boxes-7f36675a"></div>
+  <div id="observablehq-comment2-7f36675a"></div>
+  <div id="observablehq-box-7f36675a"></div>
+  <div id="observablehq-comment3-7f36675a"></div>
+</div>
+
+  <script type="module">
+  import {Runtime, Inspector} from "https://cdn.jsdelivr.net/npm/@observablehq/runtime@5/dist/runtime.js";
+  import define from "https://api.observablehq.com/d/36d9135e995a2013.js?v=3";
+  new Runtime().module(define, name => {
+    if (name === "topmatter") return new Inspector(document.querySelector("#observablehq-topmatter-7f36675a"));
+    if (name === "viewof new_curve") return new Inspector(document.querySelector("#observablehq-viewof-new_curve-7f36675a"));
+    if (name === "curve_region") return new Inspector(document.querySelector("#observablehq-curve_region-7f36675a"));
+    if (name === "comment1") return new Inspector(document.querySelector("#observablehq-comment1-7f36675a"));
+    if (name === "viewof new_curve2") return new Inspector(document.querySelector("#observablehq-viewof-new_curve2-7f36675a"));
+    if (name === "viewof N") return new Inspector(document.querySelector("#observablehq-viewof-N-7f36675a"));
+    if (name === "curve_boxes") return new Inspector(document.querySelector("#observablehq-curve_boxes-7f36675a"));
+    if (name === "comment2") return new Inspector(document.querySelector("#observablehq-comment2-7f36675a"));
+    if (name === "box") return new Inspector(document.querySelector("#observablehq-box-7f36675a"));
+    if (name === "comment3") return new Inspector(document.querySelector("#observablehq-comment3-7f36675a"));
+    return ["pts"].includes(name);
+  });
+  </script>
