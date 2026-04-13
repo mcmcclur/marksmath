@@ -1,0 +1,30 @@
+---
+title: Green's theorem and polygonal area
+page-layout: article
+toc: false
+date: 2026-04-13
+date-format: ddd, MMM D
+---
+<div class="content">
+  <div id="observablehq-topmatter-011c1aed"></div>
+  <div id="observablehq-viewof-example-011c1aed"></div>
+  <div id="observablehq-vertices_description-011c1aed"></div>
+  <div id="observablehq-polygon-011c1aed"></div>
+  <div id="observablehq-application1-011c1aed"></div>
+  <div id="observablehq-application-011c1aed"></div>
+  <div id="observablehq-justification-011c1aed"></div>
+</div>
+<script type="module">
+import {Runtime, Inspector} from "https://cdn.jsdelivr.net/npm/@observablehq/runtime@5/dist/runtime.js";
+import define from "https://api.observablehq.com/d/263b0d16158b2331.js?v=3";
+new Runtime().module(define, name => {
+  if (name === "topmatter") return new Inspector(document.querySelector("#observablehq-topmatter-011c1aed"));
+  if (name === "viewof example") return new Inspector(document.querySelector("#observablehq-viewof-example-011c1aed"));
+  if (name === "vertices_description") return new Inspector(document.querySelector("#observablehq-vertices_description-011c1aed"));
+  if (name === "polygon") return new Inspector(document.querySelector("#observablehq-polygon-011c1aed"));
+  if (name === "application1") return new Inspector(document.querySelector("#observablehq-application1-011c1aed"));
+  if (name === "application") return new Inspector(document.querySelector("#observablehq-application-011c1aed"));
+  if (name === "justification") return new Inspector(document.querySelector("#observablehq-justification-011c1aed"));
+  return ["pts"].includes(name);
+});
+</script>
