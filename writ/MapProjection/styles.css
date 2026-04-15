@@ -5,3 +5,14 @@
 .quarto-alternate-formats:before {
   content: "Print version:";
 }
+
+.abstract {
+  font-size: 80%;
+  margin: 10px;
+}
+.tippy-box[data-theme~='quarto'] {
+  display: none;
+}
+.callout-note p {
+  font-size: 120% !important;
+}
