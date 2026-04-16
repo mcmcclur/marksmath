@@ -244,13 +244,21 @@ Conic projections are not generally appropriate for whole earth maps. They do a 
 nc_conic
 ```
 
-## Up next
+### The Peters world map controversy 
 
-On Friday, we'll dig deeper into the formulae for these map projections and we'll learn what really makes a map conformal or equal area. One point I hope to impress upon you is 
+The Gall-Peters projection was first described in 1855 by the Scot James Gall and rediscovered in the 1960s by the German Arno Peters. In the 1970s, Peters vigorously promoted his map as superior to the Mercator map projection, essentially since it's equal area. Peters was dismissed as a bit of crank by cartographers of the time and the whole affair become known as the [Peters world map controversy](https://en.wikipedia.org/wiki/Gall%E2%80%93Peters_projection#Peters_world_map_controversy){target=_blank}. You can see this parodied in [The West Wing](https://youtu.be/vVX-PrBRtTY?t=44){target=_blank}.
+
+To be clear, Mercator's map is probably not ideal for a classroom wall map and the Gall-Peters map is a reasonable alternative. It seems that Peters' "mistake" was his failure to realize 
+
+1. that Mercator had a different objective and
+2. there are many area preserving maps.
+
+One widely used equal earth map projection today is the equal earth projection. You can read about its motivation in [this presentation](https://www.equal-earth.com/NACIS_slides.pdf){target=_blank}.
+
 
 ::: {.callout-note appearance=minimal} 
 
-Mercator's map has often been criticized for its disproportionate representation of areas and, as we've already said, it should *not* be used for choropleth maps. 
+While Mercator's map has been occasionally criticized for its disproportionate representation of areas and, as we've already said, it should *not* be used for choropleth maps. 
 
 That was simply not his objective in designing the map, though. Mercator's objective was to build a map for *navigation*, a task of some importance in his time. He accomplished this by designing it so that *lines of constant compass bearing appear as straight lines on the map*.
 
@@ -259,6 +267,14 @@ $$h(\varphi) = \int_0^{\varphi} \sec(\phi)\,d\phi = \ln(|\sec(\varphi) + \tan(\v
 Now consider that he did this 100 years prior to the invention of calculus and 35 years prior to the discovery of the logarithm. His technique for actually computing the placement of the parallels was essentially what we would today call numerical integration. Truly a marvel.
 
 :::
+
+
+## Up next
+
+On Friday, we'll dig deeper into the formulae for these map projections and we'll learn what really makes a map conformal or equal area. This will make it easy to see why 
+
+- Maps like Mercator's and the stereographic are conformal and 
+- Maps like Lambert's and the Gall-Peters are equal area. 
 
 
 

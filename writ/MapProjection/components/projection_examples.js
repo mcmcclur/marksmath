@@ -43,7 +43,7 @@ The Gall-Peters map was first constructed in 1855 by James Gall and rediscovered
     name: "Polar stereographic",
     projection: d3.geoStereographicRaw,
     polar: true,
-    comment: `Conceptually, a *stereographic projection* is not projected onto a cylinder surrounding the sphere but, rather, to a plane that is tangent to the sphere. Projections onto a plane are also often called *azimuthal projections*. The plane can be tangent at any point, but the point of tangency is often the North or South pole to map polar regions. As a result, the parallels map to concentric circles and the meridians to rays emanating from the pole. In the stereographic projection, the meridians are spaced to make the map conformal.`
+    comment: `Conceptually, a *stereographic projection* is not projected onto a cylinder surrounding the sphere but, rather, to a plane that is tangent to the sphere. Projections onto a plane are also often called *azimuthal projections*. The plane can be tangent at any point, but the point of tangency is often the North or South pole to map polar regions. As a result, the parallels map to concentric circles and the meridians to rays emanating from the pole. In the stereographic projection, the parallels are spaced to make the map conformal.`
   },
   {
     name: "Azimuthal equidistant",
