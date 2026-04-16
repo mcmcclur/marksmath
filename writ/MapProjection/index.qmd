@@ -244,6 +244,92 @@ Conic projections are not generally appropriate for whole earth maps. They do a 
 nc_conic
 ```
 
+
+## Map analysis 
+
+We now turn to the central question of how we analyze a map to determine what properties it might have. More specifically, what will make a map conformal or equal area.
+
+### Scale factors
+
+
+If we move from point $A$ to point $B$ on the globe, this induces a change of distance on the map. The corresponding scaling factor is simply the change in distance on the globe divided by the change in distance on the map. This simple idea is the key to understanding which geometrical properties are preserved by a map projection.
+
+To see why scale factors are so important to the understanding of geometric properties of transformations, we'll focus on some particularly simple examples—namely, the transformation of rectangles in the plane. In spite of the level of simplicity, the ideas generalize quite readily to our setting.
+
+Suppose we want our transformation to be conformal, i.e., it should preserve angles. In particular, if we draw a rectangle in the plane, the angle that the diagonal of the rectangle makes with either side should be preserved under the transformation. This situation is illustrated in @fig-conformalImage, where it becomes almost immediately apparent what property the transformation should have.
+
+![A rectangle and its image under a conformal transformation](./figures/conformalImage.png){#fig-conformalImage}
+
+::: {.callout-note appearance="minimal"}
+In order for a transformation to be conformal, it must scale equally in the horizontal and vertical directions.
+:::
+
+This statement indicates that the equality of scaling factors is a *necessary* condition. It can be proved that it is also a *sufficient* condition. That is, if the transformation scales by the same amount in both the horizontal and vertical directions, then it will be conformal.
+
+Now, suppose that we'd like our transformation to preserve area. The transformation in @fig-conformalImage clearly does not preserve area, but the transformation in @fig-conformalImage does. Again, the figure indicates how to obtain the desired property. If we scale by the factor $M$ in one direction, we've got to scale by the factor $1/M$ in the other. 
+
+![A rectangle and its image under an area preserving transformation](./figures/equalAreaImage.png){#fig-equalAreaImage}
+
+::: {.callout-note appearance="minimal"}
+In order for a transformation to be area preserving, the horizontal and vertical scaling factors must be reciprocals of one another.
+:::
+
+This condition is again sufficient as well as necessary.
+
+### Scale factors for a cylindrical projection
+
+When we apply these ideas to a cylindrical map projection (which of course maps a globe to a plane), we take the scale factors along a parallel and along a meridian to be the two cardinal directions. We denote these scaling factors by $M_{\varphi}$ and $M_{\theta}$, respectively.
+
+Thus, if we are at the point $(\varphi, \theta)$ on the globe, our cylindrical map projection will be conformal near that point if $M_{\varphi} = M_{\theta}$ there. A cylindrical map projection will be area preserving if $M_{\varphi} = \frac{1}{M_{\theta}}$ there.
+
+Suppose a point on the globe is at position $(\varphi, \theta)$. Consider the parallel through that point. On the globe, that parallel is a circle of radius $\cos(\varphi)$. (Take another look at @fig-geometricLambert to convince yourself of this.) Thus, the circumference of that parallel on the globe is $2\pi \cos(\varphi)$.
+
+Furthermore, this parallel maps to a line segment that stretches the whole width of the map, as shown in @fig-cylindricalScaleFactors. The length of that segment is $2\pi$. Thus the scaling factor along the parallel is a uniform
+
+$$
+M_{\varphi} = \frac{2\pi}{2\pi \cos(\varphi)} = \sec(\varphi).
+$$
+
+![Images of the parallel and meridian through a point](./figures/cylindricalScaleFactors.png){#fig-cylindricalScaleFactors}
+
+Analysis of the scaling factor along a meridian is a little trickier. Recall that our cylindrical projection has the form $T(\varphi, \theta) = (\theta, h(\varphi))$. While $M_{\varphi}$ is uniform and depends only on $\varphi$, $M_{\theta}$ is not necessarily uniform and depends on the function $h$.
+
+Here is the key observation. Suppose we are at a point with latitude $\varphi$ and we increase the latitude a bit to $\varphi + t$. On the globe, we move a distance $t$. (This follows from the definition of radian measure.) On the map we move from the point $h(\varphi)$ to $h(\varphi + t)$. Thus our scaling factor (the change of distance on the map over the change in distance on the globe) is
+
+$$
+\frac{h(\varphi + t) - h(\varphi)}{t}.
+$$
+
+Of course, we are interested in the local scaling factor. Thus we take a limit as $t \to 0$ to obtain $h'(\varphi)$.
+
+This pair of scaling factors is worth knowing. For a cylindrical map projection $T(\varphi, \theta) = (\theta, h(\varphi))$,
+
+- the scaling factor $M_{\varphi}$ along a parallel is $\sec(\varphi)$, and  
+- the scaling factor $M_{\theta}$ along a meridian is $h'(\varphi)$.
+
+### Application
+
+We are now in a position to understand why Lambert's map in @fig-equiAndLambert is equal area and why Mercator's map in @fig-globeAndMap is conformal. In fact, the analysis is quite easy for both.
+
+#### Lambert's equal area map
+
+Recall that the formula is $T(\varphi, \theta) = (\theta, \sin(\varphi))$. Thus, $M_{\theta} = \cos(\varphi)$ and $M_{\varphi} = \sec(\varphi)$. Since these are reciprocals, the projection is equal area. That's it!
+
+#### Mercator's projection
+
+Let us now put ourselves in Mercator's shoes and ask, what function $h(\varphi)$ will force the cylindrical projection $T(\varphi, \theta) = (\theta, h(\varphi))$ to be conformal?
+
+Well, we need $h'(\varphi) = \sec(\varphi)$. Thus, we should take
+
+$$
+h(\varphi) = \int_0^{\varphi} \sec(\phi)\, d\phi = \ln\left| \sec(\varphi) + \tan(\varphi) \right|.
+$$
+
+There you are!
+
+
+## Conclusions
+
 ### The Peters world map controversy 
 
 The Gall-Peters projection was first described in 1855 by the Scot James Gall and rediscovered in the 1960s by the German Arno Peters. In the 1970s, Peters vigorously promoted his map as superior to the Mercator map projection, essentially since it's equal area. Peters was dismissed as a bit of crank by cartographers of the time and the whole affair become known as the [Peters world map controversy](https://en.wikipedia.org/wiki/Gall%E2%80%93Peters_projection#Peters_world_map_controversy){target=_blank}. You can see this parodied in [The West Wing](https://youtu.be/vVX-PrBRtTY?t=44){target=_blank}.
@@ -269,14 +355,23 @@ Now consider that he did this 100 years prior to the invention of calculus and 3
 :::
 
 
-## Up next
+## Problems
 
-On Friday, we'll dig deeper into the formulae for these map projections and we'll learn what really makes a map conformal or equal area. This will make it easy to see why 
+1. The equi-rectangular projection is the cylindrical projection defined by $T(\varphi ,\theta )=(\theta ,\varphi )$. Compute the general distortion factors $M_p$ and $M_m$ for $T$ as functions of $\varphi$ and $\theta$. Use this to explain why the equi-rectangular projection is neither conformal nor equal area.
 
-- Maps like Mercator's and the stereographic are conformal and 
-- Maps like Lambert's and the Gall-Peters are equal area. 
+2. Mercator's projection is the cylindrical projection defined by $T(\varphi ,\theta )=(\theta ,\ln (|\sec (\varphi )+\tan (\varphi )|))$. Compute the general distortion factors $M_p$ and $M_m$ for $T$ as functions of $\varphi$ and $\theta$. Use this to prove that Mercator's projection is conformal.
 
+3. Lambert's equal area, cylindrical projection is the cylindrical projection defined by $T(\varphi ,\theta )=(\theta ,\sin (\varphi ))$. Compute the general distortion factors $M_p$ and $M_m$ for $T$ as functions of $\varphi$ and $\theta$. Use this to prove that Lambert's projection is equal area.
 
+4. Use @fig-conformal_and_equal_area to explain why the Equal Earth projection is *not* conformal.
+
+5. Compute the scaling factors $M_{\varphi }$ and $M_{\theta }$ here in Asheville for both Mercator's projection and the equi-rectangular projection. How close is the equi-rectangular projection to being conformal here? How close is Mercator's projection to being area preserving here?
+
+6. New York and Barcelona lie very close to the same latitude having the coordinates: $74^{\circ}W$ by $41^{\circ}N$ and $2^{\circ}E$ by $41^{\circ}N$.
+   a. On a cylindrical or psuedo-cylindrical maps, the naive `straight line' between Barcelona and New York lies on the common parallel. What is the distance between the two cities along this parallel?
+   b. What is the actual shortest distance between those two cities?  
+   
+   Hint: Note that both curves are parts of circles.
 
 
 ```{ojs}
