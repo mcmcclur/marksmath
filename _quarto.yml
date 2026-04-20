@@ -6,6 +6,8 @@ project:
     - components/includes/latex-macros.tex
     - data/temp/titanic/test.csv
     - data/temp/titanic/train.csv
+    - /images/square_on_back.png
+    - /images/pacman.png
 
 website:
   title: "Mark's Math"
