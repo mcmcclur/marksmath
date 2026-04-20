@@ -27,9 +27,10 @@ If you have questions about any of the problems on this sheet, you can use the R
 
 1. Let $C$ denote the curve
    $$\vec{r}(t) = \langle t^2,t \rangle$$
-   and let
+   where $0 \leq t \leq 1$ and let
    $$\vec{F}(x,y) = \langle y,x \rangle.$$
-   Compute $$\int_C \vec{F}\cdot d\vec{r}.$$
+   Compute 
+   $$\int_C \vec{F}\cdot d\vec{r}$$
 
 2. Consider the vector field $\vec{F}$ and curve $C$ shown in the figure below. Is
    $$\int_C \vec{F} \cdot d\vec{r}$$
