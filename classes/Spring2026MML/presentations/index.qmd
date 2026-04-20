@@ -300,3 +300,12 @@ Of course, I learned most of this material many years ago and some of the presen
     We've got our last lab today on Neural Networks. We should get closer to understanding how image recognition works.
   </div>
 </details>
+
+- Mon, Apr 20: Convolution
+  - [Presentation](./Lecture24-Convolution/){target=_blank}
+<details>
+  <summary>Comments</summary>
+  <div>
+    Recently, we learned how neural networks can be used for image classification. While basic feed forward neural networks can perform OK for this task, the addition of a so-called *convolutional layer* improves performance. Today, we'll learn the mathematics of convolution and then, next time, we'll see how that plays out in the context of Tensorflow.
+  </div>
+</details>

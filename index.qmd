@@ -18,6 +18,6 @@ Professor of [Mathematics](https://math.unca.edu/)
 import {animate_network} from './components/neural_multiplier.js';
 model = await FileAttachment("./components/multiplication_model.json").json();
 animate_network(model);
-```
+``` 
 :::::
 :::
