@@ -309,3 +309,15 @@ Of course, I learned most of this material many years ago and some of the presen
     Recently, we learned how neural networks can be used for image classification. While basic feed forward neural networks can perform OK for this task, the addition of a so-called *convolutional layer* improves performance. Today, we'll learn the mathematics of convolution and then, next time, we'll see how that plays out in the context of Tensorflow.
   </div>
 </details>
+
+- Wed, Apr 22: Layer types for Neural Networks
+  - [Colab Notebook](https://colab.research.google.com/drive/1WF9GkTbjlwMmH4yS75U7U8pBONYNxV_U?usp=sharing#sandboxMode=true){target=_blank}
+<details>
+  <summary>Comments</summary>
+  <div>
+
+    Today, we'll take a look at how we might think of a neural network as a sequence of layers of various types. Often, these layers could be implemented as dense layers with specific restrictions but it can be much easier conceptually to think of them a bit more abstractly.
+
+    Our most specific objective is to understand how specific kernels (or filters, in this context) arise via model fitting in a convolutional layer.
+  </div>
+</details>

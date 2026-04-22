@@ -1,0 +1,111 @@
+---
+title: "MML - Review for the Final Exam"
+subtitle: First draft
+execute:
+  echo: false
+format:
+  html:
+    css: ../handout_style.css
+    page-layout: article
+    toc: true
+    format-links: [pdf]
+  pdf:
+    mainfont: "Times New Roman"
+    output-file: FinalReview
+    include-in-header:
+      text: |
+        \pagenumbering{gobble}
+---
+
+The Final exam will be during finals week on Monday, May 4 at 11:30 AM. The objective is just going to be to have a few conceptual questions to tie some things together. Here are a few examples.
+
+
+1. For each of the following pairs of concepts, state the difference between the two items and give and example of each.
+
+   - Regression vs classification
+   - Supervised vs unsupervised algorithms
+   - Parametric vs Nonparametric algorithms
+
+2. Suppose we're given the data $N$ points 
+$$(x_1,y_1),(x_2,y_2),\ldots,(x_N,y_N).$$
+Let's consider the regression line that's the best least squares approximation to those points.
+
+   a. What is the form of your approximation?  
+   (This should be a formula involving two parameters.)
+   b. Write down the associated least squared error $E$ as a function of your two parameters.
+   c. Express your previous response using matrix multiplication, a difference, and a 2-norm.
+   d. The values of the parameters that solve the least squared error problem can be expressed as a projection of a point in $N$-dimensional space onto a two-dimensional subspace. Use your answer to part (c) to identify the point and the subspace.
+   
+3. If I had to name the top three applications of linear algebra to machine learning, I might just say 
+
+   - i. Norms,
+   - ii. Orthogonal projection, and
+   - iii. Diagonalization of a matrix $A$ to $SDS^{-1}$ using eigenvalues and eigenvectors.
+   
+Here's one question related to each of those:
+
+   - Which norm used to measure error in a least square approximation and how?
+   - How is orthogonal projection related to the normal equations and the solution of least squares problems? 
+   - How is diagonalization used in Principal Component Analysis?
+
+4. Suppose we'd like to build a machine learning algorithm for each of the following situations:
+
+   a. A medical diagnosis system to use patient similarity compared to past cases (based on features like age, symptoms, and blood pressure). The objective is to predict whether a patient has a certain condition.
+   b. An online advertising platform to estimate the probability that a user will click on an ad, based on features like time of day, device type, and ad category.
+   c. A model to predict the number of points that this team might defeat that team by based on prior performances.
+   d. An algorithm for Spotify to predict song popularity. The measure of popularity might be number of streams per week and the predictors might be a number of disparate properties like tempo, genre, duration, release season, artist popularity, etc.
+
+   Identify which of the following techniques might work best for each of these:
+
+   - Linear regression,
+   - Logistic regression,
+   - KNN Classifcation, or
+   - KNN Regression.
+  
+   Of course, we'd like to know why.
+   
+<!-- 5. Often, we use the notation of linear algebra to write formulae much more compactly. In linear regression, for example, we derive a formula of the form
+$$
+\left(\sum_{i=1}^p a_i x_i\right) + b.
+$$
+
+   We might write that, though, as 
+$$
+X^T A + b,
+$$
+where $X$ is the vector of variables and $A$ is the vector of parameters.
+
+   Now, consider the neural network shown in [figure @fig-nn]. Let's suppose that layer $i$ has the activation function $g_i$. How might you express the value coming out of layer $i$ as a function of the inputs from layer $i-1$
+
+   a. Using summation notation? And
+   b. Using more compact matrix vector notation? -->
+
+6. I've used a ratings algorithm to make the following assessments of the strengths of four teams (listed in alphabetical order) over the course of a season:
+
+   |ID|Team|Strength|
+   |:---|:---|:---:|
+   |1|NCSt|4|
+   |2|OSU|10|
+   |3|UM|1|
+   |4|UNC|6|
+
+   The teams are about to play a tournament so, for each pair of teams, I'd like to compute the probability (Prob) that the first team will defeat the second, with the teams listed in the same order as above. I'd also like to make a *binary* prediction (Pred) indicating who the algorithm predicts to be the winner.
+
+   a. Fill out the following table with the values of S1-S2 (the first team's strength minus the second). Also, fill out *reasonable* values for Prob and Pred.  
+   *Note*: Don't overthink this problem! You are not required to do any significant computation. This question is simply meant to see if we understand what kinds of numbers represent probabilities, how those probabilities relate to one another and team strength, and how that probability leads to a binary prediction.
+
+   |Team 1|Team 2|S1-S2|Prob|Pred|
+   |:---|:---|:---:|:---:|:---:|
+   |NCSt|OSU||||
+   |NCSt|UM||||
+   |NCSt|UNC||||
+   |OSU|UNC||||
+   |OSU|UM||||
+   |UNC|UM||||
+  
+   b. Does the numeric value Prob represent regression or classification? Why?
+   c. Does the numeric value Pred represent regression or classification? Why?
+
+7. The images shown in [@fig-classification_plots] display the results of two different classification algorithms applied to the same data set. The data set consists of 300 different two-dimensional data points each indicated by color. What kinds of algorithms might have generated those plots? There might be more than one reasonable response for each plot but you should be able to articulate some reason for your response.
+
+![Classifcation plots](classification_plots){#fig-classification_plots width=7in}
