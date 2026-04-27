@@ -1,6 +1,5 @@
 ---
 title: "MML - Review for the Final Exam"
-subtitle: First draft
 execute:
   echo: false
 format:
@@ -9,6 +8,7 @@ format:
     page-layout: article
     toc: true
     format-links: [pdf]
+    crossrefs-hover: false
   pdf:
     mainfont: "Times New Roman"
     output-file: FinalReview
@@ -17,14 +17,33 @@ format:
         \pagenumbering{gobble}
 ---
 
-The Final exam will be during finals week on Monday, May 4 at 11:30 AM. The objective is just going to be to have a few conceptual questions to tie some things together. Here are a few examples.
+\vspace{-1cm}
 
+The final exam will be during finals week on Monday, May 4 at 11:30 AM. The objective is just going to be to have a few conceptual questions to tie some things together. Here are some examples.
 
-1. For each of the following pairs of concepts, state the difference between the two items and give and example of each.
+0. Machine learning algorithms are built on *data*, often stored in a data table or data frame. One such table is shown in @tbl-data.
 
-   - Regression vs classification
-   - Supervised vs unsupervised algorithms
-   - Parametric vs Nonparametric algorithms
+   | id   | age | income   | is_student | signup_date | score | group    | target | category  |
+   |------|-----|----------|------------|-------------|-------|----------|--------|-----------|
+   | 1001 | 22  | 31500.50 | TRUE       | 2024-01-15  | 78.2  | control  | 0.134  | A         |
+   | 1002 | 35  | 58210.00 | FALSE      | 2023-11-03  | 88.9  | treatment| 0.842  | B         |
+   | 1003 | 29  | 44120.75 | TRUE       | 2024-03-22  | 69.5  | control  | 0.256  | A         |
+   | 1004 | 41  | 72000.00 | FALSE      | 2022-07-30  | 91.3  | treatment| 0.913  | C         |
+   | 1005 | 26  | 38990.20 | TRUE       | 2024-05-10  | 74.8  | control  | 0.478  | B         |
+   :A data table {#tbl-data}  
+   a. What generic terms might we use for the rows and columns of this type of data?
+   b. Which variables are categorical?
+   c. Which variables are numeric?
+   d. How do you suppose the `id` column should be treated?
+
+1. This problem continues with the data from problem 0.
+   a. Suppose we'd like to create a parametric algorithm to predict the target from the other variables. What's the most basic type of algorithm to do so?
+   b. Suppose we'd like to create a non-parametric algorithm to predict the target from the other variables. What's the most basic type of algorithm to do so?
+   c. Suppose we'd like to create a neural network to predict the target from the other variables. What type of activation function should we use for the output?
+   d. Suppose we'd like to create a parametric algorithm to predict the category from the other variables. What's the most basic type of algorithm to do so?
+   e. Suppose we'd like to create a non-parametric algorithm to predict the category from the other variables. What's the most basic type of algorithm to do so?
+   f. Suppose we'd like to create a neural network to predict the category from the other variables. What type of activation function should we use for the output?
+
 
 2. Suppose we're given the data $N$ points 
 $$(x_1,y_1),(x_2,y_2),\ldots,(x_N,y_N).$$
@@ -35,20 +54,32 @@ Let's consider the regression line that's the best least squares approximation t
    b. Write down the associated least squared error $E$ as a function of your two parameters.
    c. Express your previous response using matrix multiplication, a difference, and a 2-norm.
    d. The values of the parameters that solve the least squared error problem can be expressed as a projection of a point in $N$-dimensional space onto a two-dimensional subspace. Use your answer to part (c) to identify the point and the subspace.
-   
-3. If I had to name the top three applications of linear algebra to machine learning, I might just say 
+
+3. What is regularization? Be sure to address the following in your response:
+   - What problem regularization attempts to mitigate,
+   - What technique is typically used in linear regression and why we might expect it to work, and
+   - What techniques are typically used for a neural network and why we might expect them to work.
+
+4. What is validation? Be sure to address 
+   - how cross validation is set up for linear or logistic regression and
+   - why we typically use just a single validation set for neural networks.
+
+
+5. If I had to name the top three applications of linear algebra to machine learning, I might just say 
 
    - i. Norms,
    - ii. Orthogonal projection, and
    - iii. Diagonalization of a matrix $A$ to $SDS^{-1}$ using eigenvalues and eigenvectors.
    
-Here's one question related to each of those:
+   Here's one question related to each of those:
 
-   - Which norm used to measure error in a least square approximation and how?
+   - Which norm is used to measure error in a least square approximation and how?
    - How is orthogonal projection related to the normal equations and the solution of least squares problems? 
    - How is diagonalization used in Principal Component Analysis?
 
-4. Suppose we'd like to build a machine learning algorithm for each of the following situations:
+\newpage 
+
+6. Suppose we'd like to build a machine learning algorithm for each of the following situations:
 
    a. A medical diagnosis system to use patient similarity compared to past cases (based on features like age, symptoms, and blood pressure). The objective is to predict whether a patient has a certain condition.
    b. An online advertising platform to estimate the probability that a user will click on an ad, based on features like time of day, device type, and ad category.
@@ -59,7 +90,7 @@ Here's one question related to each of those:
 
    - Linear regression,
    - Logistic regression,
-   - KNN Classifcation, or
+   - KNN Classification, or
    - KNN Regression.
   
    Of course, we'd like to know why.
@@ -80,7 +111,7 @@ where $X$ is the vector of variables and $A$ is the vector of parameters.
    a. Using summation notation? And
    b. Using more compact matrix vector notation? -->
 
-6. I've used a ratings algorithm to make the following assessments of the strengths of four teams (listed in alphabetical order) over the course of a season:
+7. I've used a ratings algorithm to make the following assessments of the strengths of four teams (listed in alphabetical order) over the course of a season:
 
    |ID|Team|Strength|
    |:---|:---|:---:|
@@ -106,6 +137,6 @@ where $X$ is the vector of variables and $A$ is the vector of parameters.
    b. Does the numeric value Prob represent regression or classification? Why?
    c. Does the numeric value Pred represent regression or classification? Why?
 
-7. The images shown in [@fig-classification_plots] display the results of two different classification algorithms applied to the same data set. The data set consists of 300 different two-dimensional data points each indicated by color. What kinds of algorithms might have generated those plots? There might be more than one reasonable response for each plot but you should be able to articulate some reason for your response.
+8. The images shown in [@fig-classification_plots] display the results of two different classification algorithms applied to the same data set. The data set consists of 300 different two-dimensional data points each indicated by color. What kinds of algorithms might have generated those plots? There might be more than one reasonable response for each plot but you should be able to articulate some reason for your response.
 
-![Classifcation plots](classification_plots){#fig-classification_plots width=7in}
+![Classification plots](classification_plots){#fig-classification_plots width=7in}
