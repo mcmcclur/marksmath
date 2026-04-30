@@ -1,0 +1,96 @@
+## Chat Transcript
+
+**MathGPT (08:34)**  
+Hi, what's your question?
+
+---
+
+**You (08:35)**  
+What's the derivative of $\sqrt{x^2}$?
+
+---
+
+**MathGPT (08:35)**  
+Let's start by rewriting $\sqrt{x^2}$ in a form that's easier to differentiate.  
+How can you express $\sqrt{x^2}$ using exponents?
+
+---
+
+**You (08:35)**  
+I guess it's $x^{2/2} = x$ ??
+
+---
+
+**MathGPT (08:35)**  
+Not quite—$\sqrt{x^2}$ is not simply $x$.  
+Think about what happens when $x$ is negative.  
+What is the value of $\sqrt{x^2}$ for negative $x$?
+
+---
+
+**You (08:36)**  
+It's $-x$, I guess.
+
+---
+
+**MathGPT (08:36)**  
+Not quite. $\sqrt{x^2}$ is not equal to $-x$ either.  
+Remember, the square root of a square always gives a non-negative result, no matter if $x$ is positive or negative.  
+
+What function always returns the non-negative value of $x$, regardless of its sign?
+
+---
+
+**You (08:37)**  
+What do you mean "the non-negative value of x"?
+
+---
+
+**MathGPT (08:37)**  
+Great question! By "the non-negative value of $x$", I mean a function that always gives you a result that is zero or positive, no matter what value $x$ has.
+
+For example:
+- If $x = 3$, it returns $3$
+- If $x = -3$, it still returns $3$
+
+Do you know the name of this function?
+
+---
+
+**You (08:38)**  
+Maybe you want the absolute value?
+
+---
+
+**MathGPT (08:38)**  
+Yes, exactly! The function is the absolute value, written as $|x|$.
+
+So,
+$$
+\sqrt{x^2} = |x|
+$$
+
+Now, using this, how would you find the derivative of $|x|$ with respect to $x$?
+
+---
+
+**You (08:38)**  
+I don't know, that's why I'm asking!
+
+---
+
+**MathGPT (08:38)**  
+Let me help with this one. The derivative of $|x|$ is:
+
+$$
+\frac{d}{dx}|x| =
+\begin{cases}
+1 & \text{if } x > 0 \\
+-1 & \text{if } x < 0 \\
+\text{undefined} & \text{if } x = 0
+\end{cases}
+$$
+
+So, the derivative of $\sqrt{x^2}$ is the same as the derivative of $|x|$.
+
+Can you explain why the derivative is undefined at $x = 0$?
