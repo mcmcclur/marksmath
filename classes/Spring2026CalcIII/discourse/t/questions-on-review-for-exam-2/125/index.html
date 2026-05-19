@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width">
+    <title>Questions on Review for Exam 2</title>
+    <link rel="stylesheet" href="../../../archived.css" />
+    <script>
+      function preprocessDiscourseMath() {
+        document.querySelectorAll("span.math, div.math").forEach(function (node) {
+          var tex = node.textContent || "";
+          if (!tex.trim()) {
+            return;
+          }
+          if (node.tagName === "SPAN") {
+            node.textContent = "\\(" + tex + "\\)";
+          } else {
+            node.textContent = "\\[" + tex + "\\]";
+          }
+          node.classList.remove("math");
+        });
+      }
+
+      window.MathJax = {
+        tex: {
+          inlineMath: [["\\(", "\\)"]],
+          displayMath: [["\\[", "\\]"]]
+        },
+        startup: {
+          pageReady() {
+            preprocessDiscourseMath();
+            return MathJax.startup.defaultPageReady();
+          }
+        }
+      };
+    </script>
+    <script async id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="title-span">
+        <a href="../../../">
+          <img src="../../../images/ea06c0b00f456d7d2112d8196d0da94074cbf04a.png" height="40" alt="Site Logo" id="site-logo" />
+        </a>
+      </div>
+    </header>
+
+    <div class="main">
+    <div class="archive-span">Archived May, 2026.</div>
+    <h1 class="topic-title">Questions on Review for Exam 2</h1>
+            <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/7_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">mark</div>
+          <div class="post_content">
+<p>You can ask questions over <a href="https://marksmath.org/classes/Spring2026CalcIII/handouts/Exam2Review/">our Review for Exam II</a> by posting them here!</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">zowens</div>
+          <div class="post_content">
+<p>I need help and a clear and concise walkthrough of questions 10-13. I went to the math lab and still do not really understand spherical coordinates very well as well as real numbers.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/7_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">mark</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="3" data-topic="125" data-username="zowens">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/48.png" width="24"/> zowens:</div>
+<blockquote>
+<p>I need help and a clear and concise walkthrough of questions 10-13.</p>
+</blockquote>
+</aside>
+<p>Let's try to keep it one question at a time, please.</p>
+<p>Also, try to state the problem to the best of your ability, remembering that you can copy the code to create typeset mathematics right out of the online version of the review sheet, as described in <a href="https://discourse.marksmath.org/t/how-do-i-enter-groovy-typeset-mathematics-into-discourse/18#p-33-finding-code-for-given-expresssions-3">this meta post</a>.</p>
+<p>Finally, if you can give some indication of what you've tried and where you're stuck, then it can be a lot easier for anyone to respond.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">zowens</div>
+          <div class="post_content">
+<p>OK, here's what <span class="hashtag-raw">#11</span> says:</p>
+<blockquote>
+<p>Let <span class="math">D</span> denote the three-dimensional domain above the cone <span class="math">z=\sqrt{x^2+y^2}</span> and inside the sphere <span class="math">x^2+y^2+z^2\leq 4</span>. Evaluate</p>
+<div class="math">
+\displaystyle \iiint\limits_{D} (x^2 + y^2 + z^2) \, dV.
+</div>
+</blockquote>
+<p>Why is <span class="math">z=\sqrt{x^2+y^2}</span> a cone? And what does the whole domain look like? How do I use that to set up the integral?</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/7_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">mark</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="5" data-topic="125" data-username="zowens">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/48.png" width="24"/> zowens:</div>
+<blockquote>
+<p>Why is <span class="math">z=\sqrt{x^2+y^2}</span> a cone? And what does the whole domain look like? How do I use that to set up the integral?</p>
+</blockquote>
+</aside>
+<p>Seems like fair questions! To see why the graph of <span class="math">z=\sqrt{x^2+y^2}</span> is a cone, let's slice it with a vertical plane by setting <span class="math">y=0</span>. We're then left with</p>
+<div class="math">
+z=\sqrt{x^2} = |x|.
+</div>
+<p>We know what the graph of that looks like, of course:</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/002b8992a12050fe7883615137ea5ff532c18932" href="https://discourse.marksmath.org/uploads/default/original/1X/002b8992a12050fe7883615137ea5ff532c18932.png" title="desmos-graph"><img alt="desmos-graph" data-base62-sha1="1vhgj12Dc1IHJrWWEwmn8lDT22" data-dominant-color="F4F4F4" height="250" src="../../../images/002b8992a12050fe7883615137ea5ff532c18932_2_250x250.png" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/002b8992a12050fe7883615137ea5ff532c18932_2_250x250.png, https://discourse.marksmath.org/uploads/default/optimized/1X/002b8992a12050fe7883615137ea5ff532c18932_2_375x375.png 1.5x, https://discourse.marksmath.org/uploads/default/optimized/1X/002b8992a12050fe7883615137ea5ff532c18932_2_500x500.png 2x" width="250"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">desmos-graph</span><span class="informations">800×800 8.36 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>Since the function depends only on <span class="math">x^2+y^2</span>, it has rotational symmetry so we get a cone centered about the <span class="math">z</span>-axis. The implications for the bounds of integration are that</p>
+<div class="math">
+0 \leq \varphi \leq \pi/4.
+</div>
+<p>The other bounds of integration are pretty easy, so that our triple integral expressed in spherical coordinates are</p>
+<div class="math">
+\int_0^{2\pi}\int_0^{\pi/4} \int_0^2 \rho^2 \, \rho^2 \sin(\varphi) \, d\rho \, d\phi \, d\theta.
+</div>
+<p>Can you integrate that??</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">FatCat</div>
+          <div class="post_content">
+<p>For question 6b, do does this integral look right?</p>
+<div class="math">
+\int_{-2}^{2} \int_{x^2}^{4} x^2 \, dy \, dx
+</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/7_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">mark</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="7" data-topic="125" data-username="FatCat">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/48.png" width="24"/> FatCat:</div>
+<blockquote>
+<p>For question 6b, do does this integral look right?</p>
+</blockquote>
+</aside>
+<p>Yes, that looks great!</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">FatCat</div>
+          <div class="post_content">
+<p>Is <span class="hashtag-raw">#9</span> asking for the volume bounded by the xy plane and the function? I can't quite figure out what my bounds are based on the information provided</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/7_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">mark</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="9" data-topic="125" data-username="FatCat">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/48.png" width="24"/> FatCat:</div>
+<blockquote>
+<p>Is <span class="hashtag-raw">#9</span> asking for the volume bounded by the xy plane and the function?</p>
+</blockquote>
+</aside>
+<p>Yes, the intention is for you to set up the triple integral over the region <span class="math">R</span> stuck between the <span class="math">xy</span>-plane and the graph of</p>
+<div class="math">
+f(x,y) = 9-(x^2+y^2).
+</div>
+<p>Thus, the statement of the problem is really incomplete.</p>
+<p>The integrand, of course, is <span class="math">(x^2+y^2)z</span>, which is a completely different function. You might think of that function as representing density over the region <span class="math">R</span> so that the value of the integral could represent mass - <em>not</em> volume.</p>
+<p>Well, there are a couple of functions in the statement of the problem</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Natlopts</div>
+          <div class="post_content">
+<p>For question <span class="hashtag-raw">#9</span>, I used polar coordinates to set up a triple integral and I got</p>
+<div class="math">
+\int_0^{2\pi} \int_0^{3} \int_0^{9-r^2} r^{2} z \, dz \, r\, dr \, d\theta.
+</div>
+<p>Is this right?</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/7_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">mark</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="11" data-topic="125" data-username="Natlopts">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/48.png" width="24"/> Natlopts:</div>
+<blockquote>
+<p>Is this right?</p>
+</blockquote>
+</aside>
+<p>Yes, that looks great - so far.</p>
+<p>Reading the question, I guess you are asked to evaluate the integral. I don't think that part is particularly hard, in this case, but do be sure to answer the question that is asked on the exam!</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Natlopts</div>
+          <div class="post_content">
+<p>Yes! I just wanted to make sure it was the correct integral, thanks <img alt=":smiley:" class="emoji" height="20" loading="lazy" src="../../../images/smiley.png" title=":smiley:" width="20"/></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">jcrabtre</div>
+          <div class="post_content">
+<p>If it's something you can answer, will Linear Regression be on exam 2? I'm not actually sure when we covered it.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/7_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">mark</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="14" data-topic="125" data-username="jcrabtre">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/48.png" width="24"/> jcrabtre:</div>
+<blockquote>
+<p>will Linear Regression be on exam 2?</p>
+</blockquote>
+</aside>
+<p>No. We did cover it since the last exam and it was on the last quiz. With all the material we've covered, though, I decided not to put it on the review sheet so it won't be on this exam.</p>
+<p>It seems like a good possibility for the final, though.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/7_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">mark</div>
+          <div class="post_content">
+
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+  </body>
+</html>

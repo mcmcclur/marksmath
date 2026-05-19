@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width">
+    <title>What is Discourse at Mark&rsquo;s Math</title>
+    <link rel="stylesheet" href="../../../archived.css" />
+    <script>
+      function preprocessDiscourseMath() {
+        document.querySelectorAll("span.math, div.math").forEach(function (node) {
+          var tex = node.textContent || "";
+          if (!tex.trim()) {
+            return;
+          }
+          if (node.tagName === "SPAN") {
+            node.textContent = "\\(" + tex + "\\)";
+          } else {
+            node.textContent = "\\[" + tex + "\\]";
+          }
+          node.classList.remove("math");
+        });
+      }
+
+      window.MathJax = {
+        tex: {
+          inlineMath: [["\\(", "\\)"]],
+          displayMath: [["\\[", "\\]"]]
+        },
+        startup: {
+          pageReady() {
+            preprocessDiscourseMath();
+            return MathJax.startup.defaultPageReady();
+          }
+        }
+      };
+    </script>
+    <script async id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="title-span">
+        <a href="../../../">
+          <img src="../../../images/ea06c0b00f456d7d2112d8196d0da94074cbf04a.png" height="40" alt="Site Logo" id="site-logo" />
+        </a>
+      </div>
+    </header>
+
+    <div class="main">
+    <div class="archive-span">Archived May, 2026.</div>
+    <h1 class="topic-title">What is Discourse at Mark&rsquo;s Math</h1>
+            <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/7_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">mark</div>
+          <div class="post_content">
+<p>Discourse at Mark's Math is a web forum where Mark's students can talk about Math, Code, and related topics.</p>
+<p>Since this forum exists mainly to support my classes, most of the content is either unlisted or requires login to access. Students who <em>are</em> logged in can</p>
+<ul>
+<li>ask questions about the course or mathematical content by hitting a "New Topic" button:<br/>
+<img alt="Screenshot 2026-01-07 at 9.29.17 AM" data-base62-sha1="hnpaC9P15WNj7Cc7Fh3bzmPpHtz" height="45" src="../../../images/79ca49664bf653a61d931adc6093931774c227bd.png" width="134"/></li>
+<li>respond to problems and assignments that I post by hitting a Reply button:<br/>
+<img alt="Screenshot 2026-01-07 at 9.36.43 AM" data-base62-sha1="5PdLuSaRx7jL9D21sTePh28r23b" height="37" src="../../../images/28d525dd09b53ad9275255fbb37cba5c0b6809f5.png" width="88"/></li>
+</ul>
+<p>You can read more about how to use the site in these other meta posts:</p>
+<ul>
+<li><a href="https://discourse.marksmath.org/t/how-do-i-type-nicely-formatted-posts-into-discourse/4"> How do I type nicely formatted posts into Discourse? </a></li>
+<li><a href="https://discourse.marksmath.org/t/how-do-i-enter-groovy-typeset-mathematics-into-a-post/8">How do I enter groovy typeset mathematics into a post?</a></li>
+</ul>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+  </body>
+</html>

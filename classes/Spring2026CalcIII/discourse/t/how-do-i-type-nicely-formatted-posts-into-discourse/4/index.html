@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width">
+    <title>How do I type nicely formatted posts into Discourse?</title>
+    <link rel="stylesheet" href="../../../archived.css" />
+    <script>
+      function preprocessDiscourseMath() {
+        document.querySelectorAll("span.math, div.math").forEach(function (node) {
+          var tex = node.textContent || "";
+          if (!tex.trim()) {
+            return;
+          }
+          if (node.tagName === "SPAN") {
+            node.textContent = "\\(" + tex + "\\)";
+          } else {
+            node.textContent = "\\[" + tex + "\\]";
+          }
+          node.classList.remove("math");
+        });
+      }
+
+      window.MathJax = {
+        tex: {
+          inlineMath: [["\\(", "\\)"]],
+          displayMath: [["\\[", "\\]"]]
+        },
+        startup: {
+          pageReady() {
+            preprocessDiscourseMath();
+            return MathJax.startup.defaultPageReady();
+          }
+        }
+      };
+    </script>
+    <script async id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="title-span">
+        <a href="../../../">
+          <img src="../../../images/ea06c0b00f456d7d2112d8196d0da94074cbf04a.png" height="40" alt="Site Logo" id="site-logo" />
+        </a>
+      </div>
+    </header>
+
+    <div class="main">
+    <div class="archive-span">Archived May, 2026.</div>
+    <h1 class="topic-title">How do I type nicely formatted posts into Discourse?</h1>
+            <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/7_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">mark</div>
+          <div class="post_content">
+<p>Discourse at Mark's Math is built using <a href="https://www.discourse.org">Discourse</a>, which is widely used open source forum software. Discourse provides two interfaces for text entry - the classic markdown editor and a newer rich editor.</p>
+<p>The default editor on Discourse at Mark's Math is the markdown editor, since most university students going into any technical fields should become familiar with markdown at some point. Some folks find that markdown feels too much like code, though, and prefer more direct entry; that's what the rich editor comes in.</p>
+<p>I recommend that students start with the markdown editor but you can switch back and forth as you like. In either case, there will be a toolbar at the top of your post that looks like so:</p>
+<p><img alt="Image of Discourse's toolbar" data-base62-sha1="xKbbWFressOfSlOsW0anIL3Jy9w" data-dominant-color="F1F2F2" height="42" src="../../../images/ec80205f1b5811e76650dd19c6379203706f163e_2_690x42.png" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/ec80205f1b5811e76650dd19c6379203706f163e_2_690x42.png, https://discourse.marksmath.org/uploads/default/optimized/1X/ec80205f1b5811e76650dd19c6379203706f163e_2_1035x63.png 1.5x, https://discourse.marksmath.org/uploads/default/original/1X/ec80205f1b5811e76650dd19c6379203706f163e.png 2x" width="690"/></p>
+<p>The switch at the left toggles back and forth between markdown  <img alt="Markdown button" data-base62-sha1="g2JM5h9xYhNRJYvE9UIMx5P3RmO" height="19" src="../../../images/7072069273c584293bb6a2272b6d4e1d53a3e912.png" width="22"/> and rich <img alt="Rich editor button" data-base62-sha1="ccMhH7fF0bVrVpSeSTkLvcB5klh" height="16" src="../../../images/558be2580c90933fe4437f3eb0e7e615b89c275f.png" width="18"/>. You can read more about each of these in the posts below:</p>
+<ul>
+<li>the <a href="https://discourse.marksmath.org/t/how-do-i-type-and-nicely-format-posts-into-discourse/4/5">markdown editor</a> and</li>
+<li>the rich editor.</li>
+</ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/7_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">mark</div>
+          <div class="post_content">
+<h2><a aria-label="Heading link" class="anchor" href="#p-31-using-the-markdown-editor-1" name="p-31-using-the-markdown-editor-1"></a>Using the markdown editor</h2>
+<p>The default mode of entry for posts in Discourse at Mark's Math is <a href="https://www.markdownguide.org/cheat-sheet/">Markdown</a>, which is a useful tool to understand in its own right since it's widely used in</p>
+<ul>
+<li>Website and blogging software, like Squarespace and Wordpress</li>
+<li>Version control systems, like GitHub</li>
+<li>Note taking tools, like Obsidian</li>
+<li>Communication Platforms, like Reddit and Stack Exchange.</li>
+</ul>
+<p>Markdown is intended to be a lightweight, easy to read/write syntax to indicate how text should be nicely formatted For example, if I wanted my rendered text to look like this:</p>
+<blockquote>
+<h2>Reasons Markdown is awesome</h2>
+<p><strong>Markdown</strong> is really awesome because</p>
+<ul>
+<li>it's easy to <em>read</em>,</li>
+<li>it's easy to <em>write</em>,</li>
+<li><s>but that's all?</s>
+<ul>
+<li>Actually, there's a lot more, like the output is <strong>awesome</strong>!</li>
+</ul>
+</li>
+</ul>
+<h2>Reasons markdown is not awesome</h2>
+<ul>
+<li><strong>NONE!</strong></li>
+</ul>
+</blockquote>
+<p>I could type:</p>
+<pre><code>## Reasons Markdown is awesome
+**Markdown** is really awesome because
+- it's easy to *read*,
+- it's easy to *write*, 
+- ~~but that's all?~~
+  - Actually, there's a lot more, like the output is **awesome**!
+## Reasons markdown is not awesome
+- **NONE!**
+</code></pre>
+<p>Note how it's just basic text with a few extra symbols like</p>
+<ul>
+<li><code>**bold**</code> for <strong>bold</strong></li>
+<li><code>*italic*</code> for <em>italic</em>.</li>
+<li><code>~~strike through~~</code> for <s>strike through</s></li>
+</ul>
+<p>Higher level items include hashtags (like ##) for sections and dashes (like -) for list items. You can take a look at the <a href="https://www.markdownguide.org/cheat-sheet/">Markdown cheatsheet</a> already linked for a more complete introduction.</p>
+<h2><a aria-label="Heading link" class="anchor" href="#p-31-the-toolbar-2" name="p-31-the-toolbar-2"></a>The toolbar</h2>
+<p>We've already met Discourse's toolbar:</p>
+<p><img alt="Image of Discourse's toolbar" data-base62-sha1="xKbbWFressOfSlOsW0anIL3Jy9w" data-dominant-color="F1F2F2" height="42" src="../../../images/ec80205f1b5811e76650dd19c6379203706f163e_2_690x42.png" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/ec80205f1b5811e76650dd19c6379203706f163e_2_690x42.png, https://discourse.marksmath.org/uploads/default/optimized/1X/ec80205f1b5811e76650dd19c6379203706f163e_2_1035x63.png 1.5x, https://discourse.marksmath.org/uploads/default/original/1X/ec80205f1b5811e76650dd19c6379203706f163e.png 2x" width="690"/></p>
+<p>When editing in markdown mode, the toolbar essentially functions as a Markdown assistant. Thus, you can insert the required markdown by pressing</p>
+<ul>
+<li><img alt="B for bold" data-base62-sha1="gYi65p0vOiatnp24pEv413mBRcZ" height="24" src="../../../images/76f387353315f219630fdff568fa0d8d623c1b11.png" width="25"/> for bold text</li>
+<li><img alt="I for italic" data-base62-sha1="4N0kLpTbec93Hr9HZpLG0RH6df" height="24" src="../../../images/008aa052de71ce25a07663cab73d3a2118140e45.png" width="25"/> for italic text.</li>
+<li><img alt="Tt for headings" data-base62-sha1="6rwrGYwfzXC7I5LaT79ZG2PXdw7" height="24" src="../../../images/2d2985a25f8927ec38dc631082187520ee1b4013.png" width="25"/> for headings</li>
+<li><img alt="Links" data-base62-sha1="aanQ6hCHjj1d3kIip61KMVkze2b" height="23" src="../../../images/47423fff269ac8d53a3353e764b5394f0f22c6c7.png" width="25"/> for hyperlinks</li>
+<li><img alt="Quotes" data-base62-sha1="77WCKU80kdZLFIQdHVdfjsRoFcm" height="23" src="../../../images/31f5261d02c8c6f4192376ffad567acf948655f2.png" width="25"/> for block quotes</li>
+<li><img alt="&lt;&gt; code" data-base62-sha1="dccjLvI0VJx04Vr6G9NTftQU2sJ" height="23" src="../../../images/5c7d455590c58cf0dc273bb2d82efb78792ffe1d.png" width="25"/> for code</li>
+<li><img alt="Images" data-base62-sha1="qNgdnnXMkeoN4fTevv8jnT2iTAW" height="23" src="../../../images/bbca116b52ba88bf0ace1a496f64703846fe8fbe.png" width="25"/> for images</li>
+<li><img alt="Bulleted lists" data-base62-sha1="5d8N7ABndxEXsqOem8KoFcALJkA" height="23" src="../../../images/24872be004c21a192cac5b8b35accbe327b49938.png" width="25"/> for bulleted lists</li>
+<li><img alt="Numbered lists" data-base62-sha1="qykIb0WfvakznYwDJ0N2zOtMSEP" height="23" src="../../../images/ba1a17b1a0eef743cb7651ad3ab86efbd077038b.png" width="25"/> for numbered lists, and</li>
+<li><img alt="Emojis" data-base62-sha1="rGAXD4SsFs0ScPIudPW8Js1vXzG" height="23" src="../../../images/c20b5b6c0cc3f91178fe30945919c69b71d72e68.png" width="25"/> for emojis</li>
+</ul>
+<p>There are three other buttons on either side of the toolbar:</p>
+<ul>
+<li><img alt="Editor toggle" data-base62-sha1="c9nlb60hknBPknKRQlaUzx3L8Bb" height="24" src="../../../images/55296d45c84079794f387997798c20217f1a0979.png" width="47"/> that toggles between markdown and rich editors,</li>
+<li><img alt="AI Proofreader" data-base62-sha1="tms7U7Ry00mc1HaNxqWvRVPA8kj" height="25" src="../../../images/cdc8d0de3c8d800c597af69619757933abcb5fbb.png" width="23"/> that accesses the AI proofreader, which is particularly convenient for entering math, and</li>
+<li><img alt="Add options" data-base62-sha1="tQc9Pup30StECKnmlacS2p5vEJi" height="25" src="../../../images/d12582d9a1bc97eb1e5e4244d2389cb224e5da50.png" width="23"/> that provides access to additional options like Math Mode.</li>
+</ul>
+<p>These are really not hard to figure out, if you just play around a bit!</p>
+<h2><a aria-label="Heading link" class="anchor" href="#p-31-images-3" name="p-31-images-3"></a>Images</h2>
+<p>The <img alt="Screenshot 2026-01-07 at 9.50.59 AM" data-base62-sha1="aaxSQrZbukiMsPUEKJj8nklZU0W" height="22" src="../../../images/4746f02851486f006ecc213f5d6c70545d7b47c2.png" width="27"/> icon in the toolbar is used to include images. When you click on it, you can choose an image from your machine, that image will be uploaded, <em>and</em> the proper Markdown syntax will be inserted into your post.</p>
+<p>That's how I inserted the image of the toolbar in the first place!</p>
+<h2><a aria-label="Heading link" class="anchor" href="#p-31-dynamic-images-with-desmos-4" name="p-31-dynamic-images-with-desmos-4"></a>Dynamic images with Desmos</h2>
+<p>If you use Desmos, you can create <em>really</em> nice images and make them interactive as well. Here's an example</p>
+<iframe frameborder="0" height="500" src="https://www.desmos.com/calculator/c810124d13?embed" width="800"></iframe>
+<p>Note that you can move the h-slider to illustrate one of the fundamental ideas of calculus. The image is a direct embedding of <a href="https://www.desmos.com/calculator/c810124d13">this Desmos graph</a>.</p>
+<p>To embed any Desmos graph, simply click the share <img alt="Screenshot 2026-01-07 at 9.53.59 AM" data-base62-sha1="xR2qi7HIlSoLREA0vN4fiDkVgCC" height="21" src="../../../images/ed469a0cf2f38c1acef981063108a189cf8b3632.png" width="32"/> button in the top right of the Desmos window.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/7_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">mark</div>
+          <div class="post_content">
+<h2><a aria-label="Heading link" class="anchor" href="#p-32-using-the-rich-editor-1" name="p-32-using-the-rich-editor-1"></a>Using the rich editor</h2>
+<p>Discourse’s rich editor is essentially a basic “What you see is what you get” or <em>WYSIWYG</em> editor. From the user’s viewpoint, the immediately obvious difference is that the screen is not split into two parts - a text entry pane and a rendered pane. In their place is a single pane, which is formatted as you type.</p>
+<h3><a aria-label="Heading link" class="anchor" href="#p-32-the-toolbar-2" name="p-32-the-toolbar-2"></a>The toolbar</h3>
+<p>We have the same toolbar, though the rich editor <img alt="Screenshot 2026-01-07 at 10.06.32 AM" data-base62-sha1="q6kW3LdzdLcSQ4iqoq4ts66lEr9" height="24" src="../../../images/b6efecc9b54326d6ef4362e677031654cd2bedab.png" width="25"/> is now highlighted in the toggle on the left:</p>
+<p><img alt="Image of Discourse's toolbar in rich entry mode" data-base62-sha1="18PGsJfp5UfCLwFIs3O7bqSWGzp" data-dominant-color="F0F1F1" height="39" src="../../../images/0801cdd550bd1b1e0391b33cdc0b9191ddbb0ecb_2_690x39.png" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/0801cdd550bd1b1e0391b33cdc0b9191ddbb0ecb_2_690x39.png, https://discourse.marksmath.org/uploads/default/optimized/1X/0801cdd550bd1b1e0391b33cdc0b9191ddbb0ecb_2_1035x58.png 1.5x, https://discourse.marksmath.org/uploads/default/original/1X/0801cdd550bd1b1e0391b33cdc0b9191ddbb0ecb.png 2x" width="690"/></p>
+<p>The formatting buttons all mean the same thing, thus</p>
+<ul>
+<li><img alt="B for bold" data-base62-sha1="gYi65p0vOiatnp24pEv413mBRcZ" height="24" src="../../../images/76f387353315f219630fdff568fa0d8d623c1b11.png" width="25"/> enters bold text,</li>
+<li><img alt="I for italic" data-base62-sha1="4N0kLpTbec93Hr9HZpLG0RH6df" height="24" src="../../../images/008aa052de71ce25a07663cab73d3a2118140e45.png" width="25"/> enters italic text,</li>
+<li><img alt="Tt for headings" data-base62-sha1="6rwrGYwfzXC7I5LaT79ZG2PXdw7" height="24" src="../../../images/2d2985a25f8927ec38dc631082187520ee1b4013.png" width="25"/> enters headings,</li>
+<li><img alt="Links" data-base62-sha1="aanQ6hCHjj1d3kIip61KMVkze2b" height="23" src="../../../images/47423fff269ac8d53a3353e764b5394f0f22c6c7.png" width="25"/> enters hyperlinks,</li>
+<li><img alt="Quotes" data-base62-sha1="77WCKU80kdZLFIQdHVdfjsRoFcm" height="23" src="../../../images/31f5261d02c8c6f4192376ffad567acf948655f2.png" width="25"/> enters block quotes,</li>
+<li><img alt="&lt;&gt; code" data-base62-sha1="dccjLvI0VJx04Vr6G9NTftQU2sJ" height="23" src="../../../images/5c7d455590c58cf0dc273bb2d82efb78792ffe1d.png" width="25"/> enters code,</li>
+<li><img alt="Images" data-base62-sha1="qNgdnnXMkeoN4fTevv8jnT2iTAW" height="23" src="../../../images/bbca116b52ba88bf0ace1a496f64703846fe8fbe.png" width="25"/> enters images,</li>
+<li><img alt="Bulleted lists" data-base62-sha1="5d8N7ABndxEXsqOem8KoFcALJkA" height="23" src="../../../images/24872be004c21a192cac5b8b35accbe327b49938.png" width="25"/> enters bulleted lists,</li>
+<li><img alt="Numbered lists" data-base62-sha1="qykIb0WfvakznYwDJ0N2zOtMSEP" height="23" src="../../../images/ba1a17b1a0eef743cb7651ad3ab86efbd077038b.png" width="25"/> enters numbered lists, and</li>
+<li><img alt="Emojis" data-base62-sha1="rGAXD4SsFs0ScPIudPW8Js1vXzG" height="23" src="../../../images/c20b5b6c0cc3f91178fe30945919c69b71d72e68.png" width="25"/> enters emojis.</li>
+</ul>
+<p>The special buttons on the right also mean the same thing as with the markdown editor, though, their behavior is slightly different:</p>
+<ul>
+<li><img alt="AI Proofreader" data-base62-sha1="tms7U7Ry00mc1HaNxqWvRVPA8kj" height="37" src="../../../images/cdc8d0de3c8d800c597af69619757933abcb5fbb.png" width="34"/>provides access to the proofreader, though, you can’t select text within a math node and</li>
+<li><img alt="Additional options" data-base62-sha1="tQc9Pup30StECKnmlacS2p5vEJi" height="37" src="../../../images/d12582d9a1bc97eb1e5e4244d2389cb224e5da50.png" width="34"/>provides access to additional options and insert math is now essential.</li>
+</ul>
+<h3><a aria-label="Heading link" class="anchor" href="#p-32-images-3" name="p-32-images-3"></a>Images</h3>
+<p>Images, too, work in largely the same way as they do in the markdown editor. One key difference is that iframe embeds from Desmos <em>must</em> be pasted. That’s how I entered this thing:</p>
+<iframe frameborder="0" height="300" src="https://www.desmos.com/calculator/4b697a7834?embed" width="700"></iframe>
+<p>When I pasted it, though, it looked like so:</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/7fef7f14ec34aa7d031aa70deab3cf723f361b83" href="https://discourse.marksmath.org/uploads/default/original/1X/7fef7f14ec34aa7d031aa70deab3cf723f361b83.png" title="Image of an embedded inline node"><img alt="Image of an embedded inline node" data-base62-sha1="ifLKXCrWvP5VtB9bMg7UtR8nrDZ" data-dominant-color="EAEBE7" height="68" src="../../../images/7fef7f14ec34aa7d031aa70deab3cf723f361b83_2_690x68.png" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/7fef7f14ec34aa7d031aa70deab3cf723f361b83_2_690x68.png, https://discourse.marksmath.org/uploads/default/optimized/1X/7fef7f14ec34aa7d031aa70deab3cf723f361b83_2_1035x102.png 1.5x, https://discourse.marksmath.org/uploads/default/optimized/1X/7fef7f14ec34aa7d031aa70deab3cf723f361b83_2_1380x136.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Image of an embedded inline node</span><span class="informations">1458×144 24.1 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>Technically, this is an embedded inline node. You’ll see more of this sort of thing, if you enter typeset mathematics in the rich editor!</p>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+  </body>
+</html>

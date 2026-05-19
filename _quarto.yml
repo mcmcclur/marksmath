@@ -8,6 +8,7 @@ project:
     - data/temp/titanic/train.csv
     - /images/square_on_back.png
     - /images/pacman.png
+    - classes/*/discourse/**
 
 website:
   title: "Mark's Math"

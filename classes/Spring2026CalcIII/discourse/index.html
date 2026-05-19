@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Calc III Discourse Site</title>
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="https://use.fontawesome.com/2374bdec1c.css">
+    <link rel="stylesheet" href="./archived.css" />
+    <script>
+      function applyCategoryFilter() {
+        var hash = window.location.hash || "";
+        var selected = "all";
+        if (hash.indexOf("#category=") === 0) {
+          selected = decodeURIComponent(hash.slice("#category=".length));
+        }
+
+        document.querySelectorAll(".category-nav a").forEach(function (link) {
+          var isActive = link.dataset.category === selected;
+          link.setAttribute("aria-current", isActive ? "page" : "false");
+        });
+
+        document.querySelectorAll(".topic-row").forEach(function (row) {
+          var matches = selected === "all" || row.dataset.category === selected;
+          row.hidden = !matches;
+        });
+      }
+
+      function preprocessDiscourseMath() {
+        document.querySelectorAll("span.math, div.math").forEach(function (node) {
+          var tex = node.textContent || "";
+          if (!tex.trim()) {
+            return;
+          }
+          if (node.tagName === "SPAN") {
+            node.textContent = "\\(" + tex + "\\)";
+          } else {
+            node.textContent = "\\[" + tex + "\\]";
+          }
+          node.classList.remove("math");
+        });
+      }
+
+      window.MathJax = {
+        tex: {
+          inlineMath: [["\\(", "\\)"]],
+          displayMath: [["\\[", "\\]"]]
+        },
+        startup: {
+          pageReady() {
+            preprocessDiscourseMath();
+            applyCategoryFilter();
+            return MathJax.startup.defaultPageReady();
+          }
+        }
+      };
+
+      window.addEventListener("hashchange", applyCategoryFilter);
+      window.addEventListener("DOMContentLoaded", applyCategoryFilter);
+    </script>
+    <script async id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
+  </head>
+
+  <body>
+
+    <header class="header">
+      <div class="title-span">
+        <h1 class="site-title">
+          <img src="images/ea06c0b00f456d7d2112d8196d0da94074cbf04a.png" height="40" alt="Site Logo" id="site-logo" />
+        </h1>
+      </div>
+    </header>
+
+    <div class="main">
+      <h1 class="archive-title">Calc III Discourse Site</h1>
+      <div class="archive-span">Archived May, 2026.</div>
+      <div class="category-nav">Categories: <a href="#" data-category="all">All</a> - <a href="#category=calc-iii-assignments" data-category="calc-iii-assignments">Calc III Assignments</a> - <a href="#category=calc-iii-problems" data-category="calc-iii-problems">Calc III Problems</a> - <a href="#category=calc-iii-questions" data-category="calc-iii-questions">Calc III Questions</a> - <a href="#category=calc-iii-review-questions" data-category="calc-iii-review-questions">Calc III Review Questions</a> - <a href="#category=meta" data-category="meta">Meta</a></div>
+      <div class="topics">
+        <div class="header-row">
+          <span class="topic-head">Topics</span>
+          <span class="category-head">Category</span>
+          <span class="post-count-head">Posts</span>
+        </div>
+              <div class="topic-row" data-category="calc-iii-review-questions">
+        <span class="topic"><a href="t/questions-on-review-for-exam-3/153">Questions on Review for Exam 3</a></span>
+        <span class="category">Calc III Review Questions</span>
+        <span class="post-count">8</span>
+      </div>
+
+      <div class="topic-row" data-category="calc-iii-problems">
+        <span class="topic"><a href="t/greens-area-formula-for-a-rectangle/150">Green&rsquo;s area formula for a rectangle</a></span>
+        <span class="category">Calc III Problems</span>
+        <span class="post-count">6</span>
+      </div>
+
+      <div class="topic-row" data-category="calc-iii-problems">
+        <span class="topic"><a href="t/greens-area-formula-for-a-non-convex-figure/149">Green&rsquo;s area formula for a non-convex figure</a></span>
+        <span class="category">Calc III Problems</span>
+        <span class="post-count">1</span>
+      </div>
+
+      <div class="topic-row" data-category="calc-iii-questions">
+        <span class="topic"><a href="t/vector-fields/141">Vector Fields</a></span>
+        <span class="category">Calc III Questions</span>
+        <span class="post-count">2</span>
+      </div>
+
+      <div class="topic-row" data-category="meta">
+        <span class="topic"><a href="t/graphviz/137">Graphviz</a></span>
+        <span class="category">Meta</span>
+        <span class="post-count">1</span>
+      </div>
+
+      <div class="topic-row" data-category="calc-iii-review-questions">
+        <span class="topic"><a href="t/questions-on-review-for-exam-2/125">Questions on Review for Exam 2</a></span>
+        <span class="category">Calc III Review Questions</span>
+        <span class="post-count">15</span>
+      </div>
+
+      <div class="topic-row" data-category="calc-iii-problems">
+        <span class="topic"><a href="t/a-polar-integral/122">A polar integral</a></span>
+        <span class="category">Calc III Problems</span>
+        <span class="post-count">1</span>
+      </div>
+
+      <div class="topic-row" data-category="calc-iii-problems">
+        <span class="topic"><a href="t/a-challenging-double-integral/121">A challenging double integral</a></span>
+        <span class="category">Calc III Problems</span>
+        <span class="post-count">1</span>
+      </div>
+
+      <div class="topic-row" data-category="calc-iii-assignments">
+        <span class="topic"><a href="t/generate-a-linear-regression/105">Generate a linear regression</a></span>
+        <span class="category">Calc III Assignments</span>
+        <span class="post-count">47</span>
+      </div>
+
+      <div class="topic-row" data-category="calc-iii-problems">
+        <span class="topic"><a href="t/computing-a-regression-line/106">Computing a regression line</a></span>
+        <span class="category">Calc III Problems</span>
+        <span class="post-count">2</span>
+      </div>
+
+      <div class="topic-row" data-category="calc-iii-problems">
+        <span class="topic"><a href="t/find-and-classify-cps/113">Find and classify CPs</a></span>
+        <span class="category">Calc III Problems</span>
+        <span class="post-count">2</span>
+      </div>
+
+      <div class="topic-row" data-category="calc-iii-questions">
+        <span class="topic"><a href="t/question-on-homework-9-question-6/108">Question on Homework 9 Question 6</a></span>
+        <span class="category">Calc III Questions</span>
+        <span class="post-count">2</span>
+      </div>
+
+      <div class="topic-row" data-category="calc-iii-assignments">
+        <span class="topic"><a href="t/parameterizing-an-oblique-circle-in-3d/88">Parameterizing an oblique circle in 3D</a></span>
+        <span class="category">Calc III Assignments</span>
+        <span class="post-count">39</span>
+      </div>
+
+      <div class="topic-row" data-category="calc-iii-assignments">
+        <span class="topic"><a href="t/fun-with-3d/34">Fun with 3D!</a></span>
+        <span class="category">Calc III Assignments</span>
+        <span class="post-count">53</span>
+      </div>
+
+      <div class="topic-row" data-category="calc-iii-review-questions">
+        <span class="topic"><a href="t/questions-on-review-for-exam-1/93">Questions on Review for Exam 1</a></span>
+        <span class="category">Calc III Review Questions</span>
+        <span class="post-count">11</span>
+      </div>
+
+      <div class="topic-row" data-category="calc-iii-problems">
+        <span class="topic"><a href="t/tnb-frame-for-a-helix/89">TNB frame for a helix</a></span>
+        <span class="category">Calc III Problems</span>
+        <span class="post-count">3</span>
+      </div>
+
+      <div class="topic-row" data-category="calc-iii-review-questions">
+        <span class="topic"><a href="t/questions-on-review-for-quiz-1/58">Questions on Review for Quiz 1</a></span>
+        <span class="category">Calc III Review Questions</span>
+        <span class="post-count">5</span>
+      </div>
+
+      <div class="topic-row" data-category="meta">
+        <span class="topic"><a href="t/what-do-the-various-categories-mean/50">What do the various categories mean?</a></span>
+        <span class="category">Meta</span>
+        <span class="post-count">1</span>
+      </div>
+
+      <div class="topic-row" data-category="calc-iii-problems">
+        <span class="topic"><a href="t/associativity-of-vector-addition/45">Associativity of vector addition</a></span>
+        <span class="category">Calc III Problems</span>
+        <span class="post-count">2</span>
+      </div>
+
+      <div class="topic-row" data-category="meta">
+        <span class="topic"><a href="t/how-do-i-enter-groovy-typeset-mathematics-into-discourse/18">How do I enter groovy, typeset mathematics into Discourse?</a></span>
+        <span class="category">Meta</span>
+        <span class="post-count">3</span>
+      </div>
+
+      <div class="topic-row" data-category="meta">
+        <span class="topic"><a href="t/how-do-i-type-nicely-formatted-posts-into-discourse/4">How do I type nicely formatted posts into Discourse?</a></span>
+        <span class="category">Meta</span>
+        <span class="post-count">3</span>
+      </div>
+
+      <div class="topic-row" data-category="meta">
+        <span class="topic"><a href="t/what-is-discourse-at-marks-math/5">What is Discourse at Mark&rsquo;s Math</a></span>
+        <span class="category">Meta</span>
+        <span class="post-count">1</span>
+      </div>
+
+
+      </div>
+    </div>
+  </body>
+</html>

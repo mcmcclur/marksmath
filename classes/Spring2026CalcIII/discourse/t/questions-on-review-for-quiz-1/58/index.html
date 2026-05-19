@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width">
+    <title>Questions on Review for Quiz 1</title>
+    <link rel="stylesheet" href="../../../archived.css" />
+    <script>
+      function preprocessDiscourseMath() {
+        document.querySelectorAll("span.math, div.math").forEach(function (node) {
+          var tex = node.textContent || "";
+          if (!tex.trim()) {
+            return;
+          }
+          if (node.tagName === "SPAN") {
+            node.textContent = "\\(" + tex + "\\)";
+          } else {
+            node.textContent = "\\[" + tex + "\\]";
+          }
+          node.classList.remove("math");
+        });
+      }
+
+      window.MathJax = {
+        tex: {
+          inlineMath: [["\\(", "\\)"]],
+          displayMath: [["\\[", "\\]"]]
+        },
+        startup: {
+          pageReady() {
+            preprocessDiscourseMath();
+            return MathJax.startup.defaultPageReady();
+          }
+        }
+      };
+    </script>
+    <script async id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="title-span">
+        <a href="../../../">
+          <img src="../../../images/ea06c0b00f456d7d2112d8196d0da94074cbf04a.png" height="40" alt="Site Logo" id="site-logo" />
+        </a>
+      </div>
+    </header>
+
+    <div class="main">
+    <div class="archive-span">Archived May, 2026.</div>
+    <h1 class="topic-title">Questions on Review for Quiz 1</h1>
+            <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/7_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">mark</div>
+          <div class="post_content">
+<p>You can ask questions about our <a href="https://marksmath.org/classes/Spring2026CalcIII/handouts/Quiz1Review">review for quiz 1</a> by posting them here!</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">emery</div>
+          <div class="post_content">
+<p>Is there an intuitive method of deriving the formula for the projection of vectors? I am struggling to remember it and curious if anyone has any tips or tricks.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/7_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">mark</div>
+          <div class="post_content">
+<p><span class="mention">@emery</span> I guess the formula is</p>
+<div class="math">
+\text{proj}_{\vec{u}}\vec{v} = \frac{\vec{u}\cdot\vec{v}}{\vec{u}\cdot\vec{u}}\vec{u}.
+</div>
+<p>Here's how I think of this:<br/>
+First, this is a scalar(<span class="math">(\vec{u}\cdot\vec{v})/{(\vec{u}\cdot\vec{u})}</span>) times a vector <span class="math">\vec{u}</span>. Here's how I think of it:</p>
+<ul>
+<li>The projection is onto <span class="math">\vec{u}</span> so we should should have some scalar <span class="math">*\vec{u}</span>. That's where that part comes from.</li>
+<li>I think it shouldn't be <em>too</em> hard to remember that the scalar is a ratio of dot products of the vectors involved. If you remember that's more <span class="math">\vec{u}\text{s}</span> than <span class="math">\vec{v}\text{s}</span>, then there's not too many choices left.</li>
+</ul>
+<p>If you really want to understand the derivation, it comes from</p>
+<div class="math">
+\frac{\vec{u}\cdot\vec{v}}{\vec{u}\cdot\vec{u}}\vec{u} = \frac{\vec{u}\cdot\vec{v}}{\|\vec{u}\|} \frac{\vec{u}}{\|\vec{u}\|}.
+</div>
+<p>The first part is the magnitude of the projection, which can be derived using a little trigonometry, and the second is the unit vector pointing the direction of <span class="math">\vec{u}</span>.</p>
+<div class="math">
+</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">dayysi</div>
+          <div class="post_content">
+<p>Question 4: After finding the equation for the plane containing all 3 points I was able to verify using Desmos<br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/376243346a8fd628461dbfdee3be828560d2343e" href="https://discourse.marksmath.org/uploads/default/original/1X/376243346a8fd628461dbfdee3be828560d2343e.jpeg" title="IMG_0447"><img alt="IMG_0447" data-base62-sha1="7TWMOzuMrBM5wK1zwymikEC2Vcy" data-dominant-color="E8E8EC" height="461" src="../../../images/376243346a8fd628461dbfdee3be828560d2343e_2_690x461.jpeg" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/376243346a8fd628461dbfdee3be828560d2343e_2_690x461.jpeg, https://discourse.marksmath.org/uploads/default/optimized/1X/376243346a8fd628461dbfdee3be828560d2343e_2_1035x691.jpeg 1.5x, https://discourse.marksmath.org/uploads/default/optimized/1X/376243346a8fd628461dbfdee3be828560d2343e_2_1380x922.jpeg 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">IMG_0447</span><span class="informations">1996×1334 124 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/7_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">mark</div>
+          <div class="post_content">
+
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+  </body>
+</html>
