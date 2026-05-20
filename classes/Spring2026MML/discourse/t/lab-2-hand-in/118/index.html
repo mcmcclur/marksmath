@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width">
+    <title>Lab 2 Hand In</title>
+    <link rel="stylesheet" href="../../../archived.css" />
+    <script>
+      function findSageCodeBlocks() {
+        return Array.prototype.slice.call(
+          document.querySelectorAll(
+            "pre[data-code-wrap='sage'] > code, pre > code.lang-sage, pre > code.language-sage, pre > code.sage"
+          )
+        );
+      }
+
+      function loadScript(src) {
+        return new Promise(function (resolve, reject) {
+          var existing = document.querySelector("script[src='" + src + "']");
+          if (existing) {
+            if (existing.dataset.loaded === "true") {
+              resolve();
+              return;
+            }
+            existing.addEventListener("load", resolve, { once: true });
+            existing.addEventListener("error", reject, { once: true });
+            return;
+          }
+
+          var script = document.createElement("script");
+          script.src = src;
+          script.async = true;
+          script.addEventListener("load", function () {
+            script.dataset.loaded = "true";
+            resolve();
+          }, { once: true });
+          script.addEventListener("error", reject, { once: true });
+          document.head.appendChild(script);
+        });
+      }
+
+      function prepareSageCells() {
+        var sageBlocks = findSageCodeBlocks();
+        if (!sageBlocks.length) {
+          return Promise.resolve();
+        }
+
+        return loadScript("https://sagecell.sagemath.org/static/embedded_sagecell.js")
+          .then(function () {
+            if (!window.sagecell || !window.sagecell.makeSagecell) {
+              return;
+            }
+
+            sageBlocks.forEach(function (codeTag, index) {
+              var preTag = codeTag.parentElement;
+              if (!preTag || preTag.dataset.sageMounted === "true") {
+                return;
+              }
+
+              var host = document.createElement("div");
+              host.className = "sagecell-archive";
+
+              var source = document.createElement("script");
+              source.type = "text/x-sage";
+              source.text = codeTag.textContent || "";
+              host.appendChild(source);
+
+              preTag.insertAdjacentElement("afterend", host);
+              preTag.classList.add("sage-source-hidden");
+              preTag.dataset.sageMounted = "true";
+
+              window.sagecell.makeSagecell({
+                inputLocation: host,
+                autoeval: false,
+                evalButtonText: "Run",
+                languages: ["sage"]
+              });
+            });
+          })
+          .catch(function () {
+            // Leave the original code blocks visible if SageCell cannot load.
+          });
+      }
+
+      function preprocessDiscourseMath() {
+        document.querySelectorAll("span.math, div.math").forEach(function (node) {
+          var tex = node.textContent || "";
+          if (!tex.trim()) {
+            return;
+          }
+          if (node.tagName === "SPAN") {
+            node.textContent = "\\(" + tex + "\\)";
+          } else {
+            node.textContent = "\\[" + tex + "\\]";
+          }
+          node.classList.remove("math");
+        });
+      }
+
+      window.MathJax = {
+        tex: {
+          inlineMath: [["\\(", "\\)"]],
+          displayMath: [["\\[", "\\]"]]
+        },
+        startup: {
+          pageReady() {
+            preprocessDiscourseMath();
+            return MathJax.startup.defaultPageReady().then(function () {
+              return prepareSageCells();
+            });
+          }
+        }
+      };
+    </script>
+    <script async id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="title-span">
+        <a href="../../../">
+          <img src="../../../images/ea06c0b00f456d7d2112d8196d0da94074cbf04a.png" height="40" alt="Site Logo" id="site-logo" />
+        </a>
+      </div>
+    </header>
+
+    <div class="main">
+    <div class="archive-span"><a href='https://marksmath.org/classes/Spring2026MML/'>MML Discourse</a> archived in May, 2026</div>
+    <h1 class="topic-title">Lab 2 Hand In</h1>
+            <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/7_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">mark</div>
+          <div class="post_content">
+<p>(20 pts)</p>
+<p>Submit your results to <a href="https://colab.research.google.com/drive/1vekA2CZksPkxWEm93-WE1xdDtxVbzGhN?usp=sharing">Lab 2</a> by responding here. your response should include</p>
+<ul>
+<li>A list of the variables that you used in your model,</li>
+<li>Any other changes that you made to the code in the lab notebook,</li>
+<li>A link to the your version of the notebook that you've shared with me,</li>
+<li>The score obtained from <a href="https://marksmath.org/visualization/data/NCAABrackets/KaggleBrackets/">our scoring tool</a>, and</li>
+<li>A screenshot of the bracket that includes the score.</li>
+</ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-006.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 006</div>
+          <div class="post_content">
+<p>1.The variables I used were: diff_TeamAvgScore", "diff_OppScore","diff_SeedNum","diff_OppPF","diff_TeamAvgScore","diff_TeamAvgStl","diff_DefensiveEfficiency","diff_OffensiveEfficiency","diff_Tempo<br/>
+2.I made no other changes than switching up the variables<br/>
+3.<a class="inline-onebox" href="https://colab.research.google.com/drive/1vekA2CZksPkxWEm93-WE1xdDtxVbzGhN?usp=sharing" rel="noopener nofollow ugc">Google Colab</a><br/>
+4.The score i got was 0.15486<br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/8651106788566300194a838c873d0036df67471f" href="https://discourse.marksmath.org/uploads/default/original/1X/8651106788566300194a838c873d0036df67471f.png" title="Screenshot 2026-03-18 132753"><img alt="Screenshot 2026-03-18 132753" data-base62-sha1="jadEV9ECu7RuKGVcn7YmsQ8qvyT" data-dominant-color="E9EEE7" height="360" src="../../../images/8651106788566300194a838c873d0036df67471f_2_690x360.png" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/8651106788566300194a838c873d0036df67471f_2_690x360.png, https://discourse.marksmath.org/uploads/default/optimized/1X/8651106788566300194a838c873d0036df67471f_2_1035x540.png 1.5x, https://discourse.marksmath.org/uploads/default/optimized/1X/8651106788566300194a838c873d0036df67471f_2_1380x720.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2026-03-18 132753</span><span class="informations">1899×992 165 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-009.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 009</div>
+          <div class="post_content">
+<p>variables:<br/>
+["diff_TeamAvgScore", "diff_OppScore", "diff_OffensiveEfficiency", "diff_SeedNum", "diff_TeamAvgFTA", "diff_eigen_rating"]</p>
+<p>changes: N/A</p>
+<p>notebook link:</p><aside class="onebox allowlistedgeneric" data-onebox-src="https://colab.research.google.com/drive/1KWeoVEgxPj7hKWNztHtAWEgAn5aia2R3?usp=sharing">
+<header class="source">
+<img alt="" class="site-icon" data-dominant-color="F29404" height="16" src="../../../images/1fb217f1fedc691f8891ce39c9f5e421043ff271.png" width="16"/>
+<a href="https://colab.research.google.com/drive/1KWeoVEgxPj7hKWNztHtAWEgAn5aia2R3?usp=sharing" rel="noopener nofollow ugc" target="_blank">colab.research.google.com</a>
+</header>
+<article class="onebox-body">
+<img alt="" class="thumbnail onebox-avatar" data-dominant-color="F29304" height="260" src="../../../images/cc9da405b46a15f905bb9967e7cdc7d7e8348a7e.png" width="260"/>
+<h3><a href="https://colab.research.google.com/drive/1KWeoVEgxPj7hKWNztHtAWEgAn5aia2R3?usp=sharing" rel="noopener nofollow ugc" target="_blank">Google Colab</a></h3>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+<p>
+You may want to copy link into browser manually, as this hyperlink may not work</p>
+<p>Score obtained from scoring tool:<br/>
+Overall Brier score = 0.12659<br/>
+Men's Brier score = 0.14924<br/>
+<br/>
+Screenshot of bracket including score:<br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/9f2ced3a96f8fc2854ab752bf6e405d7d5b22cd5" href="https://discourse.marksmath.org/uploads/default/original/1X/9f2ced3a96f8fc2854ab752bf6e405d7d5b22cd5.png" title="image_2026-03-23_030910915"><img alt="image_2026-03-23_030910915" data-base62-sha1="mI8aI5mfbamEE0cuDcJAvsjLd6R" data-dominant-color="444A42" height="388" src="../../../images/9f2ced3a96f8fc2854ab752bf6e405d7d5b22cd5_2_690x388.png" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/9f2ced3a96f8fc2854ab752bf6e405d7d5b22cd5_2_690x388.png, https://discourse.marksmath.org/uploads/default/optimized/1X/9f2ced3a96f8fc2854ab752bf6e405d7d5b22cd5_2_1035x582.png 1.5x, https://discourse.marksmath.org/uploads/default/optimized/1X/9f2ced3a96f8fc2854ab752bf6e405d7d5b22cd5_2_1380x776.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image_2026-03-23_030910915</span><span class="informations">1920×1080 192 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-018.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 018</div>
+          <div class="post_content">
+<p>FEATURES = ["diff_eigen_rating","diff_SeedNum","diff_OffensiveEfficiency","diff_OppDR", "diff_massey_rating","diff_TeamAvgFTA","diff_TeamAvgScore"]</p>
+<p>No changes.</p>
+<p>The score was 0.10236</p>
+<p><a href="https://colab.research.google.com/drive/1df_-tPaX3D0YX-OimVysXEjh5L8Bfjkl?usp=sharing" rel="noopener nofollow ugc">https://colab.research.google.com/drive/1df_-tPaX3D0YX-OimVysXEjh5L8Bfjkl?usp=sharing</a></p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/020515edcef21d4691a0d9cdf9d946b32f97416b" href="https://discourse.marksmath.org/uploads/default/original/1X/020515edcef21d4691a0d9cdf9d946b32f97416b.png" title="image_2026-03-18_133548081"><img alt="image_2026-03-18_133548081" data-base62-sha1="hRQKVlNRtbCHs06fZ3mdCj2N8n" data-dominant-color="3A4339" height="346" src="../../../images/020515edcef21d4691a0d9cdf9d946b32f97416b_2_690x346.png" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/020515edcef21d4691a0d9cdf9d946b32f97416b_2_690x346.png, https://discourse.marksmath.org/uploads/default/optimized/1X/020515edcef21d4691a0d9cdf9d946b32f97416b_2_1035x519.png 1.5x, https://discourse.marksmath.org/uploads/default/optimized/1X/020515edcef21d4691a0d9cdf9d946b32f97416b_2_1380x692.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image_2026-03-18_133548081</span><span class="informations">1707×857 145 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-012.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 012</div>
+          <div class="post_content">
+<pre><code class="lang-auto">FEATURES = ["diff_TeamAvgScore", "diff_OppScore", "diff_eigen_rating", 
+"diff_massey_rating", "diff_OffensiveEfficiency"]
+</code></pre>
+<aside class="onebox allowlistedgeneric" data-onebox-src="https://colab.research.google.com/drive/16Og7wPSYAeOhOefm9IwLmRTXP5415a5h?usp=sharing">
+<header class="source">
+<img alt="" class="site-icon" data-dominant-color="F29404" height="16" src="../../../images/fd8ccb83e43931d19c282961b0b842bc6767482a.png" width="16"/>
+<a href="https://colab.research.google.com/drive/16Og7wPSYAeOhOefm9IwLmRTXP5415a5h?usp=sharing" rel="noopener nofollow ugc" target="_blank">colab.research.google.com</a>
+</header>
+<article class="onebox-body">
+<img alt="" class="thumbnail onebox-avatar" data-dominant-color="F29304" height="260" src="../../../images/cc9da405b46a15f905bb9967e7cdc7d7e8348a7e.png" width="260"/>
+<h3><a href="https://colab.research.google.com/drive/16Og7wPSYAeOhOefm9IwLmRTXP5415a5h?usp=sharing" rel="noopener nofollow ugc" target="_blank">Google Colab</a></h3>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+<p>Overall Brier score = 0.12217<br/>
+Men's Brier score = 0.13970<br/>
+Women's Brier score = 0.10465</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/ada700f36c52b5ed1a90b4a17b7168aba8c2dfd0" href="https://discourse.marksmath.org/uploads/default/original/1X/ada700f36c52b5ed1a90b4a17b7168aba8c2dfd0.png" title="Screenshot 2026-03-18 at 13-38-53 NCAA Prediction Brackets – Mark’s Math"><img alt="Screenshot 2026-03-18 at 13-38-53 NCAA Prediction Brackets – Mark’s Math" data-base62-sha1="oMcpbpL3A7jrFPjZ2P4aNApq94Q" data-dominant-color="E4EBE2" height="438" src="../../../images/ada700f36c52b5ed1a90b4a17b7168aba8c2dfd0_2_690x438.png" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/ada700f36c52b5ed1a90b4a17b7168aba8c2dfd0_2_690x438.png, https://discourse.marksmath.org/uploads/default/optimized/1X/ada700f36c52b5ed1a90b4a17b7168aba8c2dfd0_2_1035x657.png 1.5x, https://discourse.marksmath.org/uploads/default/optimized/1X/ada700f36c52b5ed1a90b4a17b7168aba8c2dfd0_2_1380x876.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2026-03-18 at 13-38-53 NCAA Prediction Brackets – Mark’s Math</span><span class="informations">2736×1738 471 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/12_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">audrey</div>
+          <div class="post_content">
+<p>I used the following variables for the men's side:</p>
+<pre><code class="lang-auto"> ["diff_TeamAvgScore", "diff_OppScore", 'diff_massey_rating']
+</code></pre>
+<p>My Brier score was Men's Brier score = 0.14093.</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/deb64b6366cc032648f9cedbf779fd49c2039c49" href="https://discourse.marksmath.org/uploads/default/original/1X/deb64b6366cc032648f9cedbf779fd49c2039c49.png" title="Screenshot 2026-03-18 134506"><img alt="Screenshot 2026-03-18 134506" data-base62-sha1="vMcySx2Cad73rBI9U1aTuraGGff" data-dominant-color="E4EBE3" height="266" src="../../../images/deb64b6366cc032648f9cedbf779fd49c2039c49_2_690x266.png" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/deb64b6366cc032648f9cedbf779fd49c2039c49_2_690x266.png, https://discourse.marksmath.org/uploads/default/optimized/1X/deb64b6366cc032648f9cedbf779fd49c2039c49_2_1035x399.png 1.5x, https://discourse.marksmath.org/uploads/default/original/1X/deb64b6366cc032648f9cedbf779fd49c2039c49.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2026-03-18 134506</span><span class="informations">1076×415 29.2 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-013.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 013</div>
+          <div class="post_content">
+<p>The variables I used</p>
+<pre><code class="lang-auto">["diff_conf_eigen_rating","diff_TeamAvgTO","diff_TeamAvgScore", "diff_OppScore","diff_SeedNum","diff_OffensiveEfficiency","diff_conf_massey_rating","diff_massey_rating"]
+
+</code></pre>
+<p>I made no changes other changes to the notebook</p>
+<p>The link to the notebook: <a href="https://colab.research.google.com/drive/1o-y-SgpTY7bEP_hTne471q0UUhGaZ9A2?usp=sharing" rel="noopener nofollow ugc">Google Colab</a></p>
+<p>I got a score of 0.13772</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/bbe598ef7726d492ee319cb0742404900a5b0e6f" href="https://discourse.marksmath.org/uploads/default/original/1X/bbe598ef7726d492ee319cb0742404900a5b0e6f.png" title="image"><img alt="image" data-base62-sha1="qOdcdOLhGLHe5hLKy44fy8le5Px" data-dominant-color="42483F" height="357" src="../../../images/bbe598ef7726d492ee319cb0742404900a5b0e6f_2_690x357.png" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/bbe598ef7726d492ee319cb0742404900a5b0e6f_2_690x357.png, https://discourse.marksmath.org/uploads/default/optimized/1X/bbe598ef7726d492ee319cb0742404900a5b0e6f_2_1035x535.png 1.5x, https://discourse.marksmath.org/uploads/default/optimized/1X/bbe598ef7726d492ee319cb0742404900a5b0e6f_2_1380x714.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1619×840 76.8 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-022.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 022</div>
+          <div class="post_content">
+<p><strong>Variables:</strong> 'diff_massey_rating',</p>
+<pre><code>'diff_conf_massey_rating',
+
+'diff_eigen_rating',  
+
+'diff_TeamAvgBlk',
+
+'diff_TeamAvgFGM',  
+
+'diff_OffensiveEfficiency', 
+
+'diff_TeamAvgScore'
+</code></pre>
+<aside class="onebox allowlistedgeneric" data-onebox-src="https://colab.research.google.com/drive/1k7owX2s7LkxGkYGHXIaaplWnCdBOhgYJ#scrollTo=cbIcxVODBIDp">
+<header class="source">
+<img alt="" class="site-icon" data-dominant-color="F29404" height="16" src="../../../images/4213c35721455593a58c74f8098752ea9618f92d.png" width="16"/>
+<a href="https://colab.research.google.com/drive/1k7owX2s7LkxGkYGHXIaaplWnCdBOhgYJ#scrollTo=cbIcxVODBIDp" rel="noopener nofollow ugc" target="_blank">colab.research.google.com</a>
+</header>
+<article class="onebox-body">
+<img alt="" class="thumbnail onebox-avatar" data-dominant-color="F29304" height="260" src="../../../images/cc9da405b46a15f905bb9967e7cdc7d7e8348a7e.png" width="260"/>
+<h3><a href="https://colab.research.google.com/drive/1k7owX2s7LkxGkYGHXIaaplWnCdBOhgYJ#scrollTo=cbIcxVODBIDp" rel="noopener nofollow ugc" target="_blank">Google Colab</a></h3>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+<p><strong>Mens:</strong> 0.13770</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/03dbff609ec020e87828d5fe654a4a49fc6ae1bc" href="https://discourse.marksmath.org/uploads/default/original/1X/03dbff609ec020e87828d5fe654a4a49fc6ae1bc.png" title="image"><img alt="image" data-base62-sha1="y8M3cEOuRHiU7kxgL8cQEf5yuE" data-dominant-color="444B42" height="351" src="../../../images/03dbff609ec020e87828d5fe654a4a49fc6ae1bc_2_690x351.png" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/03dbff609ec020e87828d5fe654a4a49fc6ae1bc_2_690x351.png, https://discourse.marksmath.org/uploads/default/optimized/1X/03dbff609ec020e87828d5fe654a4a49fc6ae1bc_2_1035x526.png 1.5x, https://discourse.marksmath.org/uploads/default/optimized/1X/03dbff609ec020e87828d5fe654a4a49fc6ae1bc_2_1380x702.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1677×855 147 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p><strong>Womens:</strong> 0.10268</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/a0a7f005cd54c1a3feae48832f0435c18e741f9d" href="https://discourse.marksmath.org/uploads/default/original/1X/a0a7f005cd54c1a3feae48832f0435c18e741f9d.png" title="image"><img alt="image" data-base62-sha1="mVecooMFhdFhwEJ6l4GT7aPfs1T" data-dominant-color="3C453B" height="359" src="../../../images/a0a7f005cd54c1a3feae48832f0435c18e741f9d_2_690x359.png" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/a0a7f005cd54c1a3feae48832f0435c18e741f9d_2_690x359.png, https://discourse.marksmath.org/uploads/default/optimized/1X/a0a7f005cd54c1a3feae48832f0435c18e741f9d_2_1035x538.png 1.5x, https://discourse.marksmath.org/uploads/default/optimized/1X/a0a7f005cd54c1a3feae48832f0435c18e741f9d_2_1380x718.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1631×850 144 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p><strong>Overall:</strong> 0.12019</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-005.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 005</div>
+          <div class="post_content">
+<p>Variables: "diff_TeamAvgScore", "diff_OppScore", "diff_TeamAvgAst", "diff_TeamAvgBlk", "diff_TeamAvgDR", "diff_TeamAvgFGA", "diff_TeamAvgFGA3", "diff_TeamAvgFGM", "diff_TeamAvgFGM3", "diff_TeamAvgFTA", "diff_TeamAvgFTM", "diff_TeamAvgOR", "diff_TeamAvgPF", "diff_TeamAvgStl", "diff_TeamAvgTO", "diff_OppAst", "diff_OppBlk", "diff_OppDR", "diff_OppFGA", "diff_OppFGA3", "diff_OppFGM", "diff_OppFGM3", "diff_OppFTA", "diff_OppFTM", "diff_OppOR", "diff_OppPF", "diff_OppStl", "diff_OppTO", "diff_SeedNum", "diff_DefensiveEfficiency", "diff_OffensiveEfficiency", "diff_Tempo", "diff_conf_eigen_rating", "diff_conf_massey_rating", "diff_eigen_rating", "diff_massey_rating", "rating_diff_x_tempo_diff"</p>
+<p>Used both men's and women's game data.</p>
+<p><a href="https://colab.research.google.com/drive/1XwFWq3Dcv4-hsGwn4WlcVpUijyn95nJj#scrollTo=cbIcxVODBIDp" rel="noopener nofollow ugc">Copy of Lab2KaggleNCAA.ipynb - Colab</a></p>
+<p>Overall Brier score = 0.12716<br/>
+Men's Brier score = 0.14769<br/>
+Women's Brier score = 0.10663<br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/41c3a9474735897320bc476b68b5d4f468ccdaf4" href="https://discourse.marksmath.org/uploads/default/original/1X/41c3a9474735897320bc476b68b5d4f468ccdaf4.png" title="Screenshot 2026-03-18 134052"><img alt="Screenshot 2026-03-18 134052" data-base62-sha1="9nMeKkTDCJd7rZf4TERg8omtqkY" data-dominant-color="3D453C" height="315" src="../../../images/41c3a9474735897320bc476b68b5d4f468ccdaf4_2_690x315.png" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/41c3a9474735897320bc476b68b5d4f468ccdaf4_2_690x315.png, https://discourse.marksmath.org/uploads/default/optimized/1X/41c3a9474735897320bc476b68b5d4f468ccdaf4_2_1035x472.png 1.5x, https://discourse.marksmath.org/uploads/default/optimized/1X/41c3a9474735897320bc476b68b5d4f468ccdaf4_2_1380x630.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2026-03-18 134052</span><span class="informations">1905×870 151 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-008.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 008</div>
+          <div class="post_content">
+<p>Variables: ["diff_TeamAvgScore", "diff_OppScore", "diff_TeamAvgAst", "diff_TeamAvgBlk", "diff_TeamAvgDR", 'diff_TeamAvgFGA', 'diff_TeamAvgFGA3', 'diff_TeamAvgFGM', 'diff_TeamAvgFGM3', 'diff_TeamAvgFTA', 'diff_TeamAvgFTM', 'diff_TeamAvgOR', 'diff_TeamAvgPF', 'diff_TeamAvgStl', 'diff_TeamAvgTO', 'diff_OppAst', 'diff_OppBlk', 'diff_OppDR', 'diff_OppFGA', 'diff_OppFGA3', 'diff_OppFGM', 'diff_OppFGM3', 'diff_OppFTA', 'diff_OppFTM', 'diff_OppOR', 'diff_OppPF', 'diff_OppStl', 'diff_OppTO', 'diff_SeedNum', 'diff_DefensiveEfficiency', 'diff_OffensiveEfficiency', 'diff_Tempo', 'diff_conf_eigen_rating', 'diff_conf_massey_rating', 'diff_eigen_rating', 'diff_massey_rating', 'rating_diff_x_tempo_diff']</p>
+<p>Changes: N/A</p>
+<p>Link: <a class="inline-onebox" href="https://colab.research.google.com/drive/1FIBCArOtF1X69JGmbgVCyQJ3zRxsBmsY#scrollTo=cbIcxVODBIDp" rel="noopener nofollow ugc">Google Colab</a></p>
+<p>Score: Overall Brier score = 0.15606, Men's Brier score = 0.20549, Women's Brier score = 0.10663</p>
+<p>Screenshot:<br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/2e9e8f26427031faa906fd084cfb5567cc576705" href="https://discourse.marksmath.org/uploads/default/original/1X/2e9e8f26427031faa906fd084cfb5567cc576705.png" title="image"><img alt="image" data-base62-sha1="6EpFR82YewA8Bljn0PkmS5cKQkJ" data-dominant-color="464941" height="347" src="../../../images/2e9e8f26427031faa906fd084cfb5567cc576705_2_690x347.png" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/2e9e8f26427031faa906fd084cfb5567cc576705_2_690x347.png, https://discourse.marksmath.org/uploads/default/optimized/1X/2e9e8f26427031faa906fd084cfb5567cc576705_2_1035x520.png 1.5x, https://discourse.marksmath.org/uploads/default/optimized/1X/2e9e8f26427031faa906fd084cfb5567cc576705_2_1380x694.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">3012×1516 409 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-007.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 007</div>
+          <div class="post_content">
+<p>My variables where: "diff_TeamAvgScore", "diff_OppScore","diff_massey_rating"</p>
+<p>Using the men's game data.</p>
+<p><a class="attachment" href="/uploads/short-url/6rpDgPO9DSFXeDEdz1HIjGt8oXw.csv">predictionsM.csv</a> (76.1 KB)</p>
+<p>Got a Brier score of 0.14093</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/0a79a602b77873e56b969d417235e6c6e822b0df" href="https://discourse.marksmath.org/uploads/default/original/1X/0a79a602b77873e56b969d417235e6c6e822b0df.png" title="image"><img alt="image" data-base62-sha1="1uFp8eH70W3zTravLxFycevO4d9" data-dominant-color="E6ECE4" height="413" src="../../../images/0a79a602b77873e56b969d417235e6c6e822b0df_2_690x413.png" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/0a79a602b77873e56b969d417235e6c6e822b0df_2_690x413.png, https://discourse.marksmath.org/uploads/default/optimized/1X/0a79a602b77873e56b969d417235e6c6e822b0df_2_1035x619.png 1.5x, https://discourse.marksmath.org/uploads/default/optimized/1X/0a79a602b77873e56b969d417235e6c6e822b0df_2_1380x826.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1665×998 159 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-024.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 024</div>
+          <div class="post_content">
+<p>Variables: ["diff_eigen_rating", "diff_massey_rating", "diff_SeedNum", "diff_OffensiveEfficiency", "diff_conf_massey_rating", "diff_conf_eigen_rating", "diff_TeamAvgScore", "diff_OppScore"]</p>
+<p>No other changes.</p>
+<p>My Brier score was 0.13777<br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/3e0e793e92a39b42cc2bf45698895bcb8b1a3d24" href="https://discourse.marksmath.org/uploads/default/original/1X/3e0e793e92a39b42cc2bf45698895bcb8b1a3d24.png" title="Screenshot 2026-03-18 160534"><img alt="Screenshot 2026-03-18 160534" data-base62-sha1="8QYBZmfXlk3QfXamcyeCBbONDgM" data-dominant-color="454E45" height="463" src="../../../images/3e0e793e92a39b42cc2bf45698895bcb8b1a3d24_2_689x463.png" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/3e0e793e92a39b42cc2bf45698895bcb8b1a3d24_2_689x463.png, https://discourse.marksmath.org/uploads/default/optimized/1X/3e0e793e92a39b42cc2bf45698895bcb8b1a3d24_2_1033x694.png 1.5x, https://discourse.marksmath.org/uploads/default/original/1X/3e0e793e92a39b42cc2bf45698895bcb8b1a3d24.png 2x" width="689"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2026-03-18 160534</span><span class="informations">1231×827 51.2 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-002.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 002</div>
+          <div class="post_content">
+<p>Variables: ["diff_TeamAvgScore", "diff_OppScore","diff_SeedNum", "diff_massey_rating","diff_conf_massey_rating"]<br/>
+No other changes were made.<br/>
+Link: <a class="inline-onebox" href="https://colab.research.google.com/drive/1ZEuYSsyLk-Ov6Q8gZjzMPdvsXCyDGFHD#scrollTo=cbIcxVODBIDp" rel="noopener nofollow ugc">Google Colab</a><br/>
+Brier score = 0.12267<br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/4a82f342921aa8e460bd54aef808732dad51dfbf" href="https://discourse.marksmath.org/uploads/default/original/1X/4a82f342921aa8e460bd54aef808732dad51dfbf.png" title="basketball"><img alt="basketball" data-base62-sha1="aD9Tkn8ZmEHonpkj3mczst62LV5" data-dominant-color="E0E7DD" height="352" src="../../../images/4a82f342921aa8e460bd54aef808732dad51dfbf_2_690x352.png" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/4a82f342921aa8e460bd54aef808732dad51dfbf_2_690x352.png, https://discourse.marksmath.org/uploads/default/optimized/1X/4a82f342921aa8e460bd54aef808732dad51dfbf_2_1035x528.png 1.5x, https://discourse.marksmath.org/uploads/default/optimized/1X/4a82f342921aa8e460bd54aef808732dad51dfbf_2_1380x704.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">basketball</span><span class="informations">1836×937 198 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-014.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 014</div>
+          <div class="post_content">
+<ol>
+<li>Variables used: <code>FEATURES = ["diff_TeamAvgScore", "diff_OppScore", "diff_eigen_rating", "diff_SeedNum", "diff_OffensiveEfficiency", "diff_OppDR", "diff_massey_rating", "diff_TeamAvgFTA"]</code></li>
+</ol>
+<p>No other changes.</p><aside class="onebox allowlistedgeneric" data-onebox-src="https://colab.research.google.com/drive/1xvVd7xUzuKvR_CK6kQOEQUHo2yQduTbU?usp=sharing">
+<header class="source">
+<img alt="" class="site-icon" data-dominant-color="F29404" height="16" src="../../../images/a9e18afff3a9024f2ef6c442fe3f9fe808744f6e.png" width="16"/>
+<a href="https://colab.research.google.com/drive/1xvVd7xUzuKvR_CK6kQOEQUHo2yQduTbU?usp=sharing" rel="noopener nofollow ugc" target="_blank">colab.research.google.com</a>
+</header>
+<article class="onebox-body">
+<img alt="" class="thumbnail onebox-avatar" data-dominant-color="F29304" height="260" src="../../../images/cc9da405b46a15f905bb9967e7cdc7d7e8348a7e.png" width="260"/>
+<h3><a href="https://colab.research.google.com/drive/1xvVd7xUzuKvR_CK6kQOEQUHo2yQduTbU?usp=sharing" rel="noopener nofollow ugc" target="_blank">Google Colab</a></h3>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+<ol start="3">
+<li>Score: <span class="math">0.12292</span>.</li>
+</ol>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/c43fb3041472ff48d3a8eb3999d186d2e94b7feb" href="https://discourse.marksmath.org/uploads/default/original/1X/c43fb3041472ff48d3a8eb3999d186d2e94b7feb.png" title="NCAA Prediction Brackets – Mark’s Math — Mozilla Firefox 3_19_2026 11_23_04 PM"><img alt="NCAA Prediction Brackets – Mark’s Math — Mozilla Firefox 3_19_2026 11_23_04 PM" data-base62-sha1="s063FU1C02gWzJ4Ygnl8jg73cj9" data-dominant-color="40453F" height="500" src="../../../images/c43fb3041472ff48d3a8eb3999d186d2e94b7feb_2_281x500.png" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/c43fb3041472ff48d3a8eb3999d186d2e94b7feb_2_281x500.png, https://discourse.marksmath.org/uploads/default/optimized/1X/c43fb3041472ff48d3a8eb3999d186d2e94b7feb_2_421x750.png 1.5x, https://discourse.marksmath.org/uploads/default/optimized/1X/c43fb3041472ff48d3a8eb3999d186d2e94b7feb_2_562x1000.png 2x" width="281"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">NCAA Prediction Brackets – Mark’s Math — Mozilla Firefox 3_19_2026 11_23_04 PM</span><span class="informations">1080×1920 174 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-026.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 026</div>
+          <div class="post_content">
+<p>Variables: <code>FEATURES = ["diff_conf_eigen_rating", "diff_TeamAvgTO", "diff_TeamAvgScore","diff_OppScore", "diff_SeedNum", "diff_OffensiveEfficiency","diff_conf_massey_rating", "diff_massey_rating"]</code></p>
+<p>Changes: None.</p>
+<p>Score: 0.13775</p>
+<p>Colab:<a class="inline-onebox" href="https://colab.research.google.com/drive/1FmM63cL43OPk5lK9ec3VfwtD2gS0AIKO?usp=sharing" rel="noopener nofollow ugc">Google Colab</a></p>
+<p>Vizualizer:<br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/18e008079a5ac17582e75d814c1fed88d14f902f" href="https://discourse.marksmath.org/uploads/default/original/1X/18e008079a5ac17582e75d814c1fed88d14f902f.jpeg" title="Screenshot 2026-03-20 at 1.01.23 PM"><img alt="Screenshot 2026-03-20 at 1.01.23 PM" data-base62-sha1="3y3rxO4Gw2yU7bogq6eBYl24l43" data-dominant-color="E5ECE3" height="293" src="../../../images/18e008079a5ac17582e75d814c1fed88d14f902f_2_517x293.jpeg" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/18e008079a5ac17582e75d814c1fed88d14f902f_2_517x293.jpeg, https://discourse.marksmath.org/uploads/default/optimized/1X/18e008079a5ac17582e75d814c1fed88d14f902f_2_775x439.jpeg 1.5x, https://discourse.marksmath.org/uploads/default/optimized/1X/18e008079a5ac17582e75d814c1fed88d14f902f_2_1034x586.jpeg 2x" width="517"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2026-03-20 at 1.01.23 PM</span><span class="informations">1920×1088 255 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-023.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 023</div>
+          <div class="post_content">
+<ul>
+<li>FEATURES = ["diff_TeamAvgScore", "diff_OppScore","diff_SeedNum","diff_TeamAvgFTA","diff_TeamAvgStl","rating_diff_x_tempo_diff","diff_eigen_rating"]</li>
+<li>No other changes</li>
+<li><a class="inline-onebox" href="https://colab.research.google.com/drive/1O4dkF4CRFWZsIlrCEafoCpfYFpncmhdW?usp=sharing" rel="noopener nofollow ugc">Google Colab</a></li>
+<li>Overall Brier score = 0.12627</li>
+<li>Men's Brier score = 0.14819<br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/d525a71eab3d6126ac308b6731daa1f86a303e49" href="https://discourse.marksmath.org/uploads/default/original/1X/d525a71eab3d6126ac308b6731daa1f86a303e49.png" title="image"><img alt="image" data-base62-sha1="upAn3TTv6oCSBwJhj7dpJh4Tgsp" data-dominant-color="4B5148" height="487" src="../../../images/d525a71eab3d6126ac308b6731daa1f86a303e49_2_690x487.png" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/d525a71eab3d6126ac308b6731daa1f86a303e49_2_690x487.png, https://discourse.marksmath.org/uploads/default/optimized/1X/d525a71eab3d6126ac308b6731daa1f86a303e49_2_1035x730.png 1.5x, https://discourse.marksmath.org/uploads/default/original/1X/d525a71eab3d6126ac308b6731daa1f86a303e49.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1253×886 60.4 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></li>
+</ul>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-003.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 003</div>
+          <div class="post_content">
+<ol>
+<li>Variables</li>
+</ol>
+<pre><code class="lang-auto">FEATURES = ['diff_eigen_rating', 'diff_massey_rating', 'diff_OppDR', 'diff_SeedNum', 'diff_TeamAvgAst', 'diff_TeamAvgPF', 'diff_OffensiveEfficiency', 'diff_OppTO', 'diff_TeamAvgFTA', 'diff_TeamAvgScore', 'diff_TeamAvgFGM']
+</code></pre>
+<ol start="2">
+<li>The model only uses the last 5 years of data by using a view of the dataframe where the year is extracted from the 'ID'.</li>
+</ol>
+<pre><code class="lang-auto">train['Year']=train['ID'].str.split('_').str[0].astype(int)
+train_last5y=train[train.Year&gt;2018]
+</code></pre>
+<ol start="3">
+<li><a href="https://colab.research.google.com/drive/14sPA956MqMsoyayC3q-eQo-rOkNaMklO?usp=sharing" rel="noopener nofollow ugc">Colab Notebook</a></li>
+<li>Brier score: 0.14741</li>
+<li>Screenshot<br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/d8405d14dee0f63ba0082221df6824835c5fab05" href="https://discourse.marksmath.org/uploads/default/original/1X/d8405d14dee0f63ba0082221df6824835c5fab05.jpeg" title="Screenshot 2026-03-21 at 9.01.09 PM"><img alt="Screenshot 2026-03-21 at 9.01.09 PM" data-base62-sha1="uR31YYV93sJAgXo2jMoaCraeZMx" data-dominant-color="4B5248" height="402" src="../../../images/d8405d14dee0f63ba0082221df6824835c5fab05_2_690x402.jpeg" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/d8405d14dee0f63ba0082221df6824835c5fab05_2_690x402.jpeg, https://discourse.marksmath.org/uploads/default/optimized/1X/d8405d14dee0f63ba0082221df6824835c5fab05_2_1035x603.jpeg 1.5x, https://discourse.marksmath.org/uploads/default/optimized/1X/d8405d14dee0f63ba0082221df6824835c5fab05_2_1380x804.jpeg 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2026-03-21 at 9.01.09 PM</span><span class="informations">1920×1120 355 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></li>
+</ol>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-015.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 015</div>
+          <div class="post_content">
+<ul>
+<li>The variables I used were "diff_eigen_rating", "diff_massey_rating", "diff_SeedNum"</li>
+<li>The only change I made was to list the feature coefficients in decending absolute value order so I could see which variables had the most weight</li>
+<li><a href="https://colab.research.google.com/drive/1tPADPq_IKosmGXoHa5VFlIqoYyZWgZ5N?usp=sharing" rel="noopener nofollow ugc">Link to notebook</a></li>
+<li>0.14031<br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/2f88ae959d7df3fb648c5257fc45d8aaed64056d" href="https://discourse.marksmath.org/uploads/default/original/1X/2f88ae959d7df3fb648c5257fc45d8aaed64056d.png" title="aschlicher_bracket"><img alt="aschlicher_bracket" data-base62-sha1="6MvhpI68v62oxO9Rkt9tcrTsZZ3" data-dominant-color="E9EFE7" height="422" src="../../../images/2f88ae959d7df3fb648c5257fc45d8aaed64056d_2_690x422.png" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/2f88ae959d7df3fb648c5257fc45d8aaed64056d_2_690x422.png, https://discourse.marksmath.org/uploads/default/optimized/1X/2f88ae959d7df3fb648c5257fc45d8aaed64056d_2_1035x633.png 1.5x, https://discourse.marksmath.org/uploads/default/optimized/1X/2f88ae959d7df3fb648c5257fc45d8aaed64056d_2_1380x844.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">aschlicher_bracket</span><span class="informations">2299×1409 294 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></li>
+</ul>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-004.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 004</div>
+          <div class="post_content">
+<p>Variables used:<br/>
+FEATURES = ["diff_TeamAvgScore", "diff_OppScore", "diff_TeamAvgAst", "diff_massey_rating", "diff_eigen_rating", "diff_conf_massey_rating", "diff_conf_eigen_rating"]</p>
+<ul>
+<li>
+<p>No other changes</p>
+</li>
+<li>
+<p><a href="https://colab.research.google.com/drive/1svuiCMyGKH1BW59vqxOS9HV9bgSMOelE#scrollTo=cbIcxVODBIDp" rel="noopener nofollow ugc">Another copy of Lab2KaggleNCAA.ipynb – Colab</a></p>
+</li>
+<li>
+<p>Women's Brier score = 0.10110</p>
+</li>
+</ul>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/4d55923356de825d8b6268cc977dad362846d838" href="https://discourse.marksmath.org/uploads/default/original/1X/4d55923356de825d8b6268cc977dad362846d838.png" title="brier score"><img alt="brier score" data-base62-sha1="b286e8vTee9hsZT6TJCX3Nwuu6s" data-dominant-color="DDE6DB" height="337" src="../../../images/4d55923356de825d8b6268cc977dad362846d838_2_690x337.png" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/4d55923356de825d8b6268cc977dad362846d838_2_690x337.png, https://discourse.marksmath.org/uploads/default/optimized/1X/4d55923356de825d8b6268cc977dad362846d838_2_1035x505.png 1.5x, https://discourse.marksmath.org/uploads/default/original/1X/4d55923356de825d8b6268cc977dad362846d838.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">brier score</span><span class="informations">1361×665 55.4 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-019.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 019</div>
+          <div class="post_content">
+<p>The variables I used:</p>
+<pre><code class="lang-auto">FEATURES = ["diff_OppPF", "diff_conf_eigen_rating", "diff_TeamAvgTO", "diff_TeamAvgScore","diff_OppScore", 
+             "diff_OppOR", "diff_OppFTM", "diff_DefensiveEfficiency","diff_conf_massey_rating", "diff_TeamAvgFGM3", 
+            "diff_massey_rating", "diff_OppStl", "diff_TeamAvgBlk", "diff_OppFGM", "diff_TeamAvgTO", "diff_eigen_rating"]
+</code></pre>
+<p>No other changes done.</p>
+<p>Link to the colab: <a class="inline-onebox" href="https://colab.research.google.com/drive/1uRSRRjHssPZiCMIvuNJWa94j8kuO5lR_?usp=sharing" rel="noopener nofollow ugc">Google Colab</a></p>
+<p>Score: 0.13567</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/df69f4025f515bb7daa12fabc04ffb9d634d658c" href="https://discourse.marksmath.org/uploads/default/original/1X/df69f4025f515bb7daa12fabc04ffb9d634d658c.png" title="march"><img alt="march" data-base62-sha1="vSptJeUO2renk7akQX2vzgGv0f2" data-dominant-color="40463E" height="342" src="../../../images/df69f4025f515bb7daa12fabc04ffb9d634d658c_2_690x342.png" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/df69f4025f515bb7daa12fabc04ffb9d634d658c_2_690x342.png, https://discourse.marksmath.org/uploads/default/optimized/1X/df69f4025f515bb7daa12fabc04ffb9d634d658c_2_1035x513.png 1.5x, https://discourse.marksmath.org/uploads/default/optimized/1X/df69f4025f515bb7daa12fabc04ffb9d634d658c_2_1380x684.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">march</span><span class="informations">1627×807 116 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-016.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 016</div>
+          <div class="post_content">
+<p>Variables: [ "diff_OppScore", "diff_TeamAvgTO", "diff_massey_rating", "diff_conf_massey_rating", "diff_eigen_rating", "diff_conf_eigen_rating", "diff_OffensiveEfficiency", "diff_SeedNum",  "diff_DefensiveEfficiency" ]</p>
+<p>I didn't make any other changes<br/>
+<a href="https://colab.research.google.com/drive/1IOQNtHZ4OAlNVfANv2hEIJs1IVGe_H5O?authuser=1#scrollTo=cbIcxVODBIDp" rel="noopener nofollow ugc">Copy of Lab2KaggleNCAA.ipynb - Colab</a></p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/5561f1b463690d43b27460b07b8fb746bd748154" href="https://discourse.marksmath.org/uploads/default/original/1X/5561f1b463690d43b27460b07b8fb746bd748154.png" title="image"><img alt="image" data-base62-sha1="cbkqCxoLmxMO3dA0wzaXKAvNp4g" data-dominant-color="E9EFE7" height="368" src="../../../images/5561f1b463690d43b27460b07b8fb746bd748154_2_690x368.png" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/5561f1b463690d43b27460b07b8fb746bd748154_2_690x368.png, https://discourse.marksmath.org/uploads/default/optimized/1X/5561f1b463690d43b27460b07b8fb746bd748154_2_1035x552.png 1.5x, https://discourse.marksmath.org/uploads/default/optimized/1X/5561f1b463690d43b27460b07b8fb746bd748154_2_1380x736.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1733×925 65.1 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-010.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 010</div>
+          <div class="post_content">
+<ol>
+<li>
+<p>Variables: FEATURES = ["diff_TeamAvgScore", "diff_OppScore","diff_SeedNum","diff_OppTO","diff_TeamAvgPF","diff_OppAst","diff_DefensiveEfficiency"]</p>
+</li>
+<li>
+<p>I just added variables</p>
+</li>
+<li>
+<p><a class="inline-onebox" href="https://colab.research.google.com/drive/1O0mfk8qba_2jy0tCBmRV8sCdcVGBz0wE?usp=sharing" rel="noopener nofollow ugc">Google Colab</a></p>
+</li>
+<li>
+<p>Score (womens only): 0.10906</p>
+</li>
+</ol>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/3dc62529ef2a8bb8d437724a05e215a18c001930" href="https://discourse.marksmath.org/uploads/default/original/1X/3dc62529ef2a8bb8d437724a05e215a18c001930.png" title="image"><img alt="image" data-base62-sha1="8OtEhI3vqbvasFRJeWxgFZNhzag" data-dominant-color="414A40" height="397" src="../../../images/3dc62529ef2a8bb8d437724a05e215a18c001930_2_690x397.png" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/3dc62529ef2a8bb8d437724a05e215a18c001930_2_690x397.png, https://discourse.marksmath.org/uploads/default/optimized/1X/3dc62529ef2a8bb8d437724a05e215a18c001930_2_1035x595.png 1.5x, https://discourse.marksmath.org/uploads/default/original/1X/3dc62529ef2a8bb8d437724a05e215a18c001930.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1306×752 55.8 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-017.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 017</div>
+          <div class="post_content">
+<ol>
+<li>I used "diff_SeedNum", "diff_massey_rating", "diff_eigen_rating", "diff_OffensiveEfficiency", "diff_DefensiveEfficiency" as my variables for the men’s bracket only.</li>
+<li>no changes</li>
+<li><a class="inline-onebox" href="https://colab.research.google.com/drive/1vekA2CZksPkxWEm93-WE1xdDtxVbzGhN?authuser=1#scrollTo=O4Erh0ZuP3vs" rel="noopener nofollow ugc">Google Colab</a></li>
+</ol>
+<aside class="onebox allowlistedgeneric" data-onebox-src="https://colab.research.google.com/drive/1vekA2CZksPkxWEm93-WE1xdDtxVbzGhN?usp=sharing">
+<header class="source">
+<img alt="" class="site-icon" data-dominant-color="F29404" height="16" src="../../../images/ebce077b7942fd4b8b0abd589ca5fdf0d9e7c89f.png" width="16"/>
+<a href="https://colab.research.google.com/drive/1vekA2CZksPkxWEm93-WE1xdDtxVbzGhN?usp=sharing" rel="noopener nofollow ugc" target="_blank">colab.research.google.com</a>
+</header>
+<article class="onebox-body">
+<img alt="" class="thumbnail onebox-avatar" data-dominant-color="F29304" height="260" src="../../../images/cc9da405b46a15f905bb9967e7cdc7d7e8348a7e.png" width="260"/>
+<h3><a href="https://colab.research.google.com/drive/1vekA2CZksPkxWEm93-WE1xdDtxVbzGhN?usp=sharing" rel="noopener nofollow ugc" target="_blank">Google Colab</a></h3>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+<ol start="4">
+<li></li>
+</ol>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/580bec51cce9c648476a7327eeec0ac04dc27141" href="https://discourse.marksmath.org/uploads/default/original/1X/580bec51cce9c648476a7327eeec0ac04dc27141.png" title="image"><img alt="image" data-base62-sha1="cyTySwVgaU8CsNRrTeUc0YMbT57" data-dominant-color="E3E9E0" height="373" src="../../../images/580bec51cce9c648476a7327eeec0ac04dc27141_2_690x373.png" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/580bec51cce9c648476a7327eeec0ac04dc27141_2_690x373.png, https://discourse.marksmath.org/uploads/default/optimized/1X/580bec51cce9c648476a7327eeec0ac04dc27141_2_1035x559.png 1.5x, https://discourse.marksmath.org/uploads/default/optimized/1X/580bec51cce9c648476a7327eeec0ac04dc27141_2_1380x746.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">2516×1362 509 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-020.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 020</div>
+          <div class="post_content">
+<p>FEATURES = ["diff_TeamAvgScore", "diff_OppScore", "diff_SeedNum", "diff_DefensiveEfficiency", "diff_OffensiveEfficiency", "diff_Tempo",	"diff_conf_eigen_rating", "diff_conf_massey_rating", "diff_eigen_rating", "diff_massey_rating", "rating_diff_x_tempo_diff"]</p>
+<p>No other changes made to code.</p>
+<aside class="onebox allowlistedgeneric" data-onebox-src="https://colab.research.google.com/drive/1J6zh5S0tvQE0fK_KrTPYFFdZ_h2n0Yc5?usp=sharing">
+<header class="source">
+<img alt="" class="site-icon" data-dominant-color="F29404" height="16" src="../../../images/9112d87fb6fc8df298096022ae5148d48b28265b.png" width="16"/>
+<a href="https://colab.research.google.com/drive/1J6zh5S0tvQE0fK_KrTPYFFdZ_h2n0Yc5?usp=sharing" rel="noopener nofollow ugc" target="_blank">colab.research.google.com</a>
+</header>
+<article class="onebox-body">
+<img alt="" class="thumbnail onebox-avatar" data-dominant-color="F29304" height="260" src="../../../images/cc9da405b46a15f905bb9967e7cdc7d7e8348a7e.png" width="260"/>
+<h3><a href="https://colab.research.google.com/drive/1J6zh5S0tvQE0fK_KrTPYFFdZ_h2n0Yc5?usp=sharing" rel="noopener nofollow ugc" target="_blank">Google Colab</a></h3>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+<p>Overall Brier score = 0.12084<br/>
+Women's Brier score = 0.10239</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/18c0dd6a19f5832c97408d8b217d4f559464c174" href="https://discourse.marksmath.org/uploads/default/original/1X/18c0dd6a19f5832c97408d8b217d4f559464c174.jpeg" title="bracket_gayfield"><img alt="bracket_gayfield" data-base62-sha1="3wYFz99dxXy8xZSzs4ckU5P1SkY" data-dominant-color="EAF1E9" height="500" src="../../../images/18c0dd6a19f5832c97408d8b217d4f559464c174_2_594x500.jpeg" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/18c0dd6a19f5832c97408d8b217d4f559464c174_2_594x500.jpeg, https://discourse.marksmath.org/uploads/default/optimized/1X/18c0dd6a19f5832c97408d8b217d4f559464c174_2_891x750.jpeg 1.5x, https://discourse.marksmath.org/uploads/default/optimized/1X/18c0dd6a19f5832c97408d8b217d4f559464c174_2_1188x1000.jpeg 2x" width="594"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">bracket_gayfield</span><span class="informations">1967×1654 151 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/7_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">mark</div>
+          <div class="post_content">
+
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+  </body>
+</html>

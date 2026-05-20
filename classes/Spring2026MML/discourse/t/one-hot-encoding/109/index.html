@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width">
+    <title>One Hot Encoding</title>
+    <link rel="stylesheet" href="../../../archived.css" />
+    <script>
+      function findSageCodeBlocks() {
+        return Array.prototype.slice.call(
+          document.querySelectorAll(
+            "pre[data-code-wrap='sage'] > code, pre > code.lang-sage, pre > code.language-sage, pre > code.sage"
+          )
+        );
+      }
+
+      function loadScript(src) {
+        return new Promise(function (resolve, reject) {
+          var existing = document.querySelector("script[src='" + src + "']");
+          if (existing) {
+            if (existing.dataset.loaded === "true") {
+              resolve();
+              return;
+            }
+            existing.addEventListener("load", resolve, { once: true });
+            existing.addEventListener("error", reject, { once: true });
+            return;
+          }
+
+          var script = document.createElement("script");
+          script.src = src;
+          script.async = true;
+          script.addEventListener("load", function () {
+            script.dataset.loaded = "true";
+            resolve();
+          }, { once: true });
+          script.addEventListener("error", reject, { once: true });
+          document.head.appendChild(script);
+        });
+      }
+
+      function prepareSageCells() {
+        var sageBlocks = findSageCodeBlocks();
+        if (!sageBlocks.length) {
+          return Promise.resolve();
+        }
+
+        return loadScript("https://sagecell.sagemath.org/static/embedded_sagecell.js")
+          .then(function () {
+            if (!window.sagecell || !window.sagecell.makeSagecell) {
+              return;
+            }
+
+            sageBlocks.forEach(function (codeTag, index) {
+              var preTag = codeTag.parentElement;
+              if (!preTag || preTag.dataset.sageMounted === "true") {
+                return;
+              }
+
+              var host = document.createElement("div");
+              host.className = "sagecell-archive";
+
+              var source = document.createElement("script");
+              source.type = "text/x-sage";
+              source.text = codeTag.textContent || "";
+              host.appendChild(source);
+
+              preTag.insertAdjacentElement("afterend", host);
+              preTag.classList.add("sage-source-hidden");
+              preTag.dataset.sageMounted = "true";
+
+              window.sagecell.makeSagecell({
+                inputLocation: host,
+                autoeval: false,
+                evalButtonText: "Run",
+                languages: ["sage"]
+              });
+            });
+          })
+          .catch(function () {
+            // Leave the original code blocks visible if SageCell cannot load.
+          });
+      }
+
+      function preprocessDiscourseMath() {
+        document.querySelectorAll("span.math, div.math").forEach(function (node) {
+          var tex = node.textContent || "";
+          if (!tex.trim()) {
+            return;
+          }
+          if (node.tagName === "SPAN") {
+            node.textContent = "\\(" + tex + "\\)";
+          } else {
+            node.textContent = "\\[" + tex + "\\]";
+          }
+          node.classList.remove("math");
+        });
+      }
+
+      window.MathJax = {
+        tex: {
+          inlineMath: [["\\(", "\\)"]],
+          displayMath: [["\\[", "\\]"]]
+        },
+        startup: {
+          pageReady() {
+            preprocessDiscourseMath();
+            return MathJax.startup.defaultPageReady().then(function () {
+              return prepareSageCells();
+            });
+          }
+        }
+      };
+    </script>
+    <script async id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="title-span">
+        <a href="../../../">
+          <img src="../../../images/ea06c0b00f456d7d2112d8196d0da94074cbf04a.png" height="40" alt="Site Logo" id="site-logo" />
+        </a>
+      </div>
+    </header>
+
+    <div class="main">
+    <div class="archive-span"><a href='https://marksmath.org/classes/Spring2026MML/'>MML Discourse</a> archived in May, 2026</div>
+    <h1 class="topic-title">One Hot Encoding</h1>
+            <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/7_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">mark</div>
+          <div class="post_content">
+<p>Suppose I've got a categorical color variable that can take any of the three values<br/>
+red, yellow, or blue.</p>
+<ol>
+<li>Describe conceptually how one hot encoding would be set up for that variable.</li>
+<li>Given your description, what would be the encoding of the vector<div class="math">
+[\text{red}, 1, \text{yel}]^{\mathsf{T}},
+</div>
+where the middle value is the value of some separate numeric variable.</li>
+</ol>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-003.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 003</div>
+          <div class="post_content">
+<p>Since color is categorical and we cannot easily rank them, each value is encoded in an <span class="math">n-1</span>-dimensional vector where <span class="math">n</span> is the number of possible values and where one of the positions gets the value 1 and all other values are 0. There is also a default value in which each slot is 0.</p>
+<p>In this case, we have three possibilities, so the encoding could be:<br/>
+<span class="math">\text{red}=[1, 0]^{\mathsf{T}}</span><br/>
+<span class="math">\text{yellow}=[0, 1]^{\mathsf{T}}</span><br/>
+<span class="math">\text{blue}=[0, 0]^{\mathsf{T}}</span></p>
+<p>Therefore the encoding of the given vector could be:</p>
+<div class="math">
+\left[\begin{bmatrix}1 \\ 0 \end{bmatrix},\;1,\;\begin{bmatrix}0 \\ 1 \end{bmatrix}\right]^{\mathsf{T}}
+</div>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="thinking: 1">:thinking: 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/7_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">mark</div>
+          <div class="post_content">
+<p>This is one of those things that's not super hard, once you see and do it, but it's also not immediately intuitive either. Thus, it's really nice to get a response here - so thanks!</p>
+<p>Our presentation describes one-hot encoding <a href="https://marksmath.org/classes/Spring2026MML/presentations/Lecture10-PracticalIssues/#/one-hot-encoding">on this slide</a> and there's an example on the next. In the example, there are four colors but those yield only vectors of length three. So, I would expect to be able to encode this information just a bit more efficiently using vectors of length only two.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-003.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 003</div>
+          <div class="post_content">
+<p>My misunderstanding was to impose another condition where the encoding vector for each color value needed to have the same magnitude, and I ignored the "default value."</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/7_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">mark</div>
+          <div class="post_content">
+<p>Much better, now - yes!</p>
+<p>I also like the way you've written it as a list with vectors and other data. It's worth mentioning that in the software implementation the data would be internally encoded as a single vector. Maybe something like</p>
+<div class="math">
+\begin{bmatrix}
+1 &amp; 0 &amp; 1 &amp; 0 &amp; 1
+\end{bmatrix}^{\mathsf{T}}.
+</div>
+<p>There would also be a separate data structure to keep track of what's what for interpretation after the model is fit.</p>
+<p>But, again, the way you've written it is preferred for other humans to read.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+
+    </div>
+  </body>
+</html>

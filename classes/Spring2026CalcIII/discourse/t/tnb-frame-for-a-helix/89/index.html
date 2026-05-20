@@ -6,6 +6,82 @@
     <title>TNB frame for a helix</title>
     <link rel="stylesheet" href="../../../archived.css" />
     <script>
+      function findSageCodeBlocks() {
+        return Array.prototype.slice.call(
+          document.querySelectorAll(
+            "pre[data-code-wrap='sage'] > code, pre > code.lang-sage, pre > code.language-sage, pre > code.sage"
+          )
+        );
+      }
+
+      function loadScript(src) {
+        return new Promise(function (resolve, reject) {
+          var existing = document.querySelector("script[src='" + src + "']");
+          if (existing) {
+            if (existing.dataset.loaded === "true") {
+              resolve();
+              return;
+            }
+            existing.addEventListener("load", resolve, { once: true });
+            existing.addEventListener("error", reject, { once: true });
+            return;
+          }
+
+          var script = document.createElement("script");
+          script.src = src;
+          script.async = true;
+          script.addEventListener("load", function () {
+            script.dataset.loaded = "true";
+            resolve();
+          }, { once: true });
+          script.addEventListener("error", reject, { once: true });
+          document.head.appendChild(script);
+        });
+      }
+
+      function prepareSageCells() {
+        var sageBlocks = findSageCodeBlocks();
+        if (!sageBlocks.length) {
+          return Promise.resolve();
+        }
+
+        return loadScript("https://sagecell.sagemath.org/static/embedded_sagecell.js")
+          .then(function () {
+            if (!window.sagecell || !window.sagecell.makeSagecell) {
+              return;
+            }
+
+            sageBlocks.forEach(function (codeTag, index) {
+              var preTag = codeTag.parentElement;
+              if (!preTag || preTag.dataset.sageMounted === "true") {
+                return;
+              }
+
+              var host = document.createElement("div");
+              host.className = "sagecell-archive";
+
+              var source = document.createElement("script");
+              source.type = "text/x-sage";
+              source.text = codeTag.textContent || "";
+              host.appendChild(source);
+
+              preTag.insertAdjacentElement("afterend", host);
+              preTag.classList.add("sage-source-hidden");
+              preTag.dataset.sageMounted = "true";
+
+              window.sagecell.makeSagecell({
+                inputLocation: host,
+                autoeval: false,
+                evalButtonText: "Run",
+                languages: ["sage"]
+              });
+            });
+          })
+          .catch(function () {
+            // Leave the original code blocks visible if SageCell cannot load.
+          });
+      }
+
       function preprocessDiscourseMath() {
         document.querySelectorAll("span.math, div.math").forEach(function (node) {
           var tex = node.textContent || "";
@@ -29,7 +105,9 @@
         startup: {
           pageReady() {
             preprocessDiscourseMath();
-            return MathJax.startup.defaultPageReady();
+            return MathJax.startup.defaultPageReady().then(function () {
+              return prepareSageCells();
+            });
           }
         }
       };
@@ -66,10 +144,10 @@
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-001.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">NolanCoords</div>
+          <div class="user_name">User 001</div>
           <div class="post_content">
 <div class="math">
 \begin{aligned}
@@ -91,15 +169,16 @@
 </div>
 <p>... i think</p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-001.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">NolanCoords</div>
+          <div class="user_name">User 001</div>
           <div class="post_content">
 <p>Forgot something, here to fix the mistake.</p>
 <p>Earlier I wrote vector <span class="math">\langle-3\sin(t),\,-2,\,3\cos(t)\rangle</span>, but I forgot the normalization from <span class="math">T(t)</span>, which is <span class="math">1/\sqrt{13}</span>.</p>

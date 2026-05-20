@@ -6,6 +6,82 @@
     <title>Fun with 3D!</title>
     <link rel="stylesheet" href="../../../archived.css" />
     <script>
+      function findSageCodeBlocks() {
+        return Array.prototype.slice.call(
+          document.querySelectorAll(
+            "pre[data-code-wrap='sage'] > code, pre > code.lang-sage, pre > code.language-sage, pre > code.sage"
+          )
+        );
+      }
+
+      function loadScript(src) {
+        return new Promise(function (resolve, reject) {
+          var existing = document.querySelector("script[src='" + src + "']");
+          if (existing) {
+            if (existing.dataset.loaded === "true") {
+              resolve();
+              return;
+            }
+            existing.addEventListener("load", resolve, { once: true });
+            existing.addEventListener("error", reject, { once: true });
+            return;
+          }
+
+          var script = document.createElement("script");
+          script.src = src;
+          script.async = true;
+          script.addEventListener("load", function () {
+            script.dataset.loaded = "true";
+            resolve();
+          }, { once: true });
+          script.addEventListener("error", reject, { once: true });
+          document.head.appendChild(script);
+        });
+      }
+
+      function prepareSageCells() {
+        var sageBlocks = findSageCodeBlocks();
+        if (!sageBlocks.length) {
+          return Promise.resolve();
+        }
+
+        return loadScript("https://sagecell.sagemath.org/static/embedded_sagecell.js")
+          .then(function () {
+            if (!window.sagecell || !window.sagecell.makeSagecell) {
+              return;
+            }
+
+            sageBlocks.forEach(function (codeTag, index) {
+              var preTag = codeTag.parentElement;
+              if (!preTag || preTag.dataset.sageMounted === "true") {
+                return;
+              }
+
+              var host = document.createElement("div");
+              host.className = "sagecell-archive";
+
+              var source = document.createElement("script");
+              source.type = "text/x-sage";
+              source.text = codeTag.textContent || "";
+              host.appendChild(source);
+
+              preTag.insertAdjacentElement("afterend", host);
+              preTag.classList.add("sage-source-hidden");
+              preTag.dataset.sageMounted = "true";
+
+              window.sagecell.makeSagecell({
+                inputLocation: host,
+                autoeval: false,
+                evalButtonText: "Run",
+                languages: ["sage"]
+              });
+            });
+          })
+          .catch(function () {
+            // Leave the original code blocks visible if SageCell cannot load.
+          });
+      }
+
       function preprocessDiscourseMath() {
         document.querySelectorAll("span.math, div.math").forEach(function (node) {
           var tex = node.textContent || "";
@@ -29,7 +105,9 @@
         startup: {
           pageReady() {
             preprocessDiscourseMath();
-            return MathJax.startup.defaultPageReady();
+            return MathJax.startup.defaultPageReady().then(function () {
+              return prepareSageCells();
+            });
           }
         }
       };
@@ -71,6 +149,7 @@
 </ul>
 <p>Also, if you really need some inspiration, check out <a href="https://www.desmos.com/3d-gallery">Desmos's 3D Gallery</a>.</p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 6">❤️ 6</span></div>
         </div>
       </div>
 
@@ -96,30 +175,32 @@
 <p>My equation is <span class="math">x^2 + y^2 - 3z^2 = 9</span> and it looks like<br/>
 <div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/a4ea330a0be26ab16c067b9aff1da56b0f82b68b" href="https://discourse.marksmath.org/uploads/default/original/1X/a4ea330a0be26ab16c067b9aff1da56b0f82b68b.jpeg" title="Screenshot 2026-01-14 at 9.12.14 AM"><img alt="Screenshot 2026-01-14 at 9.12.14 AM" data-base62-sha1="nwU4EhcfYmYPdD9m8wgs0WjLGyL" data-dominant-color="DEB1AE" height="500" src="../../../images/a4ea330a0be26ab16c067b9aff1da56b0f82b68b_2_531x500.jpeg" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/a4ea330a0be26ab16c067b9aff1da56b0f82b68b_2_531x500.jpeg, https://discourse.marksmath.org/uploads/default/optimized/1X/a4ea330a0be26ab16c067b9aff1da56b0f82b68b_2_796x750.jpeg 1.5x, https://discourse.marksmath.org/uploads/default/original/1X/a4ea330a0be26ab16c067b9aff1da56b0f82b68b.jpeg 2x" width="531"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2026-01-14 at 9.12.14 AM</span><span class="informations">1017×957 108 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span><span class="engagement-pill reaction-pill" title="+1: 2">👍 2</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-018.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">emery</div>
+          <div class="user_name">User 018</div>
           <div class="post_content">
 <p>This is my function:<br/>
 <span class="math">5x\cos x^{2}+\sin x+y^{3}\sin y^{3}=4\tan z^{7}+30</span></p>
 <p>This is what that looks like:<br/>
 <div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/905f6bf6ef71e681a8274a43ed9f4e82afe2aafa" href="https://discourse.marksmath.org/uploads/default/original/1X/905f6bf6ef71e681a8274a43ed9f4e82afe2aafa.jpeg" title="Screenshot 2026-01-14 at 09.28.14"><img alt="Screenshot 2026-01-14 at 09.28.14" data-base62-sha1="kBbc8VVXSVP1fFEeQHKymynXEDg" data-dominant-color="A6B9D3" height="469" src="../../../images/905f6bf6ef71e681a8274a43ed9f4e82afe2aafa_2_689x469.jpeg" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/905f6bf6ef71e681a8274a43ed9f4e82afe2aafa_2_689x469.jpeg, https://discourse.marksmath.org/uploads/default/optimized/1X/905f6bf6ef71e681a8274a43ed9f4e82afe2aafa_2_1033x703.jpeg 1.5x, https://discourse.marksmath.org/uploads/default/optimized/1X/905f6bf6ef71e681a8274a43ed9f4e82afe2aafa_2_1378x938.jpeg 2x" width="689"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2026-01-14 at 09.28.14</span><span class="informations">2598×1766 695 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span><span class="engagement-pill reaction-pill" title="+1: 2">👍 2</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-012.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">zatyazhnykh</div>
+          <div class="user_name">User 012</div>
           <div class="post_content">
 <h2><a aria-label="Heading link" class="anchor" href="#p-111-fun-with-3d-1" name="p-111-fun-with-3d-1"></a>Fun with 3D <img alt=":two_hearts:" class="emoji" height="20" loading="lazy" src="../../../images/two_hearts.png" title=":two_hearts:" width="20"/></h2>
 <p>My equation is</p>
@@ -129,15 +210,16 @@
 <p>and it looks like this!<br/>
 <div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/87690de7fc46a2443274644c4f992cb8adcbab14" href="https://discourse.marksmath.org/uploads/default/original/1X/87690de7fc46a2443274644c4f992cb8adcbab14.jpeg" title="Screenshot 2026-01-14 at 09.24.49"><img alt="Screenshot 2026-01-14 at 09.24.49" data-base62-sha1="jjTxfKwuYTWsSgdiKOuqwDuP0Us" data-dominant-color="EAD4D3" height="500" src="../../../images/87690de7fc46a2443274644c4f992cb8adcbab14_2_482x500.jpeg" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/87690de7fc46a2443274644c4f992cb8adcbab14_2_482x500.jpeg, https://discourse.marksmath.org/uploads/default/optimized/1X/87690de7fc46a2443274644c4f992cb8adcbab14_2_723x750.jpeg 1.5x, https://discourse.marksmath.org/uploads/default/optimized/1X/87690de7fc46a2443274644c4f992cb8adcbab14_2_964x1000.jpeg 2x" width="482"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2026-01-14 at 09.24.49</span><span class="informations">1471×1523 150 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span><span class="engagement-pill reaction-pill" title="+1: 2">👍 2</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-020.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">scarlettvb</div>
+          <div class="user_name">User 020</div>
           <div class="post_content">
 <p>My equation is:</p>
 <div class="math">
@@ -146,6 +228,7 @@ x^2+y^2+z^2+\cos^2(6z)=4
 <p>and it looks like this:<br/>
 <div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/863c0759331b4630326863a7cfe402edbb07337d" href="https://discourse.marksmath.org/uploads/default/original/1X/863c0759331b4630326863a7cfe402edbb07337d.jpeg" title="image"><img alt="image" data-base62-sha1="j9uAHrzybYAdhbRVBsrRXqBsYBD" data-dominant-color="EADAD8" height="500" src="../../../images/863c0759331b4630326863a7cfe402edbb07337d_2_552x500.jpeg" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/863c0759331b4630326863a7cfe402edbb07337d_2_552x500.jpeg, https://discourse.marksmath.org/uploads/default/optimized/1X/863c0759331b4630326863a7cfe402edbb07337d_2_828x750.jpeg 1.5x, https://discourse.marksmath.org/uploads/default/optimized/1X/863c0759331b4630326863a7cfe402edbb07337d_2_1104x1000.jpeg 2x" width="552"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1239×1122 111 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span><span class="engagement-pill reaction-pill" title="+1: 2">👍 2</span></div>
         </div>
       </div>
 
@@ -159,57 +242,61 @@ x^2+y^2+z^2+\cos^2(6z)=4
 <p>My equation is <span class="math">x^2+2y^2-3z^2=9</span>. It looks like so:<br/>
 <div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/94c9178894bb2514d425c29bd05dcd3045779848" href="https://discourse.marksmath.org/uploads/default/original/1X/94c9178894bb2514d425c29bd05dcd3045779848.png" title="Screenshot 2026-01-14 104122"><img alt="Screenshot 2026-01-14 104122" data-base62-sha1="ledvbTzGZeK12wtDqxJ0M4azQPm" data-dominant-color="D6A8A6" height="500" src="../../../images/94c9178894bb2514d425c29bd05dcd3045779848_2_599x500.png" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/94c9178894bb2514d425c29bd05dcd3045779848_2_599x500.png, https://discourse.marksmath.org/uploads/default/original/1X/94c9178894bb2514d425c29bd05dcd3045779848.png 1.5x, https://discourse.marksmath.org/uploads/default/original/1X/94c9178894bb2514d425c29bd05dcd3045779848.png 2x" width="599"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2026-01-14 104122</span><span class="informations">623×520 63.2 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 2">👍 2</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-033.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">reeseg39</div>
+          <div class="user_name">User 033</div>
           <div class="post_content">
 <p>My equation is <span class="math">x^4+2y^7+9z^4=278</span><br/>
 Looks like a cowboy hat:<br/>
 <div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/5939be5dd555a4f6d252c1425a25349c78a57393" href="https://discourse.marksmath.org/uploads/default/original/1X/5939be5dd555a4f6d252c1425a25349c78a57393.jpeg" title="image"><img alt="image" data-base62-sha1="cJkd1fLp84QGwk8RruMw00is0uf" data-dominant-color="EDD1D0" height="500" src="../../../images/5939be5dd555a4f6d252c1425a25349c78a57393_2_551x500.jpeg" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/5939be5dd555a4f6d252c1425a25349c78a57393_2_551x500.jpeg, https://discourse.marksmath.org/uploads/default/optimized/1X/5939be5dd555a4f6d252c1425a25349c78a57393_2_826x750.jpeg 1.5x, https://discourse.marksmath.org/uploads/default/optimized/1X/5939be5dd555a4f6d252c1425a25349c78a57393_2_1102x1000.jpeg 2x" width="551"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1398×1268 111 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 2">👍 2</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-022.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">Michael</div>
+          <div class="user_name">User 022</div>
           <div class="post_content">
 <p>My equation is <span class="math">2-3x^2+9y^2+3z^2=3</span> it looks like 2 inverse cones connected in the shape of a funnel<br/>
 <div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/b2aaf96ee2daf4a3a34fd78b45c6b803e313da26" href="https://discourse.marksmath.org/uploads/default/original/1X/b2aaf96ee2daf4a3a34fd78b45c6b803e313da26.jpeg" title="IMG_5771"><img alt="IMG_5771" data-base62-sha1="puziDtoQqDYQ5POFJFaAhw9SMWW" data-dominant-color="D3D9E1" height="500" src="../../../images/b2aaf96ee2daf4a3a34fd78b45c6b803e313da26_2_480x500.jpeg" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/b2aaf96ee2daf4a3a34fd78b45c6b803e313da26_2_480x500.jpeg, https://discourse.marksmath.org/uploads/default/optimized/1X/b2aaf96ee2daf4a3a34fd78b45c6b803e313da26_2_720x750.jpeg 1.5x, https://discourse.marksmath.org/uploads/default/optimized/1X/b2aaf96ee2daf4a3a34fd78b45c6b803e313da26_2_960x1000.jpeg 2x" width="480"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">IMG_5771</span><span class="informations">1179×1228 109 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 2">👍 2</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-004.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">Justinbrr</div>
+          <div class="user_name">User 004</div>
           <div class="post_content">
 <p>My function is:<br/>
 <span class="math">cos^2(x)+y^2+z^2=0.5</span><br/>
 It looks like this:<br/>
 <div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/4fc22e0f4e309c404bb801ac19ece897a5d970ca" href="https://discourse.marksmath.org/uploads/default/original/1X/4fc22e0f4e309c404bb801ac19ece897a5d970ca.png" title="desmos3d"><img alt="desmos3d" data-base62-sha1="bnzKq6KFlESJX4fftmjoY3Osabo" data-dominant-color="FAF7F7" height="500" src="../../../images/4fc22e0f4e309c404bb801ac19ece897a5d970ca_2_586x500.png" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/4fc22e0f4e309c404bb801ac19ece897a5d970ca_2_586x500.png, https://discourse.marksmath.org/uploads/default/optimized/1X/4fc22e0f4e309c404bb801ac19ece897a5d970ca_2_879x750.png 1.5x, https://discourse.marksmath.org/uploads/default/original/1X/4fc22e0f4e309c404bb801ac19ece897a5d970ca.png 2x" width="586"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">desmos3d</span><span class="informations">912×777 93.3 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 3">👍 3</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-009.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">jcrabtre</div>
+          <div class="user_name">User 009</div>
           <div class="post_content">
 <p>I made an equation that, when repeated, looks like a book!<br/>
 <span class="math">z = (x+n)^3 + y^2 + z</span><br/>
@@ -229,15 +316,16 @@ Where <span class="math">0.1 \le n \le 1</span> repeated many times.</p><aside c
 </aside>
 <p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/e77b4a086ed696d733ea0d3fc291f47495b1a04d" href="https://discourse.marksmath.org/uploads/default/original/1X/e77b4a086ed696d733ea0d3fc291f47495b1a04d.jpeg" title="book"><img alt="book" data-base62-sha1="x1Mrnj9H2ZBtFczIPEyRciziMfb" data-dominant-color="CDD6E2" height="447" src="../../../images/e77b4a086ed696d733ea0d3fc291f47495b1a04d_2_690x447.jpeg" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/e77b4a086ed696d733ea0d3fc291f47495b1a04d_2_690x447.jpeg, https://discourse.marksmath.org/uploads/default/optimized/1X/e77b4a086ed696d733ea0d3fc291f47495b1a04d_2_1035x670.jpeg 1.5x, https://discourse.marksmath.org/uploads/default/optimized/1X/e77b4a086ed696d733ea0d3fc291f47495b1a04d_2_1380x894.jpeg 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">book</span><span class="informations">1420×921 128 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 2">👍 2</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-032.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">asherroach6</div>
+          <div class="user_name">User 032</div>
           <div class="post_content">
 <p>My function is</p>
 <div class="math">
@@ -245,54 +333,58 @@ Where <span class="math">0.1 \le n \le 1</span> repeated many times.</p><aside c
 </div>
 <p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/ed913aba28a4128470b6cd4381f378d753ba7ebd" href="https://discourse.marksmath.org/uploads/default/original/1X/ed913aba28a4128470b6cd4381f378d753ba7ebd.jpeg" title="Screenshot 2026-01-14 104259"><img alt="Screenshot 2026-01-14 104259" data-base62-sha1="xTCjpom94qChrTeLTeClXRXQlUF" data-dominant-color="DDB6B5" height="500" src="../../../images/ed913aba28a4128470b6cd4381f378d753ba7ebd_2_589x500.jpeg" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/ed913aba28a4128470b6cd4381f378d753ba7ebd_2_589x500.jpeg, https://discourse.marksmath.org/uploads/default/optimized/1X/ed913aba28a4128470b6cd4381f378d753ba7ebd_2_883x750.jpeg 1.5x, https://discourse.marksmath.org/uploads/default/optimized/1X/ed913aba28a4128470b6cd4381f378d753ba7ebd_2_1178x1000.jpeg 2x" width="589"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2026-01-14 104259</span><span class="informations">1554×1317 202 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-025.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">Kayden2</div>
+          <div class="user_name">User 025</div>
           <div class="post_content">
 <p>My equation is <span class="math">-x^2+(5y+3)^2+4z^2=5</span><br/>
 <div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/72fb350dba3bcc5402d37f6c81dd6fb73f28816b" href="https://discourse.marksmath.org/uploads/default/original/1X/72fb350dba3bcc5402d37f6c81dd6fb73f28816b.png" title="Screenshot 2026-01-14 104128"><img alt="Screenshot 2026-01-14 104128" data-base62-sha1="gpaDIHKmSXzRspaR4AI3UGxH41B" data-dominant-color="F5E1E0" height="500" src="../../../images/72fb350dba3bcc5402d37f6c81dd6fb73f28816b_2_598x500.png" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/72fb350dba3bcc5402d37f6c81dd6fb73f28816b_2_598x500.png, https://discourse.marksmath.org/uploads/default/optimized/1X/72fb350dba3bcc5402d37f6c81dd6fb73f28816b_2_897x750.png 1.5x, https://discourse.marksmath.org/uploads/default/original/1X/72fb350dba3bcc5402d37f6c81dd6fb73f28816b.png 2x" width="598"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2026-01-14 104128</span><span class="informations">967×808 72.2 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 2">👍 2</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-001.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">NolanCoords</div>
+          <div class="user_name">User 001</div>
           <div class="post_content">
 <p>My first graph I thought was cool was this sombrero.<br/>
 <div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/e6c13f3a6a30500832680861c3b3e02eb81ac586" href="https://discourse.marksmath.org/uploads/default/original/1X/e6c13f3a6a30500832680861c3b3e02eb81ac586.jpeg" title="Screenshot 2026-01-14 103825"><img alt="Screenshot 2026-01-14 103825" data-base62-sha1="wVlQzyshuziyHkbTpBHaDCEAUGq" data-dominant-color="F6E8E8" height="278" src="../../../images/e6c13f3a6a30500832680861c3b3e02eb81ac586_2_690x278.jpeg" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/e6c13f3a6a30500832680861c3b3e02eb81ac586_2_690x278.jpeg, https://discourse.marksmath.org/uploads/default/optimized/1X/e6c13f3a6a30500832680861c3b3e02eb81ac586_2_1035x417.jpeg 1.5x, https://discourse.marksmath.org/uploads/default/optimized/1X/e6c13f3a6a30500832680861c3b3e02eb81ac586_2_1380x556.jpeg 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2026-01-14 103825</span><span class="informations">1884×760 100 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-039.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">Belen</div>
+          <div class="user_name">User 039</div>
           <div class="post_content">
 <p><span class="math">\cos{((y + z)} / {x^3}) = 1</span><br/>
 <div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/2c7606d46142caa73ca616e704c95926670ee5f4" href="https://discourse.marksmath.org/uploads/default/original/1X/2c7606d46142caa73ca616e704c95926670ee5f4.jpeg" title="Screen Shot 2026-01-14 at 10.46.25 AM"><img alt="Screen Shot 2026-01-14 at 10.46.25 AM" data-base62-sha1="6ljSxx70NgdpbiMxWI0gNsCx976" data-dominant-color="F0CCCC" height="500" src="../../../images/2c7606d46142caa73ca616e704c95926670ee5f4_2_601x500.jpeg" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/2c7606d46142caa73ca616e704c95926670ee5f4_2_601x500.jpeg, https://discourse.marksmath.org/uploads/default/original/1X/2c7606d46142caa73ca616e704c95926670ee5f4.jpeg 1.5x, https://discourse.marksmath.org/uploads/default/original/1X/2c7606d46142caa73ca616e704c95926670ee5f4.jpeg 2x" width="601"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screen Shot 2026-01-14 at 10.46.25 AM</span><span class="informations">844×702 266 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 2">👍 2</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-048.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">VelanVinod</div>
+          <div class="user_name">User 048</div>
           <div class="post_content">
 <div class="math">
 X^5+8y^2+15z^4-3y^4=4
@@ -300,15 +392,16 @@ X^5+8y^2+15z^4-3y^4=4
 <p>It looks horses saddle Lego piece</p>
 <p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/efe5972b7111711ff3ae1d5ce79dc5984be486f2" href="https://discourse.marksmath.org/uploads/default/original/1X/efe5972b7111711ff3ae1d5ce79dc5984be486f2.jpeg" title="image"><img alt="image" data-base62-sha1="yee0FCTdy8KbGAEpkYUSgkh6nho" data-dominant-color="EBD2D0" height="500" src="../../../images/efe5972b7111711ff3ae1d5ce79dc5984be486f2_2_319x500.jpeg" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/efe5972b7111711ff3ae1d5ce79dc5984be486f2_2_319x500.jpeg, https://discourse.marksmath.org/uploads/default/optimized/1X/efe5972b7111711ff3ae1d5ce79dc5984be486f2_2_478x750.jpeg 1.5x, https://discourse.marksmath.org/uploads/default/optimized/1X/efe5972b7111711ff3ae1d5ce79dc5984be486f2_2_638x1000.jpeg 2x" width="319"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1206×1889 151 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 2">👍 2</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-041.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">Joel_W</div>
+          <div class="user_name">User 041</div>
           <div class="post_content">
 <p>My equation is</p>
 <div class="math">
@@ -317,42 +410,45 @@ x^{16} + 2 y^{16} - z^{24} = 10
 <p>And it looks like this!<br/>
 <div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/67a7f753f5a2234dceaffe395cbb47dbf8861459" href="https://discourse.marksmath.org/uploads/default/original/1X/67a7f753f5a2234dceaffe395cbb47dbf8861459.jpeg" title="IMG_0026"><img alt="IMG_0026" data-base62-sha1="eMZ2NOYFWxju2Yx1OLNCr0RJbv3" data-dominant-color="EDC1C0" height="500" src="../../../images/67a7f753f5a2234dceaffe395cbb47dbf8861459_2_578x500.jpeg" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/67a7f753f5a2234dceaffe395cbb47dbf8861459_2_578x500.jpeg, https://discourse.marksmath.org/uploads/default/optimized/1X/67a7f753f5a2234dceaffe395cbb47dbf8861459_2_867x750.jpeg 1.5x, https://discourse.marksmath.org/uploads/default/optimized/1X/67a7f753f5a2234dceaffe395cbb47dbf8861459_2_1156x1000.jpeg 2x" width="578"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">IMG_0026</span><span class="informations">1523×1316 173 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 2">👍 2</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/124_2.png" class="avatar" />
+          <img src="../../../images/avatar-anon-006.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">Bennett_M</div>
+          <div class="user_name">User 006</div>
           <div class="post_content">
 <p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/d15d2b310a6cd7e55014332c84035139547c32fe" href="https://discourse.marksmath.org/uploads/default/original/1X/d15d2b310a6cd7e55014332c84035139547c32fe.jpeg" title="Screenshot 2026-01-14 at 10.46.42 AM"><img alt="Screenshot 2026-01-14 at 10.46.42 AM" data-base62-sha1="tS7p4qXOvRPCHP7Dx9dp2jTDTlQ" data-dominant-color="F8F6F6" height="485" src="../../../images/d15d2b310a6cd7e55014332c84035139547c32fe_2_690x485.jpeg" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/d15d2b310a6cd7e55014332c84035139547c32fe_2_690x485.jpeg, https://discourse.marksmath.org/uploads/default/optimized/1X/d15d2b310a6cd7e55014332c84035139547c32fe_2_1035x727.jpeg 1.5x, https://discourse.marksmath.org/uploads/default/optimized/1X/d15d2b310a6cd7e55014332c84035139547c32fe_2_1380x970.jpeg 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2026-01-14 at 10.46.42 AM</span><span class="informations">1778×1250 190 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div><br/>
 Hot dog from Saturn with equations:<br/>
 <div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/4f9ba2daea0e4aa9351766f353e3d9dba5a395d7" href="https://discourse.marksmath.org/uploads/default/original/1X/4f9ba2daea0e4aa9351766f353e3d9dba5a395d7.png" title="Screenshot 2026-01-14 at 10.47.35 AM"><img alt="Screenshot 2026-01-14 at 10.47.35 AM" data-base62-sha1="bmfatXISoFmiIpR6dK5JcaNEJ0j" data-dominant-color="F6F6F6" height="284" src="../../../images/4f9ba2daea0e4aa9351766f353e3d9dba5a395d7_2_690x284.png" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/4f9ba2daea0e4aa9351766f353e3d9dba5a395d7_2_690x284.png, https://discourse.marksmath.org/uploads/default/original/1X/4f9ba2daea0e4aa9351766f353e3d9dba5a395d7.png 1.5x, https://discourse.marksmath.org/uploads/default/original/1X/4f9ba2daea0e4aa9351766f353e3d9dba5a395d7.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2026-01-14 at 10.47.35 AM</span><span class="informations">742×306 15.8 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-023.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">DiegoLunar</div>
+          <div class="user_name">User 023</div>
           <div class="post_content">
 <p>My function is: <span class="math">\sin x-\sin y+\cos z=0</span><br/>
 <div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/6179470fe4bfe44ed5b642be23c61934ad7c8469" href="https://discourse.marksmath.org/uploads/default/original/1X/6179470fe4bfe44ed5b642be23c61934ad7c8469.jpeg" title="Screenshot 2026-01-14 104712"><img alt="Screenshot 2026-01-14 104712" data-base62-sha1="dUi9l9oG7TD3UhGTpjkAG9EtVY5" data-dominant-color="D8B0AD" height="500" src="../../../images/6179470fe4bfe44ed5b642be23c61934ad7c8469_2_604x500.jpeg" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/6179470fe4bfe44ed5b642be23c61934ad7c8469_2_604x500.jpeg, https://discourse.marksmath.org/uploads/default/optimized/1X/6179470fe4bfe44ed5b642be23c61934ad7c8469_2_906x750.jpeg 1.5x, https://discourse.marksmath.org/uploads/default/original/1X/6179470fe4bfe44ed5b642be23c61934ad7c8469.jpeg 2x" width="604"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2026-01-14 104712</span><span class="informations">1074×889 114 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 2">👍 2</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-035.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">asvetlov</div>
+          <div class="user_name">User 035</div>
           <div class="post_content">
 <p>My function is:</p>
 <div class="math">
@@ -361,55 +457,59 @@ Hot dog from Saturn with equations:<br/>
 <p>It looks like this:<br/>
 <div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/16e16ef60406400b3f748326b1045bc0c9ae8321" href="https://discourse.marksmath.org/uploads/default/original/1X/16e16ef60406400b3f748326b1045bc0c9ae8321.png" title="Screenshot 2026-01-14 104743"><img alt="Screenshot 2026-01-14 104743" data-base62-sha1="3gpuA8byPq9G4D4gIvBNyzCsfUR" data-dominant-color="EAD7D6" height="500" src="../../../images/16e16ef60406400b3f748326b1045bc0c9ae8321_2_509x500.png" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/16e16ef60406400b3f748326b1045bc0c9ae8321_2_509x500.png, https://discourse.marksmath.org/uploads/default/original/1X/16e16ef60406400b3f748326b1045bc0c9ae8321.png 1.5x, https://discourse.marksmath.org/uploads/default/original/1X/16e16ef60406400b3f748326b1045bc0c9ae8321.png 2x" width="509"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2026-01-14 104743</span><span class="informations">743×729 98.8 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 2">👍 2</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-028.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">hneal2</div>
+          <div class="user_name">User 028</div>
           <div class="post_content">
 <p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/187e576ab06e85c2921cee5d9dd3929ebbac07d8" href="https://discourse.marksmath.org/uploads/default/original/1X/187e576ab06e85c2921cee5d9dd3929ebbac07d8.jpeg" title="Image 1-14-26 at 10.48 AM"><img alt="Image 1-14-26 at 10.48 AM" data-base62-sha1="3uG8Y14xGn1F9QN9QHMDEXTyhJK" data-dominant-color="EDE1E0" height="500" src="../../../images/187e576ab06e85c2921cee5d9dd3929ebbac07d8_2_557x500.jpeg" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/187e576ab06e85c2921cee5d9dd3929ebbac07d8_2_557x500.jpeg, https://discourse.marksmath.org/uploads/default/optimized/1X/187e576ab06e85c2921cee5d9dd3929ebbac07d8_2_835x750.jpeg 1.5x, https://discourse.marksmath.org/uploads/default/optimized/1X/187e576ab06e85c2921cee5d9dd3929ebbac07d8_2_1114x1000.jpeg 2x" width="557"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Image 1-14-26 at 10.48 AM</span><span class="informations">1436×1288 119 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
 <p><span class="math">x^3+y^5/7+z^7=3</span></p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 2">👍 2</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-007.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">zowens</div>
+          <div class="user_name">User 007</div>
           <div class="post_content">
 <p>My equation is <span class="math">\cos\left(x^{2}-4y^{3}+534y\right)</span><br/>
 <div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/65bc8d44a737f245857c1b1b856904a98356b7ab" href="https://discourse.marksmath.org/uploads/default/original/1X/65bc8d44a737f245857c1b1b856904a98356b7ab.jpeg" title="Screenshot 2026-01-14 105035"><img alt="Screenshot 2026-01-14 105035" data-base62-sha1="ew0c5mYbgUKtysVNALizKCcqntp" data-dominant-color="E5CCCB" height="486" src="../../../images/65bc8d44a737f245857c1b1b856904a98356b7ab_2_690x486.jpeg" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/65bc8d44a737f245857c1b1b856904a98356b7ab_2_690x486.jpeg, https://discourse.marksmath.org/uploads/default/original/1X/65bc8d44a737f245857c1b1b856904a98356b7ab.jpeg 1.5x, https://discourse.marksmath.org/uploads/default/original/1X/65bc8d44a737f245857c1b1b856904a98356b7ab.jpeg 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2026-01-14 105035</span><span class="informations">844×595 81.9 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 2">👍 2</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-049.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">bpwalton</div>
+          <div class="user_name">User 049</div>
           <div class="post_content">
 <p>My function is: <span class="math">x^2 + y^{50} + z^2 = 25</span></p>
 <p>Here is my image:</p>
 <p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/947b239f7acb3f6c814e8cfc3e65b197d499e970" href="https://discourse.marksmath.org/uploads/default/original/1X/947b239f7acb3f6c814e8cfc3e65b197d499e970.jpeg" title="IMG_4863"><img alt="IMG_4863" data-base62-sha1="lbwunJ31CtAwF8VKDZ5ojsNcWvm" data-dominant-color="DBB9B6" height="500" src="../../../images/947b239f7acb3f6c814e8cfc3e65b197d499e970_2_548x500.jpeg" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/947b239f7acb3f6c814e8cfc3e65b197d499e970_2_548x500.jpeg, https://discourse.marksmath.org/uploads/default/optimized/1X/947b239f7acb3f6c814e8cfc3e65b197d499e970_2_822x750.jpeg 1.5x, https://discourse.marksmath.org/uploads/default/optimized/1X/947b239f7acb3f6c814e8cfc3e65b197d499e970_2_1096x1000.jpeg 2x" width="548"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">IMG_4863</span><span class="informations">1179×1074 57.3 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 2">👍 2</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-046.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">cshochet</div>
+          <div class="user_name">User 046</div>
           <div class="post_content">
 <p>This is my function:</p>
 <div class="math">
@@ -418,58 +518,62 @@ Hot dog from Saturn with equations:<br/>
 <p>This is what that looks like:<br/>
 <div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/36f7efc58537f8f98f7308f372801c558a10121a" href="https://discourse.marksmath.org/uploads/default/original/1X/36f7efc58537f8f98f7308f372801c558a10121a.jpeg" title="wow.math"><img alt="wow.math" data-base62-sha1="7QgZ4Rz7oBprJSU2667kdUJx5kC" data-dominant-color="D0C9DF" height="500" src="../../../images/36f7efc58537f8f98f7308f372801c558a10121a_2_537x500.jpeg" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/36f7efc58537f8f98f7308f372801c558a10121a_2_537x500.jpeg, https://discourse.marksmath.org/uploads/default/optimized/1X/36f7efc58537f8f98f7308f372801c558a10121a_2_805x750.jpeg 1.5x, https://discourse.marksmath.org/uploads/default/original/1X/36f7efc58537f8f98f7308f372801c558a10121a.jpeg 2x" width="537"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">wow.math</span><span class="informations">857×797 184 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 2">👍 2</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-008.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">FatCat</div>
+          <div class="user_name">User 008</div>
           <div class="post_content">
 <p>My function is <span class="math">y^3 + x^2 \cos(\sin x) = z^3 \sin x</span><br/>
 and this is what it looks like!<br/>
 <div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/3973458c30367764df98c804c11cf1032220231e" href="https://discourse.marksmath.org/uploads/default/original/1X/3973458c30367764df98c804c11cf1032220231e.jpeg" title="Screenshot 2026-01-14 at 10.58.29 AM"><img alt="Screenshot 2026-01-14 at 10.58.29 AM" data-base62-sha1="8cebqbfaded8mbKYML82p6pzAYe" data-dominant-color="A99BCC" height="500" src="../../../images/3973458c30367764df98c804c11cf1032220231e_2_666x500.jpeg" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/3973458c30367764df98c804c11cf1032220231e_2_666x500.jpeg, https://discourse.marksmath.org/uploads/default/optimized/1X/3973458c30367764df98c804c11cf1032220231e_2_999x750.jpeg 1.5x, https://discourse.marksmath.org/uploads/default/optimized/1X/3973458c30367764df98c804c11cf1032220231e_2_1332x1000.jpeg 2x" width="666"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2026-01-14 at 10.58.29 AM</span><span class="informations">1920×1440 177 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 2">👍 2</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-016.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">Elitzabeth</div>
+          <div class="user_name">User 016</div>
           <div class="post_content">
 <p>My equation was<br/>
 <span class="math">\sin^2 x + \sin^2 y - \cos^2 z = \tan 3</span><br/>
 and it looks like this:<br/>
 <div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/ef5d2b7e0791bc63707a50e9dd4ea599d5b46417" href="https://discourse.marksmath.org/uploads/default/original/1X/ef5d2b7e0791bc63707a50e9dd4ea599d5b46417.jpeg" title="image"><img alt="image" data-base62-sha1="y9vJk07ZL6AGtRItbDk8IDsVXJJ" data-dominant-color="E1C4C2" height="499" src="../../../images/ef5d2b7e0791bc63707a50e9dd4ea599d5b46417_2_586x499.jpeg" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/ef5d2b7e0791bc63707a50e9dd4ea599d5b46417_2_586x499.jpeg, https://discourse.marksmath.org/uploads/default/optimized/1X/ef5d2b7e0791bc63707a50e9dd4ea599d5b46417_2_879x748.jpeg 1.5x, https://discourse.marksmath.org/uploads/default/original/1X/ef5d2b7e0791bc63707a50e9dd4ea599d5b46417.jpeg 2x" width="586"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1021×871 115 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 3">👍 3</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-002.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">Amarti42</div>
+          <div class="user_name">User 002</div>
           <div class="post_content">
 <p>My equation is <span class="math">(\cos(2xz))25y^2+25z^3=36</span>.<br/>
 This is what it looks like<br/>
 <div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/197e0c902a43359f2127708b17c2a6e947152c1c" href="https://discourse.marksmath.org/uploads/default/original/1X/197e0c902a43359f2127708b17c2a6e947152c1c.jpeg" title="IMG_2540"><img alt="IMG_2540" data-base62-sha1="3DvZJjhRm6TggVKyxxbFoG1v1w0" data-dominant-color="D1B6B5" height="500" src="../../../images/197e0c902a43359f2127708b17c2a6e947152c1c_2_521x500.jpeg" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/197e0c902a43359f2127708b17c2a6e947152c1c_2_521x500.jpeg, https://discourse.marksmath.org/uploads/default/optimized/1X/197e0c902a43359f2127708b17c2a6e947152c1c_2_781x750.jpeg 1.5x, https://discourse.marksmath.org/uploads/default/optimized/1X/197e0c902a43359f2127708b17c2a6e947152c1c_2_1042x1000.jpeg 2x" width="521"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">IMG_2540</span><span class="informations">1170×1121 154 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 2">👍 2</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-026.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">OwenX</div>
+          <div class="user_name">User 026</div>
           <div class="post_content">
 <p>My equation is</p>
 <div class="math">
@@ -478,15 +582,16 @@ This is what it looks like<br/>
 <p>It looks like this<br/>
 <div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/15e765e04838fb61495011376fadde8a102603ed" href="https://discourse.marksmath.org/uploads/default/original/1X/15e765e04838fb61495011376fadde8a102603ed.jpeg" title="Screenshot 2026-01-14 110854"><img alt="Screenshot 2026-01-14 110854" data-base62-sha1="37LNgRgiVXodPcFXVQXIP6TBVnL" data-dominant-color="EFDFDE" height="491" src="../../../images/15e765e04838fb61495011376fadde8a102603ed_2_690x491.jpeg" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/15e765e04838fb61495011376fadde8a102603ed_2_690x491.jpeg, https://discourse.marksmath.org/uploads/default/optimized/1X/15e765e04838fb61495011376fadde8a102603ed_2_1035x736.jpeg 1.5x, https://discourse.marksmath.org/uploads/default/original/1X/15e765e04838fb61495011376fadde8a102603ed.jpeg 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2026-01-14 110854</span><span class="informations">1291×920 82.5 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 2">👍 2</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-034.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">jgoodyear</div>
+          <div class="user_name">User 034</div>
           <div class="post_content">
 <p>my equation is:<br/>
 sin x + tan y + tan 3z = 10<br/>
@@ -494,15 +599,16 @@ and it looks like this:<br/>
 <div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/b48a30c92618e9921185f80f2aadff78a7603595" href="https://discourse.marksmath.org/uploads/default/original/1X/b48a30c92618e9921185f80f2aadff78a7603595.jpeg" title="image"><img alt="image" data-base62-sha1="pL811QDO3MuqAxb1fzoEadn5mNT" data-dominant-color="DDA7A5" height="500" src="../../../images/b48a30c92618e9921185f80f2aadff78a7603595_2_579x500.jpeg" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/b48a30c92618e9921185f80f2aadff78a7603595_2_579x500.jpeg, https://discourse.marksmath.org/uploads/default/optimized/1X/b48a30c92618e9921185f80f2aadff78a7603595_2_868x750.jpeg 1.5x, https://discourse.marksmath.org/uploads/default/optimized/1X/b48a30c92618e9921185f80f2aadff78a7603595_2_1158x1000.jpeg 2x" width="579"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1295×1118 399 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div><br/>
 I like how is begins to seemingly phase out</p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 2">👍 2</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/59_2.png" class="avatar" />
+          <img src="../../../images/avatar-anon-010.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">shmurda</div>
+          <div class="user_name">User 010</div>
           <div class="post_content">
 <p>My equation is:</p>
 <div class="math">
@@ -511,15 +617,16 @@ I like how is begins to seemingly phase out</p>
 <p>It looks like:<br/>
 <div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/b37978d9c5f4f9b07bfeff4cafa03f278a21c7dc" href="https://discourse.marksmath.org/uploads/default/original/1X/b37978d9c5f4f9b07bfeff4cafa03f278a21c7dc.jpeg" title="Screenshot 2026-01-14 123440"><img alt="Screenshot 2026-01-14 123440" data-base62-sha1="pBHIDoCD6L5f7xKSstggS6GqDMg" data-dominant-color="E6EFE8" height="500" src="../../../images/b37978d9c5f4f9b07bfeff4cafa03f278a21c7dc_2_597x500.jpeg" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/b37978d9c5f4f9b07bfeff4cafa03f278a21c7dc_2_597x500.jpeg, https://discourse.marksmath.org/uploads/default/optimized/1X/b37978d9c5f4f9b07bfeff4cafa03f278a21c7dc_2_895x750.jpeg 1.5x, https://discourse.marksmath.org/uploads/default/optimized/1X/b37978d9c5f4f9b07bfeff4cafa03f278a21c7dc_2_1194x1000.jpeg 2x" width="597"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2026-01-14 123440</span><span class="informations">1379×1154 92.2 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-042.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">syarnell</div>
+          <div class="user_name">User 042</div>
           <div class="post_content">
 <p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/94b8c4ffcda39d7c51f9f5d98318a5d01491d218" href="https://discourse.marksmath.org/uploads/default/original/1X/94b8c4ffcda39d7c51f9f5d98318a5d01491d218.jpeg" title="Screenshot 2026-01-14 at 1.17.13 PM"><img alt="Screenshot 2026-01-14 at 1.17.13 PM" data-base62-sha1="ldEx0ZeL8Q0Ncx4EhjbEkPwaXR6" data-dominant-color="EAB1B0" height="500" src="../../../images/94b8c4ffcda39d7c51f9f5d98318a5d01491d218_2_611x500.jpeg" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/94b8c4ffcda39d7c51f9f5d98318a5d01491d218_2_611x500.jpeg, https://discourse.marksmath.org/uploads/default/optimized/1X/94b8c4ffcda39d7c51f9f5d98318a5d01491d218_2_916x750.jpeg 1.5x, https://discourse.marksmath.org/uploads/default/optimized/1X/94b8c4ffcda39d7c51f9f5d98318a5d01491d218_2_1222x1000.jpeg 2x" width="611"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2026-01-14 at 1.17.13 PM</span><span class="informations">1920×1570 154 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
 <p>Thought that this weird "X" shape was interesting.</p>
@@ -527,140 +634,150 @@ I like how is begins to seemingly phase out</p>
 x^2 + y^2 + z^2 = 3x^2 - 6y^{45}
 </div>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 2">👍 2</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-037.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">dayysi</div>
+          <div class="user_name">User 037</div>
           <div class="post_content">
 <p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/e163a7822df9b7b5012af660dcaef3331c0cdff3" href="https://discourse.marksmath.org/uploads/default/original/1X/e163a7822df9b7b5012af660dcaef3331c0cdff3.jpeg" title="download"><img alt="download" data-base62-sha1="w9SWey1geqqm9NCJhfXRdIB5yNB" data-dominant-color="F6E5E5" height="443" src="../../../images/e163a7822df9b7b5012af660dcaef3331c0cdff3_2_690x443.jpeg" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/e163a7822df9b7b5012af660dcaef3331c0cdff3_2_690x443.jpeg, https://discourse.marksmath.org/uploads/default/optimized/1X/e163a7822df9b7b5012af660dcaef3331c0cdff3_2_1035x664.jpeg 1.5x, https://discourse.marksmath.org/uploads/default/optimized/1X/e163a7822df9b7b5012af660dcaef3331c0cdff3_2_1380x886.jpeg 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">download</span><span class="informations">1412×908 91 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
 <p>My equation is z= sin(x) +cos(y) it looks like this:</p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 2">👍 2</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-024.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">AveryJo</div>
+          <div class="user_name">User 024</div>
           <div class="post_content">
 <div class="math">
 \sin(x)+\cos(y)
 </div>
 <p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/baa6e9663de54adc6560613e80e928b7bb58b0ac" href="https://discourse.marksmath.org/uploads/default/original/1X/baa6e9663de54adc6560613e80e928b7bb58b0ac.png" title="Screenshot 2026-01-14 105034"><img alt="Screenshot 2026-01-14 105034" data-base62-sha1="qDcpNTFdzKlxf6A75Wm30dXWyL2" data-dominant-color="D0D0D0" height="500" src="../../../images/baa6e9663de54adc6560613e80e928b7bb58b0ac_2_530x500.png" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/baa6e9663de54adc6560613e80e928b7bb58b0ac_2_530x500.png, https://discourse.marksmath.org/uploads/default/optimized/1X/baa6e9663de54adc6560613e80e928b7bb58b0ac_2_795x750.png 1.5x, https://discourse.marksmath.org/uploads/default/original/1X/baa6e9663de54adc6560613e80e928b7bb58b0ac.png 2x" width="530"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2026-01-14 105034</span><span class="informations">823×776 79.1 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 2">👍 2</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-044.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">ryanf</div>
+          <div class="user_name">User 044</div>
           <div class="post_content">
 <p>My equation is <span class="math">\frac{2}{7}x+\left(y^{-2}+\frac{3}{10}\right)+\left(z+1\right)^{-1}=2</span> and it looks like this<br/>
 <div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/e14c5dfad5eab39b87d17b1521f797ee11bbc851" href="https://discourse.marksmath.org/uploads/default/original/1X/e14c5dfad5eab39b87d17b1521f797ee11bbc851.png" title="image"><img alt="image" data-base62-sha1="w952TetLlDbGBuCVZoGkOZTzqE1" data-dominant-color="85B08C" height="499" src="../../../images/e14c5dfad5eab39b87d17b1521f797ee11bbc851_2_515x499.png" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/e14c5dfad5eab39b87d17b1521f797ee11bbc851_2_515x499.png, https://discourse.marksmath.org/uploads/default/original/1X/e14c5dfad5eab39b87d17b1521f797ee11bbc851.png 1.5x, https://discourse.marksmath.org/uploads/default/original/1X/e14c5dfad5eab39b87d17b1521f797ee11bbc851.png 2x" width="515"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">728×706 64 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 2">👍 2</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-021.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">awilso21</div>
+          <div class="user_name">User 021</div>
           <div class="post_content">
 <p>My equation is <span class="math">\sqrt{\tan\left(z\right)\tan\left(x\right)\tan\left(y\right)}-e^{y^{2}}=67</span></p>
 <p>Confetti! Hooray!<br/>
 <div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/f6bf0f8acd4439684adc248ac60cf63d49f947af" href="https://discourse.marksmath.org/uploads/default/original/1X/f6bf0f8acd4439684adc248ac60cf63d49f947af.jpeg" title="Screenshot 2026-01-14 145841"><img alt="Screenshot 2026-01-14 145841" data-base62-sha1="zcONOkRpv1pqgAqN9YoDN9jLYqr" data-dominant-color="F7EFEF" height="499" src="../../../images/f6bf0f8acd4439684adc248ac60cf63d49f947af_2_575x499.jpeg" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/f6bf0f8acd4439684adc248ac60cf63d49f947af_2_575x499.jpeg, https://discourse.marksmath.org/uploads/default/original/1X/f6bf0f8acd4439684adc248ac60cf63d49f947af.jpeg 1.5x, https://discourse.marksmath.org/uploads/default/original/1X/f6bf0f8acd4439684adc248ac60cf63d49f947af.jpeg 2x" width="575"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2026-01-14 145841</span><span class="informations">822×714 135 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 2">👍 2</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-015.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">fvazquez</div>
+          <div class="user_name">User 015</div>
           <div class="post_content">
 <p>My equation is <span class="math">x^{2}-y^{3}+z^{4}-\sin 6x+\sin 7y-\sin 8z=a</span> and it looks like this:<br/>
 <div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/993437999e1ba3da87c9495a994ab6bc9ab10b4c" href="https://discourse.marksmath.org/uploads/default/original/1X/993437999e1ba3da87c9495a994ab6bc9ab10b4c.jpeg" title="Screenshot 2026-01-14 at 3.11.32 PM"><img alt="Screenshot 2026-01-14 at 3.11.32 PM" data-base62-sha1="lRiVwpKp58Oemg4uKlzjMEXitxW" data-dominant-color="E5B3B2" height="499" src="../../../images/993437999e1ba3da87c9495a994ab6bc9ab10b4c_2_607x499.jpeg" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/993437999e1ba3da87c9495a994ab6bc9ab10b4c_2_607x499.jpeg, https://discourse.marksmath.org/uploads/default/optimized/1X/993437999e1ba3da87c9495a994ab6bc9ab10b4c_2_910x748.jpeg 1.5x, https://discourse.marksmath.org/uploads/default/optimized/1X/993437999e1ba3da87c9495a994ab6bc9ab10b4c_2_1214x998.jpeg 2x" width="607"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2026-01-14 at 3.11.32 PM</span><span class="informations">1290×1062 110 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 2">👍 2</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-027.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">tsmith26</div>
+          <div class="user_name">User 027</div>
           <div class="post_content">
 <p>Here's my function:</p>
 <p><span class="math">\cos(y)\,x^{2} + \cos(x)\,y^{2} + 100 z^{4} = 4</span></p>
 <p>It looks like this:<br/>
 <div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/642e6e0c5aa9363f93823702c117817b39a9c75a" href="https://discourse.marksmath.org/uploads/default/original/1X/642e6e0c5aa9363f93823702c117817b39a9c75a.jpeg" title="image"><img alt="image" data-base62-sha1="eifdNEJArjgVbtYyLmG1ROGjPoS" data-dominant-color="F1D9D8" height="500" src="../../../images/642e6e0c5aa9363f93823702c117817b39a9c75a_2_507x500.jpeg" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/642e6e0c5aa9363f93823702c117817b39a9c75a_2_507x500.jpeg, https://discourse.marksmath.org/uploads/default/optimized/1X/642e6e0c5aa9363f93823702c117817b39a9c75a_2_760x750.jpeg 1.5x, https://discourse.marksmath.org/uploads/default/optimized/1X/642e6e0c5aa9363f93823702c117817b39a9c75a_2_1014x1000.jpeg 2x" width="507"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1029×1014 147 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 2">👍 2</span><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-050.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">masonk</div>
+          <div class="user_name">User 050</div>
           <div class="post_content">
 <p>My equation is <span class="math">x^{4}+10y^{2}\cos z=0</span><br/>
 and it looks like this:<br/>
 <div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/8962b1f3f069da2167c940cf3b73aa55a053f120" href="https://discourse.marksmath.org/uploads/default/original/1X/8962b1f3f069da2167c940cf3b73aa55a053f120.jpeg" title="Screenshot 2026-01-14 170122"><img alt="Screenshot 2026-01-14 170122" data-base62-sha1="jBmRJW6aM3YCcTsstffQov7Z1Li" data-dominant-color="E1A7A6" height="499" src="../../../images/8962b1f3f069da2167c940cf3b73aa55a053f120_2_490x499.jpeg" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/8962b1f3f069da2167c940cf3b73aa55a053f120_2_490x499.jpeg, https://discourse.marksmath.org/uploads/default/optimized/1X/8962b1f3f069da2167c940cf3b73aa55a053f120_2_735x748.jpeg 1.5x, https://discourse.marksmath.org/uploads/default/original/1X/8962b1f3f069da2167c940cf3b73aa55a053f120.jpeg 2x" width="490"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2026-01-14 170122</span><span class="informations">850×866 120 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 2">👍 2</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-040.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">cjarvis3</div>
+          <div class="user_name">User 040</div>
           <div class="post_content">
 <p>The equation I chose to use here is <span class="math">x^3y^3z^3=x+y+z</span>. Here is what it looks like:<br/>
 <div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/142a2c18d500a06481c973bc4bcb4ddb050f015a" href="https://discourse.marksmath.org/uploads/default/original/1X/142a2c18d500a06481c973bc4bcb4ddb050f015a.png" title="image"><img alt="image" data-base62-sha1="2SnTZjd6MT7DkGtcCUne8HGDIng" data-dominant-color="E2B2B1" height="500" src="../../../images/142a2c18d500a06481c973bc4bcb4ddb050f015a_2_520x500.png" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/142a2c18d500a06481c973bc4bcb4ddb050f015a_2_520x500.png, https://discourse.marksmath.org/uploads/default/original/1X/142a2c18d500a06481c973bc4bcb4ddb050f015a.png 1.5x, https://discourse.marksmath.org/uploads/default/original/1X/142a2c18d500a06481c973bc4bcb4ddb050f015a.png 2x" width="520"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">596×572 57.8 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 2">👍 2</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-031.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">ofisher</div>
+          <div class="user_name">User 031</div>
           <div class="post_content">
 <p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/dc723fa5777428a80e96f9607982d215a6b4a70c" href="https://discourse.marksmath.org/uploads/default/original/1X/dc723fa5777428a80e96f9607982d215a6b4a70c.jpeg" title="Screenshot 2026-01-14 203505"><img alt="Screenshot 2026-01-14 203505" data-base62-sha1="vs9OQdlmHQ83OmjbhZWqu22ZrWs" data-dominant-color="E2B8B6" height="500" src="../../../images/dc723fa5777428a80e96f9607982d215a6b4a70c_2_676x500.jpeg" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/dc723fa5777428a80e96f9607982d215a6b4a70c_2_676x500.jpeg, https://discourse.marksmath.org/uploads/default/optimized/1X/dc723fa5777428a80e96f9607982d215a6b4a70c_2_1014x750.jpeg 1.5x, https://discourse.marksmath.org/uploads/default/optimized/1X/dc723fa5777428a80e96f9607982d215a6b4a70c_2_1352x1000.jpeg 2x" width="676"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2026-01-14 203505</span><span class="informations">1970×1457 199 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
 <div class="math">
 2x^{2}-\frac{1}{9}y^{2}z^{2}=6
 </div>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 2">👍 2</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-017.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">jhawn</div>
+          <div class="user_name">User 017</div>
           <div class="post_content">
 <p>I made a fun little hat, though its technically a few functions.</p>
 <p>I used the following functions to form my hat:</p>
@@ -681,41 +798,44 @@ x^2+y^2+(z-(8/3))^2=1/9
 </div>
 <iframe height="300" src="https://www.desmos.com/3d/szdcntappt" width="700"></iframe>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 2">👍 2</span><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-003.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">Natlopts</div>
+          <div class="user_name">User 003</div>
           <div class="post_content">
 <p>My equation is: <span class="math">x^{2}+y^{2}+z^{2}+\sin5x+\sin8x+\sin5x-z-x-y=a</span></p>
 <p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/506e9302174f4de3c428dd6664a643e3b27ac6fb" href="https://discourse.marksmath.org/uploads/default/original/1X/506e9302174f4de3c428dd6664a643e3b27ac6fb.jpeg" title="Screenshot 2026-01-14 125706"><img alt="Screenshot 2026-01-14 125706" data-base62-sha1="btx6jBKDFB6t0G5dVFNehgDT2kz" data-dominant-color="BED3C2" height="500" src="../../../images/506e9302174f4de3c428dd6664a643e3b27ac6fb_2_592x500.jpeg" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/506e9302174f4de3c428dd6664a643e3b27ac6fb_2_592x500.jpeg, https://discourse.marksmath.org/uploads/default/original/1X/506e9302174f4de3c428dd6664a643e3b27ac6fb.jpeg 1.5x, https://discourse.marksmath.org/uploads/default/original/1X/506e9302174f4de3c428dd6664a643e3b27ac6fb.jpeg 2x" width="592"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2026-01-14 125706</span><span class="informations">872×736 76.3 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-013.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">seamus_tignor</div>
+          <div class="user_name">User 013</div>
           <div class="post_content">
 <p>my equation is: <span class="math">(\cos(9x/3y))(y^{-7})(z^{3}) = 1</span> and looks like<br/>
 <div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/56e86c7e21884f11933c0bd323231b60b88862d7" href="https://discourse.marksmath.org/uploads/default/original/1X/56e86c7e21884f11933c0bd323231b60b88862d7.jpeg" title="Screenshot 2026-01-15 111444"><img alt="Screenshot 2026-01-15 111444" data-base62-sha1="coP1KdztPTcIRVDU76ascXr1AoL" data-dominant-color="B5AAD1" height="500" src="../../../images/56e86c7e21884f11933c0bd323231b60b88862d7_2_609x500.jpeg" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/56e86c7e21884f11933c0bd323231b60b88862d7_2_609x500.jpeg, https://discourse.marksmath.org/uploads/default/optimized/1X/56e86c7e21884f11933c0bd323231b60b88862d7_2_913x750.jpeg 1.5x, https://discourse.marksmath.org/uploads/default/original/1X/56e86c7e21884f11933c0bd323231b60b88862d7.jpeg 2x" width="609"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2026-01-15 111444</span><span class="informations">986×809 96.5 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 2">👍 2</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-011.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">AndrewA</div>
+          <div class="user_name">User 011</div>
           <div class="post_content">
 <p>My attempt at creating a tesseract: these are my two formulas:</p>
 <p>Orange cube:</p>
@@ -728,28 +848,30 @@ x^2+y^2+(z-(8/3))^2=1/9
 </div>
 <p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/5c1f61d02fb711b845b68185b960767bb6010078" href="https://discourse.marksmath.org/uploads/default/original/1X/5c1f61d02fb711b845b68185b960767bb6010078.jpeg" title="image"><img alt="image" data-base62-sha1="d8Xa6TshNqbrbqCxHweMyYJPVKU" data-dominant-color="B1BDCD" height="500" src="../../../images/5c1f61d02fb711b845b68185b960767bb6010078_2_688x500.jpeg" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/5c1f61d02fb711b845b68185b960767bb6010078_2_688x500.jpeg, https://discourse.marksmath.org/uploads/default/optimized/1X/5c1f61d02fb711b845b68185b960767bb6010078_2_1032x750.jpeg 1.5x, https://discourse.marksmath.org/uploads/default/original/1X/5c1f61d02fb711b845b68185b960767bb6010078.jpeg 2x" width="688"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1129×820 95.8 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 3">👍 3</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-019.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">sdaniel1</div>
+          <div class="user_name">User 019</div>
           <div class="post_content">
 <p>My equation is <span class="math">x^{1}/a^{3}+y^{4}/b^{2}+z^{2}/c^{2} = 5</span> . Here's what it looks like:<br/>
 <div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/e423d82fdf5063426cd2feb762d07787389d9cf2" href="https://discourse.marksmath.org/uploads/default/original/1X/e423d82fdf5063426cd2feb762d07787389d9cf2.jpeg" title="Capture d’écran 2026-01-15 à 12.22.31 PM"><img alt="Capture d’écran 2026-01-15 à 12.22.31 PM" data-base62-sha1="wydETUNpPU63fwvkddOC0DuJkBk" data-dominant-color="D9E0EA" height="500" src="../../../images/e423d82fdf5063426cd2feb762d07787389d9cf2_2_579x500.jpeg" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/e423d82fdf5063426cd2feb762d07787389d9cf2_2_579x500.jpeg, https://discourse.marksmath.org/uploads/default/optimized/1X/e423d82fdf5063426cd2feb762d07787389d9cf2_2_868x750.jpeg 1.5x, https://discourse.marksmath.org/uploads/default/optimized/1X/e423d82fdf5063426cd2feb762d07787389d9cf2_2_1158x1000.jpeg 2x" width="579"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Capture d’écran 2026-01-15 à 12.22.31 PM</span><span class="informations">1640×1414 127 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 2">👍 2</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-036.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">leigh</div>
+          <div class="user_name">User 036</div>
           <div class="post_content">
 <p>The equation I used is this:</p>
 <p><span class="math">\mathbf{r}(u,v) = \left(\left(6 + \left(\sin(6\pi v)\right) \left(\sin(6\pi u)\right)\right) \sin(6\pi v),\right.</span><br/>
@@ -758,6 +880,7 @@ x^2+y^2+(z-(8/3))^2=1/9
 <p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/7dcf2dda34e8bc2a586a6b8982f3b2d64476328f" href="https://discourse.marksmath.org/uploads/default/original/1X/7dcf2dda34e8bc2a586a6b8982f3b2d64476328f.png" title="Screenshot 2026-01-15 094127"><img alt="Screenshot 2026-01-15 094127" data-base62-sha1="hWXyUbAZYUujNzRM9ZvrTISCqhp" data-dominant-color="EEF3EF" height="500" src="../../../images/7dcf2dda34e8bc2a586a6b8982f3b2d64476328f.png" width="655"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2026-01-15 094127</span><span class="informations">917×700 16 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div><br/>
 <div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/9be3bbdf2c4d9323a9cc9a1e9c79d0b2935928c7" href="https://discourse.marksmath.org/uploads/default/original/1X/9be3bbdf2c4d9323a9cc9a1e9c79d0b2935928c7.png" title="Screenshot 2026-01-15 094218"><img alt="Screenshot 2026-01-15 094218" data-base62-sha1="mf3VnBhlXS6hJGg4NVzTFQABUaz" data-dominant-color="D6E3D8" height="500" src="../../../images/9be3bbdf2c4d9323a9cc9a1e9c79d0b2935928c7_2_510x500.png" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/9be3bbdf2c4d9323a9cc9a1e9c79d0b2935928c7_2_510x500.png, https://discourse.marksmath.org/uploads/default/optimized/1X/9be3bbdf2c4d9323a9cc9a1e9c79d0b2935928c7_2_765x750.png 1.5x, https://discourse.marksmath.org/uploads/default/optimized/1X/9be3bbdf2c4d9323a9cc9a1e9c79d0b2935928c7_2_1020x1000.png 2x" width="510"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2026-01-15 094218</span><span class="informations">1029×1008 27.4 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 3">👍 3</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
@@ -768,17 +891,18 @@ x^2+y^2+(z-(8/3))^2=1/9
         <div class="post">
           <div class="user_name">mark</div>
           <div class="post_content">
-<p>Hey <span class="mention">@Bennett_M</span>, I love your picture! Do you think you could typeset your formulae using the <a href="https://discourse.marksmath.org/t/how-do-i-enter-groovy-typeset-mathematics-into-discourse/18/5">forum's techniques</a>?</p>
+<p>Hey <span class="mention">@User 051</span>, I love your picture! Do you think you could typeset your formulae using the <a href="https://discourse.marksmath.org/t/how-do-i-enter-groovy-typeset-mathematics-into-discourse/18/5">forum's techniques</a>?</p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 2">👍 2</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-043.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">Shifan</div>
+          <div class="user_name">User 043</div>
           <div class="post_content">
 <p>My equation is:</p>
 <div class="math">
@@ -787,34 +911,37 @@ x^2+y^2+(z-(8/3))^2=1/9
 <p>It looks like:<br/>
 <div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/73f931c5994278e3d6959a6d42cb5e520d26533d" href="https://discourse.marksmath.org/uploads/default/original/1X/73f931c5994278e3d6959a6d42cb5e520d26533d.jpeg" title="image"><img alt="image" data-base62-sha1="gxWNX3Nvu6MKAFHc7g73g2WgTBb" data-dominant-color="EBEFF5" height="499" src="../../../images/73f931c5994278e3d6959a6d42cb5e520d26533d_2_585x499.jpeg" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/73f931c5994278e3d6959a6d42cb5e520d26533d_2_585x499.jpeg, https://discourse.marksmath.org/uploads/default/optimized/1X/73f931c5994278e3d6959a6d42cb5e520d26533d_2_877x748.jpeg 1.5x, https://discourse.marksmath.org/uploads/default/original/1X/73f931c5994278e3d6959a6d42cb5e520d26533d.jpeg 2x" width="585"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">941×804 114 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 3">👍 3</span><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-038.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">dhunter1</div>
+          <div class="user_name">User 038</div>
           <div class="post_content">
 <p>This is my equation: <span class="math">x^{2} + y^{2} + z^{2} + \tan 4x + \tan 8y + \tan 4z = a</span>.<br/>
 It looks like this:</p>
 <p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/51fa71425936a5c4034967cd0cbfd68cc814ba5c" href="https://discourse.marksmath.org/uploads/default/original/1X/51fa71425936a5c4034967cd0cbfd68cc814ba5c.jpeg" title="Screenshot 2026-01-16 at 4.55.53 PM"><img alt="Screenshot 2026-01-16 at 4.55.53 PM" data-base62-sha1="bHdfdKMLMplQ1N97LOIu6nJGJv6" data-dominant-color="D69594" height="500" src="../../../images/51fa71425936a5c4034967cd0cbfd68cc814ba5c_2_577x500.jpeg" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/51fa71425936a5c4034967cd0cbfd68cc814ba5c_2_577x500.jpeg, https://discourse.marksmath.org/uploads/default/optimized/1X/51fa71425936a5c4034967cd0cbfd68cc814ba5c_2_865x750.jpeg 1.5x, https://discourse.marksmath.org/uploads/default/optimized/1X/51fa71425936a5c4034967cd0cbfd68cc814ba5c_2_1154x1000.jpeg 2x" width="577"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2026-01-16 at 4.55.53 PM</span><span class="informations">1920×1662 361 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 2">👍 2</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-029.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">AidenDavies</div>
+          <div class="user_name">User 029</div>
           <div class="post_content">
 <p>My equation is:<br/>
 <span class="math">\left(2x-2\right)^{2}-\left(3y-9\right)^{2}+\left(z-290\right)^{3}=6^{2}</span><br/>
 <div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/05950e965d66a5810216232244bba9a2175eacfb" href="https://discourse.marksmath.org/uploads/default/original/1X/05950e965d66a5810216232244bba9a2175eacfb.png" title="image"><img alt="image" data-base62-sha1="NnJUl5tt4nls0CAnmN20RL482L" data-dominant-color="EBF2EC" height="459" src="../../../images/05950e965d66a5810216232244bba9a2175eacfb_2_689x459.png" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/05950e965d66a5810216232244bba9a2175eacfb_2_689x459.png, https://discourse.marksmath.org/uploads/default/optimized/1X/05950e965d66a5810216232244bba9a2175eacfb_2_1033x688.png 1.5x, https://discourse.marksmath.org/uploads/default/original/1X/05950e965d66a5810216232244bba9a2175eacfb.png 2x" width="689"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1212×807 65.3 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
@@ -825,33 +952,36 @@ It looks like this:</p>
         <div class="post">
           <div class="user_name">mark</div>
           <div class="post_content">
-<p><span class="mention">@AidenDavies</span> Could you wrap dollar signs around you math to get it to typeset?</p>
+<p><span class="mention">@User 052</span> Could you wrap dollar signs around you math to get it to typeset?</p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-029.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">AidenDavies</div>
+          <div class="user_name">User 029</div>
           <div class="post_content">
 <p>thank you for helping me fix that.</p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-030.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">Cbroerman</div>
+          <div class="user_name">User 030</div>
           <div class="post_content">
 <p>My function is z=4eysin(2x-5):</p>
 <p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/736d863ce076c7a1b669067e4d4ca2385647ed90" href="https://discourse.marksmath.org/uploads/default/original/1X/736d863ce076c7a1b669067e4d4ca2385647ed90.jpeg" title="IMG_0013"><img alt="IMG_0013" data-base62-sha1="gt7yXUTYfFCphyCfSMA9qAZK2DS" data-dominant-color="ACBFAC" height="500" src="../../../images/736d863ce076c7a1b669067e4d4ca2385647ed90_2_455x500.jpeg" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/736d863ce076c7a1b669067e4d4ca2385647ed90_2_455x500.jpeg, https://discourse.marksmath.org/uploads/default/optimized/1X/736d863ce076c7a1b669067e4d4ca2385647ed90_2_682x750.jpeg 1.5x, https://discourse.marksmath.org/uploads/default/optimized/1X/736d863ce076c7a1b669067e4d4ca2385647ed90_2_910x1000.jpeg 2x" width="455"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">IMG_0013</span><span class="informations">1002×1099 93.9 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span></div>
         </div>
       </div>
 

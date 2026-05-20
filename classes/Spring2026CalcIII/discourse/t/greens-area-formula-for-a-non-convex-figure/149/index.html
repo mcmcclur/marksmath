@@ -6,6 +6,82 @@
     <title>Green&rsquo;s area formula for a non-convex figure</title>
     <link rel="stylesheet" href="../../../archived.css" />
     <script>
+      function findSageCodeBlocks() {
+        return Array.prototype.slice.call(
+          document.querySelectorAll(
+            "pre[data-code-wrap='sage'] > code, pre > code.lang-sage, pre > code.language-sage, pre > code.sage"
+          )
+        );
+      }
+
+      function loadScript(src) {
+        return new Promise(function (resolve, reject) {
+          var existing = document.querySelector("script[src='" + src + "']");
+          if (existing) {
+            if (existing.dataset.loaded === "true") {
+              resolve();
+              return;
+            }
+            existing.addEventListener("load", resolve, { once: true });
+            existing.addEventListener("error", reject, { once: true });
+            return;
+          }
+
+          var script = document.createElement("script");
+          script.src = src;
+          script.async = true;
+          script.addEventListener("load", function () {
+            script.dataset.loaded = "true";
+            resolve();
+          }, { once: true });
+          script.addEventListener("error", reject, { once: true });
+          document.head.appendChild(script);
+        });
+      }
+
+      function prepareSageCells() {
+        var sageBlocks = findSageCodeBlocks();
+        if (!sageBlocks.length) {
+          return Promise.resolve();
+        }
+
+        return loadScript("https://sagecell.sagemath.org/static/embedded_sagecell.js")
+          .then(function () {
+            if (!window.sagecell || !window.sagecell.makeSagecell) {
+              return;
+            }
+
+            sageBlocks.forEach(function (codeTag, index) {
+              var preTag = codeTag.parentElement;
+              if (!preTag || preTag.dataset.sageMounted === "true") {
+                return;
+              }
+
+              var host = document.createElement("div");
+              host.className = "sagecell-archive";
+
+              var source = document.createElement("script");
+              source.type = "text/x-sage";
+              source.text = codeTag.textContent || "";
+              host.appendChild(source);
+
+              preTag.insertAdjacentElement("afterend", host);
+              preTag.classList.add("sage-source-hidden");
+              preTag.dataset.sageMounted = "true";
+
+              window.sagecell.makeSagecell({
+                inputLocation: host,
+                autoeval: false,
+                evalButtonText: "Run",
+                languages: ["sage"]
+              });
+            });
+          })
+          .catch(function () {
+            // Leave the original code blocks visible if SageCell cannot load.
+          });
+      }
+
       function preprocessDiscourseMath() {
         document.querySelectorAll("span.math, div.math").forEach(function (node) {
           var tex = node.textContent || "";
@@ -29,7 +105,9 @@
         startup: {
           pageReady() {
             preprocessDiscourseMath();
-            return MathJax.startup.defaultPageReady();
+            return MathJax.startup.defaultPageReady().then(function () {
+              return prepareSageCells();
+            });
           }
         }
       };
@@ -59,6 +137,7 @@
 <p>Use <a href="https://marksmath.org/classes/Spring2026CalcIII/notes/GreensTheoremAndPolygonalArea/">Green's area formula</a> to express the area of the shape below in terms of <span class="math">x</span> and <span class="math">y</span>:</p>
 <p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/dc47b0999b04f1f846d226f43b25d4a9a97d66d6" href="https://discourse.marksmath.org/uploads/default/original/1X/dc47b0999b04f1f846d226f43b25d4a9a97d66d6.png" title="vulcan"><img alt="vulcan" data-base62-sha1="vqGDzyc5DN112cGV4AxtvVHhw8u" data-dominant-color="F7F9FB" height="500" src="../../../images/dc47b0999b04f1f846d226f43b25d4a9a97d66d6_2_500x500.png" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/dc47b0999b04f1f846d226f43b25d4a9a97d66d6_2_500x500.png, https://discourse.marksmath.org/uploads/default/optimized/1X/dc47b0999b04f1f846d226f43b25d4a9a97d66d6_2_750x750.png 1.5x, https://discourse.marksmath.org/uploads/default/original/1X/dc47b0999b04f1f846d226f43b25d4a9a97d66d6.png 2x" width="500"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">vulcan</span><span class="informations">800×800 12.4 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="poop: 1">:poop: 1</span></div>
         </div>
       </div>
 

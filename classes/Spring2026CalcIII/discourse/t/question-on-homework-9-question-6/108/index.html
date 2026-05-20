@@ -6,6 +6,82 @@
     <title>Question on Homework 9 Question 6</title>
     <link rel="stylesheet" href="../../../archived.css" />
     <script>
+      function findSageCodeBlocks() {
+        return Array.prototype.slice.call(
+          document.querySelectorAll(
+            "pre[data-code-wrap='sage'] > code, pre > code.lang-sage, pre > code.language-sage, pre > code.sage"
+          )
+        );
+      }
+
+      function loadScript(src) {
+        return new Promise(function (resolve, reject) {
+          var existing = document.querySelector("script[src='" + src + "']");
+          if (existing) {
+            if (existing.dataset.loaded === "true") {
+              resolve();
+              return;
+            }
+            existing.addEventListener("load", resolve, { once: true });
+            existing.addEventListener("error", reject, { once: true });
+            return;
+          }
+
+          var script = document.createElement("script");
+          script.src = src;
+          script.async = true;
+          script.addEventListener("load", function () {
+            script.dataset.loaded = "true";
+            resolve();
+          }, { once: true });
+          script.addEventListener("error", reject, { once: true });
+          document.head.appendChild(script);
+        });
+      }
+
+      function prepareSageCells() {
+        var sageBlocks = findSageCodeBlocks();
+        if (!sageBlocks.length) {
+          return Promise.resolve();
+        }
+
+        return loadScript("https://sagecell.sagemath.org/static/embedded_sagecell.js")
+          .then(function () {
+            if (!window.sagecell || !window.sagecell.makeSagecell) {
+              return;
+            }
+
+            sageBlocks.forEach(function (codeTag, index) {
+              var preTag = codeTag.parentElement;
+              if (!preTag || preTag.dataset.sageMounted === "true") {
+                return;
+              }
+
+              var host = document.createElement("div");
+              host.className = "sagecell-archive";
+
+              var source = document.createElement("script");
+              source.type = "text/x-sage";
+              source.text = codeTag.textContent || "";
+              host.appendChild(source);
+
+              preTag.insertAdjacentElement("afterend", host);
+              preTag.classList.add("sage-source-hidden");
+              preTag.dataset.sageMounted = "true";
+
+              window.sagecell.makeSagecell({
+                inputLocation: host,
+                autoeval: false,
+                evalButtonText: "Run",
+                languages: ["sage"]
+              });
+            });
+          })
+          .catch(function () {
+            // Leave the original code blocks visible if SageCell cannot load.
+          });
+      }
+
       function preprocessDiscourseMath() {
         document.querySelectorAll("span.math, div.math").forEach(function (node) {
           var tex = node.textContent || "";
@@ -29,7 +105,9 @@
         startup: {
           pageReady() {
             preprocessDiscourseMath();
-            return MathJax.startup.defaultPageReady();
+            return MathJax.startup.defaultPageReady().then(function () {
+              return prepareSageCells();
+            });
           }
         }
       };
@@ -51,16 +129,17 @@
     <h1 class="topic-title">Question on Homework 9 Question 6</h1>
             <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-009.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">jcrabtre</div>
+          <div class="user_name">User 009</div>
           <div class="post_content">
 <p>Hello! I've been stumped on this for at least two nights in a row, though I should've asked earlier.<br/>
 <div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/c11347c3bcaec02bd1f0076da1973317e9680a3a" href="https://discourse.marksmath.org/uploads/default/original/1X/c11347c3bcaec02bd1f0076da1973317e9680a3a.png" title="image"><img alt="image" data-base62-sha1="ry1sv8L0Nig6U8rch7q3oZNCNUC" data-dominant-color="F5F6F5" height="323" src="../../../images/c11347c3bcaec02bd1f0076da1973317e9680a3a.png" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">705×331 22.8 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div><br/>
 I can't figure out how to actually do part C – however I try to do it (with the result from the dot product of <span class="math">A</span> and the unit vector <span class="math">Q / \|Q\|</span>) it just isn't correct.<br/>
 I know I'm probably not gonna get a response in time to finish it but thought I should ask anyway just so I. know what I was doing wrong.</p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
@@ -77,6 +156,7 @@ I know I'm probably not gonna get a response in time to finish it but thought I 
 <hr/>
 <p>Note: I would typically phrase the question in terms of <span class="math">P</span> and <span class="math">\vec{d}</span> directly on a quiz or exam.</p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width">
+    <title>U Substitution for an exponential distribution</title>
+    <link rel="stylesheet" href="../../../archived.css" />
+    <script>
+      function findSageCodeBlocks() {
+        return Array.prototype.slice.call(
+          document.querySelectorAll(
+            "pre[data-code-wrap='sage'] > code, pre > code.lang-sage, pre > code.language-sage, pre > code.sage"
+          )
+        );
+      }
+
+      function loadScript(src) {
+        return new Promise(function (resolve, reject) {
+          var existing = document.querySelector("script[src='" + src + "']");
+          if (existing) {
+            if (existing.dataset.loaded === "true") {
+              resolve();
+              return;
+            }
+            existing.addEventListener("load", resolve, { once: true });
+            existing.addEventListener("error", reject, { once: true });
+            return;
+          }
+
+          var script = document.createElement("script");
+          script.src = src;
+          script.async = true;
+          script.addEventListener("load", function () {
+            script.dataset.loaded = "true";
+            resolve();
+          }, { once: true });
+          script.addEventListener("error", reject, { once: true });
+          document.head.appendChild(script);
+        });
+      }
+
+      function prepareSageCells() {
+        var sageBlocks = findSageCodeBlocks();
+        if (!sageBlocks.length) {
+          return Promise.resolve();
+        }
+
+        return loadScript("https://sagecell.sagemath.org/static/embedded_sagecell.js")
+          .then(function () {
+            if (!window.sagecell || !window.sagecell.makeSagecell) {
+              return;
+            }
+
+            sageBlocks.forEach(function (codeTag, index) {
+              var preTag = codeTag.parentElement;
+              if (!preTag || preTag.dataset.sageMounted === "true") {
+                return;
+              }
+
+              var host = document.createElement("div");
+              host.className = "sagecell-archive";
+
+              var source = document.createElement("script");
+              source.type = "text/x-sage";
+              source.text = codeTag.textContent || "";
+              host.appendChild(source);
+
+              preTag.insertAdjacentElement("afterend", host);
+              preTag.classList.add("sage-source-hidden");
+              preTag.dataset.sageMounted = "true";
+
+              window.sagecell.makeSagecell({
+                inputLocation: host,
+                autoeval: false,
+                evalButtonText: "Run",
+                languages: ["sage"]
+              });
+            });
+          })
+          .catch(function () {
+            // Leave the original code blocks visible if SageCell cannot load.
+          });
+      }
+
+      function preprocessDiscourseMath() {
+        document.querySelectorAll("span.math, div.math").forEach(function (node) {
+          var tex = node.textContent || "";
+          if (!tex.trim()) {
+            return;
+          }
+          if (node.tagName === "SPAN") {
+            node.textContent = "\\(" + tex + "\\)";
+          } else {
+            node.textContent = "\\[" + tex + "\\]";
+          }
+          node.classList.remove("math");
+        });
+      }
+
+      window.MathJax = {
+        tex: {
+          inlineMath: [["\\(", "\\)"]],
+          displayMath: [["\\[", "\\]"]]
+        },
+        startup: {
+          pageReady() {
+            preprocessDiscourseMath();
+            return MathJax.startup.defaultPageReady().then(function () {
+              return prepareSageCells();
+            });
+          }
+        }
+      };
+    </script>
+    <script async id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="title-span">
+        <a href="../../../">
+          <img src="../../../images/ea06c0b00f456d7d2112d8196d0da94074cbf04a.png" height="40" alt="Site Logo" id="site-logo" />
+        </a>
+      </div>
+    </header>
+
+    <div class="main">
+    <div class="archive-span"><a href='https://marksmath.org/classes/Spring2026MML/'>MML Discourse</a> archived in May, 2026</div>
+    <h1 class="topic-title">U Substitution for an exponential distribution</h1>
+            <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/7_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">mark</div>
+          <div class="post_content">
+<p>Use <span class="math">u</span>-substitution to evaluate the definite integral</p>
+<div class="math">
+\int_0^{\infty} e^{-3x} \, dx.
+</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-003.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 003</div>
+          <div class="post_content">
+<p>Define <span class="math">u=-3x</span></p>
+<p>Substitute the bounds of the integral, <span class="math">0</span> and <span class="math">\infty</span>, for <span class="math">x</span> to get the new bounds, <span class="math">0</span> and <span class="math">-\infty</span>.</p>
+<p><span class="math">\frac{du}{dx} = -3</span> so <span class="math">dx = -\frac{1}{3}du</span></p>
+<p>Substitute the new bounds and <span class="math">dx</span> to get the new integral:</p>
+<p><span class="math">-\frac{1}{3}\int_0^{-\infty} e^{u} \, du =-\frac{1}{3}e^u\Big|_{0}^{-\infty}=0-(-\frac{1}{3})=\frac{1}{3}</span></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-009.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 009</div>
+          <div class="post_content">
+<div class="math">
+u = -3x \\
+du = -3dx \\
+du/-3 = dx
+</div>
+<div class="math">
+\int_0^\infty e^u \, \frac{du}{-3}\\
+\\
+\frac{-1}{3}\int_0^\infty e^u \, du
+</div>
+<div class="math">
+\frac{-1}{3}e^u\Bigg|_0^\infty\\
+\\
+\frac{-1}{3}e^{-3x}\Bigg|_0^\infty
+</div>
+<div class="math">
+-1/3(0-1) = 1/3
+</div>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+  </body>
+</html>

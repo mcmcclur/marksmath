@@ -6,6 +6,82 @@
     <title>Questions on Review for Exam 3</title>
     <link rel="stylesheet" href="../../../archived.css" />
     <script>
+      function findSageCodeBlocks() {
+        return Array.prototype.slice.call(
+          document.querySelectorAll(
+            "pre[data-code-wrap='sage'] > code, pre > code.lang-sage, pre > code.language-sage, pre > code.sage"
+          )
+        );
+      }
+
+      function loadScript(src) {
+        return new Promise(function (resolve, reject) {
+          var existing = document.querySelector("script[src='" + src + "']");
+          if (existing) {
+            if (existing.dataset.loaded === "true") {
+              resolve();
+              return;
+            }
+            existing.addEventListener("load", resolve, { once: true });
+            existing.addEventListener("error", reject, { once: true });
+            return;
+          }
+
+          var script = document.createElement("script");
+          script.src = src;
+          script.async = true;
+          script.addEventListener("load", function () {
+            script.dataset.loaded = "true";
+            resolve();
+          }, { once: true });
+          script.addEventListener("error", reject, { once: true });
+          document.head.appendChild(script);
+        });
+      }
+
+      function prepareSageCells() {
+        var sageBlocks = findSageCodeBlocks();
+        if (!sageBlocks.length) {
+          return Promise.resolve();
+        }
+
+        return loadScript("https://sagecell.sagemath.org/static/embedded_sagecell.js")
+          .then(function () {
+            if (!window.sagecell || !window.sagecell.makeSagecell) {
+              return;
+            }
+
+            sageBlocks.forEach(function (codeTag, index) {
+              var preTag = codeTag.parentElement;
+              if (!preTag || preTag.dataset.sageMounted === "true") {
+                return;
+              }
+
+              var host = document.createElement("div");
+              host.className = "sagecell-archive";
+
+              var source = document.createElement("script");
+              source.type = "text/x-sage";
+              source.text = codeTag.textContent || "";
+              host.appendChild(source);
+
+              preTag.insertAdjacentElement("afterend", host);
+              preTag.classList.add("sage-source-hidden");
+              preTag.dataset.sageMounted = "true";
+
+              window.sagecell.makeSagecell({
+                inputLocation: host,
+                autoeval: false,
+                evalButtonText: "Run",
+                languages: ["sage"]
+              });
+            });
+          })
+          .catch(function () {
+            // Leave the original code blocks visible if SageCell cannot load.
+          });
+      }
+
       function preprocessDiscourseMath() {
         document.querySelectorAll("span.math, div.math").forEach(function (node) {
           var tex = node.textContent || "";
@@ -29,7 +105,9 @@
         startup: {
           pageReady() {
             preprocessDiscourseMath();
-            return MathJax.startup.defaultPageReady();
+            return MathJax.startup.defaultPageReady().then(function () {
+              return prepareSageCells();
+            });
           }
         }
       };
@@ -63,14 +141,15 @@
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-001.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">NolanCoords</div>
+          <div class="user_name">User 001</div>
           <div class="post_content">
 <p>Review Question 1)</p>
 <p>When not given a time interval over which to evaluate a line integral, do we assume a standard interval of <span class="math">[0, 1]</span>? Or is there an interval step I am missing?</p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
@@ -84,7 +163,7 @@
 <aside class="quote no-group" data-post="2" data-topic="153" data-username="NolanCoords">
 <div class="title">
 <div class="quote-controls"></div>
-<img alt="" class="avatar" height="24" src="../../../images/48.png" width="24"/> NolanCoords:</div>
+<img alt="" class="avatar" height="24" src="../../../images/avatar-anon-001.svg" width="24"/> User 001:</div>
 <blockquote>
 <p>When not given a time interval over which to evaluate a line integral, do we assume a standard interval of <span class="math">[0, 1]</span>?</p>
 </blockquote>
@@ -100,13 +179,14 @@
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-002.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">Amarti42</div>
+          <div class="user_name">User 002</div>
           <div class="post_content">
 <p>Could you go over number 8 again? I am looking over the map projection notes but I am not able to find anything.</p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
@@ -120,7 +200,7 @@
 <aside class="quote no-group" data-post="4" data-topic="153" data-username="Amarti42">
 <div class="title">
 <div class="quote-controls"></div>
-<img alt="" class="avatar" height="24" src="../../../images/48.png" width="24"/> Amarti42:</div>
+<img alt="" class="avatar" height="24" src="../../../images/avatar-anon-002.svg" width="24"/> User 002:</div>
 <blockquote>
 <p>Could you go over number 8 again?</p>
 </blockquote>
@@ -157,14 +237,15 @@ T(\varphi, \theta) = (\theta, \varphi).
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-003.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">Natlopts</div>
+          <div class="user_name">User 003</div>
           <div class="post_content">
 <p>For question 2, I am thinking that the curve is in the same path as the vector field, so their dot product is positive and the line integral is positive as well.</p>
 <p>However, the direction of the curve is confusing me, since it is negative, does that mean that the line integral is negative?</p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
@@ -178,7 +259,7 @@ T(\varphi, \theta) = (\theta, \varphi).
 <aside class="quote no-group" data-post="6" data-topic="153" data-username="Natlopts">
 <div class="title">
 <div class="quote-controls"></div>
-<img alt="" class="avatar" height="24" src="../../../images/48.png" width="24"/> Natlopts:</div>
+<img alt="" class="avatar" height="24" src="../../../images/avatar-anon-003.svg" width="24"/> User 003:</div>
 <blockquote>
 <p>For question 2, I am thinking that the curve is in the same path as the vector field, so their dot product is positive and the line integral is positive as well.</p>
 </blockquote>
@@ -187,7 +268,7 @@ T(\varphi, \theta) = (\theta, \varphi).
 <aside class="quote no-group" data-post="6" data-topic="153" data-username="Natlopts">
 <div class="title">
 <div class="quote-controls"></div>
-<img alt="" class="avatar" height="24" src="../../../images/48.png" width="24"/> Natlopts:</div>
+<img alt="" class="avatar" height="24" src="../../../images/avatar-anon-003.svg" width="24"/> User 003:</div>
 <blockquote>
 <p>However, the direction of the curve is confusing me, since it is negative, does that mean that the line integral is negative?</p>
 </blockquote>
@@ -197,18 +278,6 @@ T(\varphi, \theta) = (\theta, \varphi).
 <p>Intuitively, if the force is working against the direction of motion, then the work done by the force is negative.</p>
 <p>Mathematically, the dot product of two vectors is negative, when the angle is larger is than 90 degrees.</p>
 <p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/608d4d9e48dcc5e30191aae51c8bb94ad4d51982" href="https://discourse.marksmath.org/uploads/default/original/1X/608d4d9e48dcc5e30191aae51c8bb94ad4d51982.png" title="_temp"><img alt="_temp" data-base62-sha1="dM8zPjuvKxrzPHkbzohEJaKCmz0" data-dominant-color="FAFAFA" height="193" src="../../../images/608d4d9e48dcc5e30191aae51c8bb94ad4d51982.png" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">_temp</span><span class="informations">720×202 2.02 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
-          </div>
-        </div>
-      </div>
-
-      <div class="post_container">
-        <div class="avatar_container">
-          <img src="../../../images/7_2.png" class="avatar" />
-        </div>
-        <div class="post">
-          <div class="user_name">mark</div>
-          <div class="post_content">
-
           </div>
         </div>
       </div>

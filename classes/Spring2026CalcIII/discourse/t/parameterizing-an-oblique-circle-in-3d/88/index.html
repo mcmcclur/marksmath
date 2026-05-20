@@ -6,6 +6,82 @@
     <title>Parameterizing an oblique circle in 3D</title>
     <link rel="stylesheet" href="../../../archived.css" />
     <script>
+      function findSageCodeBlocks() {
+        return Array.prototype.slice.call(
+          document.querySelectorAll(
+            "pre[data-code-wrap='sage'] > code, pre > code.lang-sage, pre > code.language-sage, pre > code.sage"
+          )
+        );
+      }
+
+      function loadScript(src) {
+        return new Promise(function (resolve, reject) {
+          var existing = document.querySelector("script[src='" + src + "']");
+          if (existing) {
+            if (existing.dataset.loaded === "true") {
+              resolve();
+              return;
+            }
+            existing.addEventListener("load", resolve, { once: true });
+            existing.addEventListener("error", reject, { once: true });
+            return;
+          }
+
+          var script = document.createElement("script");
+          script.src = src;
+          script.async = true;
+          script.addEventListener("load", function () {
+            script.dataset.loaded = "true";
+            resolve();
+          }, { once: true });
+          script.addEventListener("error", reject, { once: true });
+          document.head.appendChild(script);
+        });
+      }
+
+      function prepareSageCells() {
+        var sageBlocks = findSageCodeBlocks();
+        if (!sageBlocks.length) {
+          return Promise.resolve();
+        }
+
+        return loadScript("https://sagecell.sagemath.org/static/embedded_sagecell.js")
+          .then(function () {
+            if (!window.sagecell || !window.sagecell.makeSagecell) {
+              return;
+            }
+
+            sageBlocks.forEach(function (codeTag, index) {
+              var preTag = codeTag.parentElement;
+              if (!preTag || preTag.dataset.sageMounted === "true") {
+                return;
+              }
+
+              var host = document.createElement("div");
+              host.className = "sagecell-archive";
+
+              var source = document.createElement("script");
+              source.type = "text/x-sage";
+              source.text = codeTag.textContent || "";
+              host.appendChild(source);
+
+              preTag.insertAdjacentElement("afterend", host);
+              preTag.classList.add("sage-source-hidden");
+              preTag.dataset.sageMounted = "true";
+
+              window.sagecell.makeSagecell({
+                inputLocation: host,
+                autoeval: false,
+                evalButtonText: "Run",
+                languages: ["sage"]
+              });
+            });
+          })
+          .catch(function () {
+            // Leave the original code blocks visible if SageCell cannot load.
+          });
+      }
+
       function preprocessDiscourseMath() {
         document.querySelectorAll("span.math, div.math").forEach(function (node) {
           var tex = node.textContent || "";
@@ -29,7 +105,9 @@
         startup: {
           pageReady() {
             preprocessDiscourseMath();
-            return MathJax.startup.defaultPageReady();
+            return MathJax.startup.defaultPageReady().then(function () {
+              return prepareSageCells();
+            });
           }
         }
       };
@@ -89,29 +167,31 @@ Fx-My+Lz=0.
 </div>
 <p>You can <code>cntrl</code>-click or <code>alt</code>-click on that expression above to pull up the LaTeX code to generate it and you can use the proofreader to help out as well.</p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 2">👍 2</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-033.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">reeseg39</div>
+          <div class="user_name">User 033</div>
           <div class="post_content">
 <p><a href="https://www.desmos.com/3d/me1om7fiih" rel="noopener nofollow ugc">Name Circle Parameter | Desmos</a></p>
 <p>My letters are REG (18,5,7)</p>
 <p>My Equation: <span class="math">\vec{p}(t) = \frac{2\cos(t)}{\sqrt{349}}\langle 5,18,0\rangle + \frac{2\sin(t)}{\sqrt{125342}}\langle -126,35,329\rangle</span></p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 2">👍 2</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-023.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">DiegoLunar</div>
+          <div class="user_name">User 023</div>
           <div class="post_content">
 <p>My initials where DJL, and my parameterizing equation ended up being:</p>
 <div class="math">
@@ -119,15 +199,16 @@ Fx-My+Lz=0.
 </div>
 <p>Here's my Desmos 3D link!: <a href="https://www.desmos.com/3d/6sgo0ihblh" rel="noopener nofollow ugc">link</a></p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 2">👍 2</span><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-018.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">emery</div>
+          <div class="user_name">User 018</div>
           <div class="post_content">
 <p>The equation of my plane is</p>
 <p><span class="math">5x - 13y + 19z = 0</span></p>
@@ -137,15 +218,16 @@ r(t) = 2 \cdot \left(\frac{1}{\sqrt{107670}}(-95,247,194)\cos t + \frac{1}{\sqrt
 </div>
 <p>Here is a desmos <a href="https://www.desmos.com/3d/5uepaaz42z" rel="noopener nofollow ugc">link</a> to my graph</p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 2">👍 2</span><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-004.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">Justinbrr</div>
+          <div class="user_name">User 004</div>
           <div class="post_content">
 <p>Here's the link for my <a href="https://www.desmos.com/3d/lzuvcncyeh" rel="noopener nofollow ugc">Parameterized Circle 3D Graph</a></p>
 <p>My intitials were JGB and my equation was</p>
@@ -155,15 +237,16 @@ r(t) = 2 \cdot \left(\frac{1}{\sqrt{107670}}(-95,247,194)\cos t + \frac{1}{\sqrt
 \left(\frac{2\cos(t)}{\sqrt{17}}\right) \langle 2,2,-3\rangle + \left(\frac{2\cos(t)}{\sqrt{9}}\right) \langle 1,2,2\rangle .
 </div>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 2">👍 2</span><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-008.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">FatCat</div>
+          <div class="user_name">User 008</div>
           <div class="post_content">
 <p>The equation of my plane would be</p>
 <div class="math">
@@ -211,15 +294,16 @@ So my final equation is</p>
 </aside>
 
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span><span class="engagement-pill reaction-pill" title="+1: 2">👍 2</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-001.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">NolanCoords</div>
+          <div class="user_name">User 001</div>
           <div class="post_content">
 <p>My initials are NPC (14, 16, 3).</p>
 <p>So my equation came out to be:</p>
@@ -242,6 +326,7 @@ So my final equation is</p>
 </aside>
 
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 2">👍 2</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
@@ -252,30 +337,32 @@ So my final equation is</p>
         <div class="post">
           <div class="user_name">mark</div>
           <div class="post_content">
-<p><span class="mention">@NolanCoords</span><br/>
+<p><span class="mention">@User 045</span><br/>
 Do you have a link to what this looks like in Desmos 3D?</p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 2">👍 2</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-001.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">NolanCoords</div>
+          <div class="user_name">User 001</div>
           <div class="post_content">
 <p>Added to original post!</p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 3">👍 3</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-034.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">jgoodyear</div>
+          <div class="user_name">User 034</div>
           <div class="post_content">
 <p>my intials are JKG, so 10,11,7<br/>
 the plane is:<br/>
@@ -300,15 +387,16 @@ the equation becomes</p>
 </aside>
 
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-025.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">Kayden2</div>
+          <div class="user_name">User 025</div>
           <div class="post_content">
 <p>My initials are KMM and my equation is:</p>
 <div class="math">
@@ -316,15 +404,16 @@ the equation becomes</p>
 </div>
 <p>Here is the link to my desmos <a class="inline-onebox" href="https://www.desmos.com/3d/t0lycig58y" rel="noopener nofollow ugc">Calc 3 | Desmos</a></p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 2">👍 2</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-017.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">jhawn</div>
+          <div class="user_name">User 017</div>
           <div class="post_content">
 <p>My initials are JRH, <span class="math">(10,18,8)</span>, so my equation for the plane looks like:</p>
 <div class="math">
@@ -337,15 +426,16 @@ the equation becomes</p>
 </div>
 <iframe height="300" src="https://www.desmos.com/3d/5xuxtrn9ae" width="700"></iframe>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 3">👍 3</span><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/59_2.png" class="avatar" />
+          <img src="../../../images/avatar-anon-010.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">shmurda</div>
+          <div class="user_name">User 010</div>
           <div class="post_content">
 <p>My initials are MCS. In relation to the alphabet, the numbers are <span class="math">(13,3,19)</span>.</p>
 <p>From this I got my normal vector which is essentially the same as the plane.</p>
@@ -379,15 +469,16 @@ the equation becomes</p>
 </aside>
 
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-031.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">ofisher</div>
+          <div class="user_name">User 031</div>
           <div class="post_content">
 <p>My initials are OAF and my equation is</p>
 <div class="math">
@@ -395,15 +486,16 @@ the equation becomes</p>
 </div>
 <p><a href="https://www.desmos.com/3d/it8jwszhoc" rel="noopener nofollow ugc">Desmos graph</a></p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/124_2.png" class="avatar" />
+          <img src="../../../images/avatar-anon-006.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">Bennett_M</div>
+          <div class="user_name">User 006</div>
           <div class="post_content">
 <p>Visit my graph at: <a href="https://www.desmos.com/3d/0y1v3h1xzy" rel="noopener nofollow ugc">Bennett Name Circle Desmos Graph</a></p>
 <p>My name letters (BAM) are determined by the normal vector</p>
@@ -419,15 +511,16 @@ the equation becomes</p>
 </div>
 <p>Circle determined by function <span class="math">\mathbf{c}(t)=2\cos\left(t\right)\mathbf{u}+2\sin\left(t\right)\mathbf{v}</span>.</p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-028.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">hneal2</div>
+          <div class="user_name">User 028</div>
           <div class="post_content">
 <p>My initials are whn.</p>
 <p>Vector <span class="math">\mathbf{n} = \langle 8,\;-23,\;14\rangle</span>.<br/>
@@ -457,29 +550,31 @@ Vector <span class="math">\mathbf{v} = \langle -112,\;322,\;593\rangle</span>.</
 </aside>
 
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-019.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">sdaniel1</div>
+          <div class="user_name">User 019</div>
           <div class="post_content">
 <p>My initials are RSD (18,19,4)</p>
 <p>My equation:<span class="math">p(t) = ((108/41)+57\cos t+12\sin t-(114/41)+54\cos t-54\sin t)</span></p>
 <p><a href="https://www.desmos.com/3d/fztjsws0ug" rel="noopener nofollow ugc">Mylink</a></p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 2">👍 2</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-015.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">fvazquez</div>
+          <div class="user_name">User 015</div>
           <div class="post_content">
 <p>My initials are FSV: (6,19,22)<br/>
 My equation is:</p>
@@ -488,15 +583,16 @@ My equation is:</p>
 </div>
 <p>Desmos3D link: <a href="https://www.desmos.com/3d/aqxaa9kayq" rel="noopener nofollow ugc">Circular Motion 3D Graph</a></p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-029.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">AidenDavies</div>
+          <div class="user_name">User 029</div>
           <div class="post_content">
 <p>My initials are AJD <span class="math">(1,10,4)</span>.<br/>
 My equation is</p>
@@ -505,15 +601,16 @@ My equation is</p>
 </div>
 <p>This is the link to my model: <a class="inline-onebox" href="https://www.desmos.com/3d/c8ehk9uuug" rel="noopener nofollow ugc">Parameterizing an obique circle | Desmos</a></p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-040.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">cjarvis3</div>
+          <div class="user_name">User 040</div>
           <div class="post_content">
 <p>Here is the link to the Desmos graph: <a class="inline-onebox" href="https://www.desmos.com/3d/navumevfmj" rel="noopener nofollow ugc">Circle Name Graph | Desmos</a></p>
 <p>My initials are: CMJ (3, 13, 10)</p>
@@ -524,15 +621,16 @@ My equation is</p>
 \frac{2\sin(t)}{\sqrt{49384}}\langle -30,130,178\rangle
 </div>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-016.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">Elitzabeth</div>
+          <div class="user_name">User 016</div>
           <div class="post_content">
 <p>My initials are EVV and my equation is:</p>
 <div class="math">
@@ -540,29 +638,31 @@ My equation is</p>
 </div>
 <p>Here is the link to my Desmos: <a class="inline-onebox" href="https://www.desmos.com/3d/ekt9iy8ddu" rel="noopener nofollow ugc">Parameterizing circle in 3D | Desmos</a></p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-011.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">AndrewA</div>
+          <div class="user_name">User 011</div>
           <div class="post_content">
 <p>My letters were ABA <span class="math">(1,2,1)</span>.</p>
 <p>My equation was vector <span class="math">\mathbf{p}(t) = (-5,2,1)\frac   {2\sin(t)}{\sqrt{30}} + (0,1,-2)\frac   {2\cos(t)}{\sqrt{5}}</span>.<br/>
 This is my Desmos link: <a class="inline-onebox" href="https://www.desmos.com/3d/to8s25rw0p" rel="noopener nofollow ugc">Circular motion in 3D | Desmos</a>.</p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-039.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">Belen</div>
+          <div class="user_name">User 039</div>
           <div class="post_content">
 <div class="math">
 \vec{p}(t)=\frac{2\cos(t)}{\sqrt{5}} \left\langle -2,0,1 \right\rangle  + \frac{2\sin(t)}{\sqrt{945}}\left\langle -13,-10,-26 \right\rangle
@@ -583,15 +683,16 @@ This is my Desmos link: <a class="inline-onebox" href="https://www.desmos.com/3d
 </aside>
 <p>Letters: BMD</p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-013.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">seamus_tignor</div>
+          <div class="user_name">User 013</div>
           <div class="post_content">
 <p>My initials are SDT and my equation is:<br/>
 <span class="math">\vec{p}(t) = \frac{2\cos(t)}{\sqrt{416}} \langle 0,4,20 \rangle + \frac{2\sin(t)}{\sqrt{323232}} \langle -416, -76, 380 \rangle</span><br/>
@@ -611,15 +712,16 @@ Here's the link to my Desmos graph:</p><aside class="onebox allowlistedgeneric" 
 </aside>
 
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-020.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">scarlettvb</div>
+          <div class="user_name">User 020</div>
           <div class="post_content">
 <p>My initials are: SAV<br/>
 So, my equation of my plane is</p>
@@ -659,15 +761,16 @@ So, my equation of my plane is</p>
 </aside>
 
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-007.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">zowens</div>
+          <div class="user_name">User 007</div>
           <div class="post_content">
 <p>My initials are ZSO.<br/>
 This is my equation:</p>
@@ -692,15 +795,16 @@ This is my equation:</p>
 </aside>
 
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-012.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">zatyazhnykh</div>
+          <div class="user_name">User 012</div>
           <div class="post_content">
 <p>My letters are <span class="math">(A, A, Z) \to \langle 1, 1, 26\rangle</span>.</p>
 <p>My equation is:</p>
@@ -723,15 +827,16 @@ This is my equation:</p>
 </aside>
 
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-003.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">Natlopts</div>
+          <div class="user_name">User 003</div>
           <div class="post_content">
 <p>My letters were NIL <span class="math">(14,-9,12)</span>.</p>
 <p>My equation ended up being</p>
@@ -740,30 +845,32 @@ This is my equation:</p>
 </div>
 <p>This is my desmos <a href="https://www.desmos.com/3d/v7v24fwg70" rel="noopener nofollow ugc">link</a> <img alt=":smiley:" class="emoji" height="20" loading="lazy" src="../../../images/smiley.png" title=":smiley:" width="20"/></p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-009.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">jcrabtre</div>
+          <div class="user_name">User 009</div>
           <div class="post_content">
 <p>My initials are JWC (10, 23, 3), giving me an initial equation of <span class="math">(10x - 23y + 3z = 0)</span>. This gave me a vector of <span class="math">(10, -23, 3)</span>.<br/>
 After some looking through the textbook and notes, I got a <span class="math">u</span> vector of <span class="math">(0, 3, 23)</span>, with a magnitude of <span class="math">\sqrt{538}</span>. The cross product from my initial vector and the <span class="math">u</span> vector was <span class="math">(-538, -230, 30)</span>, with a magnitude of <span class="math">\sqrt{343,244}</span>. Finally, I derived my final equation:</p>
 <p><span class="math">\vec{𝑝}(𝑡)=\frac{2\cos\left(t\right)}{\sqrt{538}}\left(0,3,23\right)+\frac{2\sin\left(t\right)}{\sqrt{343244}}\left(-538,-230,30\right)</span></p>
 <p><a href="https://www.desmos.com/3d/gzblinvp4c" rel="noopener nofollow ugc">Here is the link to my Desmos page!</a></p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-038.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">dhunter1</div>
+          <div class="user_name">User 038</div>
           <div class="post_content">
 <p>My Initials are DMH, so I used the equation</p>
 <div class="math">
@@ -776,15 +883,16 @@ After some looking through the textbook and notes, I got a <span class="math">u<
 <p>and this is the link to my graph in Desmos: <a href="https://www.desmos.com/3d/to8s25rw0p" rel="noopener nofollow ugc">Desmos Link</a>.<br/>
 <img alt=":slight_smile:" class="emoji only-emoji" height="20" loading="lazy" src="../../../images/slight_smile.png" title=":slight_smile:" width="20"/></p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-032.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">asherroach6</div>
+          <div class="user_name">User 032</div>
           <div class="post_content">
 <p>My initials are ALR<br/>
 c(t)=</p>
@@ -807,15 +915,16 @@ c(t)=</p>
 </aside>
 
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-035.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">asvetlov</div>
+          <div class="user_name">User 035</div>
           <div class="post_content">
 <p>My initials are AES: <span class="math">(1, 5, 19)</span></p>
 <p>My equation is:</p>
@@ -839,15 +948,16 @@ c(t)=2\cos(t)\left(\frac{(-19,95,26)}{\sqrt{10062}}\right)+2\sin(t)\left(\frac{(
 </aside>
 
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-041.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">Joel_W</div>
+          <div class="user_name">User 041</div>
           <div class="post_content">
 <p>My initials are JDW (10, 4, 23), which gives me an initial equation of:</p>
 <div class="math">
@@ -861,15 +971,16 @@ c(t)=2\cos(t)\left(\frac{(-19,95,26)}{\sqrt{10062}}\right)+2\sin(t)\left(\frac{(
 </div>
 <p>Here's the link to the graph in <a href="https://www.desmos.com/3d/u0lgumvxzo" rel="noopener nofollow ugc">Desmos</a>!</p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-021.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">awilso21</div>
+          <div class="user_name">User 021</div>
           <div class="post_content">
 <p>My initials are ASW: <span class="math">(1,19,23)</span></p>
 <p>My equation is:</p>
@@ -892,15 +1003,16 @@ p(t)=\frac{2\cos (t)}{\sqrt{362}}\langle 19,-1,0\rangle + \frac{2\sin (t)}{\sqrt
 </aside>
 
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-046.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">cshochet</div>
+          <div class="user_name">User 046</div>
           <div class="post_content">
 <p>My Name: CAS (3,1,19)</p>
 <p>My Equation:</p>
@@ -908,6 +1020,7 @@ p(t)=\frac{2\cos (t)}{\sqrt{362}}\langle 19,-1,0\rangle + \frac{2\sin (t)}{\sqrt
 p(t) = \left\langle\frac{2}{\sqrt{10}}\cos(t)-\frac{114}{\sqrt{3710}}\sin(t),\; \frac{6}{\sqrt{10}}\cos(t)+\frac{38}{\sqrt{3710}}\sin(t),\; \frac{38}{\sqrt{3710}}\sin(t)\right\rangle
 </div>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span></div>
         </div>
       </div>
 
@@ -918,22 +1031,22 @@ p(t) = \left\langle\frac{2}{\sqrt{10}}\cos(t)-\frac{114}{\sqrt{3710}}\sin(t),\; 
         <div class="post">
           <div class="user_name">mark</div>
           <div class="post_content">
-<p><span class="mention">@cshochet</span> Can you include a link to a 3D graph of your circle in the plane?</p>
+<p><span class="mention">@User 047</span> Can you include a link to a 3D graph of your circle in the plane?</p>
           </div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-037.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">dayysi</div>
+          <div class="user_name">User 037</div>
           <div class="post_content">
 <aside class="quote no-group quote-modified" data-post="17" data-topic="88" data-username="dayysi">
 <div class="title">
 <div class="quote-controls"></div>
-<img alt="" class="avatar" height="24" src="../../../images/48.png" width="24"/> dayysi:</div>
+<img alt="" class="avatar" height="24" src="../../../images/avatar-anon-037.svg" width="24"/> User 037:</div>
 <blockquote>
 <div class="math">
 \vec{p}(t) = 2cos(t)\langle 0,1,0\rangle + \frac{2\sin(t)}{\sqrt{26}} \langle -1,-3,4 \rangle.
@@ -956,15 +1069,16 @@ p(t) = \left\langle\frac{2}{\sqrt{10}}\cos(t)-\frac{114}{\sqrt{3710}}\sin(t),\; 
 </aside>
 
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-024.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">AveryJo</div>
+          <div class="user_name">User 024</div>
           <div class="post_content">
 <p>Initials: AJH <span class="math">(1,-10,8)</span></p>
 <div class="math">
@@ -986,21 +1100,23 @@ p(t)=\frac{2\cos (t)}{\sqrt{101}}\langle 10,1,0\rangle + \frac{2\sin (t)}{\sqrt{
 </aside>
 
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-027.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">tsmith26</div>
+          <div class="user_name">User 027</div>
           <div class="post_content">
 <p>My initials are TCS, which corresponds to values (20, 3, 19).</p>
 <p>The equation for my circle looks like this:</p>
 <p><span class="math">\vec p(t)=\frac{2\cos (t)}{\sqrt{171}}\langle 1,13,1\rangle+\frac{2\sin (t)}{\sqrt{131670}}\langle 250,1,-263\rangle</span></p>
 <p>Here is the link to my Desmos graph: <a href="https://www.desmos.com/3d/sq3cb4olnz" rel="noopener nofollow ugc"><code>Circular Motion in 3D - Tyler Smith</code></a></p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 

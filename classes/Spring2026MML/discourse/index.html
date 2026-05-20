@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Discourse at Mark&#x27;s Math</title>
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="https://use.fontawesome.com/2374bdec1c.css">
+    <link rel="stylesheet" href="./archived.css" />
+    <script>
+      function applyCategoryFilter() {
+        var hash = window.location.hash || "";
+        var selected = "all";
+        if (hash.indexOf("#category=") === 0) {
+          selected = decodeURIComponent(hash.slice("#category=".length));
+        }
+
+        document.querySelectorAll(".category-nav a").forEach(function (link) {
+          var isActive = link.dataset.category === selected;
+          link.setAttribute("aria-current", isActive ? "page" : "false");
+        });
+
+        document.querySelectorAll(".topic-row").forEach(function (row) {
+          var matches = selected === "all" || row.dataset.category === selected;
+          row.hidden = !matches;
+        });
+
+        document.querySelectorAll(".pagination-link[href]").forEach(function (link) {
+          var baseHref = link.getAttribute("href").split("#")[0];
+          link.setAttribute("href", selected === "all" ? baseHref : baseHref + hash);
+        });
+      }
+
+      function preprocessDiscourseMath() {
+        document.querySelectorAll("span.math, div.math").forEach(function (node) {
+          var tex = node.textContent || "";
+          if (!tex.trim()) {
+            return;
+          }
+          if (node.tagName === "SPAN") {
+            node.textContent = "\\(" + tex + "\\)";
+          } else {
+            node.textContent = "\\[" + tex + "\\]";
+          }
+          node.classList.remove("math");
+        });
+      }
+
+      window.MathJax = {
+        tex: {
+          inlineMath: [["\\(", "\\)"]],
+          displayMath: [["\\[", "\\]"]]
+        },
+        startup: {
+          pageReady() {
+            preprocessDiscourseMath();
+            applyCategoryFilter();
+            return MathJax.startup.defaultPageReady();
+          }
+        }
+      };
+
+      window.addEventListener("hashchange", applyCategoryFilter);
+      window.addEventListener("DOMContentLoaded", applyCategoryFilter);
+    </script>
+    <script async id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
+  </head>
+
+  <body>
+
+    <header class="header">
+      <div class="title-span">
+        <h1 class="site-title">
+          <img src="images/ea06c0b00f456d7d2112d8196d0da94074cbf04a.png" height="40" alt="Site Logo" id="site-logo" />
+        </h1>
+      </div>
+    </header>
+
+    <div class="main">
+      <h1 class="archive-title">Discourse at Mark&#x27;s Math</h1>
+      <div class="archive-span"><a href='https://marksmath.org/classes/Spring2026MML/'>MML Discourse</a> archived in May, 2026</div>
+      <div class="category-nav">Categories: <a href="#" data-category="all">All</a> - <a href="#category=meta" data-category="meta">Meta</a> - <a href="#category=mml-assignments" data-category="mml-assignments">MML Assignments</a> - <a href="#category=mml-problems" data-category="mml-problems">MML Problems</a> - <a href="#category=mml-questions" data-category="mml-questions">MML Questions</a> - <a href="#category=mml-review-questions" data-category="mml-review-questions">MML Review Questions</a></div>
+      
+      <div class="topics">
+        <div class="header-row">
+          <span class="topic-head">Topics</span>
+          <span class="category-head">Category</span>
+          <span class="post-count-head">Posts</span>
+        </div>
+              <div class="topic-row" data-category="meta">
+        <span class="topic"><a href="t/sage-cells/172">Sage cells</a></span>
+        <span class="category">Meta</span>
+        <span class="post-count">1</span>
+      </div>
+
+      <div class="topic-row" data-category="meta">
+        <span class="topic"><a href="t/oneboxes/170">Oneboxes</a></span>
+        <span class="category">Meta</span>
+        <span class="post-count">1</span>
+      </div>
+
+      <div class="topic-row" data-category="mml-questions">
+        <span class="topic"><a href="t/video-on-convolution-smoothing/156">Video on Convolution Smoothing</a></span>
+        <span class="category">MML Questions</span>
+        <span class="post-count">1</span>
+      </div>
+
+      <div class="topic-row" data-category="mml-assignments">
+        <span class="topic"><a href="t/your-personal-pca/136">Your personal PCA</a></span>
+        <span class="category">MML Assignments</span>
+        <span class="post-count">26</span>
+      </div>
+
+      <div class="topic-row" data-category="mml-assignments">
+        <span class="topic"><a href="t/lab-3-hand-in/148">Lab 3 Hand In</a></span>
+        <span class="category">MML Assignments</span>
+        <span class="post-count">25</span>
+      </div>
+
+      <div class="topic-row" data-category="mml-problems">
+        <span class="topic"><a href="t/backpropagation-in-an-expression-graph/144">Backpropagation in an expression graph</a></span>
+        <span class="category">MML Problems</span>
+        <span class="post-count">2</span>
+      </div>
+
+      <div class="topic-row" data-category="mml-review-questions">
+        <span class="topic"><a href="t/questions-on-review-for-exam-4/147">Questions on Review for Exam 4</a></span>
+        <span class="category">MML Review Questions</span>
+        <span class="post-count">6</span>
+      </div>
+
+      <div class="topic-row" data-category="mml-problems">
+        <span class="topic"><a href="t/small-pca/130">Small PCA</a></span>
+        <span class="category">MML Problems</span>
+        <span class="post-count">2</span>
+      </div>
+
+      <div class="topic-row" data-category="mml-problems">
+        <span class="topic"><a href="t/defining-an-expression-graph/143">Defining an expression graph</a></span>
+        <span class="category">MML Problems</span>
+        <span class="post-count">2</span>
+      </div>
+
+      <div class="topic-row" data-category="mml-problems">
+        <span class="topic"><a href="t/interpretting-an-expression-graph/142">Interpretting an expression graph</a></span>
+        <span class="category">MML Problems</span>
+        <span class="post-count">3</span>
+      </div>
+
+      <div class="topic-row" data-category="mml-problems">
+        <span class="topic"><a href="t/geometric-pca/135">Geometric PCA</a></span>
+        <span class="category">MML Problems</span>
+        <span class="post-count">2</span>
+      </div>
+
+      <div class="topic-row" data-category="mml-problems">
+        <span class="topic"><a href="t/an-ast/138">An AST</a></span>
+        <span class="category">MML Problems</span>
+        <span class="post-count">2</span>
+      </div>
+
+      <div class="topic-row" data-category="meta">
+        <span class="topic"><a href="t/graphviz/137">Graphviz</a></span>
+        <span class="category">Meta</span>
+        <span class="post-count">1</span>
+      </div>
+
+      <div class="topic-row" data-category="mml-questions">
+        <span class="topic"><a href="t/exam-3-review-worksheet/124">Exam 3 Review Worksheet</a></span>
+        <span class="category">MML Questions</span>
+        <span class="post-count">1</span>
+      </div>
+
+      <div class="topic-row" data-category="mml-problems">
+        <span class="topic"><a href="t/u-subs-and-z-scores/117">U-Subs and Z-Scores</a></span>
+        <span class="category">MML Problems</span>
+        <span class="post-count">3</span>
+      </div>
+
+      <div class="topic-row" data-category="mml-review-questions">
+        <span class="topic"><a href="t/questions-on-review-for-exam-3/120">Questions on Review for Exam 3</a></span>
+        <span class="category">MML Review Questions</span>
+        <span class="post-count">6</span>
+      </div>
+
+      <div class="topic-row" data-category="mml-assignments">
+        <span class="topic"><a href="t/lab-2-hand-in/118">Lab 2 Hand In</a></span>
+        <span class="category">MML Assignments</span>
+        <span class="post-count">25</span>
+      </div>
+
+      <div class="topic-row" data-category="mml-problems">
+        <span class="topic"><a href="t/a-u-substitution-integral/110">A u-substitution integral</a></span>
+        <span class="category">MML Problems</span>
+        <span class="post-count">3</span>
+      </div>
+
+      <div class="topic-row" data-category="mml-problems">
+        <span class="topic"><a href="t/mean-and-standard-distribution-of-a-uniform-distribution/116">Mean and standard distribution of a uniform distribution</a></span>
+        <span class="category">MML Problems</span>
+        <span class="post-count">6</span>
+      </div>
+
+      <div class="topic-row" data-category="mml-problems">
+        <span class="topic"><a href="t/u-substitution-for-an-exponential-distribution/114">U Substitution for an exponential distribution</a></span>
+        <span class="category">MML Problems</span>
+        <span class="post-count">3</span>
+      </div>
+
+      <div class="topic-row" data-category="mml-problems">
+        <span class="topic"><a href="t/one-hot-encoding/109">One Hot Encoding</a></span>
+        <span class="category">MML Problems</span>
+        <span class="post-count">5</span>
+      </div>
+
+      <div class="topic-row" data-category="mml-assignments">
+        <span class="topic"><a href="t/lab-1-hand-in/107">Lab 1 Hand In</a></span>
+        <span class="category">MML Assignments</span>
+        <span class="post-count">27</span>
+      </div>
+
+      <div class="topic-row" data-category="mml-review-questions">
+        <span class="topic"><a href="t/questions-on-review-for-exam-2/99">Questions on Review for Exam 2</a></span>
+        <span class="category">MML Review Questions</span>
+        <span class="post-count">14</span>
+      </div>
+
+      <div class="topic-row" data-category="mml-problems">
+        <span class="topic"><a href="t/matrix-least-square/98">Matrix least square</a></span>
+        <span class="category">MML Problems</span>
+        <span class="post-count">3</span>
+      </div>
+
+      <div class="topic-row" data-category="mml-problems">
+        <span class="topic"><a href="t/inverse-of-a-product/70">Inverse of a product</a></span>
+        <span class="category">MML Problems</span>
+        <span class="post-count">7</span>
+      </div>
+
+      <div class="topic-row" data-category="mml-problems">
+        <span class="topic"><a href="t/transpose-of-a-product/69">Transpose of a product</a></span>
+        <span class="category">MML Problems</span>
+        <span class="post-count">4</span>
+      </div>
+
+      <div class="topic-row" data-category="mml-problems">
+        <span class="topic"><a href="t/determinant-of-an-inverse/90">Determinant of an inverse</a></span>
+        <span class="category">MML Problems</span>
+        <span class="post-count">3</span>
+      </div>
+
+      <div class="topic-row" data-category="mml-problems">
+        <span class="topic"><a href="t/column-space-and-null-space-of-a-matrix/91">Column space and null space of a matrix</a></span>
+        <span class="category">MML Problems</span>
+        <span class="post-count">3</span>
+      </div>
+
+      <div class="topic-row" data-category="mml-assignments">
+        <span class="topic"><a href="t/single-parameter-linear-regression/41">Single Parameter Linear Regression</a></span>
+        <span class="category">MML Assignments</span>
+        <span class="post-count">22</span>
+      </div>
+
+      <div class="topic-row" data-category="mml-assignments">
+        <span class="topic"><a href="t/your-favorite-function/40">Your favorite function</a></span>
+        <span class="category">MML Assignments</span>
+        <span class="post-count">32</span>
+      </div>
+
+      <div class="topic-row" data-category="mml-review-questions">
+        <span class="topic"><a href="t/questions-on-review-for-exam-1/60">Questions on Review for Exam 1</a></span>
+        <span class="category">MML Review Questions</span>
+        <span class="post-count">9</span>
+      </div>
+
+      <div class="topic-row" data-category="meta">
+        <span class="topic"><a href="t/what-do-the-various-categories-mean/50">What do the various categories mean?</a></span>
+        <span class="category">Meta</span>
+        <span class="post-count">1</span>
+      </div>
+
+      <div class="topic-row" data-category="meta">
+        <span class="topic"><a href="t/how-do-i-enter-groovy-typeset-mathematics-into-discourse/18">How do I enter groovy, typeset mathematics into Discourse?</a></span>
+        <span class="category">Meta</span>
+        <span class="post-count">3</span>
+      </div>
+
+      <div class="topic-row" data-category="meta">
+        <span class="topic"><a href="t/how-do-i-type-nicely-formatted-posts-into-discourse/4">How do I type nicely formatted posts into Discourse?</a></span>
+        <span class="category">Meta</span>
+        <span class="post-count">3</span>
+      </div>
+
+      <div class="topic-row" data-category="meta">
+        <span class="topic"><a href="t/what-is-discourse-at-marks-math/5">What is Discourse at Mark&rsquo;s Math</a></span>
+        <span class="category">Meta</span>
+        <span class="post-count">1</span>
+      </div>
+
+
+      </div>
+      
+      <footer class="archive-footer">
+        <a href="https://discourse.org">Discourse</a> forum -- Archived by <a href="https://github.com/mcmcclur/ArchiveDiscourse">Archive Discourse</a>
+      </footer>
+    </div>
+  </body>
+</html>

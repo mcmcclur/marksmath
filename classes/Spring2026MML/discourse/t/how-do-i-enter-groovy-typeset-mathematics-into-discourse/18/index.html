@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width">
+    <title>How do I enter groovy, typeset mathematics into Discourse?</title>
+    <link rel="stylesheet" href="../../../archived.css" />
+    <script>
+      function findSageCodeBlocks() {
+        return Array.prototype.slice.call(
+          document.querySelectorAll(
+            "pre[data-code-wrap='sage'] > code, pre > code.lang-sage, pre > code.language-sage, pre > code.sage"
+          )
+        );
+      }
+
+      function loadScript(src) {
+        return new Promise(function (resolve, reject) {
+          var existing = document.querySelector("script[src='" + src + "']");
+          if (existing) {
+            if (existing.dataset.loaded === "true") {
+              resolve();
+              return;
+            }
+            existing.addEventListener("load", resolve, { once: true });
+            existing.addEventListener("error", reject, { once: true });
+            return;
+          }
+
+          var script = document.createElement("script");
+          script.src = src;
+          script.async = true;
+          script.addEventListener("load", function () {
+            script.dataset.loaded = "true";
+            resolve();
+          }, { once: true });
+          script.addEventListener("error", reject, { once: true });
+          document.head.appendChild(script);
+        });
+      }
+
+      function prepareSageCells() {
+        var sageBlocks = findSageCodeBlocks();
+        if (!sageBlocks.length) {
+          return Promise.resolve();
+        }
+
+        return loadScript("https://sagecell.sagemath.org/static/embedded_sagecell.js")
+          .then(function () {
+            if (!window.sagecell || !window.sagecell.makeSagecell) {
+              return;
+            }
+
+            sageBlocks.forEach(function (codeTag, index) {
+              var preTag = codeTag.parentElement;
+              if (!preTag || preTag.dataset.sageMounted === "true") {
+                return;
+              }
+
+              var host = document.createElement("div");
+              host.className = "sagecell-archive";
+
+              var source = document.createElement("script");
+              source.type = "text/x-sage";
+              source.text = codeTag.textContent || "";
+              host.appendChild(source);
+
+              preTag.insertAdjacentElement("afterend", host);
+              preTag.classList.add("sage-source-hidden");
+              preTag.dataset.sageMounted = "true";
+
+              window.sagecell.makeSagecell({
+                inputLocation: host,
+                autoeval: false,
+                evalButtonText: "Run",
+                languages: ["sage"]
+              });
+            });
+          })
+          .catch(function () {
+            // Leave the original code blocks visible if SageCell cannot load.
+          });
+      }
+
+      function preprocessDiscourseMath() {
+        document.querySelectorAll("span.math, div.math").forEach(function (node) {
+          var tex = node.textContent || "";
+          if (!tex.trim()) {
+            return;
+          }
+          if (node.tagName === "SPAN") {
+            node.textContent = "\\(" + tex + "\\)";
+          } else {
+            node.textContent = "\\[" + tex + "\\]";
+          }
+          node.classList.remove("math");
+        });
+      }
+
+      window.MathJax = {
+        tex: {
+          inlineMath: [["\\(", "\\)"]],
+          displayMath: [["\\[", "\\]"]]
+        },
+        startup: {
+          pageReady() {
+            preprocessDiscourseMath();
+            return MathJax.startup.defaultPageReady().then(function () {
+              return prepareSageCells();
+            });
+          }
+        }
+      };
+    </script>
+    <script async id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="title-span">
+        <a href="../../../">
+          <img src="../../../images/ea06c0b00f456d7d2112d8196d0da94074cbf04a.png" height="40" alt="Site Logo" id="site-logo" />
+        </a>
+      </div>
+    </header>
+
+    <div class="main">
+    <div class="archive-span"><a href='https://marksmath.org/classes/Spring2026MML/'>MML Discourse</a> archived in May, 2026</div>
+    <h1 class="topic-title">How do I enter groovy, typeset mathematics into Discourse?</h1>
+            <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/7_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">mark</div>
+          <div class="post_content">
+<p>Discourse at Mark's Math uses LaTeX snippets to input mathematics. This approach is very common among tools that aim to communicate mathematics. Thus, a very similar approach is taken by tools as diverse as <a href="https://math.stackexchange.com/">Math.StackExchange</a> (a forum), <a href="https://obsidian.md/">Obsidian</a> (note taking software), <a href="https://jupyter.org/">Jupyter</a> (a computational notebook), and more.</p>
+<h2><a aria-label="Heading link" class="anchor" href="#p-33-the-basics-of-latex-1" name="p-33-the-basics-of-latex-1"></a>The basics of LaTeX</h2>
+<p>The LaTeX representation of some rather simple expressions are pretty close to what you'd expect, like</p>
+<ul>
+<li><code>$x^2$</code> for <span class="math">x^2</span> or</li>
+<li><code>$\sin(x^{12})$</code> for <span class="math">\sin(x^{12})</span></li>
+</ul>
+<p>Already, though, we can see necessary evils like</p>
+<ul>
+<li>dollar sign <code>$delimeters$</code>,</li>
+<li>backslash <code>\escapes</code>, and</li>
+<li>braced <code>{grouping}</code>.</li>
+</ul>
+<p>Things get a bit more complicated as we move to formulae like</p>
+<div class="math">
+\int_{-\infty}^{\infty} e^{-\frac{1}{2} x^{2}} \, dx = \sqrt{2\pi}
+</div>
+<p>which can be written in LaTeX as</p>
+<pre><code class="lang-auto">$$\int_{-\infty}^{\infty} e^{-\frac{1}{2} x^{2}} \, dx = \sqrt{2\pi}$$
+</code></pre>
+<p>There are some general principles, though:</p>
+<ul>
+<li>Generally, mathematics is dollar-sign delimited:
+<ul>
+<li>single dollars for inline math like <code>$\sin(x^2)$</code> for <span class="math">\sin(x^2)</span> or</li>
+<li>double dollars for display math like <code>$$\int \sin(x^2) \, dx$$</code> for</li>
+</ul>
+</li>
+</ul>
+<div class="math">
+\int \sin(x^2) \, dx
+</div>
+<ul>
+<li>Functions and commands are indicated with a preceding backslash like
+<ul>
+<li><code>$\pi$</code> for <span class="math">\pi</span>,</li>
+<li><code>$\infty$</code> for <span class="math">\infty</span>,</li>
+<li><code>$\cos(x)$</code> for <span class="math">\cos(x)</span>,</li>
+<li><code>$\frac{1}{12}$</code> for <span class="math">\frac{1}{12}</span>,</li>
+<li><code>$\sum$</code> for <span class="math">\sum</span>, as in</li>
+</ul>
+</li>
+</ul>
+<div class="math">
+\sum_{n=1}^{\infty} \frac{1}{n^2} = -\frac{\pi^2}{6}.
+</div>
+<h2><a aria-label="Heading link" class="anchor" href="#p-33-forum-assistance-2" name="p-33-forum-assistance-2"></a>Forum assistance</h2>
+<p>There are a couple of built in ways to get assistance on typesetting Latex expressions.</p>
+<h3><a aria-label="Heading link" class="anchor" href="#p-33-finding-code-for-given-expresssions-3" name="p-33-finding-code-for-given-expresssions-3"></a>Finding code for given expresssions</h3>
+<p>You can cntrl-click or right-click on an expression to pull up a contextual menu to get all sorts of information on that expression - including the LaTeX source that produced it. If you try that for the expression above, for example, you can find the Show Math As &gt; TeX Commands menu item like so:</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/315831fc07e433a1d174b89216cc65d886c7bcad" href="https://discourse.marksmath.org/uploads/default/original/1X/315831fc07e433a1d174b89216cc65d886c7bcad.png" title="Screenshot 2026-01-07 at 5.53.59 PM"><img alt="Screenshot 2026-01-07 at 5.53.59 PM" data-base62-sha1="72wlUSOdfJMeH4birbQw4XLzOLb" data-dominant-color="ECECEC" height="220" src="../../../images/315831fc07e433a1d174b89216cc65d886c7bcad_2_345x220.png" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/315831fc07e433a1d174b89216cc65d886c7bcad_2_345x220.png, https://discourse.marksmath.org/uploads/default/optimized/1X/315831fc07e433a1d174b89216cc65d886c7bcad_2_517x330.png 1.5x, https://discourse.marksmath.org/uploads/default/optimized/1X/315831fc07e433a1d174b89216cc65d886c7bcad_2_690x440.png 2x" width="345"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2026-01-07 at 5.53.59 PM</span><span class="informations">928×594 58.1 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<h2><a aria-label="Heading link" class="anchor" href="#p-33-the-ai-contextual-menu-4" name="p-33-the-ai-contextual-menu-4"></a>The AI contextual menu</h2>
+<p>The AI contextual menu <img alt="Screenshot 2026-01-07 at 10.18.15 AM" data-base62-sha1="1FRDZDo9xXozk0QCrs66mWPp250" height="23" src="../../../images/0bbdaeb89c42f0865160ab3a4cdbeeaed87cc1e6.png" width="25"/> provides access to a proofreading tool that focuses on mathematical content in particular. You can use it to assist with your LaTeX typesetting.</p>
+<p>Suppose, for example, that you type in</p>
+<p><code>integral_-inf^oo e^(-x^2 dx</code></p>
+<p>This might seem close to right but, really, isn't proper LaTeX, nor even syntactically correct. If you process it through the proofreader, though, you get</p>
+<p><code>$$\int_{-\infty}^{\infty} e^{-x^2} \, dx$$</code></p>
+<p>which typesets beautifully!</p>
+<p>Here are a couple before after screenshots:</p>
+<h4><a aria-label="Heading link" class="anchor" href="#p-33-before-5" name="p-33-before-5"></a>Before</h4>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/d93573dd4a261f95847b7493044167b91c921666" href="https://discourse.marksmath.org/uploads/default/original/1X/d93573dd4a261f95847b7493044167b91c921666.png" title="Screenshot 2026-01-07 at 7.23.26 PM"><img alt="Screenshot 2026-01-07 at 7.23.26 PM" data-base62-sha1="uZw8egOlBppOUqDIZcZWKbsBxlk" data-dominant-color="FAFAFB" height="203" src="../../../images/d93573dd4a261f95847b7493044167b91c921666_2_690x203.png" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/d93573dd4a261f95847b7493044167b91c921666_2_690x203.png, https://discourse.marksmath.org/uploads/default/optimized/1X/d93573dd4a261f95847b7493044167b91c921666_2_1035x304.png 1.5x, https://discourse.marksmath.org/uploads/default/optimized/1X/d93573dd4a261f95847b7493044167b91c921666_2_1380x406.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2026-01-07 at 7.23.26 PM</span><span class="informations">2260×668 38.7 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<h4><a aria-label="Heading link" class="anchor" href="#p-33-after-6" name="p-33-after-6"></a>After</h4>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/e473a1796218ab878b0b28cf8b5b897d099a0dc8" href="https://discourse.marksmath.org/uploads/default/original/1X/e473a1796218ab878b0b28cf8b5b897d099a0dc8.png" title="Screenshot 2026-01-07 at 7.24.13 PM"><img alt="Screenshot 2026-01-07 at 7.24.13 PM" data-base62-sha1="wAYBgjPo2nWp3s1xQQPISNITAbC" data-dominant-color="F8F9FA" height="203" src="../../../images/e473a1796218ab878b0b28cf8b5b897d099a0dc8_2_690x203.png" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/e473a1796218ab878b0b28cf8b5b897d099a0dc8_2_690x203.png, https://discourse.marksmath.org/uploads/default/optimized/1X/e473a1796218ab878b0b28cf8b5b897d099a0dc8_2_1035x304.png 1.5x, https://discourse.marksmath.org/uploads/default/optimized/1X/e473a1796218ab878b0b28cf8b5b897d099a0dc8_2_1380x406.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2026-01-07 at 7.24.13 PM</span><span class="informations">2260×668 49.4 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/7_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">mark</div>
+          <div class="post_content">
+<h2><a aria-label="Heading link" class="anchor" href="#p-36-latex-in-the-markdown-editor-1" name="p-36-latex-in-the-markdown-editor-1"></a>LaTeX in the markdown editor</h2>
+<p>Generally, LaTeX is just one more piece of markup you need to worry about when working with the Markdown editor. Let's think about the formula</p>
+<p>If <span class="math">f(x) = e^{-x^2}</span>, then</p>
+<div class="math">
+\int_{-\infty}^{\infty} f(x) \, dx = \sqrt{\pi}.
+</div>
+<hr/>
+<p>This whole post, up to here, could be entered</p>
+<pre><code class="lang-auto">## LaTeX in the markdown editor
+
+Generally, LaTeX is just one more piece of markup you need to worry about when working with the Markdown editor. Let's think about the formula
+
+If $f(x) = e^{-x^2}$, then
+$$\int_{-\infty}^{\infty} f(x) \, dx = \sqrt{\pi}.$$
+</code></pre>
+<p>Thus, LaTeX fits into markdown quite naturally.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/7_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">mark</div>
+          <div class="post_content">
+<h2><a aria-label="Heading link" class="anchor" href="#p-37-latex-in-the-rich-editor-1" name="p-37-latex-in-the-rich-editor-1"></a>LaTeX in the rich editor</h2>
+<p>It turns out that the rich editor doesn’t really like it when you type mathematics in directly. Instead, we can use the <img alt="Screenshot 2026-01-07 at 10.18.22 AM" data-base62-sha1="j2vWpP9NWIQX4aP8iEQd8NnrkoH" height="23" src="../../../images/857217456c161b4c4c11942875f2474ff7d38143.png" width="25"/> to access the <span class="math">\sqrt{x}</span> <em>Insert Math</em> menu item:</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/927e8236efc40cf188cb046053edbb50f2d8a59e" href="https://discourse.marksmath.org/uploads/default/original/1X/927e8236efc40cf188cb046053edbb50f2d8a59e.png" title="Insert Math Menu"><img alt="Insert Math Menu" data-base62-sha1="kTWKLdH0kTfNlyNTpJGtiKWTD3w" data-dominant-color="F4F4F4" height="375" src="../../../images/927e8236efc40cf188cb046053edbb50f2d8a59e_2_404x375.png" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/927e8236efc40cf188cb046053edbb50f2d8a59e_2_404x375.png, https://discourse.marksmath.org/uploads/default/optimized/1X/927e8236efc40cf188cb046053edbb50f2d8a59e_2_606x562.png 1.5x, https://discourse.marksmath.org/uploads/default/original/1X/927e8236efc40cf188cb046053edbb50f2d8a59e.png 2x" width="404"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Insert Math Menu</span><span class="informations">650×602 27.8 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>You might need to scroll down a bit to find the Insert Math menu item. Once you do so, though, a separate modal window should pop up where you can type in the math. You do <em>not</em> need the dollar signs; the modal will insert them for you. There’s a switch that allows you to specify block mode for displayed equation or not for inline.</p>
+<p>The whole thing looks like so:</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/f0129a8e4ad3d70d55b542249ceae089cde6198e" href="https://discourse.marksmath.org/uploads/default/original/1X/f0129a8e4ad3d70d55b542249ceae089cde6198e.png" title="Math Editor Modal"><img alt="Math Editor Modal" data-base62-sha1="yfMrYvaPyFXuX9V1g0yTI0evGPA" data-dominant-color="F2F4F6" height="274" src="../../../images/f0129a8e4ad3d70d55b542249ceae089cde6198e_2_517x274.png" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/f0129a8e4ad3d70d55b542249ceae089cde6198e_2_517x274.png, https://discourse.marksmath.org/uploads/default/optimized/1X/f0129a8e4ad3d70d55b542249ceae089cde6198e_2_775x411.png 1.5x, https://discourse.marksmath.org/uploads/default/optimized/1X/f0129a8e4ad3d70d55b542249ceae089cde6198e_2_1034x548.png 2x" width="517"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Math Editor Modal</span><span class="informations">1208×642 26.4 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<div class="math">
+\int_{-\infty}^{\infty} e^{-x^2} \, dx
+</div>
+<p>The modal does not currently have a proofread button. You can proofread the whole post, once you’ve got and the proofreader will process the mathematics, as well.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 2">👍 2</span></div>
+        </div>
+      </div>
+
+
+    </div>
+  </body>
+</html>

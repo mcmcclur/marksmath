@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width">
+    <title>Lab 3 Hand In</title>
+    <link rel="stylesheet" href="../../../archived.css" />
+    <script>
+      function findSageCodeBlocks() {
+        return Array.prototype.slice.call(
+          document.querySelectorAll(
+            "pre[data-code-wrap='sage'] > code, pre > code.lang-sage, pre > code.language-sage, pre > code.sage"
+          )
+        );
+      }
+
+      function loadScript(src) {
+        return new Promise(function (resolve, reject) {
+          var existing = document.querySelector("script[src='" + src + "']");
+          if (existing) {
+            if (existing.dataset.loaded === "true") {
+              resolve();
+              return;
+            }
+            existing.addEventListener("load", resolve, { once: true });
+            existing.addEventListener("error", reject, { once: true });
+            return;
+          }
+
+          var script = document.createElement("script");
+          script.src = src;
+          script.async = true;
+          script.addEventListener("load", function () {
+            script.dataset.loaded = "true";
+            resolve();
+          }, { once: true });
+          script.addEventListener("error", reject, { once: true });
+          document.head.appendChild(script);
+        });
+      }
+
+      function prepareSageCells() {
+        var sageBlocks = findSageCodeBlocks();
+        if (!sageBlocks.length) {
+          return Promise.resolve();
+        }
+
+        return loadScript("https://sagecell.sagemath.org/static/embedded_sagecell.js")
+          .then(function () {
+            if (!window.sagecell || !window.sagecell.makeSagecell) {
+              return;
+            }
+
+            sageBlocks.forEach(function (codeTag, index) {
+              var preTag = codeTag.parentElement;
+              if (!preTag || preTag.dataset.sageMounted === "true") {
+                return;
+              }
+
+              var host = document.createElement("div");
+              host.className = "sagecell-archive";
+
+              var source = document.createElement("script");
+              source.type = "text/x-sage";
+              source.text = codeTag.textContent || "";
+              host.appendChild(source);
+
+              preTag.insertAdjacentElement("afterend", host);
+              preTag.classList.add("sage-source-hidden");
+              preTag.dataset.sageMounted = "true";
+
+              window.sagecell.makeSagecell({
+                inputLocation: host,
+                autoeval: false,
+                evalButtonText: "Run",
+                languages: ["sage"]
+              });
+            });
+          })
+          .catch(function () {
+            // Leave the original code blocks visible if SageCell cannot load.
+          });
+      }
+
+      function preprocessDiscourseMath() {
+        document.querySelectorAll("span.math, div.math").forEach(function (node) {
+          var tex = node.textContent || "";
+          if (!tex.trim()) {
+            return;
+          }
+          if (node.tagName === "SPAN") {
+            node.textContent = "\\(" + tex + "\\)";
+          } else {
+            node.textContent = "\\[" + tex + "\\]";
+          }
+          node.classList.remove("math");
+        });
+      }
+
+      window.MathJax = {
+        tex: {
+          inlineMath: [["\\(", "\\)"]],
+          displayMath: [["\\[", "\\]"]]
+        },
+        startup: {
+          pageReady() {
+            preprocessDiscourseMath();
+            return MathJax.startup.defaultPageReady().then(function () {
+              return prepareSageCells();
+            });
+          }
+        }
+      };
+    </script>
+    <script async id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="title-span">
+        <a href="../../../">
+          <img src="../../../images/ea06c0b00f456d7d2112d8196d0da94074cbf04a.png" height="40" alt="Site Logo" id="site-logo" />
+        </a>
+      </div>
+    </header>
+
+    <div class="main">
+    <div class="archive-span"><a href='https://marksmath.org/classes/Spring2026MML/'>MML Discourse</a> archived in May, 2026</div>
+    <h1 class="topic-title">Lab 3 Hand In</h1>
+            <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/7_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">mark</div>
+          <div class="post_content">
+<p>Submit your results to <a href="https://colab.research.google.com/drive/1sas7UOUEYSll8acgZzcJJ4RkCcSYx0zz?usp=sharing#sandboxMode=true">Lab 3</a> by responding here. Your response should include the answers to the following:</p>
+<ol>
+<li>What type of processing unit did you use (e.g. CPU, TPU, T4 GPU, etc.),</li>
+<li>What was your random seed, and</li>
+<li>What was the resulting accuracy for each of the 2 or 3 techniques that you tried?</li>
+</ol>
+<p>And do be sure to include a link to your notebook!!</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-009.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 009</div>
+          <div class="post_content">
+<ol>
+<li>MLP CNN</li>
+<li>95</li>
+<li></li>
+</ol>
+<p>CNN: 0.9261<br/>
+MLP: 8833</p>
+<aside class="onebox allowlistedgeneric" data-onebox-src="https://colab.research.google.com/drive/13LUG7YWaRArzcckWDS00oQeIH0_OBBbY?usp=sharing">
+<header class="source">
+<img alt="" class="site-icon" data-dominant-color="F29404" height="16" src="../../../images/430c970339cec07b5dfed85857e06989f3064d29.png" width="16"/>
+<a href="https://colab.research.google.com/drive/13LUG7YWaRArzcckWDS00oQeIH0_OBBbY?usp=sharing" rel="noopener nofollow ugc" target="_blank">colab.research.google.com</a>
+</header>
+<article class="onebox-body">
+<img alt="" class="thumbnail onebox-avatar" data-dominant-color="F29304" height="260" src="../../../images/cc9da405b46a15f905bb9967e7cdc7d7e8348a7e.png" width="260"/>
+<h3><a href="https://colab.research.google.com/drive/13LUG7YWaRArzcckWDS00oQeIH0_OBBbY?usp=sharing" rel="noopener nofollow ugc" target="_blank">Google Colab</a></h3>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-014.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 014</div>
+          <div class="post_content">
+<ol>
+<li>T4 GPU</li>
+<li>Random seed:  33</li>
+<li></li>
+</ol>
+<p>Single layer perceptron: Perceptron Accuracy: 0.8433<br/>
+A Multi-Layer Perceptron (MLP): MLP accuracy: 0.8823<br/>
+CNN: CNN accuracy: 0.9302</p>
+<aside class="onebox allowlistedgeneric" data-onebox-src="https://colab.research.google.com/drive/195iQZHnDo-j3IkDBzqdU0K-23mkaAk4_?usp=sharing">
+<header class="source">
+<img alt="" class="site-icon" data-dominant-color="F29404" height="16" src="../../../images/e68a79718db3ec3527874a0c768256754493ad79.png" width="16"/>
+<a href="https://colab.research.google.com/drive/195iQZHnDo-j3IkDBzqdU0K-23mkaAk4_?usp=sharing" rel="noopener nofollow ugc" target="_blank">colab.research.google.com</a>
+</header>
+<article class="onebox-body">
+<img alt="" class="thumbnail onebox-avatar" data-dominant-color="F29304" height="260" src="../../../images/cc9da405b46a15f905bb9967e7cdc7d7e8348a7e.png" width="260"/>
+<h3><a href="https://colab.research.google.com/drive/195iQZHnDo-j3IkDBzqdU0K-23mkaAk4_?usp=sharing" rel="noopener nofollow ugc" target="_blank">Google Colab</a></h3>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-018.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 018</div>
+          <div class="post_content">
+<ol>
+<li>T4 GPU</li>
+<li>Random seed:  16</li>
+<li>CNN accuracy: 0.9261<br/>
+Perceptron Accuracy: 0.8386</li>
+</ol>
+<p><a href="https://colab.research.google.com/drive/13a6NYtOSMQaOCYB2_fSEq_T3D1IIwOkO?usp=sharing" rel="noopener nofollow ugc">https://colab.research.google.com/drive/13a6NYtOSMQaOCYB2_fSEq_T3D1IIwOkO?usp=sharing</a></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-022.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 022</div>
+          <div class="post_content">
+<ol>
+<li>T4 GPU</li>
+<li>Random Seed: 35</li>
+<li>Perceptron: 84.35%,  MLP: 87.98%, CNN: 92.54%</li>
+</ol>
+<aside class="onebox allowlistedgeneric" data-onebox-src="https://colab.research.google.com/drive/1O3wTEQxbVcqvjL44qTnMnQiWLgC2E2YS#scrollTo=EDH0pOifxj4j">
+<header class="source">
+<img alt="" class="site-icon" data-dominant-color="F29404" height="16" src="../../../images/251c622da367420c89e5ef52464e12c958af28d5.png" width="16"/>
+<a href="https://colab.research.google.com/drive/1O3wTEQxbVcqvjL44qTnMnQiWLgC2E2YS#scrollTo=EDH0pOifxj4j" rel="noopener nofollow ugc" target="_blank">colab.research.google.com</a>
+</header>
+<article class="onebox-body">
+<img alt="" class="thumbnail onebox-avatar" data-dominant-color="F29304" height="260" src="../../../images/cc9da405b46a15f905bb9967e7cdc7d7e8348a7e.png" width="260"/>
+<h3><a href="https://colab.research.google.com/drive/1O3wTEQxbVcqvjL44qTnMnQiWLgC2E2YS#scrollTo=EDH0pOifxj4j" rel="noopener nofollow ugc" target="_blank">Google Colab</a></h3>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-023.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 023</div>
+          <div class="post_content">
+<p>I used a T4 GPU with a random seed of 63.</p>
+<p>I tried Perceptron, and CNN.</p>
+<p>I got a Perceptron training time of 94.26 seconds<br/>
+and a Perceptron Accuracy of 0.8434.</p>
+<p>As well as a CNN training time of 268.42 seconds, with a<br/>
+CNN accuracy of 0.9259</p>
+<aside class="onebox allowlistedgeneric" data-onebox-src="https://colab.research.google.com/drive/1eDSUw-9l90LntGVxL8N8ZUehpREHEQNl?usp=sharing">
+<header class="source">
+<img alt="" class="site-icon" data-dominant-color="F29404" height="16" src="../../../images/7548d13186e6575274b55501d6c98ea3f1f8389a.png" width="16"/>
+<a href="https://colab.research.google.com/drive/1eDSUw-9l90LntGVxL8N8ZUehpREHEQNl?usp=sharing" rel="noopener nofollow ugc" target="_blank">colab.research.google.com</a>
+</header>
+<article class="onebox-body">
+<img alt="" class="thumbnail onebox-avatar" data-dominant-color="F29304" height="260" src="../../../images/cc9da405b46a15f905bb9967e7cdc7d7e8348a7e.png" width="260"/>
+<h3><a href="https://colab.research.google.com/drive/1eDSUw-9l90LntGVxL8N8ZUehpREHEQNl?usp=sharing" rel="noopener nofollow ugc" target="_blank">Google Colab</a></h3>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-016.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 016</div>
+          <div class="post_content">
+<ol>
+<li>T4 GPU</li>
+<li>88</li>
+<li>Single layer = .8423<br/>
+Multi-Layer = .8865<br/>
+CNN = .9275</li>
+</ol>
+<p><a href="https://colab.research.google.com/drive/1YZrjfIWOIdAXKhXFqfjsXsZmltZKY6Wv#scrollTo=VbJxt-bgTVi6" rel="noopener nofollow ugc">Copy of Lab3NNForFashionMNIST.ipynb - Colab</a></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-015.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 015</div>
+          <div class="post_content">
+<ol>
+<li>T4 GPU</li>
+<li>Random Seed: 98</li>
+<li>Perceptron: 0.8459, MLP: 0.8825, CNN: 0.9252</li>
+</ol>
+<p><a href="https://colab.research.google.com/drive/1iFw5iMod1nki4PoqwKsHUlZz2271S-kz?usp=sharing" rel="noopener nofollow ugc">Notebook</a></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-020.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 020</div>
+          <div class="post_content">
+<ol>
+<li>T4 GPU</li>
+<li>Random Seed - 98</li>
+<li>a. Perceptron Accuracy: .8452 (training time 73.52 sec)<br/>
+b. MLP Accuracy: .8857 (training time 214.63 sec)<br/>
+c. CNN Accuracy: .9230 (training time 195.06 sec)</li>
+</ol>
+<aside class="onebox allowlistedgeneric" data-onebox-src="https://colab.research.google.com/drive/1w4sAsG_-FJpF33Tci7SyvYbYq-ojOumP?usp=sharing">
+<header class="source">
+<img alt="" class="site-icon" data-dominant-color="F29404" height="16" src="../../../images/ae55ee35f075b832c199153501ac2bd9684a50d7.png" width="16"/>
+<a href="https://colab.research.google.com/drive/1w4sAsG_-FJpF33Tci7SyvYbYq-ojOumP?usp=sharing" rel="noopener nofollow ugc" target="_blank">colab.research.google.com</a>
+</header>
+<article class="onebox-body">
+<img alt="" class="thumbnail onebox-avatar" data-dominant-color="F29304" height="260" src="../../../images/cc9da405b46a15f905bb9967e7cdc7d7e8348a7e.png" width="260"/>
+<h3><a href="https://colab.research.google.com/drive/1w4sAsG_-FJpF33Tci7SyvYbYq-ojOumP?usp=sharing" rel="noopener nofollow ugc" target="_blank">Google Colab</a></h3>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-012.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 012</div>
+          <div class="post_content">
+<ol>
+<li>T4 GPU</li>
+<li>Random Seed: 17</li>
+<li>Perceptron: 0.8448, MLP: 0.8828, CNN: 0.9244</li>
+</ol>
+<aside class="onebox allowlistedgeneric" data-onebox-src="https://colab.research.google.com/drive/1RhtIbF6oGs-5Il91TonJAoTCxRy7pw2d?usp=sharing">
+<header class="source">
+<img alt="" class="site-icon" data-dominant-color="F29404" height="16" src="../../../images/f68f0100bf6eafff91aaa36b9cea11b97d0119ce.png" width="16"/>
+<a href="https://colab.research.google.com/drive/1RhtIbF6oGs-5Il91TonJAoTCxRy7pw2d?usp=sharing" rel="noopener nofollow ugc" target="_blank">colab.research.google.com</a>
+</header>
+<article class="onebox-body">
+<img alt="" class="thumbnail onebox-avatar" data-dominant-color="F29304" height="260" src="../../../images/cc9da405b46a15f905bb9967e7cdc7d7e8348a7e.png" width="260"/>
+<h3><a href="https://colab.research.google.com/drive/1RhtIbF6oGs-5Il91TonJAoTCxRy7pw2d?usp=sharing" rel="noopener nofollow ugc" target="_blank">Google Colab</a></h3>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-013.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 013</div>
+          <div class="post_content">
+<p>T4 GPU<br/>
+Random Seed: 41<br/>
+Perception: 0.8352<br/>
+MLP: 0.8799<br/>
+CNN: 0.9261</p>
+<p>Link:</p><aside class="onebox allowlistedgeneric" data-onebox-src="https://colab.research.google.com/drive/1OaMlcRiuFS9dWMRfETm3fd4Am4uUjCwp?usp=sharing">
+<header class="source">
+<img alt="" class="site-icon" data-dominant-color="F29404" height="16" src="../../../images/da3199a12af0b0bf2a2323cff8d746277ad70a23.png" width="16"/>
+<a href="https://colab.research.google.com/drive/1OaMlcRiuFS9dWMRfETm3fd4Am4uUjCwp?usp=sharing" rel="noopener nofollow ugc" target="_blank">colab.research.google.com</a>
+</header>
+<article class="onebox-body">
+<img alt="" class="thumbnail onebox-avatar" data-dominant-color="F29304" height="260" src="../../../images/cc9da405b46a15f905bb9967e7cdc7d7e8348a7e.png" width="260"/>
+<h3><a href="https://colab.research.google.com/drive/1OaMlcRiuFS9dWMRfETm3fd4Am4uUjCwp?usp=sharing" rel="noopener nofollow ugc" target="_blank">Google Colab</a></h3>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-002.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 002</div>
+          <div class="post_content">
+<ol>
+<li>T4 GPU</li>
+<li>Random seed: 14</li>
+<li>Single perceptron accuracy: 0.8433<br/>
+Multi-Layer Perceptron: 0.8828<br/>
+CNN accuracy: 0.9245<br/>
+Colab: <a class="inline-onebox" href="https://colab.research.google.com/drive/1dN8J3-M65OrTe-RCEy932GRM6If5NZtw#scrollTo=m79IiGDF0tbk" rel="noopener nofollow ugc">Google Colab</a></li>
+</ol>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-006.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 006</div>
+          <div class="post_content">
+<p>1.CPU<br/>
+2.Random seed <span class="hashtag-raw">#61</span><br/>
+3.CNN accuracy: 0.9757 Perceptron Accuaracy: 0.9190</p>
+<aside class="onebox allowlistedgeneric" data-onebox-src="https://colab.research.google.com/drive/1Lu0wTcg5GdW_g-e7uZQhFMuhwHQRdsfg?usp=sharing">
+<header class="source">
+<img alt="" class="site-icon" data-dominant-color="F29404" height="16" src="../../../images/d51e27f05da79f6efcc2af119d0fa30c62a730a5.png" width="16"/>
+<a href="https://colab.research.google.com/drive/1Lu0wTcg5GdW_g-e7uZQhFMuhwHQRdsfg?usp=sharing" rel="noopener nofollow ugc" target="_blank">colab.research.google.com</a>
+</header>
+<article class="onebox-body">
+<img alt="" class="thumbnail onebox-avatar" data-dominant-color="F29304" height="260" src="../../../images/cc9da405b46a15f905bb9967e7cdc7d7e8348a7e.png" width="260"/>
+<h3><a href="https://colab.research.google.com/drive/1Lu0wTcg5GdW_g-e7uZQhFMuhwHQRdsfg?usp=sharing" rel="noopener nofollow ugc" target="_blank">Google Colab</a></h3>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-019.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 019</div>
+          <div class="post_content">
+<ol>
+<li>T4 GPU</li>
+<li>Random Seed: 92</li>
+<li>Single Layer Perception: 0.8395, Multi-Layer Perception: 0.8808, CNN: 0.9218<br/>
+<a class="inline-onebox" href="https://colab.research.google.com/drive/1cyGUEXEjlCBIyQFzcjbdhH4_0IxngGid?usp=sharing" rel="noopener nofollow ugc">Google Colab</a></li>
+</ol>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-003.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 003</div>
+          <div class="post_content">
+<ol>
+<li>T4</li>
+<li>Random seed = 66</li>
+<li>CNN accuracy = 0.9305; MLP accuracy = 0.8736</li>
+</ol>
+<p>With Random seed 77, CNN had accuracy of 0.9945<br/>
+Also tried the A100 GPU, which trained the CNN in 83s vs. 123s for T4.</p>
+<aside class="onebox allowlistedgeneric" data-onebox-src="https://colab.research.google.com/drive/1pTvB5tAOzZkVycwKrphRDDkIDzITz_-N?usp=sharing">
+<header class="source">
+<img alt="" class="site-icon" data-dominant-color="F29404" height="16" src="../../../images/e46bb5706d187660a188e0e8e8759127986fa405.png" width="16"/>
+<a href="https://colab.research.google.com/drive/1pTvB5tAOzZkVycwKrphRDDkIDzITz_-N?usp=sharing" rel="noopener nofollow ugc" target="_blank">colab.research.google.com</a>
+</header>
+<article class="onebox-body">
+<img alt="" class="thumbnail onebox-avatar" data-dominant-color="F29304" height="260" src="../../../images/cc9da405b46a15f905bb9967e7cdc7d7e8348a7e.png" width="260"/>
+<h3><a href="https://colab.research.google.com/drive/1pTvB5tAOzZkVycwKrphRDDkIDzITz_-N?usp=sharing" rel="noopener nofollow ugc" target="_blank">Google Colab</a></h3>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-005.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 005</div>
+          <div class="post_content">
+<ol>
+<li>T4 GPU</li>
+<li>57</li>
+<li>Single Layer: 0.8413<br/>
+Multi-Layer: 0.8781<br/>
+CNN: 0.9281<br/>
+[<a class="inline-onebox" href="https://colab.research.google.com/drive/1ZdwZAxLzSH7NtEqdPWPLWu2QoZec1SET#scrollTo=qla93p5x3uwC" rel="noopener nofollow ugc">Google Colab</a>]</li>
+</ol>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-008.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 008</div>
+          <div class="post_content">
+<ol>
+<li>T4 GPU</li>
+<li>36</li>
+<li></li>
+</ol>
+<ul>
+<li>Perceptron Accuracy: 0.8483</li>
+<li>MLP accuracy: 0.8832</li>
+<li>CNN accuracy: 0.9251</li>
+</ul>
+<aside class="onebox allowlistedgeneric" data-onebox-src="https://colab.research.google.com/drive/1Eq-3M3wmCZo9Elay44vev2kzXz4fuoBb#scrollTo=-lxBPnGROBMQ">
+<header class="source">
+<img alt="" class="site-icon" data-dominant-color="F29404" height="16" src="../../../images/919818c2b0b25804de889198394c21299770c0ea.png" width="16"/>
+<a href="https://colab.research.google.com/drive/1Eq-3M3wmCZo9Elay44vev2kzXz4fuoBb#scrollTo=-lxBPnGROBMQ" rel="noopener nofollow ugc" target="_blank">colab.research.google.com</a>
+</header>
+<article class="onebox-body">
+<img alt="" class="thumbnail onebox-avatar" data-dominant-color="F29304" height="260" src="../../../images/cc9da405b46a15f905bb9967e7cdc7d7e8348a7e.png" width="260"/>
+<h3><a href="https://colab.research.google.com/drive/1Eq-3M3wmCZo9Elay44vev2kzXz4fuoBb#scrollTo=-lxBPnGROBMQ" rel="noopener nofollow ugc" target="_blank">Google Colab</a></h3>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-007.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 007</div>
+          <div class="post_content">
+<p>1.T4 GPU<br/>
+2. Random seed: 18<br/>
+3. CNN: 92.99%, Perceptron: 84.38%, MLP: 88.28%</p>
+<aside class="onebox allowlistedgeneric" data-onebox-src="https://colab.research.google.com/drive/1WWWbEagVRN0GzOqEJNMCXEJP953HciaU#scrollTo=5o0pK5yLzqpz">
+<header class="source">
+<img alt="" class="site-icon" data-dominant-color="F29404" height="16" src="../../../images/23731aa23702e26d581c6189dbd80d51169b7a72.png" width="16"/>
+<a href="https://colab.research.google.com/drive/1WWWbEagVRN0GzOqEJNMCXEJP953HciaU#scrollTo=5o0pK5yLzqpz" rel="noopener nofollow ugc" target="_blank">colab.research.google.com</a>
+</header>
+<article class="onebox-body">
+<img alt="" class="thumbnail onebox-avatar" data-dominant-color="F29304" height="260" src="../../../images/cc9da405b46a15f905bb9967e7cdc7d7e8348a7e.png" width="260"/>
+<h3><a href="https://colab.research.google.com/drive/1WWWbEagVRN0GzOqEJNMCXEJP953HciaU#scrollTo=5o0pK5yLzqpz" rel="noopener nofollow ugc" target="_blank">Google Colab</a></h3>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-017.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 017</div>
+          <div class="post_content">
+<ol>
+<li>T4 GPU</li>
+<li>random seed 19</li>
+<li>SLP: .8410<br/>
+CNN:.9310<br/>
+MLP: .8838</li>
+</ol>
+<aside class="onebox allowlistedgeneric" data-onebox-src="https://colab.research.google.com/drive/1zl0z80JX5Wr67j41_J0IittPVJp8Yrcc#scrollTo=-ROCMibEZLqM">
+<header class="source">
+<img alt="" class="site-icon" data-dominant-color="F29404" height="16" src="../../../images/3a9688340235151098b280353ff42028fca0d582.png" width="16"/>
+<a href="https://colab.research.google.com/drive/1zl0z80JX5Wr67j41_J0IittPVJp8Yrcc#scrollTo=-ROCMibEZLqM" rel="noopener nofollow ugc" target="_blank">colab.research.google.com</a>
+</header>
+<article class="onebox-body">
+<img alt="" class="thumbnail onebox-avatar" data-dominant-color="F29304" height="260" src="../../../images/cc9da405b46a15f905bb9967e7cdc7d7e8348a7e.png" width="260"/>
+<h3><a href="https://colab.research.google.com/drive/1zl0z80JX5Wr67j41_J0IittPVJp8Yrcc#scrollTo=-ROCMibEZLqM" rel="noopener nofollow ugc" target="_blank">Google Colab</a></h3>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-024.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 024</div>
+          <div class="post_content">
+<ol>
+<li>T4 GPU</li>
+<li>Random seed: 74</li>
+<li>
+<ol>
+<li>CNN accuracy: 0.9247</li>
+<li>Perceptron accuracy: 0.8437</li>
+</ol>
+</li>
+</ol>
+<aside class="onebox allowlistedgeneric" data-onebox-src="https://colab.research.google.com/drive/1iM415na8Tjlunk6yRqJ7RiusrOS5MysC?usp=sharing">
+<header class="source">
+<img alt="" class="site-icon" data-dominant-color="F29404" height="16" src="../../../images/0e166961b63d686c22988c9bb82564dfcb88fb96.png" width="16"/>
+<a href="https://colab.research.google.com/drive/1iM415na8Tjlunk6yRqJ7RiusrOS5MysC?usp=sharing" rel="noopener nofollow ugc" target="_blank">colab.research.google.com</a>
+</header>
+<article class="onebox-body">
+<img alt="" class="thumbnail onebox-avatar" data-dominant-color="F29304" height="260" src="../../../images/cc9da405b46a15f905bb9967e7cdc7d7e8348a7e.png" width="260"/>
+<h3><a href="https://colab.research.google.com/drive/1iM415na8Tjlunk6yRqJ7RiusrOS5MysC?usp=sharing" rel="noopener nofollow ugc" target="_blank">Google Colab</a></h3>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-010.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 010</div>
+          <div class="post_content">
+<ol>
+<li>T4 GPU</li>
+<li>Seed: 84</li>
+<li>Perception: 0.8452<br/>
+MLP: 0.8842</li>
+<li>Colab: <a class="inline-onebox" href="https://colab.research.google.com/drive/191shXlUaW1zn-fOvpXm574S147BwSF8P?usp=sharing" rel="noopener nofollow ugc">Google Colab</a></li>
+</ol>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-004.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 004</div>
+          <div class="post_content">
+<ol>
+<li>v6e-1 TPU</li>
+<li>Random Seed: 36</li>
+<li>CNN accuracy: 0.9034<br/>
+Perceptron Accuracy: 0.8352<br/>
+MLP accuracy: 0.8505</li>
+</ol>
+<p><a href="https://colab.research.google.com/drive/1Hd2JVeZaon9y3h5jjc4hsthd_4pmW_kH#scrollTo=yHorvW8o89M0" rel="noopener nofollow ugc">Copy of Lab3NNForFashionMNIST.ipynb - Colab</a></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-001.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 001</div>
+          <div class="post_content">
+<ol>
+<li>T-4 High Ram.</li>
+<li>My random seed was 96.</li>
+<li>Perceptron: 84%<br/>
+MLP: 87.33%<br/>
+CNN: 92.6%</li>
+</ol>
+<aside class="onebox allowlistedgeneric" data-onebox-src="https://colab.research.google.com/drive/1FEbztmnLL8llO9xt7c5jUKF8CsQLaTSl?usp=sharing">
+<header class="source">
+<img alt="" class="site-icon" data-dominant-color="F29404" height="16" src="../../../images/35b024169884ecd09f5b8cb7cc50ab6cb29ff193.png" width="16"/>
+<a href="https://colab.research.google.com/drive/1FEbztmnLL8llO9xt7c5jUKF8CsQLaTSl?usp=sharing" rel="noopener nofollow ugc" target="_blank">colab.research.google.com</a>
+</header>
+<article class="onebox-body">
+<img alt="" class="thumbnail onebox-avatar" data-dominant-color="F29304" height="260" src="../../../images/cc9da405b46a15f905bb9967e7cdc7d7e8348a7e.png" width="260"/>
+<h3><a href="https://colab.research.google.com/drive/1FEbztmnLL8llO9xt7c5jUKF8CsQLaTSl?usp=sharing" rel="noopener nofollow ugc" target="_blank">Google Colab</a></h3>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-021.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 021</div>
+          <div class="post_content">
+<ol>
+<li>T-4 GPU</li>
+<li>Random seed was 45.</li>
+<li>Perceptron: 84.04%<br/>
+MLP: 88.71%<br/>
+CNN: 92.64%</li>
+</ol>
+<aside class="onebox allowlistedgeneric" data-onebox-src="https://colab.research.google.com/drive/1W0xjtPcboVZLB6Bpndor5nO153zeJBpO?usp=sharing">
+<header class="source">
+<img alt="" class="site-icon" data-dominant-color="F29404" height="16" src="../../../images/b67ce383db1bba6e17b68cf56fd435e691f6bd11.png" width="16"/>
+<a href="https://colab.research.google.com/drive/1W0xjtPcboVZLB6Bpndor5nO153zeJBpO?usp=sharing" rel="noopener nofollow ugc" target="_blank">colab.research.google.com</a>
+</header>
+<article class="onebox-body">
+<img alt="" class="thumbnail onebox-avatar" data-dominant-color="F29304" height="260" src="../../../images/cc9da405b46a15f905bb9967e7cdc7d7e8348a7e.png" width="260"/>
+<h3><a href="https://colab.research.google.com/drive/1W0xjtPcboVZLB6Bpndor5nO153zeJBpO?usp=sharing" rel="noopener nofollow ugc" target="_blank">Google Colab</a></h3>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/7_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">mark</div>
+          <div class="post_content">
+
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+  </body>
+</html>

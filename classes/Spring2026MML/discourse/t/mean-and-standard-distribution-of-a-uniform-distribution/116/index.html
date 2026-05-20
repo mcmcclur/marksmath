@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width">
+    <title>Mean and standard distribution of a uniform distribution</title>
+    <link rel="stylesheet" href="../../../archived.css" />
+    <script>
+      function findSageCodeBlocks() {
+        return Array.prototype.slice.call(
+          document.querySelectorAll(
+            "pre[data-code-wrap='sage'] > code, pre > code.lang-sage, pre > code.language-sage, pre > code.sage"
+          )
+        );
+      }
+
+      function loadScript(src) {
+        return new Promise(function (resolve, reject) {
+          var existing = document.querySelector("script[src='" + src + "']");
+          if (existing) {
+            if (existing.dataset.loaded === "true") {
+              resolve();
+              return;
+            }
+            existing.addEventListener("load", resolve, { once: true });
+            existing.addEventListener("error", reject, { once: true });
+            return;
+          }
+
+          var script = document.createElement("script");
+          script.src = src;
+          script.async = true;
+          script.addEventListener("load", function () {
+            script.dataset.loaded = "true";
+            resolve();
+          }, { once: true });
+          script.addEventListener("error", reject, { once: true });
+          document.head.appendChild(script);
+        });
+      }
+
+      function prepareSageCells() {
+        var sageBlocks = findSageCodeBlocks();
+        if (!sageBlocks.length) {
+          return Promise.resolve();
+        }
+
+        return loadScript("https://sagecell.sagemath.org/static/embedded_sagecell.js")
+          .then(function () {
+            if (!window.sagecell || !window.sagecell.makeSagecell) {
+              return;
+            }
+
+            sageBlocks.forEach(function (codeTag, index) {
+              var preTag = codeTag.parentElement;
+              if (!preTag || preTag.dataset.sageMounted === "true") {
+                return;
+              }
+
+              var host = document.createElement("div");
+              host.className = "sagecell-archive";
+
+              var source = document.createElement("script");
+              source.type = "text/x-sage";
+              source.text = codeTag.textContent || "";
+              host.appendChild(source);
+
+              preTag.insertAdjacentElement("afterend", host);
+              preTag.classList.add("sage-source-hidden");
+              preTag.dataset.sageMounted = "true";
+
+              window.sagecell.makeSagecell({
+                inputLocation: host,
+                autoeval: false,
+                evalButtonText: "Run",
+                languages: ["sage"]
+              });
+            });
+          })
+          .catch(function () {
+            // Leave the original code blocks visible if SageCell cannot load.
+          });
+      }
+
+      function preprocessDiscourseMath() {
+        document.querySelectorAll("span.math, div.math").forEach(function (node) {
+          var tex = node.textContent || "";
+          if (!tex.trim()) {
+            return;
+          }
+          if (node.tagName === "SPAN") {
+            node.textContent = "\\(" + tex + "\\)";
+          } else {
+            node.textContent = "\\[" + tex + "\\]";
+          }
+          node.classList.remove("math");
+        });
+      }
+
+      window.MathJax = {
+        tex: {
+          inlineMath: [["\\(", "\\)"]],
+          displayMath: [["\\[", "\\]"]]
+        },
+        startup: {
+          pageReady() {
+            preprocessDiscourseMath();
+            return MathJax.startup.defaultPageReady().then(function () {
+              return prepareSageCells();
+            });
+          }
+        }
+      };
+    </script>
+    <script async id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="title-span">
+        <a href="../../../">
+          <img src="../../../images/ea06c0b00f456d7d2112d8196d0da94074cbf04a.png" height="40" alt="Site Logo" id="site-logo" />
+        </a>
+      </div>
+    </header>
+
+    <div class="main">
+    <div class="archive-span"><a href='https://marksmath.org/classes/Spring2026MML/'>MML Discourse</a> archived in May, 2026</div>
+    <h1 class="topic-title">Mean and standard distribution of a uniform distribution</h1>
+            <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/7_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">mark</div>
+          <div class="post_content">
+<p>Suppose that <span class="math">X</span> is uniformly distributed over the interval <span class="math">[0,10]</span> Find the mean and standard deviation of <span class="math">X</span>.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-009.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 009</div>
+          <div class="post_content">
+<p>mean</p>
+<div class="math">
+\int_a^b x*p(x)\\
+\\
+\int_0^{10} x  \frac{1}{10} dx\\
+</div>
+<div class="math">
+\frac{x^2}{2}\Bigg|_0^{10}\\
+\\
+\frac{1}{10}(\frac{10^2}{2}-\frac{0^2}{2})\\
+\\
+\frac{100}{2} = 50\\
+\\
+\frac{1}{10}(50) = 5\\
+\\
+mean = 5
+</div>
+<p>variance and standard deviation</p>
+<div class="math">
+Var(x) = e(x^2) - (e(x))^2\\
+(e(x))^2 = 5^2 = 25\\
+\\
+e(x^2) = \int_0^{10} x^2  \frac{1}{10} dx\\
+</div>
+<div class="math">
+\frac{x^3}{3}\Bigg|_0^{10}\\
+\\
+\frac{1}{10}(\frac{10^3}{3}-\frac{0^3}{3})\\
+\\
+\frac{1000}{3}\\
+\\
+\frac{1}{10}(\frac{1000}{3}) = \frac{1000}{30} = \frac{100}{3} = e(x^2)\\
+\\
+e(x^2) - (e(x))^2\\
+\\
+\frac{100}{3} - 25 = \frac{25}{3}\\
+\\
+Var(x) = \frac{25}{3}
+</div>
+<div class="math">
+SD(X) = \sqrt{Var(x)}\\
+\\
+SD(X) = \sqrt{\frac{25}{3}}
+</div>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="thinking: 1">:thinking: 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/7_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">mark</div>
+          <div class="post_content">
+<p><span class="mention">@User 025</span><br/>
+If <span class="math">X</span> is uniformly distributed over the <em>interval</em> <span class="math">[0,10]</span>, then <span class="math">X</span> is a <em>continuous</em> random variable - not discrete. Thus, mean and standard deviation are defined in terms of integrals, rather than sums.</p>
+<p>You can read more about this in our class presentations</p>
+<ul>
+<li><a href="https://marksmath.org/classes/Spring2026MML/presentations/Lecture13-DiscreteProbability">March 2 on Discrete probability</a> and</li>
+<li><a href="https://marksmath.org/classes/Spring2026MML/presentations/Lecture14-ContinuousProbability/">March 4 on continuous probability</a></li>
+</ul>
+<p>This <a href="https://marksmath.org/classes/Spring2026MML/presentations/Lecture14-ContinuousProbability/#/mean-and-standard-deviation">column of slides</a> specifically describes mean (also called expectation) and standard deviation for continuous random variables and compares it to discrete.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-012.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 012</div>
+          <div class="post_content">
+<div class="math">
+f(x)=\begin{cases}\frac{1}{10} &amp; \text{if } 0 \le x \le 10 \\ \,\,0 &amp; \text{else}\end{cases}.
+</div>
+<div class="math">
+\mu=\frac{1}{10}\int^{10}_{0}x\,dx=\frac{1}{20}x^{2}\bigg{|}_{0}^{10}=5.
+</div>
+<div class="math">
+\sigma^{2}=\frac{1}{10}\int^{10}_{0}(x-5)^{2}\,dx \\ \text{let } u=x-5, \quad du=dx \\ \sigma^{2}=\frac{1}{10}\int^{5}_{-5}u^{2}\,du=\frac{1}{30}u^{3}\bigg{|}^{5}_{-5}=\frac{1}{30}(5^3-(-5)^3)=\frac{25}{3}\\ \sigma={\sqrt{\frac{25}{3}}=\frac{5}{\sqrt{3}}}.
+</div>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/7_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">mark</div>
+          <div class="post_content">
+<p><span class="mention">@User 027</span> Yes that looks great!</p>
+<p>By the way, whenever you want to make a small change to a post, you can edit that post, rather than deleting and creating a new post. To do so, just click on the pencil in the toolbar below the post, I've circled it here:</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/b348674ef6d2b3ddea5b5280f038c44fa4c18aa8" href="https://discourse.marksmath.org/uploads/default/original/1X/b348674ef6d2b3ddea5b5280f038c44fa4c18aa8.png" title="Screenshot 2026-03-24 at 9.06.12 PM"><img alt="Screenshot 2026-03-24 at 9.06.12 PM" data-base62-sha1="pA0AEbbG04QAHeRKrZYNIC28248" data-dominant-color="F7F7F7" height="78" src="../../../images/b348674ef6d2b3ddea5b5280f038c44fa4c18aa8_2_517x78.png" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/b348674ef6d2b3ddea5b5280f038c44fa4c18aa8_2_517x78.png, https://discourse.marksmath.org/uploads/default/original/1X/b348674ef6d2b3ddea5b5280f038c44fa4c18aa8.png 1.5x, https://discourse.marksmath.org/uploads/default/original/1X/b348674ef6d2b3ddea5b5280f038c44fa4c18aa8.png 2x" width="517"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2026-03-24 at 9.06.12 PM</span><span class="informations">694×106 13.2 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>You might need to expand the toolbar to see it, though.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-012.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 012</div>
+          <div class="post_content">
+<p><span class="mention">@mark</span> Yeah, I was going to do that. Unfortunately, I accidentally hit delete and it gave me an error when I tried to undo it. More practice for me I suppose <img alt=":joy:" class="emoji" height="20" loading="lazy" src="../../../images/joy.png" title=":joy:" width="20"/>.</p>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+  </body>
+</html>

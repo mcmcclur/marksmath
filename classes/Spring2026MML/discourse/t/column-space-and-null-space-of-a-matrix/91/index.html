@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width">
+    <title>Column space and null space of a matrix</title>
+    <link rel="stylesheet" href="../../../archived.css" />
+    <script>
+      function findSageCodeBlocks() {
+        return Array.prototype.slice.call(
+          document.querySelectorAll(
+            "pre[data-code-wrap='sage'] > code, pre > code.lang-sage, pre > code.language-sage, pre > code.sage"
+          )
+        );
+      }
+
+      function loadScript(src) {
+        return new Promise(function (resolve, reject) {
+          var existing = document.querySelector("script[src='" + src + "']");
+          if (existing) {
+            if (existing.dataset.loaded === "true") {
+              resolve();
+              return;
+            }
+            existing.addEventListener("load", resolve, { once: true });
+            existing.addEventListener("error", reject, { once: true });
+            return;
+          }
+
+          var script = document.createElement("script");
+          script.src = src;
+          script.async = true;
+          script.addEventListener("load", function () {
+            script.dataset.loaded = "true";
+            resolve();
+          }, { once: true });
+          script.addEventListener("error", reject, { once: true });
+          document.head.appendChild(script);
+        });
+      }
+
+      function prepareSageCells() {
+        var sageBlocks = findSageCodeBlocks();
+        if (!sageBlocks.length) {
+          return Promise.resolve();
+        }
+
+        return loadScript("https://sagecell.sagemath.org/static/embedded_sagecell.js")
+          .then(function () {
+            if (!window.sagecell || !window.sagecell.makeSagecell) {
+              return;
+            }
+
+            sageBlocks.forEach(function (codeTag, index) {
+              var preTag = codeTag.parentElement;
+              if (!preTag || preTag.dataset.sageMounted === "true") {
+                return;
+              }
+
+              var host = document.createElement("div");
+              host.className = "sagecell-archive";
+
+              var source = document.createElement("script");
+              source.type = "text/x-sage";
+              source.text = codeTag.textContent || "";
+              host.appendChild(source);
+
+              preTag.insertAdjacentElement("afterend", host);
+              preTag.classList.add("sage-source-hidden");
+              preTag.dataset.sageMounted = "true";
+
+              window.sagecell.makeSagecell({
+                inputLocation: host,
+                autoeval: false,
+                evalButtonText: "Run",
+                languages: ["sage"]
+              });
+            });
+          })
+          .catch(function () {
+            // Leave the original code blocks visible if SageCell cannot load.
+          });
+      }
+
+      function preprocessDiscourseMath() {
+        document.querySelectorAll("span.math, div.math").forEach(function (node) {
+          var tex = node.textContent || "";
+          if (!tex.trim()) {
+            return;
+          }
+          if (node.tagName === "SPAN") {
+            node.textContent = "\\(" + tex + "\\)";
+          } else {
+            node.textContent = "\\[" + tex + "\\]";
+          }
+          node.classList.remove("math");
+        });
+      }
+
+      window.MathJax = {
+        tex: {
+          inlineMath: [["\\(", "\\)"]],
+          displayMath: [["\\[", "\\]"]]
+        },
+        startup: {
+          pageReady() {
+            preprocessDiscourseMath();
+            return MathJax.startup.defaultPageReady().then(function () {
+              return prepareSageCells();
+            });
+          }
+        }
+      };
+    </script>
+    <script async id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="title-span">
+        <a href="../../../">
+          <img src="../../../images/ea06c0b00f456d7d2112d8196d0da94074cbf04a.png" height="40" alt="Site Logo" id="site-logo" />
+        </a>
+      </div>
+    </header>
+
+    <div class="main">
+    <div class="archive-span"><a href='https://marksmath.org/classes/Spring2026MML/'>MML Discourse</a> archived in May, 2026</div>
+    <h1 class="topic-title">Column space and null space of a matrix</h1>
+            <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/7_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">mark</div>
+          <div class="post_content">
+<p>Let</p>
+<div class="math">
+M = \left[\begin{array}{rrrrr}
+1 &amp; 2 &amp; 3 &amp; 4 &amp; 5 \\
+6 &amp; 7 &amp; 8 &amp; 9 &amp; 10 \\
+11 &amp; 12 &amp; 13 &amp; 14 &amp; 15
+\end{array}\right]
+</div>
+<ol>
+<li>Find a basis for the column space of <span class="math">M</span>.</li>
+<li>Find a basis for the null space of <span class="math">M</span>.</li>
+</ol>
+<p>You should absolutely <a href="https://sagecell.sagemath.org/?q=tcxpvv">use SageMath</a> to compute the RREF of this matrix.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-009.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 009</div>
+          <div class="post_content">
+<p>rref:</p>
+<div class="math">
+\begin{bmatrix}
+1 &amp; 0 &amp; -1 &amp; -2 &amp; -3 \\
+0 &amp; 1 &amp; 2 &amp; 3 &amp; 4 \\
+0 &amp; 0 &amp; 0 &amp; 0 &amp; 0
+\end{bmatrix}
+</div>
+<p>Homogeneous System:</p>
+<div class="math">
+v-x-2y-3z = 0 \\
+w+2x+3y+4z = 0
+</div>
+<ol>
+<li>Find a basis for the column space of <em>M</em>.</li>
+</ol>
+<div class="math">
+\begin{bmatrix}
+1 \\
+0 \\
+0 \\ 
+\end{bmatrix}
+\begin{bmatrix}
+0 \\
+1 \\
+0 \\
+\end{bmatrix}
+</div>
+<ol start="2">
+<li>Find a basis for the null space of <em>M</em>.</li>
+</ol>
+<div class="math">
+v-x-2y-3z = 0 \\
+v = x-+2y+3z\\
+\\
+w+2x+3y+4z = 0\\
+w = -2x-3y-4z\\
+\\
+x = x\\
+y = y\\
+z = z
+</div>
+<p>Thus:</p>
+<div class="math">
+\begin{bmatrix}
+v \\
+w \\
+x \\
+y \\
+z 
+\end{bmatrix}
+=x
+\begin{bmatrix}
+1 \\
+-2 \\
+1 \\
+0 \\
+0
+\end{bmatrix}
+y
+\begin{bmatrix}
+2 \\
+-3 \\
+0 \\
+1 \\
+0
+\end{bmatrix}
+z
+\begin{bmatrix}
+3 \\
+-4 \\
+0 \\
+0 \\
+1
+\end{bmatrix}
+</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/7_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">mark</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="2" data-topic="91" data-username="bjenkins">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/avatar-anon-009.svg" width="24"/> User 009:</div>
+<blockquote>
+<p>The rest will come when I figure out what to do with this. For now, I'm just putting this here so I don't forget it later.</p>
+</blockquote>
+</aside>
+<p>Nice! Next question for working on part 2: Can you translate this to a <a href="https://marksmath.org/classes/Spring2026MML/presentations/Lecture03-SystemsAndMatrices/#/homogeneous-systems">homogeneous system</a>?</p>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+  </body>
+</html>

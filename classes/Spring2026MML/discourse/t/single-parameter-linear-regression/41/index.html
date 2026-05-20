@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width">
+    <title>Single Parameter Linear Regression</title>
+    <link rel="stylesheet" href="../../../archived.css" />
+    <script>
+      function findSageCodeBlocks() {
+        return Array.prototype.slice.call(
+          document.querySelectorAll(
+            "pre[data-code-wrap='sage'] > code, pre > code.lang-sage, pre > code.language-sage, pre > code.sage"
+          )
+        );
+      }
+
+      function loadScript(src) {
+        return new Promise(function (resolve, reject) {
+          var existing = document.querySelector("script[src='" + src + "']");
+          if (existing) {
+            if (existing.dataset.loaded === "true") {
+              resolve();
+              return;
+            }
+            existing.addEventListener("load", resolve, { once: true });
+            existing.addEventListener("error", reject, { once: true });
+            return;
+          }
+
+          var script = document.createElement("script");
+          script.src = src;
+          script.async = true;
+          script.addEventListener("load", function () {
+            script.dataset.loaded = "true";
+            resolve();
+          }, { once: true });
+          script.addEventListener("error", reject, { once: true });
+          document.head.appendChild(script);
+        });
+      }
+
+      function prepareSageCells() {
+        var sageBlocks = findSageCodeBlocks();
+        if (!sageBlocks.length) {
+          return Promise.resolve();
+        }
+
+        return loadScript("https://sagecell.sagemath.org/static/embedded_sagecell.js")
+          .then(function () {
+            if (!window.sagecell || !window.sagecell.makeSagecell) {
+              return;
+            }
+
+            sageBlocks.forEach(function (codeTag, index) {
+              var preTag = codeTag.parentElement;
+              if (!preTag || preTag.dataset.sageMounted === "true") {
+                return;
+              }
+
+              var host = document.createElement("div");
+              host.className = "sagecell-archive";
+
+              var source = document.createElement("script");
+              source.type = "text/x-sage";
+              source.text = codeTag.textContent || "";
+              host.appendChild(source);
+
+              preTag.insertAdjacentElement("afterend", host);
+              preTag.classList.add("sage-source-hidden");
+              preTag.dataset.sageMounted = "true";
+
+              window.sagecell.makeSagecell({
+                inputLocation: host,
+                autoeval: false,
+                evalButtonText: "Run",
+                languages: ["sage"]
+              });
+            });
+          })
+          .catch(function () {
+            // Leave the original code blocks visible if SageCell cannot load.
+          });
+      }
+
+      function preprocessDiscourseMath() {
+        document.querySelectorAll("span.math, div.math").forEach(function (node) {
+          var tex = node.textContent || "";
+          if (!tex.trim()) {
+            return;
+          }
+          if (node.tagName === "SPAN") {
+            node.textContent = "\\(" + tex + "\\)";
+          } else {
+            node.textContent = "\\[" + tex + "\\]";
+          }
+          node.classList.remove("math");
+        });
+      }
+
+      window.MathJax = {
+        tex: {
+          inlineMath: [["\\(", "\\)"]],
+          displayMath: [["\\[", "\\]"]]
+        },
+        startup: {
+          pageReady() {
+            preprocessDiscourseMath();
+            return MathJax.startup.defaultPageReady().then(function () {
+              return prepareSageCells();
+            });
+          }
+        }
+      };
+    </script>
+    <script async id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="title-span">
+        <a href="../../../">
+          <img src="../../../images/ea06c0b00f456d7d2112d8196d0da94074cbf04a.png" height="40" alt="Site Logo" id="site-logo" />
+        </a>
+      </div>
+    </header>
+
+    <div class="main">
+    <div class="archive-span"><a href='https://marksmath.org/classes/Spring2026MML/'>MML Discourse</a> archived in May, 2026</div>
+    <h1 class="topic-title">Single Parameter Linear Regression</h1>
+            <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/7_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">mark</div>
+          <div class="post_content">
+<p>(10 pts)</p>
+<p>For this assignment, your task is to perform a single parameter linear regression for data that's symmetric about the origin, as described <a href="https://marksmath.org/classes/Spring2026MML/notes/single-parameter_linear_regression/">in this class note</a>. Your data will be based on your name. Specifically, you'll have 4 points with</p>
+<ul>
+<li>the <span class="math">x</span>-coordinates equal to <span class="math">\pm</span> position of the first character in your first and last name and</li>
+<li>the <span class="math">y</span>-coordinates equal to <span class="math">\pm</span> position of the second character in your first and last name.</li>
+</ul>
+<p>For example, my name is <strong>Ma</strong>rk <strong>Mc</strong>Clure. Thus,</p>
+<ul>
+<li>Since <strong>M</strong> is the <span class="math">13^{\text{th}}</span> letter of the alphabet, the <span class="math">x</span>-coordinates are <span class="math">\pm13</span> and <span class="math">\pm13</span></li>
+<li>Since <strong>a</strong> is the <span class="math">1^{\text{st}}</span> letter and <strong>c</strong> is the <span class="math">3^{\text{rd}}</span>, the <span class="math">y</span>-coordinates are <span class="math">\pm 1</span> and <span class="math">\pm3</span>.</li>
+</ul>
+<p>Thus, my four points are</p>
+<div class="math">
+\{(13,1), (-13,-1), (13,3), (-13,-3)\}.
+</div>
+<p>Those points, with the regression line, look like so:</p>
+<iframe frameborder="0" height="300" src="https://www.desmos.com/calculator/lvfilkpw7z?embed" width="700"></iframe>
+<p>Desmos will give me the line, as I've done here. The real task, though, is to use the technique described in the <a href="https://marksmath.org/classes/Spring2026MML/notes/single-parameter_linear_regression/">simple linear regression notes</a> to derive and explain the formula for the line.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-003.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 003</div>
+          <div class="post_content">
+<p>From my name, the four points are:</p>
+<div class="math">
+{(18,25),(-18,-25),(19,20),(-19,-20)}
+</div>
+<p>Given the symmetry of the data,</p>
+<div class="math">
+f(x)=ax
+</div>
+<p>To calculate the total squared error,</p>
+<div class="math">
+E(a)=\sum_{i=1}^{N} (y_i-f(x_i))
+</div>
+<div class="math">
+E(a)=(25-18a)^2+(-25+18a)^2+(20-19a)^2+(-20+19a)^2
+</div>
+<p>To find the minimum total squared error, find where the derivative is 0.</p>
+<div class="math">
+E'(a)=2(25-18a)(-18)+2(-25+18a)(18)+2(20-19a)(-19)+(-20+19a)(19)
+</div>
+<p>which simplifies to</p>
+<div class="math">
+E'(a) = -3320 + 2740a \stackrel{?}{=} 0
+</div>
+<div class="math">
+a=1.212
+</div>
+<p>So the line fitting these 4 points is <span class="math">f(x)=1.212x</span>, shown below.</p>
+<iframe frameborder="0" height="300" src="https://www.desmos.com/calculator/xdoi84yni6?embed" width="300"></iframe>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-002.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 002</div>
+          <div class="post_content">
+<p>My points are <span class="math">(14,15), (-14,-15), (3,1), (-3,-1)</span>.<br/>
+This is the formula for total squared error:</p>
+<div class="math">
+E(a)=\sum_{i=1}^{N}(y_i - f(x_i)).
+</div>
+<p>Here's what I did: <span class="math">((14a-15)^2)+((-14a+15)^2)+((-3a+1)^2)+((3a-1)^2)</span>.<br/>
+Taking the derivative of this avoids having to expand these terms out. I used the chain rule.</p>
+<div class="math">
+E'= (2)(14a-15)(14)+ (2)(14a-15)(-14)+(2)(3a-1)(3)+(2)(3a+1)(-3).
+</div>
+<p>Simplified, it's <span class="math">56(14a-15)+12(3a-1)</span>. Expanded out:</p>
+<div class="math">
+820a-876=0.
+</div>
+<p>Solving for <span class="math">a</span>, we get <span class="math">876/820=a</span> or <span class="math">1.06829</span>.</p>
+<iframe frameborder="0" height="500" src="https://www.desmos.com/calculator/flvsq8mbc2?embed" width="500"></iframe>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-008.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 008</div>
+          <div class="post_content">
+<p>My points are:</p>
+<div class="math">
+{(5,4), (-5,-4), (4,15), (-4,-15)}
+</div>
+<p>Applying these coordinates in the total squared error looks like this:</p>
+<div class="math">
+\begin{align*}
+E(a) &amp;= (5a - 4)^2 + (-5a + 4)^2 + (4a - 15)^2 + (-4a + 15)^2 \\
+&amp;= 2((5a - 4)^2 + (4a - 15)^2)
+\end{align*}
+</div>
+<p>To find the smallest value of a, we find <span class="math"> E'(a) = 0 </span>:</p>
+<div class="math">
+\begin{align*}
+E'(a) &amp;= 2 (2 (5) (5a-4) + 2 (4) (4a-15)) \\
+&amp;= 4 (5 (5a-4) + 4(4a-15)) \\
+&amp;= 4 (25a - 20 + 16a - 60) \\
+&amp;= 4 (41a - 80) \stackrel{?}{=} 0
+\end{align*}
+</div>
+<p>The solution is <span class="math"> a = \frac{80}{41} </span>; which is approximately 1.9512195122.<br/>
+The regression line ends up being <span class="math"> f(x) = \frac{80}{41}x </span>.<br/>
+Putting together the four points and regression line looks like this:</p>
+<iframe frameborder="0" height="400" src="https://www.desmos.com/calculator/lopzbqj2g3?embed" width="600"></iframe>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-013.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 013</div>
+          <div class="post_content">
+<p>My points are:</p>
+<div class="math">
+(1,9), (-1,-9), (20,15), (-20,15)
+</div>
+<p>The formula for the total squared area is:</p>
+<div class="math">
+E(a) = \sum_{i=1}^{n} (y_i - f(x_i))^2
+</div>
+<p>Plugging in my values, I get:</p>
+<div class="math">
+E(a) = (9-a)^2 + (-9+a)^2 + (15-20a)^2 + (-15+20a)^2
+</div>
+<p>Taking the derivative gives us:</p>
+<div class="math">
+E'(a) = 2(9-a)(-1)+2(-9+a)(1)+2(15-20a)(-20)+2(-15+20a)(20)
+</div>
+<p>This simplifies to:</p>
+<div class="math">
+E'(a) = 1604a - 1236
+</div>
+<p>Setting this derivative to 0 and solving gives us:</p>
+<div class="math">
+1604a - 1236 = 0
+</div>
+<div class="math">
+a = 0.77057
+</div>
+<p>This is the equation for the line:</p>
+<div class="math">
+f(x) = 0.77057x
+</div>
+<p>This is the graph when the points are plotted with the line:</p>
+<iframe frameborder="0" height="500" src="https://www.desmos.com/calculator/sgffpclcwq?embed" width="500"></iframe>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/7_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">mark</div>
+          <div class="post_content">
+<p><span class="mention">@User 030</span> Could you edit that and add your model function? That is, <span class="math">f(x)=\,?</span></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-012.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 012</div>
+          <div class="post_content">
+<p>My points are</p>
+<div class="math">
+\{(3,15),\;(-3,-15),\;(3,8),\;(-3,-8)\}.
+</div>
+<p>Plugging in my points to the total squared error formula yields</p>
+<div class="math">
+\begin{aligned}
+E(a) &amp;= (3a - 15)^2 + (-3a + 15)^2 + (3a - 8)^2 + (-3a + 8)^2 \\
+&amp;= 2\big((3a - 15)^2 + (3a - 8)^2\big)
+\end{aligned}.
+</div>
+<p>To find the minimum total squared error, we take the derivative</p>
+<div class="math">
+E'(a) = 2\big(2(3a-15)3 + 2(3a-8)3\big) = 12(6a-23)
+</div>
+<p>and then solve for <span class="math">E'(a) = 0</span> which is at <span class="math">a = \frac{23}{6}</span> meaning our line of best fit is</p>
+<div class="math">
+f(x) = \frac{23}{6}x.
+</div>
+<p>The graph of my points and the resulting linear regression line looks like so:</p>
+<iframe frameborder="0" height="500" src="https://www.desmos.com/calculator/xzv3gctpij?embed" width="500"></iframe>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-006.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 006</div>
+          <div class="post_content">
+<p>My points are: <span class="math">(5,12),(-5,-12),(2,1),(-2,-1)</span></p>
+<p>Applying these coordinates in the total squared error looked like this:</p>
+<div class="math">
+E(a) = (12-5a)^2+(-12+5a)^2+(1-2a)^2+(-1+2a)^2
+</div>
+<p>After foiling and simplifying we are left with:</p>
+<div class="math">
+58a^2-248a+290
+</div>
+<p>Taking the derivative got me:</p>
+<div class="math">
+116a-248=0
+</div>
+<p>Then I solved for <span class="math">a</span> and got:</p>
+<div class="math">
+a = \frac{62}{29}
+</div>
+<p>Thus,</p>
+<div class="math">
+f(x) = \frac{62}{29}x.
+</div>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/11d394d8b2e32a31e3711f5df256e9011234c105" href="https://discourse.marksmath.org/uploads/default/original/1X/11d394d8b2e32a31e3711f5df256e9011234c105.png" title="desmos-graph"><img alt="desmos-graph" data-base62-sha1="2xHqxHXCxUt2xn3nrNdHczWWCah" data-dominant-color="F8F8F8" height="500" src="../../../images/11d394d8b2e32a31e3711f5df256e9011234c105_2_500x500.png" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/11d394d8b2e32a31e3711f5df256e9011234c105_2_500x500.png, https://discourse.marksmath.org/uploads/default/optimized/1X/11d394d8b2e32a31e3711f5df256e9011234c105_2_750x750.png 1.5x, https://discourse.marksmath.org/uploads/default/original/1X/11d394d8b2e32a31e3711f5df256e9011234c105.png 2x" width="500"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">desmos-graph</span><span class="informations">800×800 14.4 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-015.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 015</div>
+          <div class="post_content">
+<p>From my name, my four points are:</p>
+<div class="math">
+\{(1,22),\;(-1,-22),\;(19,3),\;(-19,-3)\}
+</div>
+<p>I need to find <span class="math">a</span> in the function</p>
+<div class="math">
+f(x) = a x
+</div>
+<p>To do this, I need to use the formula for total squared error</p>
+<div class="math">
+\sum_{i=1}^{n} (a x_i - y_i)^2
+</div>
+<p>So my total squared error equation is:</p>
+<div class="math">
+E(a) = (a-22)^2 + (-a+22)^2 + (19a-3)^2 + (-19a+3)^2
+</div>
+<p>In order to find the minimum, I need to take the derivative and set it equal to zero</p>
+<div class="math">
+\begin{aligned}
+E'(a) &amp;= 2(a-22)(1) + 2(-a + 22)(-1) + 2(19a-3)(19) + 2(-19a + 3)(-19) \\
+&amp;= 2(a-22) - 2(-a+22) + 38(19a-3) - 38(-19a +3)\\
+&amp;= (2a-44) + (2a-44) + (722a-114) + (722a-114)\\
+&amp;=1448a - 316\\
+\end{aligned}
+</div>
+<div class="math">
+\begin{aligned}
+0 &amp;= 1448a - 316\\
+316 &amp;= 1448a&amp;\\
+\frac{316}{1448} &amp;= a\\
+\end{aligned}
+</div>
+<p>Simplified,</p>
+<div class="math">
+a = \frac{79}{362}
+</div>
+<p>So the formula for my line is:</p>
+<div class="math">
+f(x) = \frac{79}{362} x
+</div>
+<p>Here is it plotted:</p>
+<iframe frameborder="0" height="500" src="https://www.desmos.com/calculator/lgw5flhhyy?embed" width="500"></iframe>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-014.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 014</div>
+          <div class="post_content">
+<p>My points are:</p>
+<div class="math">
+\{(1,7),\;(-1,-7),\;(14,15),\;(-14,-15)\}
+</div>
+<p>Plugging in my points gets me:</p>
+<div class="math">
+\begin{aligned}
+E(a) &amp;= (a-7)^2 +(-a+7)^2 + (14a-15)^2 +(-14a +15)^2 \\
+&amp;= 2\big((a-7)^2 + (14a-15)^2\big)
+\end{aligned}
+</div>
+<p>The derivative would be:</p>
+<div class="math">
+E'(a) = 2\big(2(a-2) + 2(14a-15)14\big) = 4\big((a-2) + 14(14a -15)\big)
+</div>
+<p>Solving for <span class="math">E'(a) = 0</span> shows <span class="math">a = \frac{848}{788}</span>, this shows the line of best fit at</p>
+<div class="math">
+f(x) = \frac{848}{788} x
+</div>
+<p>This is the graph of those points and line:</p>
+<iframe frameborder="0" height="500" src="https://www.desmos.com/calculator/jdns6bjfq1?embed" width="500"></iframe>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-017.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 017</div>
+          <div class="post_content">
+<p>The four points are:</p>
+<div class="math">
+(4,\;1),\;(-4,\;-1),\;(13,\;3),\;(-13,\;-3)
+</div>
+<p>Symmetry of the data,</p>
+<div class="math">
+f(x)=ax
+</div>
+<p>To calculate the total squared error</p>
+<div class="math">
+E(a)=\sum_{i=1}^{4}\left(y_i-f(x_i)\right)^2
+\;=\;\sum_{i=1}^{4}\left(y_i-ax_i\right)^2
+</div>
+<div class="math">
+E(a)=(1-4a)^2+(-1+4a)^2+(3-13a)^2+(-3+13a)^2
+</div>
+<p>To find the minimum total squared error, find where the derivative is <span class="math">0</span>.</p>
+<div class="math">
+E'(a)=2(1-4a)(-4)+2(-1+4a)(4)+2(3-13a)(-13)+2(-3+13a)(13)
+</div>
+<p>which simplifies to</p>
+<div class="math">
+E'(a)=740a-172=0
+</div>
+<div class="math">
+a=\frac{172}{740}=\frac{43}{185}\approx 0.2324
+</div>
+<p>So the line fitting these four points is <span class="math">f(x)=\frac{43}{185}x \approx 0.2324x</span>.</p>
+<p>This is the graph of line</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/888ead5ed48256ab8d3afe0151b40f77e11b72b2" href="https://discourse.marksmath.org/uploads/default/original/1X/888ead5ed48256ab8d3afe0151b40f77e11b72b2.png" title="image"><img alt="image" data-base62-sha1="ju2CtkkQjMcFGyq9MPlPuKNUn3c" data-dominant-color="FAFAFA" height="299" src="../../../images/888ead5ed48256ab8d3afe0151b40f77e11b72b2_2_690x299.png" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/888ead5ed48256ab8d3afe0151b40f77e11b72b2_2_690x299.png, https://discourse.marksmath.org/uploads/default/optimized/1X/888ead5ed48256ab8d3afe0151b40f77e11b72b2_2_1035x448.png 1.5x, https://discourse.marksmath.org/uploads/default/original/1X/888ead5ed48256ab8d3afe0151b40f77e11b72b2.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1278×554 27.6 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-009.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 009</div>
+          <div class="post_content">
+<p>Name: <strong>BR</strong>ady <strong>JE</strong>nkins<br/>
+Points</p>
+<div class="math">
+(2,18),(-2,-18),(10,5),(-10,-5)
+</div>
+<p>Formula:</p>
+<div class="math">
+E(a) = (18-2a)^2+(-18+2a)^2+(5-10a)^2+(-5+10a)^2
+</div>
+<div class="math">
+\begin{aligned}
+E'(a) &amp;= 2(18-2a)(-2)+2(-18+2a)(2)+2(5-10a)(-10)+2(-5+10a)(10) \\
+&amp;= -4(18-2a)+4(-18+2a)-20(5-10a)+20(-5+10a) \\
+&amp;= -72+8a-72+8a-100+200a-100+200a \\
+&amp;= -344 + 416a \\
+\end{aligned}
+</div>
+<p>Set equal to 0 and solve</p>
+<div class="math">
+\begin{aligned}
+-344 + 416a = 0 \\
+416a = 344 \\
+a = \frac{344}{416} \\
+\end{aligned}
+</div>
+<p>Siplified</p>
+<div class="math">
+a = \frac{43}{52}
+</div>
+<p>Thus</p>
+<div class="math">
+f(x) = \frac{43}{52}x
+</div>
+<p>Graph</p>
+<iframe frameborder="0" height="500" src="https://www.desmos.com/calculator/pah3cd1o9b?embed" width="500"></iframe>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-022.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 022</div>
+          <div class="post_content">
+<p>For my name, my 4 points are:</p>
+<p>(12,21),(-12,-21),(19,1),(-19,1)</p>
+<p>My points plugged in:</p>
+<div class="math">
+E(a) = (12a - 21)^2 + (-12a + 21)^2 + (19a - 1)^2 + (-19a + 1)^2 == 2((12a-21)^2+(19a-1)^2))
+</div>
+<p>The derivative of the equation:</p>
+<p><span class="math">E'(a)=2(2(12a-21)(12)+2(19a-1)(19))</span></p>
+<p>Solved for 0:</p>
+<p><span class="math">a = \frac{271}{505} </span> == <span class="math">f(x) = \frac{271}{505} x</span>.</p>
+<p>Graph:</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/a5408a8c178c6f5d36da0a95b2313a14f0ab7cc4" href="https://discourse.marksmath.org/uploads/default/original/1X/a5408a8c178c6f5d36da0a95b2313a14f0ab7cc4.png" title="image"><img alt="image" data-base62-sha1="nzT3OqZDyG9pvgwadSReXHjYY4I" data-dominant-color="F7F7F7" height="419" src="../../../images/a5408a8c178c6f5d36da0a95b2313a14f0ab7cc4_2_690x419.png" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/a5408a8c178c6f5d36da0a95b2313a14f0ab7cc4_2_690x419.png, https://discourse.marksmath.org/uploads/default/optimized/1X/a5408a8c178c6f5d36da0a95b2313a14f0ab7cc4_2_1035x628.png 1.5x, https://discourse.marksmath.org/uploads/default/original/1X/a5408a8c178c6f5d36da0a95b2313a14f0ab7cc4.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1335×812 67.2 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-018.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 018</div>
+          <div class="post_content">
+<p>My points are: <span class="math">\{(4,1), (-4,-1), (4,5), (-4,-5)\}</span></p>
+<p>The formula for the total squared error is: <span class="math"> \sum_{i=1}^{n} (y_i - \hat{y}_i)^2</span></p>
+<p>To calculate it: <span class="math">E(a) = (1-4a)^2 + (-1+4a)^2 + (5-4a)^2 + (-5+4a)^2</span></p>
+<div class="math">
+E'(a) = 2(1-4a)(-4) + 2(-1+4a)(4) + 2(5-4a)(-4) + 2(-5+4a)(4)
+</div>
+<div class="math">
+E'(a) = 16(4a-1) + 16(4a-5)
+</div>
+<div class="math">
+\begin{aligned}
+E'(a) &amp;= 64a - 16 + 64a - 80 \\
+&amp;= 128a - 96
+\end{aligned}
+</div>
+<div class="math">
+128a - 96 = 0
+</div>
+<div class="math">
+a = \frac{96}{128} = \frac{3}{4}
+</div>
+<p>So the line is <span class="math">f(x) = \frac{3}{4}x</span>.</p>
+<p><iframe frameborder="0" height="500px" sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox allow-presentation" scrolling="no" seamless="seamless" src="https://www.desmos.com/calculator/ybc6bit4yd?embed" width="100%"></iframe></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-010.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 010</div>
+          <div class="post_content">
+<p>My points:</p>
+<p><span class="math">(18,25),\;(-18,-25),\;(19,20),\;(-19,-20)</span></p>
+<p>Model function:</p>
+<p><span class="math">f(x)=\alpha x</span></p>
+<p>Applying these points to the total squared error:</p>
+<div class="math">
+E(\alpha)=(25-18\alpha)^2+(-25+18\alpha)^2+(20-19\alpha)^2+(-20+19\alpha)^2
+</div>
+<p>Finding minimum error:</p>
+<div class="math">
+\begin{aligned}
+E'(\alpha)=&amp;\,2(25-18\alpha)(-18)+2(-25+18\alpha)(18)\\
+&amp;+2(20-19\alpha)(-19)+2(-20+19\alpha)(19)
+\end{aligned}
+</div>
+<p>Simplifies to:</p>
+<div class="math">
+E'(\alpha)=-3320+2740\alpha=0
+</div>
+<div class="math">
+\alpha=\frac{3320}{2740}=\frac{166}{137}
+</div>
+<p>Final regression function:</p>
+<div class="math">
+{f(x)=\frac{166}{137}x}
+</div>
+<iframe frameborder="0" height="500" src="https://www.desmos.com/calculator/j4mmu7bkeh?embed" width="500"></iframe>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-019.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 019</div>
+          <div class="post_content">
+<p>My points are: (2,18), (-2, -18), (13, 1), (-13, -1)</p>
+<p>The formula for the total squared error is: <span class="math"> \sum_{i = 1}^n (y_i - \hat{y})^2 </span></p>
+<p>Applying these points to the total squared error:</p>
+<div class="math">
+E(a) = (18-2a)^2 + (-18+2a)^2 + (1-13a)^2 + (-1+13a)^2
+</div>
+<div class="math">
+E'(a) = 2(18-2a)(-2) + 2(-18+2a)(2) + 2(1 - 13a)(-13) + 2(-1 + 13a)(13)
+</div>
+<div class="math">
+E'(a) = -4(18-2a) + 4(-18+2a) - 26(1 - 13a) + 26(-1 + 13a)
+</div>
+<div class="math">
+
+E'(a) = (-72 + 8a) + (-72 + 8a) + (-26 + 338a) + (-26 + 338a) \\
+E'(a) = 692a - 196
+
+</div>
+<div class="math">
+692a - 196 = 0
+</div>
+<div class="math">
+a = \frac{196}{692} = \frac{49}{173}
+</div>
+<p>So the line is <span class="math">f(x) = \frac{49}{173}x</span>.</p>
+<iframe frameborder="0" height="500" src="https://www.desmos.com/calculator/g706k711ka?embed" width="500"></iframe>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-020.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 020</div>
+          <div class="post_content">
+<p>My points are: <span class="math">(10, 15), (-10, -15), (7, 1), (-7, 1)</span>.</p>
+<p>Using formula:</p>
+<div class="math">
+\text{total squared error} = \sum_{i=1}^{n} (a x_i - y_i)^2
+</div>
+<p>Plugging in values from the four points:</p>
+<div class="math">
+E(a) = (10a - 15)^2 + (-10a + 15)^2 + (7a - 1)^2 + (-7a + 1)^2
+</div>
+<p>or</p>
+<div class="math">
+E(a) = 200a^2 - 530a + 452.
+</div>
+<p>Then taking the derivative with respect to <span class="math">a</span>:</p>
+<div class="math">
+E'(a) = 400a - 530.
+</div>
+<p>To find the regression line we set <span class="math">E'(a)</span> to zero and solve for <span class="math">a</span>:</p>
+<div class="math">
+a = \frac{530}{400} \text{ or simplified further } a = \frac{53}{40}.
+</div>
+<p>So the line of best fit is</p>
+<div class="math">
+f(x) = \frac{53}{40}x.
+</div>
+<p>On a graph below:</p>
+<iframe frameborder="0" height="500" src="https://www.desmos.com/calculator/era34laenr?embed" width="500"></iframe>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-004.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 004</div>
+          <div class="post_content">
+<p>My four points based on my name are:</p>
+<div class="math">
+(13,1),\ (-13,-1),\ (3,15),\ (-3,-15)
+</div>
+<p>Applying these points in the total squared error I get using <span class="math">f(x) = ax</span>:</p>
+<div class="math">
+E(a) = (-1 + 13a)^2 + (1 - 13a)^2 + (-15 + 3a)^2 + (15 - 3a)^2
+</div>
+<p>Deriving <span class="math">E(a)</span> I get:</p>
+<div class="math">
+\begin{aligned}
+E'(a) &amp;= 2(-1 + 13a)(13) + 2(1 - 13a)(-13) + 2(-15 + 3a)(3) + 2(15 - 3a)(-3) \\
+E'(a) &amp;= -26 + 338a - 26 + 338a - 90 + 18a - 90 + 18a \\
+E'(a) &amp;= -232 + 712a
+\end{aligned}
+</div>
+<p>Setting equal to zero I get:</p>
+<div class="math">
+-232 + 712a = 0 \quad \rightarrow \quad 712a = 232 \quad \rightarrow \quad a = \frac{232}{712} \quad \rightarrow \quad a = \frac{29}{89}
+</div>
+<p>Thus, the regression line of best fit is:</p>
+<div class="math">
+f(x) = \frac{29}{89}x
+</div>
+<p>And looks like:</p>
+<iframe frameborder="0" height="300" src="https://www.desmos.com/calculator/d8gbncy3iw?embed" width="500"></iframe>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-024.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 024</div>
+          <div class="post_content">
+<p>My points are</p>
+<div class="math">
+{(5,26), (-5,-26), (3, 1), (-3,-1)}
+</div>
+<p>When putting them into the formula for total squared error, it becomes<br/>
+<span class="math"> E(a) = (5a-26)^2 + (-5a+26)^2 + (3a-1)^2 + (-3a+1)^2 </span><br/>
+<span class="math"> = 2((5a-26)^2 + (3a-1)^2) </span><br/>
+The derivative is<br/>
+<span class="math">E'(a) = 2(5a-26)(5) + 2(-5a+26)(-5) + 2(3a-1)(3) + 2(-3a+1)(-3)</span><br/>
+<span class="math">=136a-532</span><br/>
+<span class="math">0=136a-532</span><br/>
+<span class="math"> a = \frac{532}{126}\ </span></p>
+<p>So, the line's equation is <span class="math">f(x) = \frac{532}{126}x </span></p>
+<p><iframe frameborder="0" height="500px" sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox allow-presentation" scrolling="no" seamless="seamless" src="https://www.desmos.com/calculator/yrjlaobtas?embed" width="100%"></iframe></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-016.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 016</div>
+          <div class="post_content">
+<p>My points are<br/>
+{(13,1) (-13,-1) (12, 9) (-12,-9)}<br/>
+Given the symmetry of the data<br/>
+f(x)=ax<br/>
+to calculate the total squared error</p>
+<div class="math">
+𝐸(𝑎)=(13a−1)^2+(−13a+1)^2+(−9𝑎+12)^2+(9𝑎-12)^2
+</div>
+<p>taking the derivative</p>
+<div class="math">
+E'(a)=2(2(13a-1)(13)+2(12a-9)(12))
+</div>
+<p>This simplifies to</p>
+<div class="math">
+626a-242=0
+</div>
+<div class="math">
+a= .387
+</div>
+<p>Thus,</p>
+<div class="math">
+f(x) = 0.387x.
+</div>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/168a027d3905e9974c4eb1dfa2414e8b08fc7eee" href="https://discourse.marksmath.org/uploads/default/original/1X/168a027d3905e9974c4eb1dfa2414e8b08fc7eee.png" title="image"><img alt="image" data-base62-sha1="3dobHOFYrXk9GkSS5GoVp4rfCR8" data-dominant-color="FBFBFB" height="464" src="../../../images/168a027d3905e9974c4eb1dfa2414e8b08fc7eee_2_690x464.png" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/168a027d3905e9974c4eb1dfa2414e8b08fc7eee_2_690x464.png, https://discourse.marksmath.org/uploads/default/optimized/1X/168a027d3905e9974c4eb1dfa2414e8b08fc7eee_2_1035x696.png 1.5x, https://discourse.marksmath.org/uploads/default/original/1X/168a027d3905e9974c4eb1dfa2414e8b08fc7eee.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1239×834 22.9 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-031.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 031</div>
+          <div class="post_content">
+<p>My points are (-18,-25), (-9,-26), (9,26), (18,25).</p>
+<p>Using the total squared error formula:</p>
+<div class="math">
+E(a) = \sum (a x_i - y_i)^2.
+</div>
+<p>My points in the total squared error formula were</p>
+<div class="math">
+E(a)=(-18a-(-25))^2+(-9a+(-1))^2+(9a-26)^2+(18a+25)^2
+</div>
+<p>In calculating the derivative i found that <span class="math">E'(a) = 1620a-450</span> or about <span class="math">5/18</span><br/>
+So the line best fitting my 4 points is <span class="math">f(x)=5/18x</span> or about 0.27 repeating.<br/>
+And the graph looks like:</p>
+<iframe frameborder="0" height="500" src="https://www.desmos.com/calculator/exql1lj2vx?embed" width="500"></iframe>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/7_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">mark</div>
+          <div class="post_content">
+
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+  </body>
+</html>

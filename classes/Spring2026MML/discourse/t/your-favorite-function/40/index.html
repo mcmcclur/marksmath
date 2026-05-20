@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width">
+    <title>Your favorite function</title>
+    <link rel="stylesheet" href="../../../archived.css" />
+    <script>
+      function findSageCodeBlocks() {
+        return Array.prototype.slice.call(
+          document.querySelectorAll(
+            "pre[data-code-wrap='sage'] > code, pre > code.lang-sage, pre > code.language-sage, pre > code.sage"
+          )
+        );
+      }
+
+      function loadScript(src) {
+        return new Promise(function (resolve, reject) {
+          var existing = document.querySelector("script[src='" + src + "']");
+          if (existing) {
+            if (existing.dataset.loaded === "true") {
+              resolve();
+              return;
+            }
+            existing.addEventListener("load", resolve, { once: true });
+            existing.addEventListener("error", reject, { once: true });
+            return;
+          }
+
+          var script = document.createElement("script");
+          script.src = src;
+          script.async = true;
+          script.addEventListener("load", function () {
+            script.dataset.loaded = "true";
+            resolve();
+          }, { once: true });
+          script.addEventListener("error", reject, { once: true });
+          document.head.appendChild(script);
+        });
+      }
+
+      function prepareSageCells() {
+        var sageBlocks = findSageCodeBlocks();
+        if (!sageBlocks.length) {
+          return Promise.resolve();
+        }
+
+        return loadScript("https://sagecell.sagemath.org/static/embedded_sagecell.js")
+          .then(function () {
+            if (!window.sagecell || !window.sagecell.makeSagecell) {
+              return;
+            }
+
+            sageBlocks.forEach(function (codeTag, index) {
+              var preTag = codeTag.parentElement;
+              if (!preTag || preTag.dataset.sageMounted === "true") {
+                return;
+              }
+
+              var host = document.createElement("div");
+              host.className = "sagecell-archive";
+
+              var source = document.createElement("script");
+              source.type = "text/x-sage";
+              source.text = codeTag.textContent || "";
+              host.appendChild(source);
+
+              preTag.insertAdjacentElement("afterend", host);
+              preTag.classList.add("sage-source-hidden");
+              preTag.dataset.sageMounted = "true";
+
+              window.sagecell.makeSagecell({
+                inputLocation: host,
+                autoeval: false,
+                evalButtonText: "Run",
+                languages: ["sage"]
+              });
+            });
+          })
+          .catch(function () {
+            // Leave the original code blocks visible if SageCell cannot load.
+          });
+      }
+
+      function preprocessDiscourseMath() {
+        document.querySelectorAll("span.math, div.math").forEach(function (node) {
+          var tex = node.textContent || "";
+          if (!tex.trim()) {
+            return;
+          }
+          if (node.tagName === "SPAN") {
+            node.textContent = "\\(" + tex + "\\)";
+          } else {
+            node.textContent = "\\[" + tex + "\\]";
+          }
+          node.classList.remove("math");
+        });
+      }
+
+      window.MathJax = {
+        tex: {
+          inlineMath: [["\\(", "\\)"]],
+          displayMath: [["\\[", "\\]"]]
+        },
+        startup: {
+          pageReady() {
+            preprocessDiscourseMath();
+            return MathJax.startup.defaultPageReady().then(function () {
+              return prepareSageCells();
+            });
+          }
+        }
+      };
+    </script>
+    <script async id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="title-span">
+        <a href="../../../">
+          <img src="../../../images/ea06c0b00f456d7d2112d8196d0da94074cbf04a.png" height="40" alt="Site Logo" id="site-logo" />
+        </a>
+      </div>
+    </header>
+
+    <div class="main">
+    <div class="archive-span"><a href='https://marksmath.org/classes/Spring2026MML/'>MML Discourse</a> archived in May, 2026</div>
+    <h1 class="topic-title">Your favorite function</h1>
+            <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/7_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">mark</div>
+          <div class="post_content">
+<p>(5pts)</p>
+<p>I can't imagine that you could've possibly made it this far without finding a <em>favorite</em> function that maps <span class="math">\mathbb R \to \mathbb R</span>! For this five point assignment, your job is to tell us yours. To do so, just respond to this post and be sure to</p>
+<ul>
+<li>Tell us the algebraic formula for your favorite function, nicely typeset and</li>
+<li>Show us the graph.</li>
+</ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-032.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 032</div>
+          <div class="post_content">
+<p>My favorite function is <span class="math">f(x) = e^{-x^2}</span>. It's graph looks like so:</p>
+<iframe frameborder="0" height="300" src="https://www.desmos.com/calculator/w2qeeyykwm?embed" width="700"></iframe>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-006.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 006</div>
+          <div class="post_content">
+<p>My favorite function is <span class="math">f(x) = 1 / x^2</span>.</p>
+<iframe frameborder="0" height="500" src="https://www.desmos.com/calculator/lheflkbdur?embed" width="500"></iframe>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-019.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 019</div>
+          <div class="post_content">
+<p>My favorite function is <span class="math"> f(x) = x^2 </span> . The graph looks like:</p>
+<iframe frameborder="0" height="400" src="https://www.desmos.com/calculator/lmx5rrbdv7?embed" width="500"></iframe>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-003.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 003</div>
+          <div class="post_content">
+<p>My favorite is <span class="math">f(x)=\frac{x}{x+1}</span><br/>
+A form of this function is used to describe enzyme chemical kinetics.</p>
+<iframe frameborder="0" height="500" src="https://www.desmos.com/calculator/wpruogzfgp?embed" width="500"></iframe>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-002.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 002</div>
+          <div class="post_content">
+<p>My favorite function is <span class="math">1/\cos(x)</span>. Here's the graph:</p>
+<iframe frameborder="0" height="500" src="https://www.desmos.com/calculator/uatuxxyi3v?embed" width="500"></iframe>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-022.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 022</div>
+          <div class="post_content">
+<p>My favorite function is <span class="math">f(x) = \cos 081020x + 5\sin x</span>. Here’s the graph.</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/7e9c637f8d837ad6f0d762a9b5a4f2e854072a7f" href="https://discourse.marksmath.org/uploads/default/original/1X/7e9c637f8d837ad6f0d762a9b5a4f2e854072a7f.png" title="image"><img alt="image" data-base62-sha1="i43dN59j04h8uu03MSGcD4GNEiH" data-dominant-color="F1D9D8" height="420" src="../../../images/7e9c637f8d837ad6f0d762a9b5a4f2e854072a7f_2_690x420.png" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/7e9c637f8d837ad6f0d762a9b5a4f2e854072a7f_2_690x420.png, https://discourse.marksmath.org/uploads/default/optimized/1X/7e9c637f8d837ad6f0d762a9b5a4f2e854072a7f_2_1035x630.png 1.5x, https://discourse.marksmath.org/uploads/default/original/1X/7e9c637f8d837ad6f0d762a9b5a4f2e854072a7f.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1333×812 76.1 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-004.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 004</div>
+          <div class="post_content">
+<p>My favorite function is <span class="math">f(x) = \ln(x)</span>.<br/>
+Here is what the graph of the function looks like:</p>
+<iframe frameborder="0" height="300" src="https://www.desmos.com/calculator/0kvy7txitn?embed" width="500"></iframe>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-008.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 008</div>
+          <div class="post_content">
+<p>Mine is <span class="math"> f(x) = 0 </span></p>
+<iframe frameborder="0" height="300" src="https://www.desmos.com/calculator/dl3fkdapfl?embed" width="500"></iframe>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-023.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 023</div>
+          <div class="post_content">
+<p>My favorite function is</p>
+<div class="math">
+f(x)=x^{\sin x}.
+</div>
+<p>Here's a picture:<br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/60a7cc104677abd50526f559ee580a17b1b4f8ca" href="https://discourse.marksmath.org/uploads/default/original/1X/60a7cc104677abd50526f559ee580a17b1b4f8ca.png" title="image"><img alt="image" data-base62-sha1="dN3l8c9KB1KU8U1gMsaQDnNMRzc" data-dominant-color="F4E9E8" height="479" src="../../../images/60a7cc104677abd50526f559ee580a17b1b4f8ca_2_690x479.png" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/60a7cc104677abd50526f559ee580a17b1b4f8ca_2_690x479.png, https://discourse.marksmath.org/uploads/default/optimized/1X/60a7cc104677abd50526f559ee580a17b1b4f8ca_2_1035x718.png 1.5x, https://discourse.marksmath.org/uploads/default/optimized/1X/60a7cc104677abd50526f559ee580a17b1b4f8ca_2_1380x958.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1591×1105 122 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-020.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 020</div>
+          <div class="post_content">
+<div class="math">
+f(x) = \sin x
+</div>
+<iframe frameborder="0" height="500" src="https://www.desmos.com/calculator/ejabveorke?embed" width="500"></iframe>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-009.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 009</div>
+          <div class="post_content">
+<p>I'll be going with <span class="math">f(y) = 0</span></p>
+<iframe frameborder="0" height="500" src="https://www.desmos.com/calculator/yc1lregm39?embed" width="500"></iframe>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-010.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 010</div>
+          <div class="post_content">
+<p><span class="math">r = \theta</span></p>
+<p><iframe frameborder="0" height="500" sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox allow-presentation" scrolling="no" seamless="seamless" src="https://www.desmos.com/calculator/r9mu2rf7zb?embed" width="500"></iframe></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-007.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 007</div>
+          <div class="post_content">
+<p>My favorite function is</p>
+<div class="math">
+y=y\cos x\ +\ y\sin x
+</div>
+<p>Because I it make me feel that I broke it an d it made me laugh</p>
+<iframe frameborder="0" height="500" src="https://www.desmos.com/calculator/xl4p9mgheo?embed" width="500"></iframe>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-013.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 013</div>
+          <div class="post_content">
+<p>My favorite function is the function we first learned:</p>
+<div class="math">
+y = x.
+</div>
+<iframe frameborder="0" height="500" src="https://www.desmos.com/calculator/uavu8gldfe?embed" width="500"></iframe>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-015.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 015</div>
+          <div class="post_content">
+<p>My favorite function is <span class="math">f(x)=x</span></p>
+<iframe frameborder="0" height="500" src="https://www.desmos.com/calculator/ghb6mfxnxf?embed" width="500"></iframe>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/7_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">mark</div>
+          <div class="post_content">
+<p><span class="mention">@User 025</span> Do you think you could edit your post and make sure that you're using the typesetting tools as <a href="https://discourse.marksmath.org/t/how-do-i-enter-groovy-typeset-mathematics-into-discourse/18/">described on this post</a>, please? In your case, you've just got to delimit your input in dollar signs, <code>like this$</code>. For more involved inputs, it's still super simple to use the sparkly AI proof reader to ensure that your math is typeset correctly.</p>
+<p>You can edit your post by clicking on the pencil icon in toolbar below your post.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/7_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">mark</div>
+          <div class="post_content">
+<p><span class="mention">@User 033</span> That looks great! There's just one small, subtle formatting issue. Mathematical functions (like the sine) are typically indicated with a \. So the correct format for you function would be</p>
+<pre><code class="lang-auto">$$
+f(x) = \sin x
+$$
+</code></pre>
+<p>rather than just</p>
+<pre><code class="lang-auto">$$
+f(x) = sin x
+$$
+</code></pre>
+<p>That sort of thing should usually be caught with the proofreader you can find under sparkly AI menu.</p>
+<p>Could you edit your post to make that change, please? You can edit your post by clicking on the pencil icon under your post.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-020.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 020</div>
+          <div class="post_content">
+<p>Done. Thanks I didn't know about the AI proof reader, it did try and change some of the embedded graph text but I just ignored it's edits for that.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/7_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">mark</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="23" data-topic="40" data-username="jgayfiel">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/avatar-anon-020.svg" width="24"/> User 020:</div>
+<blockquote>
+<p>it did try and change some of the embedded graph text but I just ignored it's edits for that.</p>
+</blockquote>
+</aside>
+<p>Yes - I’ve prompted the proofreader to focus on typesetting mathematics correctly. It’ll correct spelling, too, but I’ve instructed it to focus only on those things. It shouldn’t check mathematical correctness or anything else.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-012.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 012</div>
+          <div class="post_content">
+<p><span class="math">f(x) = (1 - \cos^{2}x) + (1 - \sin^{2}x)</span></p>
+<iframe frameborder="0" height="300" src="https://www.desmos.com/calculator/ctjpojgeko?embed" width="690"></iframe>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-014.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 014</div>
+          <div class="post_content">
+<p>My favorite function: <span class="math">f(x) = \tan(x)</span></p>
+<iframe frameborder="0" height="500" src="https://www.desmos.com/calculator/ot29qgjrxr?embed" width="500"></iframe>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-017.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 017</div>
+          <div class="post_content">
+<p>My favorite function is</p>
+<div class="math">
+f(x) = e^{x}
+</div>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/ef7b1bf500d23d4e4cb370eb02167feae0a309ee" href="https://discourse.marksmath.org/uploads/default/original/1X/ef7b1bf500d23d4e4cb370eb02167feae0a309ee.png" title="image"><img alt="image" data-base62-sha1="yaxSibbCdy7lyjQcDqihFlsThz8" data-dominant-color="F9F8F8" height="423" src="../../../images/ef7b1bf500d23d4e4cb370eb02167feae0a309ee.png" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">751×461 14.5 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-018.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 018</div>
+          <div class="post_content">
+<p>My favorite function is <span class="math">6 = x^{2} + y^{2}</span>.</p>
+<p><iframe frameborder="0" height="500px" sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox allow-presentation" scrolling="no" seamless="seamless" src="https://www.desmos.com/calculator/dtyuuv5vvp?embed" width="100%"></iframe></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/7_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">mark</div>
+          <div class="post_content">
+<p><span class="mention">@User 034</span> I’m not convinced that <span class="math">x^2+y^2=6</span> defines a function but I like it anyway.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-005.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 005</div>
+          <div class="post_content">
+<p>My favorite function is <span class="math">f(x) = x</span>.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/7_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">mark</div>
+          <div class="post_content">
+<p><span class="mention">@User 035</span> I think someone took your example already! Also, would love to see a graph.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-024.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 024</div>
+          <div class="post_content">
+<p>My favorite function is <span class="math">\sec(x)</span>. It looks like this:</p>
+<iframe frameborder="0" height="300" src="https://www.desmos.com/calculator/zg3tvlcl2y?embed" width="500"></iframe>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/7_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">mark</div>
+          <div class="post_content">
+<p><span class="mention">@User 036</span> Good enough for a <img alt=":heart:" class="emoji" height="20" loading="lazy" src="../../../images/heart.png" title=":heart:" width="20"/>! I hope you don't mind if I edited the plot range a bit to make it look a bit more familiar. Also, if you use the AI proofreader, I think you'll get</p>
+<ul>
+<li><span class="math">\sec(x)</span>, rather than</li>
+<li><span class="math">sec(x)</span></li>
+</ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-016.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 016</div>
+          <div class="post_content">
+<p>My favorite function is</p>
+<div class="math">
+F(x)=x^x
+</div>
+<p>it looks like this<br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/990f10945daa7a358887d323d707e6543a9f4a6c" href="https://discourse.marksmath.org/uploads/default/original/1X/990f10945daa7a358887d323d707e6543a9f4a6c.png" title="image"><img alt="image" data-base62-sha1="lQ1kp0wfQ3jeyGH9z9YXhdNDmFK" data-dominant-color="FAF9F9" height="499" src="../../../images/990f10945daa7a358887d323d707e6543a9f4a6c_2_332x499.png" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/990f10945daa7a358887d323d707e6543a9f4a6c_2_332x499.png, https://discourse.marksmath.org/uploads/default/optimized/1X/990f10945daa7a358887d323d707e6543a9f4a6c_2_498x748.png 1.5x, https://discourse.marksmath.org/uploads/default/original/1X/990f10945daa7a358887d323d707e6543a9f4a6c.png 2x" width="332"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">594×892 19.5 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-031.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 031</div>
+          <div class="post_content">
+<p>My Favorite function is <span class="math">Ax^2</span></p>
+<iframe frameborder="0" height="500" src="https://www.desmos.com/calculator/f4ktaa7chi?embed" width="500"></iframe>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/7_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">mark</div>
+          <div class="post_content">
+
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+  </body>
+</html>

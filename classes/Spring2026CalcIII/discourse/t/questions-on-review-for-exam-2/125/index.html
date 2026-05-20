@@ -6,6 +6,82 @@
     <title>Questions on Review for Exam 2</title>
     <link rel="stylesheet" href="../../../archived.css" />
     <script>
+      function findSageCodeBlocks() {
+        return Array.prototype.slice.call(
+          document.querySelectorAll(
+            "pre[data-code-wrap='sage'] > code, pre > code.lang-sage, pre > code.language-sage, pre > code.sage"
+          )
+        );
+      }
+
+      function loadScript(src) {
+        return new Promise(function (resolve, reject) {
+          var existing = document.querySelector("script[src='" + src + "']");
+          if (existing) {
+            if (existing.dataset.loaded === "true") {
+              resolve();
+              return;
+            }
+            existing.addEventListener("load", resolve, { once: true });
+            existing.addEventListener("error", reject, { once: true });
+            return;
+          }
+
+          var script = document.createElement("script");
+          script.src = src;
+          script.async = true;
+          script.addEventListener("load", function () {
+            script.dataset.loaded = "true";
+            resolve();
+          }, { once: true });
+          script.addEventListener("error", reject, { once: true });
+          document.head.appendChild(script);
+        });
+      }
+
+      function prepareSageCells() {
+        var sageBlocks = findSageCodeBlocks();
+        if (!sageBlocks.length) {
+          return Promise.resolve();
+        }
+
+        return loadScript("https://sagecell.sagemath.org/static/embedded_sagecell.js")
+          .then(function () {
+            if (!window.sagecell || !window.sagecell.makeSagecell) {
+              return;
+            }
+
+            sageBlocks.forEach(function (codeTag, index) {
+              var preTag = codeTag.parentElement;
+              if (!preTag || preTag.dataset.sageMounted === "true") {
+                return;
+              }
+
+              var host = document.createElement("div");
+              host.className = "sagecell-archive";
+
+              var source = document.createElement("script");
+              source.type = "text/x-sage";
+              source.text = codeTag.textContent || "";
+              host.appendChild(source);
+
+              preTag.insertAdjacentElement("afterend", host);
+              preTag.classList.add("sage-source-hidden");
+              preTag.dataset.sageMounted = "true";
+
+              window.sagecell.makeSagecell({
+                inputLocation: host,
+                autoeval: false,
+                evalButtonText: "Run",
+                languages: ["sage"]
+              });
+            });
+          })
+          .catch(function () {
+            // Leave the original code blocks visible if SageCell cannot load.
+          });
+      }
+
       function preprocessDiscourseMath() {
         document.querySelectorAll("span.math, div.math").forEach(function (node) {
           var tex = node.textContent || "";
@@ -29,7 +105,9 @@
         startup: {
           pageReady() {
             preprocessDiscourseMath();
-            return MathJax.startup.defaultPageReady();
+            return MathJax.startup.defaultPageReady().then(function () {
+              return prepareSageCells();
+            });
           }
         }
       };
@@ -63,10 +141,10 @@
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-007.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">zowens</div>
+          <div class="user_name">User 007</div>
           <div class="post_content">
 <p>I need help and a clear and concise walkthrough of questions 10-13. I went to the math lab and still do not really understand spherical coordinates very well as well as real numbers.</p>
           </div>
@@ -83,7 +161,7 @@
 <aside class="quote no-group" data-post="3" data-topic="125" data-username="zowens">
 <div class="title">
 <div class="quote-controls"></div>
-<img alt="" class="avatar" height="24" src="../../../images/48.png" width="24"/> zowens:</div>
+<img alt="" class="avatar" height="24" src="../../../images/avatar-anon-007.svg" width="24"/> User 007:</div>
 <blockquote>
 <p>I need help and a clear and concise walkthrough of questions 10-13.</p>
 </blockquote>
@@ -97,10 +175,10 @@
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-007.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">zowens</div>
+          <div class="user_name">User 007</div>
           <div class="post_content">
 <p>OK, here's what <span class="hashtag-raw">#11</span> says:</p>
 <blockquote>
@@ -124,7 +202,7 @@
 <aside class="quote no-group" data-post="5" data-topic="125" data-username="zowens">
 <div class="title">
 <div class="quote-controls"></div>
-<img alt="" class="avatar" height="24" src="../../../images/48.png" width="24"/> zowens:</div>
+<img alt="" class="avatar" height="24" src="../../../images/avatar-anon-007.svg" width="24"/> User 007:</div>
 <blockquote>
 <p>Why is <span class="math">z=\sqrt{x^2+y^2}</span> a cone? And what does the whole domain look like? How do I use that to set up the integral?</p>
 </blockquote>
@@ -150,16 +228,17 @@ z=\sqrt{x^2} = |x|.
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-008.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">FatCat</div>
+          <div class="user_name">User 008</div>
           <div class="post_content">
 <p>For question 6b, do does this integral look right?</p>
 <div class="math">
 \int_{-2}^{2} \int_{x^2}^{4} x^2 \, dy \, dx
 </div>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span></div>
         </div>
       </div>
 
@@ -173,7 +252,7 @@ z=\sqrt{x^2} = |x|.
 <aside class="quote no-group" data-post="7" data-topic="125" data-username="FatCat">
 <div class="title">
 <div class="quote-controls"></div>
-<img alt="" class="avatar" height="24" src="../../../images/48.png" width="24"/> FatCat:</div>
+<img alt="" class="avatar" height="24" src="../../../images/avatar-anon-008.svg" width="24"/> User 008:</div>
 <blockquote>
 <p>For question 6b, do does this integral look right?</p>
 </blockquote>
@@ -185,10 +264,10 @@ z=\sqrt{x^2} = |x|.
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-008.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">FatCat</div>
+          <div class="user_name">User 008</div>
           <div class="post_content">
 <p>Is <span class="hashtag-raw">#9</span> asking for the volume bounded by the xy plane and the function? I can't quite figure out what my bounds are based on the information provided</p>
           </div>
@@ -205,7 +284,7 @@ z=\sqrt{x^2} = |x|.
 <aside class="quote no-group" data-post="9" data-topic="125" data-username="FatCat">
 <div class="title">
 <div class="quote-controls"></div>
-<img alt="" class="avatar" height="24" src="../../../images/48.png" width="24"/> FatCat:</div>
+<img alt="" class="avatar" height="24" src="../../../images/avatar-anon-008.svg" width="24"/> User 008:</div>
 <blockquote>
 <p>Is <span class="hashtag-raw">#9</span> asking for the volume bounded by the xy plane and the function?</p>
 </blockquote>
@@ -223,10 +302,10 @@ f(x,y) = 9-(x^2+y^2).
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-003.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">Natlopts</div>
+          <div class="user_name">User 003</div>
           <div class="post_content">
 <p>For question <span class="hashtag-raw">#9</span>, I used polar coordinates to set up a triple integral and I got</p>
 <div class="math">
@@ -234,6 +313,7 @@ f(x,y) = 9-(x^2+y^2).
 </div>
 <p>Is this right?</p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
@@ -247,7 +327,7 @@ f(x,y) = 9-(x^2+y^2).
 <aside class="quote no-group" data-post="11" data-topic="125" data-username="Natlopts">
 <div class="title">
 <div class="quote-controls"></div>
-<img alt="" class="avatar" height="24" src="../../../images/48.png" width="24"/> Natlopts:</div>
+<img alt="" class="avatar" height="24" src="../../../images/avatar-anon-003.svg" width="24"/> User 003:</div>
 <blockquote>
 <p>Is this right?</p>
 </blockquote>
@@ -255,15 +335,16 @@ f(x,y) = 9-(x^2+y^2).
 <p>Yes, that looks great - so far.</p>
 <p>Reading the question, I guess you are asked to evaluate the integral. I don't think that part is particularly hard, in this case, but do be sure to answer the question that is asked on the exam!</p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-003.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">Natlopts</div>
+          <div class="user_name">User 003</div>
           <div class="post_content">
 <p>Yes! I just wanted to make sure it was the correct integral, thanks <img alt=":smiley:" class="emoji" height="20" loading="lazy" src="../../../images/smiley.png" title=":smiley:" width="20"/></p>
           </div>
@@ -272,13 +353,14 @@ f(x,y) = 9-(x^2+y^2).
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-009.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">jcrabtre</div>
+          <div class="user_name">User 009</div>
           <div class="post_content">
 <p>If it's something you can answer, will Linear Regression be on exam 2? I'm not actually sure when we covered it.</p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
@@ -292,7 +374,7 @@ f(x,y) = 9-(x^2+y^2).
 <aside class="quote no-group" data-post="14" data-topic="125" data-username="jcrabtre">
 <div class="title">
 <div class="quote-controls"></div>
-<img alt="" class="avatar" height="24" src="../../../images/48.png" width="24"/> jcrabtre:</div>
+<img alt="" class="avatar" height="24" src="../../../images/avatar-anon-009.svg" width="24"/> User 009:</div>
 <blockquote>
 <p>will Linear Regression be on exam 2?</p>
 </blockquote>
@@ -300,18 +382,7 @@ f(x,y) = 9-(x^2+y^2).
 <p>No. We did cover it since the last exam and it was on the last quiz. With all the material we've covered, though, I decided not to put it on the review sheet so it won't be on this exam.</p>
 <p>It seems like a good possibility for the final, though.</p>
           </div>
-        </div>
-      </div>
-
-      <div class="post_container">
-        <div class="avatar_container">
-          <img src="../../../images/7_2.png" class="avatar" />
-        </div>
-        <div class="post">
-          <div class="user_name">mark</div>
-          <div class="post_content">
-
-          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 

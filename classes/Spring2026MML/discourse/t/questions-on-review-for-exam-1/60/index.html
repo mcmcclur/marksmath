@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width">
+    <title>Questions on Review for Exam 1</title>
+    <link rel="stylesheet" href="../../../archived.css" />
+    <script>
+      function findSageCodeBlocks() {
+        return Array.prototype.slice.call(
+          document.querySelectorAll(
+            "pre[data-code-wrap='sage'] > code, pre > code.lang-sage, pre > code.language-sage, pre > code.sage"
+          )
+        );
+      }
+
+      function loadScript(src) {
+        return new Promise(function (resolve, reject) {
+          var existing = document.querySelector("script[src='" + src + "']");
+          if (existing) {
+            if (existing.dataset.loaded === "true") {
+              resolve();
+              return;
+            }
+            existing.addEventListener("load", resolve, { once: true });
+            existing.addEventListener("error", reject, { once: true });
+            return;
+          }
+
+          var script = document.createElement("script");
+          script.src = src;
+          script.async = true;
+          script.addEventListener("load", function () {
+            script.dataset.loaded = "true";
+            resolve();
+          }, { once: true });
+          script.addEventListener("error", reject, { once: true });
+          document.head.appendChild(script);
+        });
+      }
+
+      function prepareSageCells() {
+        var sageBlocks = findSageCodeBlocks();
+        if (!sageBlocks.length) {
+          return Promise.resolve();
+        }
+
+        return loadScript("https://sagecell.sagemath.org/static/embedded_sagecell.js")
+          .then(function () {
+            if (!window.sagecell || !window.sagecell.makeSagecell) {
+              return;
+            }
+
+            sageBlocks.forEach(function (codeTag, index) {
+              var preTag = codeTag.parentElement;
+              if (!preTag || preTag.dataset.sageMounted === "true") {
+                return;
+              }
+
+              var host = document.createElement("div");
+              host.className = "sagecell-archive";
+
+              var source = document.createElement("script");
+              source.type = "text/x-sage";
+              source.text = codeTag.textContent || "";
+              host.appendChild(source);
+
+              preTag.insertAdjacentElement("afterend", host);
+              preTag.classList.add("sage-source-hidden");
+              preTag.dataset.sageMounted = "true";
+
+              window.sagecell.makeSagecell({
+                inputLocation: host,
+                autoeval: false,
+                evalButtonText: "Run",
+                languages: ["sage"]
+              });
+            });
+          })
+          .catch(function () {
+            // Leave the original code blocks visible if SageCell cannot load.
+          });
+      }
+
+      function preprocessDiscourseMath() {
+        document.querySelectorAll("span.math, div.math").forEach(function (node) {
+          var tex = node.textContent || "";
+          if (!tex.trim()) {
+            return;
+          }
+          if (node.tagName === "SPAN") {
+            node.textContent = "\\(" + tex + "\\)";
+          } else {
+            node.textContent = "\\[" + tex + "\\]";
+          }
+          node.classList.remove("math");
+        });
+      }
+
+      window.MathJax = {
+        tex: {
+          inlineMath: [["\\(", "\\)"]],
+          displayMath: [["\\[", "\\]"]]
+        },
+        startup: {
+          pageReady() {
+            preprocessDiscourseMath();
+            return MathJax.startup.defaultPageReady().then(function () {
+              return prepareSageCells();
+            });
+          }
+        }
+      };
+    </script>
+    <script async id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="title-span">
+        <a href="../../../">
+          <img src="../../../images/ea06c0b00f456d7d2112d8196d0da94074cbf04a.png" height="40" alt="Site Logo" id="site-logo" />
+        </a>
+      </div>
+    </header>
+
+    <div class="main">
+    <div class="archive-span"><a href='https://marksmath.org/classes/Spring2026MML/'>MML Discourse</a> archived in May, 2026</div>
+    <h1 class="topic-title">Questions on Review for Exam 1</h1>
+            <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/7_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">mark</div>
+          <div class="post_content">
+<p>You can ask questions about our <a href="https://marksmath.org/classes/Spring2026MML/handouts/Exam1Review">review for exam 1</a> by posting them here!</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-009.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 009</div>
+          <div class="post_content">
+<p>The answers to number 6 seem to be:<br/>
+a)</p>
+<div class="math">
+M=
+\begin{bmatrix}
+1 &amp; 0 &amp; 2 &amp; 4 \\
+0 &amp; 1 &amp; 1 &amp; 2 \\
+0 &amp; 0 &amp; 0 &amp; 0
+\end{bmatrix}
+</div>
+<p>b)</p>
+<div class="math">
+\begin{aligned}
+x+2z = 4 \\
+x = -2z+4 \\
+\\
+y+z = 2 \\
+y = -z+2 \\
+\\
+z = z
+\end{aligned}
+</div>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/7_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">mark</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="6" data-topic="60" data-username="bjenkins">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/avatar-anon-009.svg" width="24"/> User 009:</div>
+<blockquote>
+<p>The answers to number 6 seem to be:</p>
+</blockquote>
+</aside>
+<p>Yes, I largely agree! Note that I did strike out your last equation <span class="math">z=z</span>. I mean, it's hard to argue against that but the typical way that folks phrase that is to that "<span class="math">z</span> is free".</p>
+<p>I think the preferred way to write it is that the solution set is</p>
+<div class="math">
+\{(-2z+4, -z+2, z):z\in\mathbb R\}.
+</div>
+<p>One final comment: On the exam itself, you show your work using notational steps like</p>
+<div class="math">
+\begin{bmatrix}
+2 &amp; 1 &amp; 5 &amp; 10\\
+1 &amp; -3 &amp; -1 &amp; -2\\
+4 &amp; -2 &amp; 6 &amp; 12
+\end{bmatrix}
+\xrightarrow{-2R_1+R_3}
+\begin{bmatrix}
+2 &amp; 1 &amp; 5 &amp; 10\\
+1 &amp; -3 &amp; -1 &amp; -2\\
+0 &amp; -4 &amp; -4 &amp; -8
+\end{bmatrix}.
+</div>
+<p>I understand, of course, that typing that out in the forum is a skill we haven't really developed and am not expecting it here. I just want to make the expectations on the exam clear.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-009.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 009</div>
+          <div class="post_content">
+<p>If z is free, can I just not write that and write the x and y equations as I've had them on the exam?  I'm more referring to the format of the equation.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="thinking: 1">:thinking: 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/7_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">mark</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="8" data-topic="60" data-username="bjenkins">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/avatar-anon-009.svg" width="24"/> User 009:</div>
+<blockquote>
+<p>If z is free, can I just not write that and write the x and y equations as I've had them on the exam?</p>
+</blockquote>
+</aside>
+<p>Well, there's a whole infinite <em>set</em> of solutions, which why I often refer to the "solution set" and write it in set theoretic notation like</p>
+<div class="math">
+\{(-2z+4, -z+2, z):z\in\mathbb R\}.
+</div>
+<p>If you'd like to incorporate your equations, you could write the solution as</p>
+<blockquote>
+<p>The set of <span class="math">(x,y,z)</span> such that</p>
+<div class="math">
+x=-2z+4 \text{ and } y = -z+2.
+</div>
+</blockquote>
+<p>Again, the solution is not a set of equations; it's a set of points in 3D space defined by a set of equations.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-009.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 009</div>
+          <div class="post_content">
+<p>I'll be using the second option then.  That one is easier to remember.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-006.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 006</div>
+          <div class="post_content">
+<p>In regards to the definition question you will be asking us specifically on "Homogeneous System". Are you expecting us to remember the entire slide or the first sentence? I ask this clarifying question because the other key terms to remember had a solid one sentence definition that seemed suitable and the first sentence on this term seemed a bit vague for what you might expect on an exam.</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/ade9db762f50e711b1efc0e1471d6dbe35e918c4" href="https://discourse.marksmath.org/uploads/default/original/1X/ade9db762f50e711b1efc0e1471d6dbe35e918c4.png" title="ElisScreenshot"><img alt="ElisScreenshot" data-base62-sha1="oOvDDoTONh7ZUZpXSFf34tNCsLO" data-dominant-color="F0F0F0" height="225" src="../../../images/ade9db762f50e711b1efc0e1471d6dbe35e918c4_2_690x225.png" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/ade9db762f50e711b1efc0e1471d6dbe35e918c4_2_690x225.png, https://discourse.marksmath.org/uploads/default/optimized/1X/ade9db762f50e711b1efc0e1471d6dbe35e918c4_2_1035x337.png 1.5x, https://discourse.marksmath.org/uploads/default/original/1X/ade9db762f50e711b1efc0e1471d6dbe35e918c4.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">ElisScreenshot</span><span class="informations">1214×396 33.7 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/7_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">mark</div>
+          <div class="post_content">
+<p>Hmm... Yes, I agree that does look a bit vague. Let's just reorder things a bit:</p>
+<blockquote>
+<p>An <span class="math">m\times n</span> system <span class="math">A\vec{x}=\vec{b}</span> is called <em>homogeneous</em> when <span class="math">\vec{b}</span> is the zero vector <span class="math">\vec{b}=\vec{0}</span>.</p>
+</blockquote>
+<p>To be clear, that's a solid and complete definition using the matrix notation that we've developed since first meeting the concept. If you want to refer to a full system, you could write:</p>
+<blockquote>
+<p>An <span class="math">m\times n</span> system</p>
+<div class="math">
+\begin{aligned} a_{11} x_1 + a_{12} x_2 + \cdots + a_{1n} x_m &amp;= b_1 \\ a_{21} x_1 + a_{22} x_2 + \cdots + a_{2n} x_m &amp;= b_2 \\ \vdots \hspace{5mm} + \hspace{5mm} \vdots \hspace{6mm} +  \hspace{0.3mm} \ddots  \hspace{0.5mm} +  \hspace{6.7mm} \vdots \hspace{6mm} &amp;=  \hspace{2mm} \vdots \\ a_{m1} x_1 + a_{m2} x_2 + \cdots +a_{mn} x_m &amp;= b_m \end{aligned}
+</div>
+<p>is called <em>homogeneous</em> if <span class="math">b_i = 0</span> for every <span class="math">i</span>.</p>
+</blockquote>
+<p>Either of the above formulations is fine.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/7_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">mark</div>
+          <div class="post_content">
+
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+  </body>
+</html>

@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width">
+    <title>Defining an expression graph</title>
+    <link rel="stylesheet" href="../../../archived.css" />
+    <script>
+      function findSageCodeBlocks() {
+        return Array.prototype.slice.call(
+          document.querySelectorAll(
+            "pre[data-code-wrap='sage'] > code, pre > code.lang-sage, pre > code.language-sage, pre > code.sage"
+          )
+        );
+      }
+
+      function loadScript(src) {
+        return new Promise(function (resolve, reject) {
+          var existing = document.querySelector("script[src='" + src + "']");
+          if (existing) {
+            if (existing.dataset.loaded === "true") {
+              resolve();
+              return;
+            }
+            existing.addEventListener("load", resolve, { once: true });
+            existing.addEventListener("error", reject, { once: true });
+            return;
+          }
+
+          var script = document.createElement("script");
+          script.src = src;
+          script.async = true;
+          script.addEventListener("load", function () {
+            script.dataset.loaded = "true";
+            resolve();
+          }, { once: true });
+          script.addEventListener("error", reject, { once: true });
+          document.head.appendChild(script);
+        });
+      }
+
+      function prepareSageCells() {
+        var sageBlocks = findSageCodeBlocks();
+        if (!sageBlocks.length) {
+          return Promise.resolve();
+        }
+
+        return loadScript("https://sagecell.sagemath.org/static/embedded_sagecell.js")
+          .then(function () {
+            if (!window.sagecell || !window.sagecell.makeSagecell) {
+              return;
+            }
+
+            sageBlocks.forEach(function (codeTag, index) {
+              var preTag = codeTag.parentElement;
+              if (!preTag || preTag.dataset.sageMounted === "true") {
+                return;
+              }
+
+              var host = document.createElement("div");
+              host.className = "sagecell-archive";
+
+              var source = document.createElement("script");
+              source.type = "text/x-sage";
+              source.text = codeTag.textContent || "";
+              host.appendChild(source);
+
+              preTag.insertAdjacentElement("afterend", host);
+              preTag.classList.add("sage-source-hidden");
+              preTag.dataset.sageMounted = "true";
+
+              window.sagecell.makeSagecell({
+                inputLocation: host,
+                autoeval: false,
+                evalButtonText: "Run",
+                languages: ["sage"]
+              });
+            });
+          })
+          .catch(function () {
+            // Leave the original code blocks visible if SageCell cannot load.
+          });
+      }
+
+      function preprocessDiscourseMath() {
+        document.querySelectorAll("span.math, div.math").forEach(function (node) {
+          var tex = node.textContent || "";
+          if (!tex.trim()) {
+            return;
+          }
+          if (node.tagName === "SPAN") {
+            node.textContent = "\\(" + tex + "\\)";
+          } else {
+            node.textContent = "\\[" + tex + "\\]";
+          }
+          node.classList.remove("math");
+        });
+      }
+
+      window.MathJax = {
+        tex: {
+          inlineMath: [["\\(", "\\)"]],
+          displayMath: [["\\[", "\\]"]]
+        },
+        startup: {
+          pageReady() {
+            preprocessDiscourseMath();
+            return MathJax.startup.defaultPageReady().then(function () {
+              return prepareSageCells();
+            });
+          }
+        }
+      };
+    </script>
+    <script async id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="title-span">
+        <a href="../../../">
+          <img src="../../../images/ea06c0b00f456d7d2112d8196d0da94074cbf04a.png" height="40" alt="Site Logo" id="site-logo" />
+        </a>
+      </div>
+    </header>
+
+    <div class="main">
+    <div class="archive-span"><a href='https://marksmath.org/classes/Spring2026MML/'>MML Discourse</a> archived in May, 2026</div>
+    <h1 class="topic-title">Defining an expression graph</h1>
+            <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/7_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">mark</div>
+          <div class="post_content">
+<p>Draw the expression graph for</p>
+<div class="math">
+x^3 - 2y^2.
+</div>
+<p>Then, perform forward propagation assuming the input values</p>
+<div class="math">
+x = -1 \text{ and } y = 3.
+</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-009.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 009</div>
+          <div class="post_content">
+<p>Graph:</p>
+<svg class="graphviz-svg-render" height="152pt" viewbox="0.00 0.00 386.17 152.00" width="386pt" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g class="graph" id="graph0" transform="scale(1 1) rotate(0) translate(4 148)">
+<polygon fill="white" points="-4,4 -4,-148 382.17,-148 382.17,4 -4,4" stroke="transparent"></polygon>
+<!-- x -->
+<g class="node" id="node1">
+<title>x</title>
+<polygon fill="none" points="157.54,-144 103.54,-144 103.54,-108 157.54,-108 157.54,-144" stroke="black"></polygon>
+<text font-family="Arial" font-size="14.00" text-anchor="middle" x="130.54" y="-121.8">x</text>
+</g>
+<!-- pow3 -->
+<g class="node" id="node4">
+<title>pow3</title>
+<ellipse cx="247.63" cy="-126" fill="none" rx="40.58" ry="18" stroke="black"></ellipse>
+<text font-family="Arial" font-size="14.00" text-anchor="middle" x="247.63" y="-121.8">pow(3)</text>
+</g>
+<!-- x&#45;&gt;pow3 -->
+<g class="edge" id="edge1">
+<title>x-&gt;pow3</title>
+<path d="M157.66,-126C169.28,-126 183.38,-126 196.89,-126" fill="none" stroke="black"></path>
+<polygon fill="black" points="197.06,-129.5 207.06,-126 197.06,-122.5 197.06,-129.5" stroke="black"></polygon>
+</g>
+<!-- y -->
+<g class="node" id="node2">
+<title>y</title>
+<polygon fill="none" points="54,-36 0,-36 0,0 54,0 54,-36" stroke="black"></polygon>
+<text font-family="Arial" font-size="14.00" text-anchor="middle" x="27" y="-13.8">y</text>
+</g>
+<!-- pow2 -->
+<g class="node" id="node5">
+<title>pow2</title>
+<ellipse cx="130.54" cy="-18" fill="none" rx="40.58" ry="18" stroke="black"></ellipse>
+<text font-family="Arial" font-size="14.00" text-anchor="middle" x="130.54" y="-13.8">pow(2)</text>
+</g>
+<!-- y&#45;&gt;pow2 -->
+<g class="edge" id="edge2">
+<title>y-&gt;pow2</title>
+<path d="M54.15,-18C61.92,-18 70.71,-18 79.47,-18" fill="none" stroke="black"></path>
+<polygon fill="black" points="79.67,-21.5 89.67,-18 79.67,-14.5 79.67,-21.5" stroke="black"></polygon>
+</g>
+<!-- c2 -->
+<g class="node" id="node3">
+<title>c2</title>
+<polygon fill="none" points="157.54,-90 103.54,-90 103.54,-54 157.54,-54 157.54,-90" stroke="black"></polygon>
+<text font-family="Arial" font-size="14.00" text-anchor="middle" x="130.54" y="-67.8">2.0</text>
+</g>
+<!-- mul -->
+<g class="node" id="node6">
+<title>mul</title>
+<ellipse cx="247.63" cy="-72" fill="none" rx="27" ry="18" stroke="black"></ellipse>
+<text font-family="Arial" font-size="14.00" text-anchor="middle" x="247.63" y="-67.8">×</text>
+</g>
+<!-- c2&#45;&gt;mul -->
+<g class="edge" id="edge4">
+<title>c2-&gt;mul</title>
+<path d="M157.66,-72C173.25,-72 193.29,-72 210.41,-72" fill="none" stroke="black"></path>
+<polygon fill="black" points="210.62,-75.5 220.62,-72 210.62,-68.5 210.62,-75.5" stroke="black"></polygon>
+</g>
+<!-- sub -->
+<g class="node" id="node7">
+<title>sub</title>
+<ellipse cx="351.17" cy="-99" fill="none" rx="27" ry="18" stroke="black"></ellipse>
+<text font-family="Arial" font-size="14.00" text-anchor="middle" x="351.17" y="-94.8">-</text>
+</g>
+<!-- pow3&#45;&gt;sub -->
+<g class="edge" id="edge5">
+<title>pow3-&gt;sub</title>
+<path d="M282.72,-116.93C293.46,-114.08 305.32,-110.92 316.06,-108.07" fill="none" stroke="black"></path>
+<polygon fill="black" points="317.18,-111.39 325.95,-105.44 315.38,-104.63 317.18,-111.39" stroke="black"></polygon>
+</g>
+<!-- pow2&#45;&gt;mul -->
+<g class="edge" id="edge3">
+<title>pow2-&gt;mul</title>
+<path d="M159.11,-30.93C176.16,-38.94 198.1,-49.23 215.74,-57.51" fill="none" stroke="black"></path>
+<polygon fill="black" points="214.5,-60.79 225.04,-61.87 217.47,-54.45 214.5,-60.79" stroke="black"></polygon>
+</g>
+<!-- mul&#45;&gt;sub -->
+<g class="edge" id="edge6">
+<title>mul-&gt;sub</title>
+<path d="M272.95,-78.47C285.79,-81.88 301.77,-86.13 315.85,-89.87" fill="none" stroke="black"></path>
+<polygon fill="black" points="315.13,-93.3 325.69,-92.49 316.93,-86.54 315.13,-93.3" stroke="black"></polygon>
+</g>
+</g>
+</svg>
+<p>Forward:</p>
+<svg class="graphviz-svg-render" height="199pt" viewbox="0.00 0.00 424.33 198.83" width="424pt" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g class="graph" id="graph0" transform="scale(1 1) rotate(0) translate(4 194.83)">
+<polygon fill="white" points="-4,4 -4,-194.83 420.33,-194.83 420.33,4 -4,4" stroke="transparent"></polygon>
+<!-- x -->
+<g class="node" id="node1">
+<title>x</title>
+<polygon fill="none" points="158.57,-182.02 104.55,-182.02 104.55,-140.81 158.57,-140.81 158.57,-182.02" stroke="black"></polygon>
+<text font-family="Arial" font-size="14.00" text-anchor="middle" x="131.56" y="-165.62">x</text>
+<text font-family="Arial" font-size="14.00" text-anchor="middle" x="131.56" y="-148.82">val=-1</text>
+</g>
+<!-- pow3 -->
+<g class="node" id="node4">
+<title>pow3</title>
+<ellipse cx="250.68" cy="-161.42" fill="none" rx="41.62" ry="29.33" stroke="black"></ellipse>
+<text font-family="Arial" font-size="14.00" text-anchor="middle" x="250.68" y="-165.62">pow(3)</text>
+<text font-family="Arial" font-size="14.00" text-anchor="middle" x="250.68" y="-148.82">val=-1</text>
+</g>
+<!-- x&#45;&gt;pow3 -->
+<g class="edge" id="edge1">
+<title>x-&gt;pow3</title>
+<path d="M158.84,-161.42C170.56,-161.42 184.78,-161.42 198.46,-161.42" fill="none" stroke="black"></path>
+<polygon fill="black" points="198.77,-164.92 208.77,-161.42 198.77,-157.92 198.77,-164.92" stroke="black"></polygon>
+</g>
+<!-- y -->
+<g class="node" id="node2">
+<title>y</title>
+<polygon fill="none" points="54,-50.02 0,-50.02 0,-8.81 54,-8.81 54,-50.02" stroke="black"></polygon>
+<text font-family="Arial" font-size="14.00" text-anchor="middle" x="27" y="-33.62">y</text>
+<text font-family="Arial" font-size="14.00" text-anchor="middle" x="27" y="-16.82">val=3</text>
+</g>
+<!-- pow2 -->
+<g class="node" id="node5">
+<title>pow2</title>
+<ellipse cx="131.56" cy="-29.42" fill="none" rx="41.62" ry="29.33" stroke="black"></ellipse>
+<text font-family="Arial" font-size="14.00" text-anchor="middle" x="131.56" y="-33.62">pow(2)</text>
+<text font-family="Arial" font-size="14.00" text-anchor="middle" x="131.56" y="-16.82">val=9</text>
+</g>
+<!-- y&#45;&gt;pow2 -->
+<g class="edge" id="edge2">
+<title>y-&gt;pow2</title>
+<path d="M54.15,-29.42C61.91,-29.42 70.69,-29.42 79.47,-29.42" fill="none" stroke="black"></path>
+<polygon fill="black" points="79.71,-32.92 89.71,-29.42 79.71,-25.92 79.71,-32.92" stroke="black"></polygon>
+</g>
+<!-- c2 -->
+<g class="node" id="node3">
+<title>c2</title>
+<polygon fill="none" points="158.56,-112.42 104.56,-112.42 104.56,-76.42 158.56,-76.42 158.56,-112.42" stroke="black"></polygon>
+<text font-family="Arial" font-size="14.00" text-anchor="middle" x="131.56" y="-90.22">2.0</text>
+</g>
+<!-- mul -->
+<g class="node" id="node6">
+<title>mul</title>
+<ellipse cx="250.68" cy="-84.42" fill="none" rx="41" ry="29.33" stroke="black"></ellipse>
+<text font-family="Arial" font-size="14.00" text-anchor="middle" x="250.68" y="-88.62">×</text>
+<text font-family="Arial" font-size="14.00" text-anchor="middle" x="250.68" y="-71.82">val=18</text>
+</g>
+<!-- c2&#45;&gt;mul -->
+<g class="edge" id="edge4">
+<title>c2-&gt;mul</title>
+<path d="M158.84,-92.17C171,-91.13 185.86,-89.87 200,-88.66" fill="none" stroke="black"></path>
+<polygon fill="black" points="200.47,-92.13 210.13,-87.79 199.87,-85.16 200.47,-92.13" stroke="black"></polygon>
+</g>
+<!-- sub -->
+<g class="node" id="node7">
+<title>sub</title>
+<ellipse cx="372.29" cy="-122.42" fill="none" rx="44.09" ry="29.33" stroke="black"></ellipse>
+<text font-family="Arial" font-size="14.00" text-anchor="middle" x="372.29" y="-126.62">-</text>
+<text font-family="Arial" font-size="14.00" text-anchor="middle" x="372.29" y="-109.82">val=-19</text>
+</g>
+<!-- pow3&#45;&gt;sub -->
+<g class="edge" id="edge5">
+<title>pow3-&gt;sub</title>
+<path d="M288.87,-149.29C299.58,-145.8 311.43,-141.93 322.73,-138.25" fill="none" stroke="black"></path>
+<polygon fill="black" points="324.05,-141.5 332.47,-135.07 321.88,-134.85 324.05,-141.5" stroke="black"></polygon>
+</g>
+<!-- pow2&#45;&gt;mul -->
+<g class="edge" id="edge3">
+<title>pow2-&gt;mul</title>
+<path d="M166.75,-45.47C179.25,-51.34 193.55,-58.05 206.71,-64.24" fill="none" stroke="black"></path>
+<polygon fill="black" points="205.52,-67.54 216.05,-68.62 208.49,-61.21 205.52,-67.54" stroke="black"></polygon>
+</g>
+<!-- mul&#45;&gt;sub -->
+<g class="edge" id="edge6">
+<title>mul-&gt;sub</title>
+<path d="M288.22,-96.02C298.95,-99.43 310.87,-103.22 322.25,-106.84" fill="none" stroke="black"></path>
+<polygon fill="black" points="321.48,-110.26 332.07,-109.95 323.6,-103.59 321.48,-110.26" stroke="black"></polygon>
+</g>
+</g>
+</svg>
+
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+
+    </div>
+  </body>
+</html>

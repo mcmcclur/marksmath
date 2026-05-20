@@ -6,6 +6,82 @@
     <title>Questions on Review for Exam 1</title>
     <link rel="stylesheet" href="../../../archived.css" />
     <script>
+      function findSageCodeBlocks() {
+        return Array.prototype.slice.call(
+          document.querySelectorAll(
+            "pre[data-code-wrap='sage'] > code, pre > code.lang-sage, pre > code.language-sage, pre > code.sage"
+          )
+        );
+      }
+
+      function loadScript(src) {
+        return new Promise(function (resolve, reject) {
+          var existing = document.querySelector("script[src='" + src + "']");
+          if (existing) {
+            if (existing.dataset.loaded === "true") {
+              resolve();
+              return;
+            }
+            existing.addEventListener("load", resolve, { once: true });
+            existing.addEventListener("error", reject, { once: true });
+            return;
+          }
+
+          var script = document.createElement("script");
+          script.src = src;
+          script.async = true;
+          script.addEventListener("load", function () {
+            script.dataset.loaded = "true";
+            resolve();
+          }, { once: true });
+          script.addEventListener("error", reject, { once: true });
+          document.head.appendChild(script);
+        });
+      }
+
+      function prepareSageCells() {
+        var sageBlocks = findSageCodeBlocks();
+        if (!sageBlocks.length) {
+          return Promise.resolve();
+        }
+
+        return loadScript("https://sagecell.sagemath.org/static/embedded_sagecell.js")
+          .then(function () {
+            if (!window.sagecell || !window.sagecell.makeSagecell) {
+              return;
+            }
+
+            sageBlocks.forEach(function (codeTag, index) {
+              var preTag = codeTag.parentElement;
+              if (!preTag || preTag.dataset.sageMounted === "true") {
+                return;
+              }
+
+              var host = document.createElement("div");
+              host.className = "sagecell-archive";
+
+              var source = document.createElement("script");
+              source.type = "text/x-sage";
+              source.text = codeTag.textContent || "";
+              host.appendChild(source);
+
+              preTag.insertAdjacentElement("afterend", host);
+              preTag.classList.add("sage-source-hidden");
+              preTag.dataset.sageMounted = "true";
+
+              window.sagecell.makeSagecell({
+                inputLocation: host,
+                autoeval: false,
+                evalButtonText: "Run",
+                languages: ["sage"]
+              });
+            });
+          })
+          .catch(function () {
+            // Leave the original code blocks visible if SageCell cannot load.
+          });
+      }
+
       function preprocessDiscourseMath() {
         document.querySelectorAll("span.math, div.math").forEach(function (node) {
           var tex = node.textContent || "";
@@ -29,7 +105,9 @@
         startup: {
           pageReady() {
             preprocessDiscourseMath();
-            return MathJax.startup.defaultPageReady();
+            return MathJax.startup.defaultPageReady().then(function () {
+              return prepareSageCells();
+            });
           }
         }
       };
@@ -63,13 +141,14 @@
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-008.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">FatCat</div>
+          <div class="user_name">User 008</div>
           <div class="post_content">
 <p>For question nine we end up getting <span class="math">\pi^2</span>, should we know what number this is or should we just leave it as <span class="math">\pi^2</span>?</p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
@@ -92,26 +171,28 @@
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-008.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">FatCat</div>
+          <div class="user_name">User 008</div>
           <div class="post_content">
 <p>That's what I meant! Thank you!</p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-009.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">jcrabtre</div>
+          <div class="user_name">User 009</div>
           <div class="post_content">
 <p>If anyone happens to know this late, is question 2 talking about the total change, the rate of change, or something else? (the first two are what I found about displacement vectors in the book, mostly)<br/>
 Or is it just finding what other vector when combined with F makes d?</p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
@@ -132,15 +213,16 @@ W = \vec{F}\cdot\vec{d}.
 </div>
 <p>Thus, this problem is literally a long winded way of asking you to compute the dot product of the two vectors <span class="math">\vec{F}</span> and <span class="math">\vec{d}</span>.</p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-009.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">jcrabtre</div>
+          <div class="user_name">User 009</div>
           <div class="post_content">
 <p>Ah, ok, thank you! Sorry - I should've tried looking for 'force' instead of 'force vector' in the textbook too.</p>
           </div>
@@ -157,7 +239,7 @@ W = \vec{F}\cdot\vec{d}.
 <aside class="quote no-group" data-post="10" data-topic="93" data-username="jcrabtre">
 <div class="title">
 <div class="quote-controls"></div>
-<img alt="" class="avatar" height="24" src="../../../images/48.png" width="24"/> jcrabtre:</div>
+<img alt="" class="avatar" height="24" src="../../../images/avatar-anon-009.svg" width="24"/> User 009:</div>
 <blockquote>
 <p>Ah, ok, thank you! Sorry</p>
 </blockquote>
@@ -169,10 +251,10 @@ W = \vec{F}\cdot\vec{d}.
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-035.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">asvetlov</div>
+          <div class="user_name">User 035</div>
           <div class="post_content">
 <p>For number one, I feel as if I might be mixing up the projection equation. Is this correct?</p>
 <div class="math">
@@ -180,6 +262,7 @@ W = \vec{F}\cdot\vec{d}.
 </div>
 <p>I always remember it being u at the bottom and not v?  Is it because we are trying to find the projection u onto v?</p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
@@ -193,6 +276,7 @@ W = \vec{F}\cdot\vec{d}.
 <p>Well, you could project <span class="math">u</span> onto <span class="math">v</span> <em>or</em> you could project <span class="math">v</span> onto <span class="math">u</span> so it depends which one you're doing. The one that you're projecting onto is the one in the subsript of the proj. Thus, the formula you wrote projects <span class="math">u</span> onto <span class="math">v</span>. If you wanted to project <span class="math">v</span> onto <span class="math">u</span>, then you'd have to switch all the <span class="math">u</span>'s and <span class="math">v</span>'s.</p>
 <p>The problem, of course, asks you to break <span class="math">u</span> up into two vectors - one in the direction of <span class="math">v</span> and one perp. So I guess you need to project <span class="math">u</span> onto <span class="math">v</span>, as you've written.</p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 

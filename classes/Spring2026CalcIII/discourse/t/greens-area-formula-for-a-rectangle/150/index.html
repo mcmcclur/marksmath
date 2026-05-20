@@ -6,6 +6,82 @@
     <title>Green&rsquo;s area formula for a rectangle</title>
     <link rel="stylesheet" href="../../../archived.css" />
     <script>
+      function findSageCodeBlocks() {
+        return Array.prototype.slice.call(
+          document.querySelectorAll(
+            "pre[data-code-wrap='sage'] > code, pre > code.lang-sage, pre > code.language-sage, pre > code.sage"
+          )
+        );
+      }
+
+      function loadScript(src) {
+        return new Promise(function (resolve, reject) {
+          var existing = document.querySelector("script[src='" + src + "']");
+          if (existing) {
+            if (existing.dataset.loaded === "true") {
+              resolve();
+              return;
+            }
+            existing.addEventListener("load", resolve, { once: true });
+            existing.addEventListener("error", reject, { once: true });
+            return;
+          }
+
+          var script = document.createElement("script");
+          script.src = src;
+          script.async = true;
+          script.addEventListener("load", function () {
+            script.dataset.loaded = "true";
+            resolve();
+          }, { once: true });
+          script.addEventListener("error", reject, { once: true });
+          document.head.appendChild(script);
+        });
+      }
+
+      function prepareSageCells() {
+        var sageBlocks = findSageCodeBlocks();
+        if (!sageBlocks.length) {
+          return Promise.resolve();
+        }
+
+        return loadScript("https://sagecell.sagemath.org/static/embedded_sagecell.js")
+          .then(function () {
+            if (!window.sagecell || !window.sagecell.makeSagecell) {
+              return;
+            }
+
+            sageBlocks.forEach(function (codeTag, index) {
+              var preTag = codeTag.parentElement;
+              if (!preTag || preTag.dataset.sageMounted === "true") {
+                return;
+              }
+
+              var host = document.createElement("div");
+              host.className = "sagecell-archive";
+
+              var source = document.createElement("script");
+              source.type = "text/x-sage";
+              source.text = codeTag.textContent || "";
+              host.appendChild(source);
+
+              preTag.insertAdjacentElement("afterend", host);
+              preTag.classList.add("sage-source-hidden");
+              preTag.dataset.sageMounted = "true";
+
+              window.sagecell.makeSagecell({
+                inputLocation: host,
+                autoeval: false,
+                evalButtonText: "Run",
+                languages: ["sage"]
+              });
+            });
+          })
+          .catch(function () {
+            // Leave the original code blocks visible if SageCell cannot load.
+          });
+      }
+
       function preprocessDiscourseMath() {
         document.querySelectorAll("span.math, div.math").forEach(function (node) {
           var tex = node.textContent || "";
@@ -29,7 +105,9 @@
         startup: {
           pageReady() {
             preprocessDiscourseMath();
-            return MathJax.startup.defaultPageReady();
+            return MathJax.startup.defaultPageReady().then(function () {
+              return prepareSageCells();
+            });
           }
         }
       };
@@ -64,10 +142,10 @@
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-004.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">Justinbrr</div>
+          <div class="user_name">User 004</div>
           <div class="post_content">
 <p>We know the area of the rectangle should equal <span class="math">L \times H</span>. Using Green's theorem, we let our points from first to last in counter-clockwise order be <span class="math">(0,0)</span>, <span class="math">(L,0)</span>, <span class="math">(L,H)</span>, and <span class="math">(0,H)</span>.<br/>
 Then our area equation takes the form</p>
@@ -77,6 +155,7 @@ Then our area equation takes the form</p>
 <p>which is equal to <span class="math">\frac{1}{2}\bigl(0 + (2L)(H) + 0 + 0\bigr) = \frac{1}{2}(2L)(H)</span>, which is ultimately <span class="math">L \times H</span>.<br/>
 This proves that Green's Area formula yields the correct result for a rectangle.</p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
@@ -87,17 +166,17 @@ This proves that Green's Area formula yields the correct result for a rectangle.
         <div class="post">
           <div class="user_name">mark</div>
           <div class="post_content">
-<p><span class="mention">@Justinbrr</span> I <em>think</em> that looks probably pretty good. Did you try the <a href="https://discourse.marksmath.org/t/how-do-i-enter-groovy-typeset-mathematics-into-discourse/18#p-33-the-ai-contextual-menu-4">AI Proofreader</a> to see if it would typeset the mathematics more betterly?</p>
+<p><span class="mention">@User 005</span> I <em>think</em> that looks probably pretty good. Did you try the <a href="https://discourse.marksmath.org/t/how-do-i-enter-groovy-typeset-mathematics-into-discourse/18#p-33-the-ai-contextual-menu-4">AI Proofreader</a> to see if it would typeset the mathematics more betterly?</p>
           </div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/124_2.png" class="avatar" />
+          <img src="../../../images/avatar-anon-006.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">Bennett_M</div>
+          <div class="user_name">User 006</div>
           <div class="post_content">
 <p>To use Green's area formula on this rectangle, we must first recall the formula:</p>
 <div class="math">
@@ -113,6 +192,7 @@ Application of the formula to these points yields:</p>
 We know that the area of a rectangle is equal to base times height, supporting the Green's area formula solution for this rectangle.<br/>
 (Ai would not help the formula look any better unfortunately).</p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
@@ -126,7 +206,7 @@ We know that the area of a rectangle is equal to base times height, supporting t
 <aside class="quote no-group" data-post="4" data-topic="150" data-username="Bennett_M">
 <div class="title">
 <div class="quote-controls"></div>
-<img alt="" class="avatar" height="24" src="../../../images/124_2.png" width="24"/> Bennett_M:</div>
+<img alt="" class="avatar" height="24" src="../../../images/avatar-anon-006.svg" width="24"/> User 006:</div>
 <blockquote>
 <p>Ai would not help the formula look any better unfortunately</p>
 </blockquote>
@@ -143,7 +223,7 @@ We know that the area of a rectangle is equal to base times height, supporting t
         <div class="post">
           <div class="user_name">mark</div>
           <div class="post_content">
-<p><span class="mention">@Justinbrr</span> I'm not sure how I saw Bennet_M's reply before yours but they both look good! I did apply the AI proofreader to yours as well.</p>
+<p><span class="mention">@User 005</span> I'm not sure how I saw Bennet_M's reply before yours but they both look good! I did apply the AI proofreader to yours as well.</p>
           </div>
         </div>
       </div>

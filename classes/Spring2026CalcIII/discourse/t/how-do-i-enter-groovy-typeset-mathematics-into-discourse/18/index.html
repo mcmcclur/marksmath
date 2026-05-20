@@ -6,6 +6,82 @@
     <title>How do I enter groovy, typeset mathematics into Discourse?</title>
     <link rel="stylesheet" href="../../../archived.css" />
     <script>
+      function findSageCodeBlocks() {
+        return Array.prototype.slice.call(
+          document.querySelectorAll(
+            "pre[data-code-wrap='sage'] > code, pre > code.lang-sage, pre > code.language-sage, pre > code.sage"
+          )
+        );
+      }
+
+      function loadScript(src) {
+        return new Promise(function (resolve, reject) {
+          var existing = document.querySelector("script[src='" + src + "']");
+          if (existing) {
+            if (existing.dataset.loaded === "true") {
+              resolve();
+              return;
+            }
+            existing.addEventListener("load", resolve, { once: true });
+            existing.addEventListener("error", reject, { once: true });
+            return;
+          }
+
+          var script = document.createElement("script");
+          script.src = src;
+          script.async = true;
+          script.addEventListener("load", function () {
+            script.dataset.loaded = "true";
+            resolve();
+          }, { once: true });
+          script.addEventListener("error", reject, { once: true });
+          document.head.appendChild(script);
+        });
+      }
+
+      function prepareSageCells() {
+        var sageBlocks = findSageCodeBlocks();
+        if (!sageBlocks.length) {
+          return Promise.resolve();
+        }
+
+        return loadScript("https://sagecell.sagemath.org/static/embedded_sagecell.js")
+          .then(function () {
+            if (!window.sagecell || !window.sagecell.makeSagecell) {
+              return;
+            }
+
+            sageBlocks.forEach(function (codeTag, index) {
+              var preTag = codeTag.parentElement;
+              if (!preTag || preTag.dataset.sageMounted === "true") {
+                return;
+              }
+
+              var host = document.createElement("div");
+              host.className = "sagecell-archive";
+
+              var source = document.createElement("script");
+              source.type = "text/x-sage";
+              source.text = codeTag.textContent || "";
+              host.appendChild(source);
+
+              preTag.insertAdjacentElement("afterend", host);
+              preTag.classList.add("sage-source-hidden");
+              preTag.dataset.sageMounted = "true";
+
+              window.sagecell.makeSagecell({
+                inputLocation: host,
+                autoeval: false,
+                evalButtonText: "Run",
+                languages: ["sage"]
+              });
+            });
+          })
+          .catch(function () {
+            // Leave the original code blocks visible if SageCell cannot load.
+          });
+      }
+
       function preprocessDiscourseMath() {
         document.querySelectorAll("span.math, div.math").forEach(function (node) {
           var tex = node.textContent || "";
@@ -29,7 +105,9 @@
         startup: {
           pageReady() {
             preprocessDiscourseMath();
-            return MathJax.startup.defaultPageReady();
+            return MathJax.startup.defaultPageReady().then(function () {
+              return prepareSageCells();
+            });
           }
         }
       };
@@ -120,6 +198,7 @@
 <h4><a aria-label="Heading link" class="anchor" href="#p-33-after-6" name="p-33-after-6"></a>After</h4>
 <p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/e473a1796218ab878b0b28cf8b5b897d099a0dc8" href="https://discourse.marksmath.org/uploads/default/original/1X/e473a1796218ab878b0b28cf8b5b897d099a0dc8.png" title="Screenshot 2026-01-07 at 7.24.13 PM"><img alt="Screenshot 2026-01-07 at 7.24.13 PM" data-base62-sha1="wAYBgjPo2nWp3s1xQQPISNITAbC" data-dominant-color="F8F9FA" height="203" src="../../../images/e473a1796218ab878b0b28cf8b5b897d099a0dc8_2_690x203.png" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/e473a1796218ab878b0b28cf8b5b897d099a0dc8_2_690x203.png, https://discourse.marksmath.org/uploads/default/optimized/1X/e473a1796218ab878b0b28cf8b5b897d099a0dc8_2_1035x304.png 1.5x, https://discourse.marksmath.org/uploads/default/optimized/1X/e473a1796218ab878b0b28cf8b5b897d099a0dc8_2_1380x406.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2026-01-07 at 7.24.13 PM</span><span class="informations">2260×668 49.4 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span></div>
         </div>
       </div>
 
@@ -147,6 +226,7 @@ $$\int_{-\infty}^{\infty} f(x) \, dx = \sqrt{\pi}.$$
 </code></pre>
 <p>Thus, LaTeX fits into markdown quite naturally.</p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span></div>
         </div>
       </div>
 
@@ -168,6 +248,7 @@ $$\int_{-\infty}^{\infty} f(x) \, dx = \sqrt{\pi}.$$
 </div>
 <p>The modal does not currently have a proofread button. You can proofread the whole post, once you’ve got and the proofreader will process the mathematics, as well.</p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 2">👍 2</span></div>
         </div>
       </div>
 

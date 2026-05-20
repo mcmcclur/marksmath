@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width">
+    <title>Inverse of a product</title>
+    <link rel="stylesheet" href="../../../archived.css" />
+    <script>
+      function findSageCodeBlocks() {
+        return Array.prototype.slice.call(
+          document.querySelectorAll(
+            "pre[data-code-wrap='sage'] > code, pre > code.lang-sage, pre > code.language-sage, pre > code.sage"
+          )
+        );
+      }
+
+      function loadScript(src) {
+        return new Promise(function (resolve, reject) {
+          var existing = document.querySelector("script[src='" + src + "']");
+          if (existing) {
+            if (existing.dataset.loaded === "true") {
+              resolve();
+              return;
+            }
+            existing.addEventListener("load", resolve, { once: true });
+            existing.addEventListener("error", reject, { once: true });
+            return;
+          }
+
+          var script = document.createElement("script");
+          script.src = src;
+          script.async = true;
+          script.addEventListener("load", function () {
+            script.dataset.loaded = "true";
+            resolve();
+          }, { once: true });
+          script.addEventListener("error", reject, { once: true });
+          document.head.appendChild(script);
+        });
+      }
+
+      function prepareSageCells() {
+        var sageBlocks = findSageCodeBlocks();
+        if (!sageBlocks.length) {
+          return Promise.resolve();
+        }
+
+        return loadScript("https://sagecell.sagemath.org/static/embedded_sagecell.js")
+          .then(function () {
+            if (!window.sagecell || !window.sagecell.makeSagecell) {
+              return;
+            }
+
+            sageBlocks.forEach(function (codeTag, index) {
+              var preTag = codeTag.parentElement;
+              if (!preTag || preTag.dataset.sageMounted === "true") {
+                return;
+              }
+
+              var host = document.createElement("div");
+              host.className = "sagecell-archive";
+
+              var source = document.createElement("script");
+              source.type = "text/x-sage";
+              source.text = codeTag.textContent || "";
+              host.appendChild(source);
+
+              preTag.insertAdjacentElement("afterend", host);
+              preTag.classList.add("sage-source-hidden");
+              preTag.dataset.sageMounted = "true";
+
+              window.sagecell.makeSagecell({
+                inputLocation: host,
+                autoeval: false,
+                evalButtonText: "Run",
+                languages: ["sage"]
+              });
+            });
+          })
+          .catch(function () {
+            // Leave the original code blocks visible if SageCell cannot load.
+          });
+      }
+
+      function preprocessDiscourseMath() {
+        document.querySelectorAll("span.math, div.math").forEach(function (node) {
+          var tex = node.textContent || "";
+          if (!tex.trim()) {
+            return;
+          }
+          if (node.tagName === "SPAN") {
+            node.textContent = "\\(" + tex + "\\)";
+          } else {
+            node.textContent = "\\[" + tex + "\\]";
+          }
+          node.classList.remove("math");
+        });
+      }
+
+      window.MathJax = {
+        tex: {
+          inlineMath: [["\\(", "\\)"]],
+          displayMath: [["\\[", "\\]"]]
+        },
+        startup: {
+          pageReady() {
+            preprocessDiscourseMath();
+            return MathJax.startup.defaultPageReady().then(function () {
+              return prepareSageCells();
+            });
+          }
+        }
+      };
+    </script>
+    <script async id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="title-span">
+        <a href="../../../">
+          <img src="../../../images/ea06c0b00f456d7d2112d8196d0da94074cbf04a.png" height="40" alt="Site Logo" id="site-logo" />
+        </a>
+      </div>
+    </header>
+
+    <div class="main">
+    <div class="archive-span"><a href='https://marksmath.org/classes/Spring2026MML/'>MML Discourse</a> archived in May, 2026</div>
+    <h1 class="topic-title">Inverse of a product</h1>
+            <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/7_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">mark</div>
+          <div class="post_content">
+<p>Suppose that <span class="math">A</span> and <span class="math">B</span> are both nonsingular matrices of the same size. Show that</p>
+<div class="math">
+(AB)^{-1} = B^{-1}A^{-1}.
+</div>
+<hr/>
+<p>Hint: What should you get if you multiply <span class="math">AB</span> by <span class="math">(AB)^{-1}</span>?</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="thinking: 1">:thinking: 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-003.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 003</div>
+          <div class="post_content">
+<p>Multiplication of <span class="math">AB</span> by <span class="math">(AB)^{-1}</span> should result in the identity matrix, <span class="math">I</span>. I'm not sure where to go after that. Maybe show that <span class="math">B^{-1}A^{-1}</span> multiplied by <span class="math">AB</span> is also <span class="math">I</span>?</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/7_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">mark</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="2" data-topic="70" data-username="prsteed">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/avatar-anon-003.svg" width="24"/> User 003:</div>
+<blockquote>
+<p>Maybe show that <span class="math">B^{-1}A^{-1}</span> multiplied by <span class="math">AB</span> is also <span class="math">I</span>?</p>
+</blockquote>
+</aside>
+<p>Yes - I agree. I guess the first step would be write it down! Of course, the associative property says that you can group then any way you want.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-007.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 007</div>
+          <div class="post_content">
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/20e6837cef3c5ff0de9df103b0c5900afa9bcdad" href="https://discourse.marksmath.org/uploads/default/original/1X/20e6837cef3c5ff0de9df103b0c5900afa9bcdad.jpeg" title="Document 103_4"><img alt="Document 103_4" data-base62-sha1="4H39r7UCeAceOjivwmFnp21a3dX" data-dominant-color="FBFBFB" height="394" src="../../../images/20e6837cef3c5ff0de9df103b0c5900afa9bcdad_2_690x394.jpeg" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/20e6837cef3c5ff0de9df103b0c5900afa9bcdad_2_690x394.jpeg, https://discourse.marksmath.org/uploads/default/optimized/1X/20e6837cef3c5ff0de9df103b0c5900afa9bcdad_2_1035x591.jpeg 1.5x, https://discourse.marksmath.org/uploads/default/optimized/1X/20e6837cef3c5ff0de9df103b0c5900afa9bcdad_2_1380x788.jpeg 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Document 103_4</span><span class="informations">2153×1231 37 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/7_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">mark</div>
+          <div class="post_content">
+<p><span class="mention">@User 029</span> I think you might be onto something here! I particularly like the line that looks like</p>
+<div class="math">
+(AB)(AB)^{-1}=I.
+</div>
+<p>I guess that the next question would then be, does</p>
+<div class="math">
+(AB)(B^{-1}A^{-1})
+</div>
+<p>also equal <span class="math">I</span>?</p>
+<p><em>Please</em> use the typesetting features, though - rather than uploading images. Writing with LaTeX is a valuable skill that are learning. It also forces you to write in a linear fashion that is part of mathematical communication.</p>
+<p>And, don't forget that you can use the proofreader, too!</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-009.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 009</div>
+          <div class="post_content">
+<p>Multiplication is associative by nature, so:</p>
+<div class="math">
+(AB)^{-1} = B^{-1}A^{-1} \\
+(AB)B^{-1}A^{-1} = I \\
+B*B^{-1} = I \\
+A*A^{-1} = I \\
+</div>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="thinking: 1">:thinking: 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/7_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">mark</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="6" data-topic="70" data-username="bjenkins">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/avatar-anon-009.svg" width="24"/> User 009:</div>
+<blockquote>
+<p>Multiplication is communitive by nature, so:</p>
+</blockquote>
+</aside>
+<p>Matrix multiplication is <em>not</em> commutative.</p>
+<p>It is, however, associative. Thus, I really like this bit here:</p>
+<div class="math">
+\boxed{(AB)B^{-1}A^{-1}}
+</div>
+<p>Associativity implies that you can drop those parentheses and re-parenthesize in any grouping you like. You can't change the order of the matrices, though.</p>
+<p>After you drop the parentheses, you get</p>
+<div class="math">
+ABB^{-1}A^{-1}.
+</div>
+<p>Can you see how you might re-parenthesize from here to get the next step?</p>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+  </body>
+</html>

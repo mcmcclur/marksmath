@@ -6,6 +6,82 @@
     <title>Generate a linear regression</title>
     <link rel="stylesheet" href="../../../archived.css" />
     <script>
+      function findSageCodeBlocks() {
+        return Array.prototype.slice.call(
+          document.querySelectorAll(
+            "pre[data-code-wrap='sage'] > code, pre > code.lang-sage, pre > code.language-sage, pre > code.sage"
+          )
+        );
+      }
+
+      function loadScript(src) {
+        return new Promise(function (resolve, reject) {
+          var existing = document.querySelector("script[src='" + src + "']");
+          if (existing) {
+            if (existing.dataset.loaded === "true") {
+              resolve();
+              return;
+            }
+            existing.addEventListener("load", resolve, { once: true });
+            existing.addEventListener("error", reject, { once: true });
+            return;
+          }
+
+          var script = document.createElement("script");
+          script.src = src;
+          script.async = true;
+          script.addEventListener("load", function () {
+            script.dataset.loaded = "true";
+            resolve();
+          }, { once: true });
+          script.addEventListener("error", reject, { once: true });
+          document.head.appendChild(script);
+        });
+      }
+
+      function prepareSageCells() {
+        var sageBlocks = findSageCodeBlocks();
+        if (!sageBlocks.length) {
+          return Promise.resolve();
+        }
+
+        return loadScript("https://sagecell.sagemath.org/static/embedded_sagecell.js")
+          .then(function () {
+            if (!window.sagecell || !window.sagecell.makeSagecell) {
+              return;
+            }
+
+            sageBlocks.forEach(function (codeTag, index) {
+              var preTag = codeTag.parentElement;
+              if (!preTag || preTag.dataset.sageMounted === "true") {
+                return;
+              }
+
+              var host = document.createElement("div");
+              host.className = "sagecell-archive";
+
+              var source = document.createElement("script");
+              source.type = "text/x-sage";
+              source.text = codeTag.textContent || "";
+              host.appendChild(source);
+
+              preTag.insertAdjacentElement("afterend", host);
+              preTag.classList.add("sage-source-hidden");
+              preTag.dataset.sageMounted = "true";
+
+              window.sagecell.makeSagecell({
+                inputLocation: host,
+                autoeval: false,
+                evalButtonText: "Run",
+                languages: ["sage"]
+              });
+            });
+          })
+          .catch(function () {
+            // Leave the original code blocks visible if SageCell cannot load.
+          });
+      }
+
       function preprocessDiscourseMath() {
         document.querySelectorAll("span.math, div.math").forEach(function (node) {
           var tex = node.textContent || "";
@@ -29,7 +105,9 @@
         startup: {
           pageReady() {
             preprocessDiscourseMath();
-            return MathJax.startup.defaultPageReady();
+            return MathJax.startup.defaultPageReady().then(function () {
+              return prepareSageCells();
+            });
           }
         }
       };
@@ -74,6 +152,7 @@
 <li>Desmos's rendering of the situation.</li>
 </ul>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 3">👍 3</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
@@ -94,15 +173,16 @@ E = (0.785714\times 0 - 0.285714 - 1)^2 + (0.785714\times 1 - 0.285714 - 0)^2 + 
 </div>
 <iframe frameborder="0" height="500" src="https://www.desmos.com/calculator/yfgcrmnhtg?embed" width="500"></iframe>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 2">👍 2</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/59_2.png" class="avatar" />
+          <img src="../../../images/avatar-anon-010.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">shmurda</div>
+          <div class="user_name">User 010</div>
           <div class="post_content">
 <p>My initials are MS, so my third point is going to be <span class="math">(3,9)</span>. My data is going to be</p>
 <div class="math">
@@ -119,15 +199,16 @@ E &amp;= (2.92857 \times 0 - 0.571429 - 1)^2 \\
 <p>My Desmos rendering of the situation is:</p>
 <iframe frameborder="0" height="500" src="https://www.desmos.com/calculator/uqyasbquur?embed" width="500"></iframe>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-011.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">AndrewA</div>
+          <div class="user_name">User 011</div>
           <div class="post_content">
 <p>My initials are AA so my third point is <span class="math">(1,1)</span> and my data is<br/>
 <span class="math">\{(0,1),(1,0),(1,1)\}</span>.</p>
@@ -139,15 +220,16 @@ E=(-0.5\cdot0+2-1)^2+(-0.5\cdot1+2-0)^2+(-0.5\cdot1+2-1)^2.
 <p>Desmos rendering:<br/>
 <div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/771b07b1a78f4afdf567704797e688f51b67215b" href="https://discourse.marksmath.org/uploads/default/original/1X/771b07b1a78f4afdf567704797e688f51b67215b.png" title="image"><img alt="image" data-base62-sha1="gZEJisooCN6IIgVir6AlB5q36rh" height="189" src="../../../images/771b07b1a78f4afdf567704797e688f51b67215b.png" width="241"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">241×189 3.65 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-012.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">zatyazhnykh</div>
+          <div class="user_name">User 012</div>
           <div class="post_content">
 <p>My initials are AZ so my third point is <span class="math">(1,6)</span> and my data is</p>
 <div class="math">
@@ -160,15 +242,16 @@ E = (2\times 0 + 1 - 1)^2 + (2\times 1 + 1 - 0)^2 + (2\times 1 + 1 - 6)^2
 <p>My Desmos image looks like this:</p>
 <p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/504b3ac30eb8cdc0233a2420ae16a5ab48682c9e" href="https://discourse.marksmath.org/uploads/default/original/1X/504b3ac30eb8cdc0233a2420ae16a5ab48682c9e.png" title="Screenshot 2026-02-25 at 09.01.47"><img alt="Screenshot 2026-02-25 at 09.01.47" data-base62-sha1="bsjnk27lkvCiqj4LmqLThdKD4fA" data-dominant-color="F8F8F8" height="500" src="../../../images/504b3ac30eb8cdc0233a2420ae16a5ab48682c9e_2_400x500.png" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/504b3ac30eb8cdc0233a2420ae16a5ab48682c9e_2_400x500.png, https://discourse.marksmath.org/uploads/default/optimized/1X/504b3ac30eb8cdc0233a2420ae16a5ab48682c9e_2_600x750.png 1.5x, https://discourse.marksmath.org/uploads/default/optimized/1X/504b3ac30eb8cdc0233a2420ae16a5ab48682c9e_2_800x1000.png 2x" width="400"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2026-02-25 at 09.01.47</span><span class="informations">821×1025 16.6 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 2">👍 2</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-013.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">seamus_tignor</div>
+          <div class="user_name">User 013</div>
           <div class="post_content">
 <p>My initials are ST, so my third point is <span class="math">(9,0)</span> and my data is</p>
 <div class="math">
@@ -184,15 +267,16 @@ E &amp;= (-0.0684932 \cdot 0 + 0.561644 - 1)^2
 </div>
 <p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/57b4997406f7383cf2d6306f24e765efc1a65e19" href="https://discourse.marksmath.org/uploads/default/original/1X/57b4997406f7383cf2d6306f24e765efc1a65e19.png" title="image"><img alt="image" data-base62-sha1="cvSthY0T7UCc7CZrSeDokSAm3y1" data-dominant-color="F9F9F9" height="457" src="../../../images/57b4997406f7383cf2d6306f24e765efc1a65e19_2_690x457.png" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/57b4997406f7383cf2d6306f24e765efc1a65e19_2_690x457.png, https://discourse.marksmath.org/uploads/default/original/1X/57b4997406f7383cf2d6306f24e765efc1a65e19.png 1.5x, https://discourse.marksmath.org/uploads/default/original/1X/57b4997406f7383cf2d6306f24e765efc1a65e19.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">917×608 25.3 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 2">👍 2</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-014.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">owen_craw</div>
+          <div class="user_name">User 014</div>
           <div class="post_content">
 <p>My initials are OC, so my third point is <span class="math">(5, 3)</span>. My data is:</p>
 <div class="math">
@@ -205,15 +289,16 @@ E = (\frac{1}{2} \times 0 + \frac{1}{3} - 1)^2 + (\frac{1}{2} \times 1 + \frac{1
 <p>My Desmos rendering of the situation is:</p>
 <iframe frameborder="0" height="500" src="https://www.desmos.com/calculator/6ffeec5o7k?embed" width="500"></iframe>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 2">👍 2</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-015.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">fvazquez</div>
+          <div class="user_name">User 015</div>
           <div class="post_content">
 <p>My initials are FV so my third point is <span class="math">(6,2)</span> and my data is:<br/>
 <span class="math">\{(0,1),(1,0),(6,2)\}</span>.</p>
@@ -224,15 +309,16 @@ E = (0.241935(0) + 0.435484 - 1)^2 + (0.241935(1) + 0.435484 - 0)^2 + (0.241935(
 <p>My Desmos rendering:</p>
 <iframe frameborder="0" height="500" src="https://www.desmos.com/calculator/znvamyegtg?embed" width="500"></iframe>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 2">👍 2</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-016.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">Elitzabeth</div>
+          <div class="user_name">User 016</div>
           <div class="post_content">
 <p>My initials are EV, so my 3rd point is <span class="math">(5,2)</span> and my data is</p>
 <div class="math">
@@ -244,15 +330,16 @@ E=\bigl( 0.285714\cdot0+0.428571-1 \bigr)^2+\bigl( 0.285714\cdot1+0.428571-0 \bi
 </div>
 <p>My Desmos rendering of the situation is: <iframe frameborder="0" height="500" src="https://www.desmos.com/calculator/6zkiojqbx4?embed" width="500"></iframe></p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 2">👍 2</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-017.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">jhawn</div>
+          <div class="user_name">User 017</div>
           <div class="post_content">
 <p>My initials are JH, so after mod ten my third point is <span class="math">(0,8)</span>. My data is</p>
 <div class="math">
@@ -273,15 +360,16 @@ E=24.5
 </div>
 <iframe height="300" src="https://www.desmos.com/calculator/gzjjzoxj1j" width="700"></iframe>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 2">👍 2</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-018.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">emery</div>
+          <div class="user_name">User 018</div>
           <div class="post_content">
 <p>My data looks like</p>
 <div class="math">
@@ -297,15 +385,16 @@ E &amp;= (1.78571 \cdot 0 - 0.238095 - 1)^2 + (1.78571 \cdot 1 - 0.238095 - 0)^2
 </div>
 <p>My desmos graph is: <a class="inline-onebox" href="https://www.desmos.com/calculator/ilfuh1qotf" rel="noopener nofollow ugc">Desmos | Graphing Calculator</a></p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 2">👍 2</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-019.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">sdaniel1</div>
+          <div class="user_name">User 019</div>
           <div class="post_content">
 <p>My intials are SD so my thrid point is (9,4) and my data is</p>
 <div class="math">
@@ -315,15 +404,16 @@ E &amp;= (1.78571 \cdot 0 - 0.238095 - 1)^2 + (1.78571 \cdot 1 - 0.238095 - 0)^2
 <p>Let <span class="math">E = (0.39726 \cdot 0 - 0.342466)^2 + (0.39726 \cdot 1 - 0.342466 - 0)^2 + (0.39726 \cdot 9 - 0.342466 - 4)^2</span>.</p>
 <p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/0921f1b1c36cda730d6d75d0ba9e368c40809e5a" href="https://discourse.marksmath.org/uploads/default/original/1X/0921f1b1c36cda730d6d75d0ba9e368c40809e5a.png" title="desmos-graph"><img alt="desmos-graph" data-base62-sha1="1iN1ner7mDHWeuSNzTXTIgk3J8e" data-dominant-color="F5F5F5" height="500" src="../../../images/0921f1b1c36cda730d6d75d0ba9e368c40809e5a_2_500x500.png" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/0921f1b1c36cda730d6d75d0ba9e368c40809e5a_2_500x500.png, https://discourse.marksmath.org/uploads/default/optimized/1X/0921f1b1c36cda730d6d75d0ba9e368c40809e5a_2_750x750.png 1.5x, https://discourse.marksmath.org/uploads/default/original/1X/0921f1b1c36cda730d6d75d0ba9e368c40809e5a.png 2x" width="500"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">desmos-graph</span><span class="informations">800×800 18 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 2">👍 2</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-008.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">FatCat</div>
+          <div class="user_name">User 008</div>
           <div class="post_content">
 <p>My initials are KO, so my third point is <span class="math">(8,3)</span>, and my data is<br/>
 <span class="math">\{(0,1),\,(1,0),\,(8,3)\}</span>.<br/>
@@ -335,15 +425,16 @@ E &amp;= (0.315789\times0 + 0.38596 - 1)^2 + (0.315789\times1 + 0.38596 - 0)^2 \
 </div>
 <p><iframe frameborder="0" height="500px" sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox allow-presentation" scrolling="no" seamless="seamless" src="https://www.desmos.com/calculator/wzi8xjff07?embed" width="100%"></iframe></p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 2">👍 2</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-020.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">scarlettvb</div>
+          <div class="user_name">User 020</div>
           <div class="post_content">
 <p>My initials are SV, so my third point is <span class="math">(9,2)</span>, and my data is</p>
 <div class="math">
@@ -356,15 +447,16 @@ E=(0.164384(0)+0.452055-1)^2 + (0.164384+0.442055-0)^2+(0.164384(9)+0.452055-2)^
 <p>Here is the desmos image:<br/>
 <div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/dc44f427125c69971ec2f835a91202f98a48f87e" href="https://discourse.marksmath.org/uploads/default/original/1X/dc44f427125c69971ec2f835a91202f98a48f87e.png" title="image"><img alt="image" data-base62-sha1="vqAM7zSiCbLpk3bA29hmqcZBScm" data-dominant-color="F6F6F6" height="276" src="../../../images/dc44f427125c69971ec2f835a91202f98a48f87e_2_690x276.png" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/dc44f427125c69971ec2f835a91202f98a48f87e_2_690x276.png, https://discourse.marksmath.org/uploads/default/optimized/1X/dc44f427125c69971ec2f835a91202f98a48f87e_2_1035x414.png 1.5x, https://discourse.marksmath.org/uploads/default/original/1X/dc44f427125c69971ec2f835a91202f98a48f87e.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1094×438 14.9 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 2">👍 2</span><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-021.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">awilso21</div>
+          <div class="user_name">User 021</div>
           <div class="post_content">
 <p>My initials are AW, making my 3rd point <span class="math">(1,3)</span> and my data set</p>
 <div class="math">
@@ -376,15 +468,16 @@ E(0.5,1) = (0.5\cdot0 + 1 - 1)^2 + (0.5\cdot1 + 1 - 0)^2 + (0.5\cdot1 + 1 - 3)^2
 </div>
 <iframe frameborder="0" height="500" src="https://www.desmos.com/calculator/ljokfqodsk?embed" width="500"></iframe>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 2">👍 2</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-003.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">Natlopts</div>
+          <div class="user_name">User 003</div>
           <div class="post_content">
 <p>My initials are NL, so my third point was <span class="math">(4,2)</span>, and my data set is</p>
 <div class="math">
@@ -396,6 +489,7 @@ E = (0.346154\times0+0.423077-1)^2 +(0.346154\times1+0.423077-0)^2 +(0.346154\ti
 </div>
 <iframe frameborder="0" height="500" src="https://www.desmos.com/calculator/muqksj60ka?embed" width="500"></iframe>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
@@ -417,15 +511,16 @@ E = (0.346154\times0+0.423077-1)^2 +(0.346154\times1+0.423077-0)^2 +(0.346154\ti
 E = (0.5\cdot0 + 1 - 1)^2 + (0.5\cdot1 + 1 - 0)^2 + (0.5\cdot1 + 1 - 3)^2.
 </div>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 2">👍 2</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-022.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">Michael</div>
+          <div class="user_name">User 022</div>
           <div class="post_content">
 <p>My initials are MQ, so my third point is <span class="math">(3,7)</span>, and my data is</p>
 <div class="math">
@@ -437,15 +532,16 @@ E = (2.214\times0 - 0.429 - 1)^2 + (2.214\times1 - 0.429 - 0)^2 + (2.214\times3 
 </div>
 <p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/644e03090627a2131367e9886213f794f0a3c9e5" href="https://discourse.marksmath.org/uploads/default/original/1X/644e03090627a2131367e9886213f794f0a3c9e5.jpeg" title="IMG_6373"><img alt="IMG_6373" data-base62-sha1="ejkSYnPTXVa1cjTnAELt50JSmI5" data-dominant-color="F6F7F7" height="500" src="../../../images/644e03090627a2131367e9886213f794f0a3c9e5_2_277x500.jpeg" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/644e03090627a2131367e9886213f794f0a3c9e5_2_277x500.jpeg, https://discourse.marksmath.org/uploads/default/optimized/1X/644e03090627a2131367e9886213f794f0a3c9e5_2_415x750.jpeg 1.5x, https://discourse.marksmath.org/uploads/default/optimized/1X/644e03090627a2131367e9886213f794f0a3c9e5_2_554x1000.jpeg 2x" width="277"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">IMG_6373</span><span class="informations">1179×2122 170 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-009.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">jcrabtre</div>
+          <div class="user_name">User 009</div>
           <div class="post_content">
 <p>My 1st and 2nd initials are JW, so the third data point is <span class="math">(0,3)</span>, and my data is</p>
 <div class="math">
@@ -457,15 +553,16 @@ E\left(a,b\right)\ =\left(\ -2\cdot0+2-1\right)^{2}+\left(-2\cdot1+2-0\right)^{2
 </div>
 <iframe frameborder="0" height="500" src="https://www.desmos.com/calculator/zpxotyu3vm?embed" width="500"></iframe>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-023.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">DiegoLunar</div>
+          <div class="user_name">User 023</div>
           <div class="post_content">
 <p>My initials are DL, so my third point is <span class="math">(4,3)</span>, and my data is</p>
 <div class="math">
@@ -481,15 +578,16 @@ E &amp;= (0.615385\times 0 - 0.307692 - 1)^2 \\
 </div>
 <p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/068a5b02aaffa453977bad890ed50a9bfc401507" href="https://discourse.marksmath.org/uploads/default/original/1X/068a5b02aaffa453977bad890ed50a9bfc401507.png" title="image"><img alt="image" data-base62-sha1="VRhZhcwUmBvOMayeQb0KOrkOAT" data-dominant-color="F8F8F7" height="499" src="../../../images/068a5b02aaffa453977bad890ed50a9bfc401507.png" width="595"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">850×714 20.8 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-024.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">AveryJo</div>
+          <div class="user_name">User 024</div>
           <div class="post_content">
 <p>My initials are AH so my third point is at <span class="math">(1,8)</span>.<br/>
 My regression line is <span class="math">y = 3x + 1</span>.<br/>
@@ -500,15 +598,16 @@ E = (3\cdot0+1-1)^2 + (3\cdot1+1-0)^2 + (3\cdot1+1-8)^2 = 32.
 <p>In desmos it looks like</p>
 <iframe frameborder="0" height="500" src="https://www.desmos.com/calculator/lawt21r19c?embed" width="500"></iframe>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-004.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">Justinbrr</div>
+          <div class="user_name">User 004</div>
           <div class="post_content">
 <p>My initials are JB, my third point after mod 10 is <span class="math">(0,2)</span>. My data set is</p>
 <div class="math">
@@ -522,15 +621,16 @@ E=(-1.5\cdot 0+1.5-1)^2+(-1.5\cdot 1+1.5-0)^2+(-1.5\cdot 0+1.5-2)^2=0.5
 <p>Here is my graph on desmos:<br/>
 <div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/066e8829cbfd3ef8eda0ac1e736628c757cfa169" href="https://discourse.marksmath.org/uploads/default/original/1X/066e8829cbfd3ef8eda0ac1e736628c757cfa169.png" title="Screenshot 2026-02-25 102119"><img alt="Screenshot 2026-02-25 102119" data-base62-sha1="UTG3nTHLTXytdT589uSgNmCWTv" height="417" src="../../../images/066e8829cbfd3ef8eda0ac1e736628c757cfa169.png" width="493"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2026-02-25 102119</span><span class="informations">493×417 13.5 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-002.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">Amarti42</div>
+          <div class="user_name">User 002</div>
           <div class="post_content">
 <p>My initials are AM. A is the first letter in the alphabet and M is the 13th. Thus, my data is</p>
 <div class="math">
@@ -543,15 +643,16 @@ E=(-1.5\cdot 0+1.5-1)^2+(-1.5\cdot 1+1.5-0)^2+(-1.5\cdot 0+1.5-2)^2=0.5
 E = (0.5\cdot 0+1-1)^2+(0.5\cdot 1+1-0)^2+(0.5\cdot 1+1-3)^2
 </div>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-025.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">Kayden2</div>
+          <div class="user_name">User 025</div>
           <div class="post_content">
 <p>My initials are KM, so my third point is <span class="math">(1,3)</span>. Therefore my data is:</p>
 <div class="math">
@@ -563,15 +664,16 @@ E = (0.5 + 1)^2 + (0.5 + 1 - 3)^2
 </div>
 <iframe frameborder="0" height="500" src="https://www.desmos.com/calculator/mas4ptmbcx?embed" width="500"></iframe>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-026.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">OwenX</div>
+          <div class="user_name">User 026</div>
           <div class="post_content">
 <p>My initials are OX, so my third point is <span class="math">(5,4)</span>, and my data is</p>
 <div class="math">
@@ -583,15 +685,16 @@ E = (0.714286 \cdot 0 + 0.238095 - 1)^2 + (0.714286 \cdot 1 + 0.238095 - 0)^2 + 
 </div>
 <iframe frameborder="0" height="500" src="https://www.desmos.com/calculator/vb3nvn7up5?embed" width="500"></iframe>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-007.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">zowens</div>
+          <div class="user_name">User 007</div>
           <div class="post_content">
 <p>My initials are <span class="math">ZO</span>. My first initial is the last letter in the alphabet and my last initial is the 15th letter in the alphabet. My points are:</p>
 <div class="math">
@@ -607,15 +710,16 @@ E = (0.774194\times 0 + 0.193548 - 1)^2 + (0.774194\times 1 + 0.193548 - 0)^2 + 
 </div>
 <iframe frameborder="0" height="500" src="https://www.desmos.com/calculator/vfew5sprbo?embed" width="500"></iframe>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-027.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">tsmith26</div>
+          <div class="user_name">User 027</div>
           <div class="post_content">
 <p>My initials are TS. T is the 20th letter of the alphabet, and S is the 19th letter of the alphabet. Therefore my data set is:</p>
 <div class="math">
@@ -629,15 +733,16 @@ E = (-5\cdot0+5-1)^2+(-5\cdot1+5-0)^2+(-5\cdot0+5-9)^2
 <p>Here is my image in Desmos:<br/>
 <div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/0853592857e80bcac00bf6876548097b530a5dfb" href="https://discourse.marksmath.org/uploads/default/original/1X/0853592857e80bcac00bf6876548097b530a5dfb.png" title="image"><img alt="image" data-base62-sha1="1bEolcxnjUBikkIfUsmKGW4DFxh" data-dominant-color="F9F9F9" height="375" src="../../../images/0853592857e80bcac00bf6876548097b530a5dfb_2_375x375.png" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/0853592857e80bcac00bf6876548097b530a5dfb_2_375x375.png, https://discourse.marksmath.org/uploads/default/original/1X/0853592857e80bcac00bf6876548097b530a5dfb.png 1.5x, https://discourse.marksmath.org/uploads/default/original/1X/0853592857e80bcac00bf6876548097b530a5dfb.png 2x" width="375"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">556×556 11.2 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-028.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">hneal2</div>
+          <div class="user_name">User 028</div>
           <div class="post_content">
 <p>My initials are HN. H is the eighth letter in the alphabet and N is the 14th.</p>
 <p>My data is</p>
@@ -650,15 +755,16 @@ E = (-5\cdot0+5-1)^2+(-5\cdot1+5-0)^2+(-5\cdot0+5-9)^2
 E = (-0.289474 - 1)^2 + (1.76316 - 0.289474 + 1)^2 + (8(1.76316) - 0.289474 - 14)^2
 </div>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-029.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">AidenDavies</div>
+          <div class="user_name">User 029</div>
           <div class="post_content">
 <p>My initials are AD, so my third point is <span class="math">(1,4)</span>, and my data is</p>
 <div class="math">
@@ -670,15 +776,16 @@ E=(1\cdot0+1-1)^2+(1\cdot1+1-0)^2+(1\cdot1+1-4)^2
 </div>
 <iframe frameborder="0" height="500" src="https://www.desmos.com/calculator/uwkhs65dkg?embed" width="500"></iframe>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-030.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">Cbroerman</div>
+          <div class="user_name">User 030</div>
           <div class="post_content">
 <p>My initials are CB, so my points are</p>
 <p>{(0,1),(1,0),(3,2)}</p>
@@ -687,15 +794,16 @@ E=(1\cdot0+1-1)^2+(1\cdot1+1-0)^2+(1\cdot1+1-4)^2
 <iframe frameborder="0" height="500" src="https://www.desmos.com/calculator/rj9xtbzb5z?embed" width="500"></iframe>
 <p>E(0.428571, 0.428571)= (.428571-1)+(.428571+.428571)+(3(.428571)+.428571-2)</p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-031.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">ofisher</div>
+          <div class="user_name">User 031</div>
           <div class="post_content">
 <p>My initials are OF so my data points are</p>
 <div class="math">
@@ -708,30 +816,32 @@ E=(1\cdot0+1-1)^2+(1\cdot1+1-0)^2+(1\cdot1+1-4)^2
 E = (1.14286\cdot 0+0.047619-1)^2+(1.14286\cdot 1+0.047619-0)^2+(1.14286\cdot 5+0.047619-6)^2
 </div>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-032.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">asherroach6</div>
+          <div class="user_name">User 032</div>
           <div class="post_content">
 <p>My first name initial is A and my middle name initial is L. A is the first letter in the alphabet and L is the 12th, so my data is<br/>
 <span class="math">\{(0,1),(1,0),(1,2)\}</span>. My total squared error is as follows: <span class="math">\left(b-1\right)^{2}+\left(a+b\right)^{2}+\left(a+b-2\right)^{2}</span>.<br/>
 My regression line is <span class="math">y=0x+1</span>, and my graph looks like this:<br/>
 <div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/d3d663ebc711028d13cd15a647f81ac2325bb9a7" href="https://discourse.marksmath.org/uploads/default/original/1X/d3d663ebc711028d13cd15a647f81ac2325bb9a7.png" title="image"><img alt="image" data-base62-sha1="ue04FPLnZeRIkqUa8UWVAUajrMj" data-dominant-color="F9F8F8" height="212" src="../../../images/d3d663ebc711028d13cd15a647f81ac2325bb9a7.png" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1360×418 4.72 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-033.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">reeseg39</div>
+          <div class="user_name">User 033</div>
           <div class="post_content">
 <p>My initials are RG, so my third point is (18,7)</p>
 <p>My regression is <span class="math">y = 0.336 + 0.368x</span></p>
@@ -741,15 +851,16 @@ E=(0.336(0)+0.368-1)^2+(0.336(1)+0.368-0)+(0.336(18)+0.368-7)^2
 </div>
 <p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/e1de5206c4cc7ec61121d1c310204bb115d3b7d3" href="https://discourse.marksmath.org/uploads/default/original/1X/e1de5206c4cc7ec61121d1c310204bb115d3b7d3.png" title="image"><img alt="image" data-base62-sha1="we7KvyzUjtNzNVtPezgOdXwFQqv" data-dominant-color="F9F9FA" height="500" src="../../../images/e1de5206c4cc7ec61121d1c310204bb115d3b7d3_2_549x500.png" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/e1de5206c4cc7ec61121d1c310204bb115d3b7d3_2_549x500.png, https://discourse.marksmath.org/uploads/default/optimized/1X/e1de5206c4cc7ec61121d1c310204bb115d3b7d3_2_823x750.png 1.5x, https://discourse.marksmath.org/uploads/default/optimized/1X/e1de5206c4cc7ec61121d1c310204bb115d3b7d3_2_1098x1000.png 2x" width="549"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1226×1116 29.8 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-034.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">jgoodyear</div>
+          <div class="user_name">User 034</div>
           <div class="post_content">
 <p>My initials are JG, so my point is <span class="math">(0,7)</span>.</p>
 <p>Making my data <span class="math">\{(0,1),(1,0),(0,7)\}</span>.</p>
@@ -760,15 +871,16 @@ E = (4\times 0 - 4 - 1)^2 + (4\times 1 - 4 - 0)^2 + (4\times 0 -4 - 7)^2.
 </div>
 <p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/670861aecd040272bef9d36855a4c42f40acf1b7" href="https://discourse.marksmath.org/uploads/default/original/1X/670861aecd040272bef9d36855a4c42f40acf1b7.png" title="image"><img alt="image" data-base62-sha1="eHt8udPqxL0KyN6r6H7SuCSFByf" data-dominant-color="FAF8F8" height="500" src="../../../images/670861aecd040272bef9d36855a4c42f40acf1b7.png" width="367"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">375×510 8.3 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-035.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">asvetlov</div>
+          <div class="user_name">User 035</div>
           <div class="post_content">
 <p>My initials are AS: <span class="math">A</span> is the 1st letter of the alphabet, and <span class="math">S</span> is the $19$th.</p>
 <p>My data is:</p>
@@ -782,15 +894,16 @@ The total squared error is:</p>
 </div>
 <p><iframe frameborder="0" height="500px" sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox allow-presentation" scrolling="no" seamless="seamless" src="https://www.desmos.com/calculator/rwiljmuzjl?embed" width="100%"></iframe></p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 2">👍 2</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-036.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">leigh</div>
+          <div class="user_name">User 036</div>
           <div class="post_content">
 <p>My initials are LG, so my third point is (2,7), and my data is</p>
 <p>{(0,1),;(1,0),;(2,7)}.</p>
@@ -798,15 +911,16 @@ The total squared error is:</p>
 <p>E = (3\times 0 - 0.33 - 1)^2 + (3\times 1 - 0.330)^2 + (3\times 2 + .33 - 7)^2.</p>
 <p><iframe frameborder="0" height="500px" sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox allow-presentation" scrolling="no" seamless="seamless" src="https://www.desmos.com/calculator/qramcb0xhw?embed" width="100%"></iframe></p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/124_2.png" class="avatar" />
+          <img src="../../../images/avatar-anon-006.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">Bennett_M</div>
+          <div class="user_name">User 006</div>
           <div class="post_content">
 <p>My initials are BM, with B being the second letter of the alphabet and A being the 1st.</p>
 <p>Thus, my data is: <span class="math">\{(0,1),(1,0),(2,3)\}</span></p>
@@ -815,15 +929,16 @@ The total squared error is:</p>
 <p>My line is shown on Desmos below.<br/>
 <div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/38124001cda36a90079c1f91abb0b7fa529ecc78" href="https://discourse.marksmath.org/uploads/default/original/1X/38124001cda36a90079c1f91abb0b7fa529ecc78.png" title="Screenshot 2026-02-25 at 10.29.31 AM"><img alt="Screenshot 2026-02-25 at 10.29.31 AM" data-base62-sha1="801Q0x9heBZ5wYXRMu4UAd8mU9W" data-dominant-color="F7F6F6" height="249" src="../../../images/38124001cda36a90079c1f91abb0b7fa529ecc78.png" width="322"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2026-02-25 at 10.29.31 AM</span><span class="informations">860×666 8.01 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-037.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">dayysi</div>
+          <div class="user_name">User 037</div>
           <div class="post_content">
 <p>My initials are D A. My data points are {(0,1),(1,0),(4,1)}<br/>
 The regression line is <span class="math">Y=.0769231x+.538462</span></p>
@@ -835,30 +950,32 @@ E=(.0769231*0+ .538462-1)^2 +
 (.0769231*4+.538462-1)^2
 </div>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 2">👍 2</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-001.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">NolanCoords</div>
+          <div class="user_name">User 001</div>
           <div class="post_content">
 <p>My initials are NC, 14, 3, so my points are (4, 3).</p>
 <p>My graph looks like the following: <iframe frameborder="0" height="500" src="https://www.desmos.com/calculator/awwghrg9de?embed" width="500"></iframe></p>
 <p>Regression line is Y = 0.615385x + 0.307692<br/>
 so my error computed is <span class="math">(0.615385(4) + 0.307692 - 3)^2 + (0.615385(1) + 0.307692)^2 + (0.615385(0) + 0.307692 - 1)^2 = 1.38461538462</span></p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 2">👍 2</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-038.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">dhunter1</div>
+          <div class="user_name">User 038</div>
           <div class="post_content">
 <p>My initials are DH, so my points are <span class="math">{(0,1),(1,0),(4,8)}.</span><br/>
 My linear regression is <span class="math">f(x)=1.96154x-0.269231</span> and my squared error is</p>
@@ -867,29 +984,31 @@ E = (1.96154 \times 0 - 0.269231 - 1)^2 + (1.96154 \times 1 - 0.269231 - 0)^2 + 
 </div>
 <p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/bc6656c228a537f1805c37c110d9277b80fc2398" href="https://discourse.marksmath.org/uploads/default/original/1X/bc6656c228a537f1805c37c110d9277b80fc2398.png" title="Screenshot 2026-02-25 at 10.51.01 AM"><img alt="Screenshot 2026-02-25 at 10.51.01 AM" data-base62-sha1="qSF1whpbEN1DFAKCPbn6SDu6SqA" data-dominant-color="FBFBFB" height="500" src="../../../images/bc6656c228a537f1805c37c110d9277b80fc2398_2_550x500.png" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/bc6656c228a537f1805c37c110d9277b80fc2398_2_550x500.png, https://discourse.marksmath.org/uploads/default/optimized/1X/bc6656c228a537f1805c37c110d9277b80fc2398_2_825x750.png 1.5x, https://discourse.marksmath.org/uploads/default/optimized/1X/bc6656c228a537f1805c37c110d9277b80fc2398_2_1100x1000.png 2x" width="550"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2026-02-25 at 10.51.01 AM</span><span class="informations">1410×1280 35.3 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-039.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">Belen</div>
+          <div class="user_name">User 039</div>
           <div class="post_content">
 <p><span class="math">f\left(x\right)=\frac{11}{4}x-\frac{1}{4}</span></p>
 <p><span class="math">E=\left(-\frac{1}{4}-1\right)^{2}+\left(\frac{11}{4}-\frac{1}{4}\right)^{2}+\left(\frac{22}{4}-\frac{1}{4}-4\right)^{2}</span></p>
 <p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/c7344dc0e5f243c2bd85212304f074af1caf6fdc" href="https://discourse.marksmath.org/uploads/default/original/1X/c7344dc0e5f243c2bd85212304f074af1caf6fdc.png" title="Screen Shot 2026-02-25 at 12.46.41 PM"><img alt="Screen Shot 2026-02-25 at 12.46.41 PM" data-base62-sha1="sqf4LlmdJoRkkGbZo8DQiJmtw04" height="473" src="../../../images/c7344dc0e5f243c2bd85212304f074af1caf6fdc.png" width="481"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screen Shot 2026-02-25 at 12.46.41 PM</span><span class="informations">481×473 24.3 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 2">👍 2</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-040.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">cjarvis3</div>
+          <div class="user_name">User 040</div>
           <div class="post_content">
 <p>My initials are CJ, so my third point is (3,0) and my data set is<br/>
 {(0,1),(1,0),(3,0)}.</p>
@@ -906,15 +1025,16 @@ E =
 <p>Desmos Rendering:<br/>
 <div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/bde2f767efa7aa276843d1612e80fdcffa577faf" href="https://discourse.marksmath.org/uploads/default/original/1X/bde2f767efa7aa276843d1612e80fdcffa577faf.png" title="image"><img alt="image" data-base62-sha1="r5OvWBYO0clWwHJbXjVWK1MOYF1" height="204" src="../../../images/bde2f767efa7aa276843d1612e80fdcffa577faf.png" width="267"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">267×204 5.11 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-041.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">Joel_W</div>
+          <div class="user_name">User 041</div>
           <div class="post_content">
 <p>My initials are JW, so my third point is going to be <span class="math">(0, 4)</span> and my data is</p>
 <div class="math">
@@ -926,15 +1046,16 @@ E=(-2.5(0)+2.5-1)^2+(-2.5(1)+2.5-0)^2+(-2.5(0)+2.5-4)^2
 </div>
 <p><iframe frameborder="0" height="500px" sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox allow-presentation" scrolling="no" seamless="seamless" src="https://www.desmos.com/calculator/hn3wos42hn?embed" width="100%"></iframe></p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-042.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">syarnell</div>
+          <div class="user_name">User 042</div>
           <div class="post_content">
 <p>My initials are SY, so my third point is (5,9), and my data is</p>
 <div class="math">
@@ -945,15 +1066,16 @@ The total squared error is therefore:<br/>
 <span class="math">E=(0.513699⋅0+0.287671−1)^2+(0.513699⋅1+0.287671−0)^2+(0.513699⋅5+0.287671−9)^2</span><br/>
 <div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/0bf26ec5dc29240787ac22551a18444d18647745" href="https://discourse.marksmath.org/uploads/default/original/1X/0bf26ec5dc29240787ac22551a18444d18647745.png" title="Screenshot 2026-03-01 at 3.44.25 PM"><img alt="Screenshot 2026-03-01 at 3.44.25 PM" data-base62-sha1="1HGF2abraQZtRgocDWjI7HQSfl3" data-dominant-color="F8F8F9" height="406" src="../../../images/0bf26ec5dc29240787ac22551a18444d18647745_2_690x406.png" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/0bf26ec5dc29240787ac22551a18444d18647745_2_690x406.png, https://discourse.marksmath.org/uploads/default/optimized/1X/0bf26ec5dc29240787ac22551a18444d18647745_2_1035x609.png 1.5x, https://discourse.marksmath.org/uploads/default/original/1X/0bf26ec5dc29240787ac22551a18444d18647745.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2026-03-01 at 3.44.25 PM</span><span class="informations">1360×802 28.7 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-043.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">Shifan</div>
+          <div class="user_name">User 043</div>
           <div class="post_content">
 <p>My initials are SA, so my third point is <span class="math">(9, 1)</span>, and my data is<br/>
 <span class="math">{(0, 1), (1, 0), (9, 1)}</span>.<br/>
@@ -963,15 +1085,16 @@ E = (0.0479452 \cdot 0 + 0.506849 - 1)^2 + (0.0479452 \cdot 1 + 0.506849 - 0)^2 
 </div>
 <iframe frameborder="0" height="500" src="https://www.desmos.com/calculator/aiapwmz3ie?embed" width="500"></iframe>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 
       <div class="post_container">
         <div class="avatar_container">
-          <img src="../../../images/45.png" class="avatar" />
+          <img src="../../../images/avatar-anon-044.svg" class="avatar" />
         </div>
         <div class="post">
-          <div class="user_name">ryanf</div>
+          <div class="user_name">User 044</div>
           <div class="post_content">
 <p>My initials are RF. My data is {(0,1),(1,0),(8,6)}</p>
 <p>My regression equation is: <span class="math">y = \frac{27}{38}x + \frac{23}{113}</span>, so my total squared error is:</p>
@@ -981,6 +1104,7 @@ E = (\frac{27}{38}*0 + \frac{23}{113}-1)^2 + (\frac{27}{38}*1 + \frac{23}{113}-0
 <p>My graph looks like:</p>
 <iframe frameborder="0" height="500" src="https://www.desmos.com/calculator/djtinnhz90?embed" width="500"></iframe>
           </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
         </div>
       </div>
 

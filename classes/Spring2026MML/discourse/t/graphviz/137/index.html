@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width">
+    <title>Graphviz</title>
+    <link rel="stylesheet" href="../../../archived.css" />
+    <script>
+      function findSageCodeBlocks() {
+        return Array.prototype.slice.call(
+          document.querySelectorAll(
+            "pre[data-code-wrap='sage'] > code, pre > code.lang-sage, pre > code.language-sage, pre > code.sage"
+          )
+        );
+      }
+
+      function loadScript(src) {
+        return new Promise(function (resolve, reject) {
+          var existing = document.querySelector("script[src='" + src + "']");
+          if (existing) {
+            if (existing.dataset.loaded === "true") {
+              resolve();
+              return;
+            }
+            existing.addEventListener("load", resolve, { once: true });
+            existing.addEventListener("error", reject, { once: true });
+            return;
+          }
+
+          var script = document.createElement("script");
+          script.src = src;
+          script.async = true;
+          script.addEventListener("load", function () {
+            script.dataset.loaded = "true";
+            resolve();
+          }, { once: true });
+          script.addEventListener("error", reject, { once: true });
+          document.head.appendChild(script);
+        });
+      }
+
+      function prepareSageCells() {
+        var sageBlocks = findSageCodeBlocks();
+        if (!sageBlocks.length) {
+          return Promise.resolve();
+        }
+
+        return loadScript("https://sagecell.sagemath.org/static/embedded_sagecell.js")
+          .then(function () {
+            if (!window.sagecell || !window.sagecell.makeSagecell) {
+              return;
+            }
+
+            sageBlocks.forEach(function (codeTag, index) {
+              var preTag = codeTag.parentElement;
+              if (!preTag || preTag.dataset.sageMounted === "true") {
+                return;
+              }
+
+              var host = document.createElement("div");
+              host.className = "sagecell-archive";
+
+              var source = document.createElement("script");
+              source.type = "text/x-sage";
+              source.text = codeTag.textContent || "";
+              host.appendChild(source);
+
+              preTag.insertAdjacentElement("afterend", host);
+              preTag.classList.add("sage-source-hidden");
+              preTag.dataset.sageMounted = "true";
+
+              window.sagecell.makeSagecell({
+                inputLocation: host,
+                autoeval: false,
+                evalButtonText: "Run",
+                languages: ["sage"]
+              });
+            });
+          })
+          .catch(function () {
+            // Leave the original code blocks visible if SageCell cannot load.
+          });
+      }
+
+      function preprocessDiscourseMath() {
+        document.querySelectorAll("span.math, div.math").forEach(function (node) {
+          var tex = node.textContent || "";
+          if (!tex.trim()) {
+            return;
+          }
+          if (node.tagName === "SPAN") {
+            node.textContent = "\\(" + tex + "\\)";
+          } else {
+            node.textContent = "\\[" + tex + "\\]";
+          }
+          node.classList.remove("math");
+        });
+      }
+
+      window.MathJax = {
+        tex: {
+          inlineMath: [["\\(", "\\)"]],
+          displayMath: [["\\[", "\\]"]]
+        },
+        startup: {
+          pageReady() {
+            preprocessDiscourseMath();
+            return MathJax.startup.defaultPageReady().then(function () {
+              return prepareSageCells();
+            });
+          }
+        }
+      };
+    </script>
+    <script async id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="title-span">
+        <a href="../../../">
+          <img src="../../../images/ea06c0b00f456d7d2112d8196d0da94074cbf04a.png" height="40" alt="Site Logo" id="site-logo" />
+        </a>
+      </div>
+    </header>
+
+    <div class="main">
+    <div class="archive-span"><a href='https://marksmath.org/classes/Spring2026MML/'>MML Discourse</a> archived in May, 2026</div>
+    <h1 class="topic-title">Graphviz</h1>
+            <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/7_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">mark</div>
+          <div class="post_content">
+<p>This forum provides tools to generate graph images via a tool called GraphViz. For example, we could generate the following graph</p>
+<svg class="graphviz-svg-render" height="44pt" viewbox="0.00 0.00 158.67 44.00" width="159pt" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g class="graph" id="graph0" transform="scale(1 1) rotate(0) translate(4 40)">
+<polygon fill="white" points="-4,4 -4,-40 154.67,-40 154.67,4 -4,4" stroke="transparent"></polygon>
+<!-- hi -->
+<g class="node" id="node1">
+<title>hi</title>
+<ellipse cx="27" cy="-18" fill="none" rx="27" ry="18" stroke="black"></ellipse>
+<text font-family="Times,serif" font-size="14.00" text-anchor="middle" x="27" y="-13.8">hi</text>
+</g>
+<!-- there -->
+<g class="node" id="node2">
+<title>there</title>
+<ellipse cx="120.34" cy="-18" fill="none" rx="30.17" ry="18" stroke="black"></ellipse>
+<text font-family="Times,serif" font-size="14.00" text-anchor="middle" x="120.34" y="-13.8">there</text>
+</g>
+<!-- hi&#45;&#45;there -->
+<g class="edge" id="edge1">
+<title>hi--there</title>
+<path d="M54.42,-18C65.48,-18 78.39,-18 89.77,-18" fill="none" stroke="black"></path>
+</g>
+</g>
+</svg>
+<p>like so:</p>
+<pre><code class="lang-auto">[graphviz]
+graph {
+  rankdir="LR"
+  hi -- there
+}
+[/graphviz]
+</code></pre>
+<p>Here's a more complicated example:</p>
+<pre><code class="lang-auto">[graphviz]
+digraph {
+  n0 [label="-"]
+  n1 [label="^"]
+  n2 [label="sin"]
+  n3 [label="x"]
+  n4 [label="2"]
+  n5 [label="*"]
+  n6 [label="2"]
+  n7 [label="pi"]
+  n8 [label="x"]
+  n0 -&gt; n1
+  n0 -&gt; n2
+  n1 -&gt; n3
+  n1 -&gt; n4
+  n2 -&gt; n5
+  n5 -&gt; n6
+  n5 -&gt; n7
+  n5 -&gt; n8
+}
+[/graphviz]
+</code></pre>
+<p>If you copy and paste that as input into forum post, you should see the following:</p>
+<svg class="graphviz-svg-render" height="260pt" viewbox="0.00 0.00 278.00 260.00" width="278pt" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g class="graph" id="graph0" transform="scale(1 1) rotate(0) translate(4 256)">
+<polygon fill="white" points="-4,4 -4,-256 274,-256 274,4 -4,4" stroke="transparent"></polygon>
+<!-- n0 -->
+<g class="node" id="node1">
+<title>n0</title>
+<ellipse cx="135" cy="-234" fill="none" rx="27" ry="18" stroke="black"></ellipse>
+<text font-family="Times,serif" font-size="14.00" text-anchor="middle" x="135" y="-229.8">-</text>
+</g>
+<!-- n1 -->
+<g class="node" id="node2">
+<title>n1</title>
+<ellipse cx="99" cy="-162" fill="none" rx="27" ry="18" stroke="black"></ellipse>
+<text font-family="Times,serif" font-size="14.00" text-anchor="middle" x="99" y="-157.8">^</text>
+</g>
+<!-- n0&#45;&gt;n1 -->
+<g class="edge" id="edge1">
+<title>n0-&gt;n1</title>
+<path d="M126.65,-216.76C122.29,-208.28 116.85,-197.71 111.96,-188.2" fill="none" stroke="black"></path>
+<polygon fill="black" points="114.99,-186.44 107.3,-179.15 108.77,-189.64 114.99,-186.44" stroke="black"></polygon>
+</g>
+<!-- n2 -->
+<g class="node" id="node3">
+<title>n2</title>
+<ellipse cx="171" cy="-162" fill="none" rx="27" ry="18" stroke="black"></ellipse>
+<text font-family="Times,serif" font-size="14.00" text-anchor="middle" x="171" y="-157.8">sin</text>
+</g>
+<!-- n0&#45;&gt;n2 -->
+<g class="edge" id="edge2">
+<title>n0-&gt;n2</title>
+<path d="M143.35,-216.76C147.71,-208.28 153.15,-197.71 158.04,-188.2" fill="none" stroke="black"></path>
+<polygon fill="black" points="161.23,-189.64 162.7,-179.15 155.01,-186.44 161.23,-189.64" stroke="black"></polygon>
+</g>
+<!-- n3 -->
+<g class="node" id="node4">
+<title>n3</title>
+<ellipse cx="27" cy="-90" fill="none" rx="27" ry="18" stroke="black"></ellipse>
+<text font-family="Times,serif" font-size="14.00" text-anchor="middle" x="27" y="-85.8">x</text>
+</g>
+<!-- n1&#45;&gt;n3 -->
+<g class="edge" id="edge3">
+<title>n1-&gt;n3</title>
+<path d="M84.43,-146.83C74.25,-136.94 60.48,-123.55 48.97,-112.36" fill="none" stroke="black"></path>
+<polygon fill="black" points="51.41,-109.85 41.8,-105.38 46.53,-114.87 51.41,-109.85" stroke="black"></polygon>
+</g>
+<!-- n4 -->
+<g class="node" id="node5">
+<title>n4</title>
+<ellipse cx="99" cy="-90" fill="none" rx="27" ry="18" stroke="black"></ellipse>
+<text font-family="Times,serif" font-size="14.00" text-anchor="middle" x="99" y="-85.8">2</text>
+</g>
+<!-- n1&#45;&gt;n4 -->
+<g class="edge" id="edge4">
+<title>n1-&gt;n4</title>
+<path d="M99,-143.7C99,-135.98 99,-126.71 99,-118.11" fill="none" stroke="black"></path>
+<polygon fill="black" points="102.5,-118.1 99,-108.1 95.5,-118.1 102.5,-118.1" stroke="black"></polygon>
+</g>
+<!-- n5 -->
+<g class="node" id="node6">
+<title>n5</title>
+<ellipse cx="171" cy="-90" fill="none" rx="27" ry="18" stroke="black"></ellipse>
+<text font-family="Times,serif" font-size="14.00" text-anchor="middle" x="171" y="-85.8">*</text>
+</g>
+<!-- n2&#45;&gt;n5 -->
+<g class="edge" id="edge5">
+<title>n2-&gt;n5</title>
+<path d="M171,-143.7C171,-135.98 171,-126.71 171,-118.11" fill="none" stroke="black"></path>
+<polygon fill="black" points="174.5,-118.1 171,-108.1 167.5,-118.1 174.5,-118.1" stroke="black"></polygon>
+</g>
+<!-- n6 -->
+<g class="node" id="node7">
+<title>n6</title>
+<ellipse cx="99" cy="-18" fill="none" rx="27" ry="18" stroke="black"></ellipse>
+<text font-family="Times,serif" font-size="14.00" text-anchor="middle" x="99" y="-13.8">2</text>
+</g>
+<!-- n5&#45;&gt;n6 -->
+<g class="edge" id="edge6">
+<title>n5-&gt;n6</title>
+<path d="M156.43,-74.83C146.25,-64.94 132.48,-51.55 120.97,-40.36" fill="none" stroke="black"></path>
+<polygon fill="black" points="123.41,-37.85 113.8,-33.38 118.53,-42.87 123.41,-37.85" stroke="black"></polygon>
+</g>
+<!-- n7 -->
+<g class="node" id="node8">
+<title>n7</title>
+<ellipse cx="171" cy="-18" fill="none" rx="27" ry="18" stroke="black"></ellipse>
+<text font-family="Times,serif" font-size="14.00" text-anchor="middle" x="171" y="-13.8">pi</text>
+</g>
+<!-- n5&#45;&gt;n7 -->
+<g class="edge" id="edge7">
+<title>n5-&gt;n7</title>
+<path d="M171,-71.7C171,-63.98 171,-54.71 171,-46.11" fill="none" stroke="black"></path>
+<polygon fill="black" points="174.5,-46.1 171,-36.1 167.5,-46.1 174.5,-46.1" stroke="black"></polygon>
+</g>
+<!-- n8 -->
+<g class="node" id="node9">
+<title>n8</title>
+<ellipse cx="243" cy="-18" fill="none" rx="27" ry="18" stroke="black"></ellipse>
+<text font-family="Times,serif" font-size="14.00" text-anchor="middle" x="243" y="-13.8">x</text>
+</g>
+<!-- n5&#45;&gt;n8 -->
+<g class="edge" id="edge8">
+<title>n5-&gt;n8</title>
+<path d="M185.57,-74.83C195.75,-64.94 209.52,-51.55 221.03,-40.36" fill="none" stroke="black"></path>
+<polygon fill="black" points="223.47,-42.87 228.2,-33.38 218.59,-37.85 223.47,-42.87" stroke="black"></polygon>
+</g>
+</g>
+</svg>
+<p>For what it's worth, that graph represents the abstract syntax tree of</p>
+<div class="math">
+x^2 - \sin(2\pi x).
+</div>
+<p>you can read more about the dot language used to represent graphs on <a href="https://graphviz.org/">the GraphViz homepage</a>.</p>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+  </body>
+</html>

@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width">
+    <title>Lab 1 Hand In</title>
+    <link rel="stylesheet" href="../../../archived.css" />
+    <script>
+      function findSageCodeBlocks() {
+        return Array.prototype.slice.call(
+          document.querySelectorAll(
+            "pre[data-code-wrap='sage'] > code, pre > code.lang-sage, pre > code.language-sage, pre > code.sage"
+          )
+        );
+      }
+
+      function loadScript(src) {
+        return new Promise(function (resolve, reject) {
+          var existing = document.querySelector("script[src='" + src + "']");
+          if (existing) {
+            if (existing.dataset.loaded === "true") {
+              resolve();
+              return;
+            }
+            existing.addEventListener("load", resolve, { once: true });
+            existing.addEventListener("error", reject, { once: true });
+            return;
+          }
+
+          var script = document.createElement("script");
+          script.src = src;
+          script.async = true;
+          script.addEventListener("load", function () {
+            script.dataset.loaded = "true";
+            resolve();
+          }, { once: true });
+          script.addEventListener("error", reject, { once: true });
+          document.head.appendChild(script);
+        });
+      }
+
+      function prepareSageCells() {
+        var sageBlocks = findSageCodeBlocks();
+        if (!sageBlocks.length) {
+          return Promise.resolve();
+        }
+
+        return loadScript("https://sagecell.sagemath.org/static/embedded_sagecell.js")
+          .then(function () {
+            if (!window.sagecell || !window.sagecell.makeSagecell) {
+              return;
+            }
+
+            sageBlocks.forEach(function (codeTag, index) {
+              var preTag = codeTag.parentElement;
+              if (!preTag || preTag.dataset.sageMounted === "true") {
+                return;
+              }
+
+              var host = document.createElement("div");
+              host.className = "sagecell-archive";
+
+              var source = document.createElement("script");
+              source.type = "text/x-sage";
+              source.text = codeTag.textContent || "";
+              host.appendChild(source);
+
+              preTag.insertAdjacentElement("afterend", host);
+              preTag.classList.add("sage-source-hidden");
+              preTag.dataset.sageMounted = "true";
+
+              window.sagecell.makeSagecell({
+                inputLocation: host,
+                autoeval: false,
+                evalButtonText: "Run",
+                languages: ["sage"]
+              });
+            });
+          })
+          .catch(function () {
+            // Leave the original code blocks visible if SageCell cannot load.
+          });
+      }
+
+      function preprocessDiscourseMath() {
+        document.querySelectorAll("span.math, div.math").forEach(function (node) {
+          var tex = node.textContent || "";
+          if (!tex.trim()) {
+            return;
+          }
+          if (node.tagName === "SPAN") {
+            node.textContent = "\\(" + tex + "\\)";
+          } else {
+            node.textContent = "\\[" + tex + "\\]";
+          }
+          node.classList.remove("math");
+        });
+      }
+
+      window.MathJax = {
+        tex: {
+          inlineMath: [["\\(", "\\)"]],
+          displayMath: [["\\[", "\\]"]]
+        },
+        startup: {
+          pageReady() {
+            preprocessDiscourseMath();
+            return MathJax.startup.defaultPageReady().then(function () {
+              return prepareSageCells();
+            });
+          }
+        }
+      };
+    </script>
+    <script async id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="title-span">
+        <a href="../../../">
+          <img src="../../../images/ea06c0b00f456d7d2112d8196d0da94074cbf04a.png" height="40" alt="Site Logo" id="site-logo" />
+        </a>
+      </div>
+    </header>
+
+    <div class="main">
+    <div class="archive-span"><a href='https://marksmath.org/classes/Spring2026MML/'>MML Discourse</a> archived in May, 2026</div>
+    <h1 class="topic-title">Lab 1 Hand In</h1>
+            <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/7_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">mark</div>
+          <div class="post_content">
+<p>(20 pts)</p>
+<p>Submit your results to <a href="https://colab.research.google.com/drive/1AD9QD6Ey89jSLZi8rjNmvyUKnpGwGBCm?usp=sharing#sandboxMode=true">Lab 1</a> by responding here. Your response should include:</p>
+<ul>
+<li>A list of the variables that you used in your model,</li>
+<li>Any other changes that you made to the code in the lab notebook,</li>
+<li>A link to the upload of your resulting submission file, and</li>
+<li>The score obtained from <a href="https://marksmath.org/classes/Spring2026MML/AmesRegressionCheck/">our scoring tool</a>.</li>
+</ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/7_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">mark</div>
+          <div class="post_content">
+<pre><code class="lang-auto">numeric_variables = ['GrLivArea']
+nominal_variables = ['Neighborhood']
+qual_variables = ['KitchenQual']
+</code></pre>
+<p><a class="attachment" href="/uploads/short-url/swh81ckh2zIbxBlFqdaS9bmRtAM.csv">housing_predictions_demo.csv</a> (19.8 KB)</p>
+<p>My Score:<br/>
+0.196455</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-009.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 009</div>
+          <div class="post_content">
+<p>numeric_variables = ['GrLivArea', 'OverallQual', 'YearBuilt', 'OverallCond', 'GarageCars', 'Fireplaces', 'FullBath', 'BsmtFullBath', 'TotalBsmtSF', 'YearRemodAdd', 'TotRmsAbvGrd']</p>
+<p>nominal_variables = ['Neighborhood']</p>
+<p>qual_variables = ['KitchenQual']</p>
+<p><a class="attachment" href="/uploads/short-url/9AXqqJaXuIqHt7bsdo74HcBTHLl.csv">housing_predictions_demo.csv</a> (19.8 KB)</p>
+<p>Score: 0.14427434825801208</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-018.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 018</div>
+          <div class="post_content">
+<pre><code class="lang-auto">numeric_variables = ['GrLivArea', 'OverallQual','YearBuilt','OverallCond','GarageCars','BsmtFullBath','Fireplaces',
+                    'TotalBsmtSF', 'YearRemodAdd', 'TotRmsAbvGrd', 'FullBath', 'ScreenPorch', 'LotArea', 'WoodDeckSF', 'BsmtFinSF1']
+nominal_variables = ['Neighborhood']
+qual_variables = ['KitchenQual']
+target_variables = ['SalePrice']
+
+</code></pre>
+<p><a class="attachment" href="/uploads/short-url/hjtbqitgjb9oQVj40EpOtHYDgp5.csv">housing_predictions_demo.csv</a> (19.8 KB)</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/98bf2cb433034e01c69d70531c90953128a1f504" href="https://discourse.marksmath.org/uploads/default/original/1X/98bf2cb433034e01c69d70531c90953128a1f504.png" title="image_2026-02-25_133628911"><img alt="image_2026-02-25_133628911" data-base62-sha1="lNgafeiv1BgU534qimjD5Z4yJco" data-dominant-color="26282A" height="377" src="../../../images/98bf2cb433034e01c69d70531c90953128a1f504.png" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image_2026-02-25_133628911</span><span class="informations">1028×562 12.1 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-020.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 020</div>
+          <div class="post_content">
+<p>numeric_variables = ['GrLivArea', 'YearBuilt', 'GarageCars', 'OverallQual', 'OverallCond']</p>
+<p>nominal_variables = ['Neighborhood']</p>
+<p>qual_variables = ['KitchenQual']</p>
+<p>target_variables = ['SalePrice']<br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/9369ec69ccf10ae10b5cd27cdf781b9bcb8ea3bb" href="https://discourse.marksmath.org/uploads/default/original/1X/9369ec69ccf10ae10b5cd27cdf781b9bcb8ea3bb.jpeg" title="data"><img alt="data" data-base62-sha1="l257WKanvkTjHzuHzc6qJ2mtfcv" height="466" src="../../../images/9369ec69ccf10ae10b5cd27cdf781b9bcb8ea3bb.jpeg" width="673"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">data</span><span class="informations">673×466 31.5 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div><br/>
+<a class="attachment" href="/uploads/short-url/vdZ8pGH8kjjF1WL7jP1DyMO5lI.csv">housing_predictions_demo (1).csv</a> (19.8 KB)</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-008.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 008</div>
+          <div class="post_content">
+<p>numeric_variables = ['GrLivArea', 'OverallQual', 'YearBuilt', 'OverallCond', 'GarageCars']<br/>
+nominal_variables = ['Neighborhood']<br/>
+qual_variables = ['KitchenQual']<br/>
+target_variables = ['SalePrice']<br/>
+<a class="attachment" href="/uploads/short-url/vdZ8pGH8kjjF1WL7jP1DyMO5lI.csv">housing_predictions_demo (1).csv</a> (19.8 KB)<br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/240899b1937f3111ab350bc5921854fb3485ac36" href="https://discourse.marksmath.org/uploads/default/original/1X/240899b1937f3111ab350bc5921854fb3485ac36.png" title="Screenshot 2026-02-25 at 1.47.46 PM"><img alt="Screenshot 2026-02-25 at 1.47.46 PM" data-base62-sha1="58LC8zTDgVIrnxTWHVQuHJT7WRw" data-dominant-color="27292C" height="458" src="../../../images/240899b1937f3111ab350bc5921854fb3485ac36_2_690x458.png" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/240899b1937f3111ab350bc5921854fb3485ac36_2_690x458.png, https://discourse.marksmath.org/uploads/default/optimized/1X/240899b1937f3111ab350bc5921854fb3485ac36_2_1035x687.png 1.5x, https://discourse.marksmath.org/uploads/default/original/1X/240899b1937f3111ab350bc5921854fb3485ac36.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2026-02-25 at 1.47.46 PM</span><span class="informations">1314×874 28.7 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-002.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 002</div>
+          <div class="post_content">
+<p>numeric_variables = ['GrLivArea', 'MSSubClass','GarageCars', 'OverallQual','OverallCond']</p>
+<p>nominal_variables = ['Neighborhood','YearBuilt']</p>
+<p>qual_variables = ['KitchenQual']</p>
+<p>target_variables = ['SalePrice']</p>
+<p><a class="attachment" href="/uploads/short-url/7dBUocTcGsvSTJaGA0f9Mgy4XsL.csv">housing_predictions_demo.csv</a> (19.8 KB)</p>
+<p>Score: 0.15877368818470677</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-013.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 013</div>
+          <div class="post_content">
+<pre><code class="lang-auto">numeric_variables = ['OverallQual','GrLivArea','YearBuilt','OverallCond','GarageCars','BsmtFullBath']
+nominal_variables = ['Neighborhood']
+qual_variables = ['KitchenQual']
+</code></pre>
+<p>My score was 0.1499</p>
+<p><a class="attachment" href="/uploads/short-url/ncnMAPeK5J7iaMw3OuVXcc8Q8Ae.csv">housing_predictions_demo (15).csv</a> (19.8 KB)</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-022.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 022</div>
+          <div class="post_content">
+<p>numeric_variables = ['GrLivArea','OverallQual','GarageCars','Fireplaces','ScreenPorch','3SsnPorch','WoodDeckSF','EnclosedPorch','OverallCond','YearRemodAdd','LotArea']</p>
+<p>nominal_variables = ['Neighborhood']</p>
+<p>qual_variables = ['KitchenQual']</p>
+<p><a class="attachment" href="/uploads/short-url/oCtaJpJIl7OnWMXYqv0F6sBu5c2.csv">housing_predictions_demo (13).csv</a> (19.8 KB)</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/35a1b16e914bc751caf258fb500f34029b41dc83" href="https://discourse.marksmath.org/uploads/default/original/1X/35a1b16e914bc751caf258fb500f34029b41dc83.png" title="image"><img alt="image" data-base62-sha1="7ErJmZJ8LC6tDthmG3Cd0ZGR8r1" data-dominant-color="26292C" height="453" src="../../../images/35a1b16e914bc751caf258fb500f34029b41dc83.png" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">830×545 11.7 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-007.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 007</div>
+          <div class="post_content">
+<p>numeric_variables = ['GrLivArea','YearBuilt', 'OverallQual', 'OverallCond', 'GarageCars']</p>
+<p>nominal_variables = ['Neighborhood']</p>
+<p>qual_variables = ['KitchenQual']</p>
+<p>target_variables = ['SalePrice']</p>
+<p><a class="attachment" href="/uploads/short-url/vdZ8pGH8kjjF1WL7jP1DyMO5lI.csv">housing_predictions_demo (1).csv</a> (19.8 KB)</p>
+<p>Score: 0.15417995829350553<br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/48537810d93eafc068d0aa911481eda96b5e2646" href="https://discourse.marksmath.org/uploads/default/original/1X/48537810d93eafc068d0aa911481eda96b5e2646.png" title="image"><img alt="image" data-base62-sha1="ajPcYUKHqv6blvpfOU9gc4sFq3I" data-dominant-color="F5F7F9" height="432" src="../../../images/48537810d93eafc068d0aa911481eda96b5e2646.png" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">875×548 12 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-012.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 012</div>
+          <div class="post_content">
+<pre><code class="lang-auto">numeric_variables = [ 'GrLivArea', 'OverallQual', 'YearBuilt', 'OverallCond', 
+                      'GarageCars', 'BsmtFullBath', 'Fireplaces', 
+                      'TotalBsmtSF', 'YearRemodAdd', 'TotRmsAbvGrd',
+                      'FullBath', 'ScreenPorch', 'LotArea', 'WoodDeckSF', 
+                      'BsmtFinSF1']
+nominal_variables = ['Neighborhood', 'BldgType', 'RoofMatl']
+qual_variables = ['KitchenQual']
+</code></pre>
+<p><a class="attachment" href="/uploads/short-url/eTqEdoEEP7HJe31ZMKY6qnnDcrL.csv">housing_predictions_demo.csv</a> (19.8 KB)</p>
+<p>My Score:<br/>
+0.13724343241678663</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-010.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 010</div>
+          <div class="post_content">
+<p><img alt="image" data-base62-sha1="ysoHRF8Bzhvsnm99O4xoBEjVfGP" height="90" src="../../../images/f17fb81db0a8c50c2e2173aa65e19711c98def43.png" width="497"/></p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/7c3f4720c95b06046ad670c193927007567d1c0b" href="https://discourse.marksmath.org/uploads/default/original/1X/7c3f4720c95b06046ad670c193927007567d1c0b.png" title="image"><img alt="image" data-base62-sha1="hJ8MgwgAUAGsOqoFBgZX8vNENjZ" height="441" src="../../../images/7c3f4720c95b06046ad670c193927007567d1c0b.png" width="675"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">675×441 4.6 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p><a class="attachment" href="/uploads/short-url/2R3e1Ckvg80weiIf1ZDgR4C8bFY.csv">housing_predictions_demo (1).csv</a> (19.8 KB)</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-003.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 003</div>
+          <div class="post_content">
+<p><strong>Variables</strong></p>
+<pre><code class="lang-auto">numeric_variables = ['GrLivArea','OverallQual','NHmedian','YearBuilt','OverallCond','GarageCars','BsmtFullBath','Fireplaces',	'TotRmsAbvGrd','ScreenPorch','TotalBsmtSF','YearRemodAdd','FullBath','LotArea']
+nominal_variables = ['Neighborhood']
+qual_variables = ['KitchenQual']
+target_variables = ['SalePrice']
+</code></pre>
+<p>The <code>NHmedian</code> variable is the median sale price calculated for each neighborhood--location, location, location.</p>
+<p><strong>Score</strong><br/>
+0.14289</p>
+<p><a class="attachment" href="/uploads/short-url/cSiVNtlGoG73yQ0aA8CSB8SvkV7.csv">housing_predictions_demo.csv</a> (19.8 KB)</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-019.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 019</div>
+          <div class="post_content">
+<pre><code class="lang-auto">numeric_variables = ['GrLivArea', 'OverallQual', 'YearBuilt', 'OverallCond', 'GarageArea', 'BsmtFullBath', 'Fireplaces', 'TotalBsmtSF',
+                     'YearRemodAdd', 'TotRmsAbvGrd', 'FullBath', 'ScreenPorch', 'LotArea']
+nominal_variables = ['Neighborhood']
+qual_variables = ['KitchenQual']
+target_variables = ['SalePrice']
+</code></pre>
+<p><a class="attachment" href="/uploads/short-url/6gkrcs0MwVaBZ4vhyXYcslc4MTB.csv">housing_predictions_demo.csv</a> (19.8 KB)<br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/d7380ef3ef081812839fb9eddb9849975691eadb" href="https://discourse.marksmath.org/uploads/default/original/1X/d7380ef3ef081812839fb9eddb9849975691eadb.png" title="image"><img alt="image" data-base62-sha1="uHULagvWkXjGzFZcljfFCKT6fxx" data-dominant-color="26292B" height="451" src="../../../images/d7380ef3ef081812839fb9eddb9849975691eadb.png" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">830×543 10.4 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-001.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 001</div>
+          <div class="post_content">
+<p>numeric_variables = ['GrLivArea', 'YearBuilt', 'OverallCond', 'Fireplaces', 'FullBath' ]</p>
+<p>nominal_variables = ['Neighborhood']</p>
+<p>qual_variables = ['KitchenQual']</p>
+<p>target_variables = ['SalePrice']</p>
+<p>our score is 0.1690946121350628.</p>
+<p><a class="attachment" href="/uploads/short-url/3gutK3SLvNMprqcHyhxwJdRjF8.csv">housing_predictions_demo (3).csv</a> (19.8 KB)</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-014.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 014</div>
+          <div class="post_content">
+<p>numeric_variables = ['GrLivArea','OverallQual','YearBuilt','GarageCars','BsmtFullBath',<br/>
+'Fireplaces','TotalBsmtSF','YearRemodAdd','TotRmsAbvGrd','FullBath','ScreenPorch','LotArea']<br/>
+<a class="attachment" href="/uploads/short-url/5jYSkY1KdUDJCq8le0jUmZFO8ry.csv">housing_predictions_demo.csv</a> (19.8 KB)<br/>
+0.14423910325793002</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-023.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 023</div>
+          <div class="post_content">
+<p>My changes were</p>
+<pre><code class="lang-auto">numeric_variables = ['OverallQual','OverallCond','GarageCars','LotArea','TotalBsmtSF','GarageArea','WoodDeckSF','OpenPorchSF','PoolArea']
+nominal_variables = ['Neighborhood','RoofMatl','Utilities','Foundation','BsmtCond']
+qual_variables = ['KitchenQual']
+</code></pre>
+<p><a class="attachment" href="/uploads/short-url/7k2Lplm2CxOuYcVMyHQjjUwbQ9G.csv">housing_predictions_demo.csv</a> (19.8 KB)</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-005.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 005</div>
+          <div class="post_content">
+<p>numeric_variables = ['GrLivArea', 'OverallQual', 'YearBuilt', 'OverallCond', 'GarageCars', 'BsmtFullBath', 'Fireplaces', 'TotalBsmtSF', 'YearRemodAdd', 'TotRmsAbvGrd', 'FullBath', 'ScreenPorch', 'LotArea', 'WoodDeckSF', 'BsmtFinSF1', 'HalfBath', '1stFlrSF', 'EnclosedPorch', '3SsnPorch', 'GarageArea', 'BsmtHalfBath', 'BsmtFinSF2', 'MasVnrArea', 'LowQualFinSF', 'BsmtUnfSF', '2ndFlrSF', 'MoSold', 'BedroomAbvGr', 'OpenPorchSF', 'MiscVal', 'YrSold', 'KitchenAbvFr', 'PoolArea', 'MSSubClass']<br/>
+nominal_variables = ['Neighborhood']<br/>
+qual_variables = ['KitchenQual']<br/>
+target_variables = ['SalePrice']<br/>
+<a href="https://colab.research.google.com/drive/1BrzCc4D-DOWw9GM_1Je1a8v_zpXCw8Gp" rel="noopener nofollow ugc">Copy of HousingPriceRegressionLab2026.ipynb - Colab</a><br/>
+Mean Squared Error: 0.13224937762230213</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/7_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">mark</div>
+          <div class="post_content">
+<p><span class="mention">@User 028</span></p>
+<p>What's your score???</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-023.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 023</div>
+          <div class="post_content">
+<p>Sorry, forgot to add it. Mine was 0.16678281096727288</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-006.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 006</div>
+          <div class="post_content">
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/b23aaa5fbf6fe04e8342a2306f47b73a586a785c" href="https://discourse.marksmath.org/uploads/default/original/1X/b23aaa5fbf6fe04e8342a2306f47b73a586a785c.png" title="Screenshot 2026-02-27 144807"><img alt="Screenshot 2026-02-27 144807" data-base62-sha1="pqGGa5BHSDbWtuNvz7mLH9cn2d6" data-dominant-color="F5F2F2" height="93" src="../../../images/b23aaa5fbf6fe04e8342a2306f47b73a586a785c.png" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2026-02-27 144807</span><span class="informations">741×100 3.97 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div><br/>
+Here are my variables</p>
+<p>my score is 0.18985376615729802.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-026.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 026</div>
+          <div class="post_content">
+<p>The easiest way to start improving the score was by adding more variables to consider in our regression. I started with numeric which made a massive improvement but limited me to a score roughly of 0.1475. By adding nominal variables I was able to reduce it to roughly 0.1425</p>
+<pre><code class="lang-auto">numeric_variables = [ 'GrLivArea', 'OverallQual', 'YearBuilt', 'OverallCond', 
+                      'GarageCars', 'BsmtFullBath', 'Fireplaces', 
+                      'TotalBsmtSF', 'YearRemodAdd', 'TotRmsAbvGrd',
+                      'FullBath', 'ScreenPorch', 'LotArea', 'WoodDeckSF', 
+                      'BsmtFinSF1', 'MSSubClass', 'PoolArea', 'YrSold', 'MiscVal',
+                      ]
+nominal_variables = ['Neighborhood', 'BldgType', 'RoofMatl', 'HouseStyle', 'Foundation', 'SaleCondition',]
+
+</code></pre>
+<p>The next big jump I was able to do was by adding more quality variables. The initial code would not allow for this due to the shape of the array so I had to map the quality order to each index in the array and encoding them to quality order. This got me down to 0.1356.</p>
+<pre><code class="lang-auto">qual_variables = ['KitchenQual', 'ExterQual', 'BsmtQual', 'HeatingQC', 'ExterCond', 'BsmtCond']
+
+qual_encoder = OrdinalEncoder(categories=[quality_order] * len(qual_variables))
+</code></pre>
+<p>Finally, due to the increase in variables it did turn out to be useful to use RidgeCV so I uncommented:</p>
+<pre><code class="lang-auto">regress = RidgeCV(
+    alphas=np.logspace(-1, 1, 100)
+  )
+</code></pre>
+<p>and</p>
+<pre><code class="lang-auto">regress.alpha_
+</code></pre>
+<p>I'm pretty sure there is a better way to narrow down the noise by consolidating similar attributes such as total square footage instead of each sqft attribute individually but I couldn't get that to work properly. There also might be some logspace values that could possibly help in the RidgeCV but that also didn't work out for me</p>
+<p>Final score: 0.13166469694390048<br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/bd6a1ccfe04df3565b188ae37f1254a6c91baaf2" href="https://discourse.marksmath.org/uploads/default/original/1X/bd6a1ccfe04df3565b188ae37f1254a6c91baaf2.png" title="Screenshot 2026-02-27 at 3.12.35 PM"><img alt="Screenshot 2026-02-27 at 3.12.35 PM" data-base62-sha1="r1DAoq6o6C8gKmSmuzTejHza6LU" data-dominant-color="26282A" height="404" src="../../../images/bd6a1ccfe04df3565b188ae37f1254a6c91baaf2_2_690x404.png" srcset="https://discourse.marksmath.org/uploads/default/optimized/1X/bd6a1ccfe04df3565b188ae37f1254a6c91baaf2_2_690x404.png, https://discourse.marksmath.org/uploads/default/optimized/1X/bd6a1ccfe04df3565b188ae37f1254a6c91baaf2_2_1035x606.png 1.5x, https://discourse.marksmath.org/uploads/default/optimized/1X/bd6a1ccfe04df3565b188ae37f1254a6c91baaf2_2_1380x808.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2026-02-27 at 3.12.35 PM</span><span class="informations">1574×922 14.6 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p><a class="attachment" href="/uploads/short-url/6Gajr70LEY9X5aLh57YKVfUddOc.csv">Lab01_MML.csv</a> (19.8 KB)</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-016.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 016</div>
+          <div class="post_content">
+<p>numeric_variables = ['GrLivArea', 'OverallQual', 'YearBuilt',  'BedroomAbvGr', 'OverallCond',  'GarageCars', 'BsmtFullBath', 'Fireplaces', 'TotalBsmtSF', 'YearRemodAdd', 'FullBath', 'LotArea', 'WoodDeckSF',  'HalfBath', 'MasVnrArea']<br/>
+nominal_variables = ['Neighborhood','MSSubClass', 'Street', 'Condition1', 'Functional', 'CentralAir', 'RoofStyle', 'Foundation', 'BldgType', 'Heating', 'MSZoning', 'HouseStyle', 'LotShape']<br/>
+qual_variables = ['KitchenQual', 'ExterQual', 'HeatingQC', 'BsmtQual',  'GarageQual', 'BsmtExposure', 'BsmtFinType1', 'BsmtFinType2']<br/>
+<a class="attachment" href="/uploads/short-url/8ZnoC7lC6Uirl9K5afl3LWGrLU0.csv">Maggie.csv</a> (19.8 KB)<br/>
+score is 0.13383794318864528<br/>
+Definitely diminishing returns on just adding variables.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-021.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 021</div>
+          <div class="post_content">
+<p>numeric_variables = ['GrLivArea', 'YearBuilt', 'OverallCond', 'GarageCars', 'Fireplaces', 'BsmtFullBath', 'TotalBsmtSF', 'TotRmsAbvGrd', 'KitchenAbvGr']</p>
+<p>nominal_variables = ['Neighborhood']</p>
+<p>qual_variables = ['KitchenQual']</p>
+<p>target_variables = ['SalePrice']</p>
+<p>My score was a 0.15369876296498602</p>
+<p><a class="attachment" href="/uploads/short-url/ysHj6DgkLjyxyxCPNFpyii31CQB.csv">housing_predictions_demo (4).csv</a> (19.8 KB)</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-004.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 004</div>
+          <div class="post_content">
+<p>numeric_variables = ['GrLivArea', 'OverallQual','YearBuilt','OverallCond','GarageCars','BsmtFullBath','Fireplaces',<br/>
+'TotalBsmtSF', 'YearRemodAdd', 'TotRmsAbvGrd', 'FullBath', 'ScreenPorch', 'LotArea', 'WoodDeckSF', 'BsmtFinSF1']</p>
+<p>nominal_variables = ['Neighborhood', 'BldgType', 'RoofMatl', 'HouseStyle']</p>
+<p>qual_variables = ['KitchenQual']</p>
+<p>target_variables = ['SalePrice']</p>
+<p><a class="attachment" href="/uploads/short-url/eCuCugXy3X9hyKpnNF0p1OeQYqP.csv">housing_predictions_demo (1).csv</a> (19.8 KB)</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/e02a1718ddeca05c5f862d85331c8ba3c10e37fa" href="https://discourse.marksmath.org/uploads/default/original/1X/e02a1718ddeca05c5f862d85331c8ba3c10e37fa.png" title="Screenshot 2026-03-02 150051"><img alt="Screenshot 2026-03-02 150051" data-base62-sha1="vZ388AOcMmS8lVaiVuqKrWBRk6e" height="427" src="../../../images/e02a1718ddeca05c5f862d85331c8ba3c10e37fa.png" width="667"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2026-03-02 150051</span><span class="informations">667×427 4.53 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/avatar-anon-024.svg" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">User 024</div>
+          <div class="post_content">
+<p><img alt="image" data-base62-sha1="iuMFG5aQTNX64AdGVOCZ4ovMNF3" data-dominant-color="333233" height="73" src="../../../images/81a1ff6bac923b4755e9114020cf9b70964ed7a5.png" width="690"/><br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="https://discourse.marksmath.org/uploads/default/91973a581ed5e0b40ae1a13809ff3f0ba0ec2b59" href="https://discourse.marksmath.org/uploads/default/original/1X/91973a581ed5e0b40ae1a13809ff3f0ba0ec2b59.png" title="Screenshot 2026-03-03 174529"><img alt="Screenshot 2026-03-03 174529" data-base62-sha1="kLXeIZIgnNBoAf8CAQ99x2o4uZX" data-dominant-color="262A2C" height="453" src="../../../images/91973a581ed5e0b40ae1a13809ff3f0ba0ec2b59.png" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2026-03-03 174529</span><span class="informations">808×531 11.4 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/7_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">mark</div>
+          <div class="post_content">
+
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+  </body>
+</html>
