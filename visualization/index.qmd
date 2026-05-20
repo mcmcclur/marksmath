@@ -22,18 +22,6 @@ layout: article
 
 ::::: {.g-col-12 .g-col-sm-4}
 <div class="card text-bg-light mb-3">
- <img class="light-content" src="data/NCAABrackets/image-light.png" class="card-img-top" alt="Interactive brackets for March Madness Brackets">
- <img class="dark-content" src="data/NCAABrackets/image-dark.png" class="card-img-top" alt="Interactive brackets for March Madness Brackets">
- <div class="card-body text-center">
-  <a href="./data/NCAABrackets/" class="btn btn-primary">
-    NCAA Brackets
-  </a>
- </div>
-</div>
-:::::
-
-::::: {.g-col-12 .g-col-sm-4}
-<div class="card text-bg-light mb-3">
  <img class="light-content" src="data/BigSouth23/BigSouth23Light.png" class="card-img-top" alt="Chord diagram for the Big South 2023 basketball season">
  <img class="dark-content" src="data/BigSouth23/BigSouth23Dark.png" class="card-img-top" alt="Chord diagram for the Big South 2023 basketball season">
  <div class="card-body text-center">
@@ -70,35 +58,23 @@ layout: article
 
 ::::: {.g-col-12 .g-col-sm-4}
 <div class="card text-bg-light mb-3">
- <img class="light-content" src="data/NCGerrymandering/NCGerrymanderingLight.png" class="card-img-top" alt="The Evolution of NC's Congressional Map through Gerrymandering">
- <img class="dark-content" src="data/NCGerrymandering/NCGerrymanderingDark.png" class="card-img-top" alt="The Evolution of NC's Congressional Map through Gerrymandering">
- <div class="card-body text-center">
-  <a href="./data/NCGerrymandering/" class="btn btn-primary">
-    NC Gerrymandering
-  </a>
- </div>
-</div>
-:::::
-
-::::: {.g-col-12 .g-col-sm-4}
-<div class="card text-bg-light mb-3">
- <img class="light-content" src="data/NCElectionResults2024/NCElectionResults2024Light.png" class="card-img-top" alt="NC Legislative Election Results">
- <img class="dark-content" src="data/NCElectionResults2024/NCElectionResults2024Dark.png" class="card-img-top" alt="NC Legislative Election Results">
- <div class="card-body text-center">
-  <a href="./data/NCElectionResults2024/" class="btn btn-primary">
-    NC Elections 2024
-  </a>
- </div>
-</div>
-:::::
-
-::::: {.g-col-12 .g-col-sm-4}
-<div class="card text-bg-light mb-3">
  <img class="light-content" src="data/cycling_maps/cycling_maps_light.png" class="card-img-top" alt="Cycling maps around Asheville">
  <img class="dark-content" src="data/cycling_maps/cycling_maps_dark.png" class="card-img-top" alt="Cycling maps around Asheville">
  <div class="card-body text-center">
   <a href="./data/cycling_maps/" class="btn btn-primary">
     Cycling maps
+  </a>
+ </div>
+</div>
+:::::
+
+::::: {.g-col-12 .g-col-sm-4}
+<div class="card text-bg-light mb-3">
+ <img class="light-content" src="data/grade_flow/image-light.png" class="card-img-top" alt="Grade flow illustration">
+ <img class="dark-content" src="data/grade_flow/image-dark.png" class="card-img-top" alt="Grade flow illustration">
+ <div class="card-body text-center">
+  <a href="./data/grade_flow/" class="btn btn-primary">
+    Grade flow
   </a>
  </div>
 </div>
