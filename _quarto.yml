@@ -9,6 +9,7 @@ project:
     - /images/square_on_back.png
     - /images/pacman.png
     - classes/*/discourse/**
+    - jslib/*
 
 website:
   title: "Mark's Math"

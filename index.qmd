@@ -1,3 +1,24 @@
+---
+format:
+  html:
+    include-in-header: 
+      - text: |
+          <script src="/jslib/cd_bundle.min.js"></script>
+          <style>.observablehq--undefined {display: none}</style>
+          <style>
+            #homepage-julia-wrap {
+              width: 100%;
+              margin-left: auto;
+            }
+            #homepage-julia {
+              display: block;
+              width: 100%;
+              height: auto;
+              aspect-ratio: 1 / 1;
+            }
+          </style>
+---
+
 ::: {.grid}
 ::::: {.g-col-12 .g-col-md-8}
 ## [Mark McClure]{.h1}
@@ -16,10 +37,15 @@ I know the numbers don't quite add up.
 :::::
 
 ::::: {.g-col-4 .d-none .d-md-block transform="translate(0,-25px)"}
+<div id="homepage-julia-wrap">
+  <canvas id="homepage-julia" aria-label="Interactive Julia set visualization"></canvas>
+</div>
+
 ```{ojs}
-import {animate_network} from './components/neural_multiplier.js';
-model = await FileAttachment("./components/multiplication_model.json").json();
-animate_network(model);
+import {little_julia} from './jslib/little_julia.js';
+{
+  little_julia("#homepage-julia");
+}
 ``` 
-:::::
+::::: 
 :::
