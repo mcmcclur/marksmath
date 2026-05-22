@@ -44,7 +44,23 @@ I know the numbers don't quite add up.
 ```{ojs}
 import {little_julia} from './jslib/little_julia.js';
 {
-  little_julia("#homepage-julia");
+  let color;
+  const darkPrefered = window.matchMedia("(prefers-color-scheme: dark)").matches;
+  const darkSelected = document.body.classList.contains("quarto-dark");
+  const lightSelected = document.body.classList.contains("quarto-light");
+  if(darkSelected) {
+    color = '#ddd'
+  }
+  else if(lightSelected) {
+    color = '#333'
+  }
+  else if(darkPrefered) {
+    color = '#ddd'
+  }
+  else {
+    color = '#333'
+  }
+  little_julia("#homepage-julia", color);
 }
 ``` 
 ::::: 
