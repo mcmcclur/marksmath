@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width">
+    <title>Repeating Event &rdquo; going&rdquo; gets not deleted anymore</title>
+    <link rel="stylesheet" href="../../../archived.css" />
+    <script>
+      function findSageCodeBlocks() {
+        return Array.prototype.slice.call(
+          document.querySelectorAll(
+            "pre[data-code-wrap='sage'] > code, pre > code.lang-sage, pre > code.language-sage, pre > code.sage"
+          )
+        );
+      }
+
+      function loadScript(src) {
+        return new Promise(function (resolve, reject) {
+          var existing = document.querySelector("script[src='" + src + "']");
+          if (existing) {
+            if (existing.dataset.loaded === "true") {
+              resolve();
+              return;
+            }
+            existing.addEventListener("load", resolve, { once: true });
+            existing.addEventListener("error", reject, { once: true });
+            return;
+          }
+
+          var script = document.createElement("script");
+          script.src = src;
+          script.async = true;
+          script.addEventListener("load", function () {
+            script.dataset.loaded = "true";
+            resolve();
+          }, { once: true });
+          script.addEventListener("error", reject, { once: true });
+          document.head.appendChild(script);
+        });
+      }
+
+      function prepareSageCells() {
+        var sageBlocks = findSageCodeBlocks();
+        if (!sageBlocks.length) {
+          return Promise.resolve();
+        }
+
+        return loadScript("https://sagecell.sagemath.org/static/embedded_sagecell.js")
+          .then(function () {
+            if (!window.sagecell || !window.sagecell.makeSagecell) {
+              return;
+            }
+
+            sageBlocks.forEach(function (codeTag, index) {
+              var preTag = codeTag.parentElement;
+              if (!preTag || preTag.dataset.sageMounted === "true") {
+                return;
+              }
+
+              var host = document.createElement("div");
+              host.className = "sagecell-archive";
+
+              var source = document.createElement("script");
+              source.type = "text/x-sage";
+              source.text = codeTag.textContent || "";
+              host.appendChild(source);
+
+              preTag.insertAdjacentElement("afterend", host);
+              preTag.classList.add("sage-source-hidden");
+              preTag.dataset.sageMounted = "true";
+
+              window.sagecell.makeSagecell({
+                inputLocation: host,
+                autoeval: false,
+                evalButtonText: "Run",
+                languages: ["sage"]
+              });
+            });
+          })
+          .catch(function () {
+            // Leave the original code blocks visible if SageCell cannot load.
+          });
+      }
+
+      function preprocessDiscourseMath() {
+        document.querySelectorAll("span.math, div.math").forEach(function (node) {
+          var tex = node.textContent || "";
+          if (!tex.trim()) {
+            return;
+          }
+          if (node.tagName === "SPAN") {
+            node.textContent = "\\(" + tex + "\\)";
+          } else {
+            node.textContent = "\\[" + tex + "\\]";
+          }
+          node.classList.remove("math");
+        });
+      }
+
+      window.MathJax = {
+        tex: {
+          inlineMath: [["\\(", "\\)"]],
+          displayMath: [["\\[", "\\]"]]
+        },
+        startup: {
+          pageReady() {
+            preprocessDiscourseMath();
+            return MathJax.startup.defaultPageReady().then(function () {
+              return prepareSageCells();
+            });
+          }
+        }
+      };
+    </script>
+    <script async id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="title-span">
+        <a href="../../../">
+          <img src="../../../images/ad2526334012b2ad0c3421f9b6dd94bae2ede52f.svg" height="40" alt="Site Logo" id="site-logo" />
+        </a>
+      </div>
+    </header>
+
+    <div class="main">
+    <div class="archive-span"><a href='https://meta.discourse.org/'>Discourse Meta</a> archived in May, 2026</div>
+    <h1 class="topic-title">Repeating Event &rdquo; going&rdquo; gets not deleted anymore</h1>
+            <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">anko127</div>
+          <div class="post_content">
+<p>Hello,</p>
+<p>when users click “going” for a weekly repeated event, normally their votes disappiered right after the event and you could always see the new votes for next week. Now they accumulate to a Long list.<br/>
+I might have changed some configuration about the visibility of events but I do not find it to reset it.</p>
+<p>Any Idea, thank you<br/>
+Ann</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="100: 1">:100: 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">anko127</div>
+          <div class="post_content">
+<p>Maybe I need to describe it better:</p>
+<ul>
+<li>you have a weekly repeated event Monday evening 7-8pm</li>
+<li>some people have clicked going, interessted or not coming and this is shown by the respective symbol on their listed avatar</li>
+<li>next Monday at 8:01pm all those symbols are gone, avatars stay listed but greyed out</li>
+<li>event topic then shows date of the Monday one week later and nobody “going” etc until the first users click again</li>
+</ul>
+<p>Now I fiddled around with some visibility setting that the ones attended today are longer visible then 8pm or that the event is not deleted or anything like that…<br/>
+But now their avatars are never reset and greyed out but all “going” participants are accumulated over weeks and shown as actively “going”<br/>
+I can’t find the setting to make it the same as before, at 8pm the event is cleared and set to next week without any participants</p>
+<p>Any hint where I can revert this?</p>
+<p>And yes, I know, document your changes <img alt=":slight_smile:" class="emoji" height="20" loading="lazy" src="../../../images/slight_smile.png" title=":slight_smile:" width="20"/></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/318210_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">lindsey</div>
+          <div class="post_content">
+<p>Hi Ann — sorry for the delay here, but thanks for reaching out about this! You’re right, this was a recent change to RSVP to the current and future instances of recurring events. We’re discussing this internally to see how we might improve upon this further. I’ll follow up with more information once I have something to share!</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">anko127</div>
+          <div class="post_content">
+<p>Hello <span class="mention">@lindsey</span> ,</p>
+<p>do you have further information on this topic?<br/>
+At the moment we are exporting the event to see who changed their state when and then remove them from the list manually.<br/>
+That’s a bit of a hassle.</p>
+<p>Thank you for any update</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/318210_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">lindsey</div>
+          <div class="post_content">
+<p>Hi <span class="mention">@anko127</span> — thank you for following up! I can appreciate how much of a hassle this manual effort has been, and we definitely want to fix that up for you.</p>
+<p>Our plan is to improve recurring events to allow people to choose whether they are RSVPing to the single upcoming event, or to every event in the series. We’re finalizing the design work now and then we’ll be getting this worked in front of our engineering team. I don’t have an ETA on when it will be fixed, but it will be in our “next up” projects so I should be back with an update soon.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">anko127</div>
+          <div class="post_content">
+<p>Any news here? Thank you</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">anko127</div>
+          <div class="post_content">
+<p>Hello <span class="mention">@lindsey</span> ,</p>
+<p>Do you have any update on this topic?</p>
+<p>To Reset the participants list when the Event has passed.</p>
+<p>Thank you</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/318210_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">lindsey</div>
+          <div class="post_content">
+<p>I’m afraid I don’t have an update for you, <span class="mention">@anko127</span> — this is still in our backlog but we have not yet prioritized it for development. I’ll discuss with the team to see when we might be able to pick this up.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">anko127</div>
+          <div class="post_content">
+<p>I think it was working when I startet using Discourse prior autumn 2024, could it just be a misconfigured setting like keeping History for the Event?</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/523140_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Aurora</div>
+          <div class="post_content">
+<p>We are experiencing exactly the same issue described above.</p>
+<p>In our community we run many recurring events (support groups, body doubling sessions, regular meetings). Because the participant list for recurring events is not reset, the list quickly becomes inaccurate and continues to grow over time. After a few weeks it no longer reflects who is actually attending a specific occurrence of the event.</p>
+<p>This creates a lot of confusion for both organizers and participants.</p>
+<p>Another problem for us is that the people who create and organize these events (group facilitators) cannot remove participants from the list. Even when we assigned category moderator permissions to them, they still cannot manage the attendee list. Only global moderators or admins seem to be able to remove participants.</p>
+<p>Since we have many groups organizing their own events, it is not practical for admins to manually manage all participant lists.</p>
+<p>For communities like ours that rely heavily on recurring events, this makes the RSVP functionality very difficult to use.</p>
+<p>Are there any updates or plans to improve how recurring event attendance is handled?</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="eyes: 1">👀 1</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/512781_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">zogstrip</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="12" data-topic="335780" data-username="Aurora">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/523140_2.png" width="24"/> Aurora:</div>
+<blockquote>
+<p>In our community we run many recurring events (support groups, body doubling sessions, regular meetings). Because the participant list for recurring events is not reset, the list quickly becomes inaccurate and continues to grow over time.</p>
+</blockquote>
+</aside>
+<p>I’m not 100% sure what is but it looks like this was indeed the intended behavior for recurring events. <span class="mention">@j.jaffeux</span> do you remember the use cases for not reseting “going” participants on recurring events? Like our weekly team calls?</p>
+<aside class="quote no-group" data-post="12" data-topic="335780" data-username="Aurora">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/523140_2.png" width="24"/> Aurora:</div>
+<blockquote>
+<p>Another problem for us is that the people who create and organize these events (group facilitators) cannot remove participants from the list. Even when we assigned category moderator permissions to them, they still cannot manage the attendee list. Only global moderators or admins seem to be able to remove participants.</p>
+</blockquote>
+</aside>
+<p>Will be fixed by</p>
+<aside class="onebox githubpullrequest" data-onebox-src="https://github.com/discourse/discourse/pull/38966">
+<header class="source">
+<a href="https://github.com/discourse/discourse/pull/38966" rel="noopener" target="_blank">github.com/discourse/discourse</a>
+</header>
+<article class="onebox-body">
+<div class="github-row --gh-status-merged" data-github-private-repo="false">
+<div class="github-icon-container" title="Merged Pull Request">
+<svg aria-hidden="true" class="github-icon" height="60" viewbox="0 0 12 16" width="60"><path d="M11 11.28V5c-.03-.78-.34-1.47-.94-2.06C9.46 2.35 8.78 2.03 8 2H7V0L4 3l3 3V4h1c.27.02.48.11.69.31.21.2.3.42.31.69v6.28A1.993 1.993 0 0 0 10 15a1.993 1.993 0 0 0 1-3.72zm-1 2.92c-.66 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2zM4 3c0-1.11-.89-2-2-2a1.993 1.993 0 0 0-1 3.72v6.56A1.993 1.993 0 0 0 2 15a1.993 1.993 0 0 0 1-3.72V4.72c.59-.34 1-.98 1-1.72zm-.8 10c0 .66-.55 1.2-1.2 1.2-.65 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2zM2 4.2C1.34 4.2.8 3.65.8 3c0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2z" fill-rule="evenodd"></path></svg>
+</div>
+<div class="github-info-container">
+<h4>
+<a href="https://github.com/discourse/discourse/pull/38966" rel="noopener" target="_blank">FIX: allow event creators to manage invitees (#38966)</a>
+</h4>
+<div class="branches">
+<code>main</code> ← <code>fix/event-creator-manage-invitees</code>
+</div>
+<div class="github-info">
+<div class="date">
+          merged <span class="discourse-local-date" data-date="2026-03-31" data-format="ll" data-time="09:36:59" data-timezone="UTC">09:36AM - 31 Mar 26 UTC</span>
+</div>
+<div class="user">
+<a href="https://github.com/ZogStriP" rel="noopener" target="_blank">
+<img alt="" class="onebox-avatar-inline" data-dominant-color="181818" height="20" src="../../../images/bc016d538e211a91295272f17e54d698a3372d40.jpeg" width="20"/>
+            ZogStriP
+          </a>
+</div>
+<div class="lines" title="1 commits changed 3 files with 57 additions and 1 deletions">
+<a href="https://github.com/discourse/discourse/pull/38966/files" rel="noopener" target="_blank">
+<span class="added">+57</span>
+<span class="removed">-1</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+<div class="github-row">
+<p class="github-body-container">Previously, `can_act_on_invitee?` only allowed staff or the invitee themselves t<span class="show-more-container"><a class="show-more" href="https://github.com/discourse/discourse/pull/38966" rel="noopener" target="_blank">…</a></span><span class="excerpt hidden">o update/remove an RSVP. This meant event creators and organizers (e.g. group facilitators with category moderator permissions) could not manage their own event's attendee list — only global moderators or admins could.
+
+This updates the guardian check to also allow users who `can_act_on_discourse_post_event?` (i.e. users in the allowed event groups who can edit the event post) to act on invitees. The redundant `staff?` check is removed since `can_act_on_discourse_post_event?` already checks for staff.
+
+https://meta.discourse.org/t/335780</span></p>
+</div>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/60297_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">j.jaffeux</div>
+          <div class="post_content">
+<aside class="quote group-team" data-post="13" data-topic="335780" data-username="zogstrip">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/512781_2.png" width="24"/> zogstrip:</div>
+<blockquote>
+<p>I’m not 100% sure what is but it looks like this was indeed the intended behavior for recurring events. <span class="mention">@j.jaffeux</span> do you remember the use cases for not reseting “going” participants on recurring events? Like our weekly team calls?</p>
+</blockquote>
+</aside>
+<p>Because we don’t have per date event entry I think.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">anko127</div>
+          <div class="post_content">
+<p>Hi there,</p>
+<p>Thank you for looking into it.</p>
+<aside class="quote group-team" data-post="13" data-topic="335780" data-username="zogstrip">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/512781_2.png" width="24"/> zogstrip:</div>
+<blockquote>
+<p>this was indeed the intended behavior</p>
+</blockquote>
+</aside>
+<p>But this sounds like “ Working as designed, no bug” or are you still investigating how to provide this automatic reset after event expiry?</p>
+<p>We would really appreciate this, thank you.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/512781_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">zogstrip</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="15" data-topic="335780" data-username="anko127">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/48.png" width="24"/> anko127:</div>
+<blockquote>
+<p>But this sounds like “ Working as designed, no bug” or are you still investigating how to provide this automatic reset after event expiry?</p>
+</blockquote>
+</aside>
+<p>Yeah, it’s unfortunately more work than we can “allocate” on this plugin right now. We need to store each “dates” instead of just storing the “recurrence formula”. It’s planned, but no dates yet.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/318210_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">lindsey</div>
+          <div class="post_content">
+<p>I’m happy to share that Discourse now supports more granular RSVPs on recurring events. Members can now choose between RSVPing to a single occurrence of the event, or to all future occurrences. You can learn more about this here:</p>
+<aside class="quote quote-modified" data-post="1" data-topic="402827">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/318210_2.png" width="24"/>
+<div class="quote-title__text-content">
+<a href="https://meta.discourse.org/t/improved-events-more-flexible-rsvps-for-recurring-events/402827">Improved Events: More flexible RSVPs for recurring events</a> <a class="badge-category__wrapper" href="/c/news-and-events/announcements/67"><span class="badge-category --style-emoji --has-parent" data-category-id="67" data-drop-close="true" data-parent-category-id="207" style="--category-badge-color: #ED207B; --category-badge-text-color: #000000; --parent-category-badge-color: #00AEEF;" title="Important updates from the Discourse team."><img alt="megaphone" class="emoji" height="20" loading="lazy" src="../../../images/megaphone.png" title="megaphone" width="20"/><span class="badge-category__name">Announcements</span></span></a>
+</div>
+</div>
+<blockquote>
+    When RSVPing to a recurring event, members can now indicate whether they’re going to just the next occurrence or to all future occurrences. This makes it easier for event organizers to understand who is actually attending a particular event, and ensures attendees only receive reminders for the events they want to attend. 
+<a aria-label="Heading link" class="anchor" href="#p-1980192-microscope-whats-changed-1" name="p-1980192-microscope-whats-changed-1"></a><img alt="microscope" class="emoji" height="20" src="../../../images/microscope.png" title="microscope" width="20"/> What’s changed
+On recurring events, the Going button now has a drop-down menu where members can choose to attend: 
+
+This event: They are marked as “going” for the …
+  </blockquote>
+</aside>
+
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+  </body>
+</html>

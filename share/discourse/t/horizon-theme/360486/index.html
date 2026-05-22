@@ -1,0 +1,1700 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width">
+    <title>Horizon Theme</title>
+    <link rel="stylesheet" href="../../../archived.css" />
+    <script>
+      function findSageCodeBlocks() {
+        return Array.prototype.slice.call(
+          document.querySelectorAll(
+            "pre[data-code-wrap='sage'] > code, pre > code.lang-sage, pre > code.language-sage, pre > code.sage"
+          )
+        );
+      }
+
+      function loadScript(src) {
+        return new Promise(function (resolve, reject) {
+          var existing = document.querySelector("script[src='" + src + "']");
+          if (existing) {
+            if (existing.dataset.loaded === "true") {
+              resolve();
+              return;
+            }
+            existing.addEventListener("load", resolve, { once: true });
+            existing.addEventListener("error", reject, { once: true });
+            return;
+          }
+
+          var script = document.createElement("script");
+          script.src = src;
+          script.async = true;
+          script.addEventListener("load", function () {
+            script.dataset.loaded = "true";
+            resolve();
+          }, { once: true });
+          script.addEventListener("error", reject, { once: true });
+          document.head.appendChild(script);
+        });
+      }
+
+      function prepareSageCells() {
+        var sageBlocks = findSageCodeBlocks();
+        if (!sageBlocks.length) {
+          return Promise.resolve();
+        }
+
+        return loadScript("https://sagecell.sagemath.org/static/embedded_sagecell.js")
+          .then(function () {
+            if (!window.sagecell || !window.sagecell.makeSagecell) {
+              return;
+            }
+
+            sageBlocks.forEach(function (codeTag, index) {
+              var preTag = codeTag.parentElement;
+              if (!preTag || preTag.dataset.sageMounted === "true") {
+                return;
+              }
+
+              var host = document.createElement("div");
+              host.className = "sagecell-archive";
+
+              var source = document.createElement("script");
+              source.type = "text/x-sage";
+              source.text = codeTag.textContent || "";
+              host.appendChild(source);
+
+              preTag.insertAdjacentElement("afterend", host);
+              preTag.classList.add("sage-source-hidden");
+              preTag.dataset.sageMounted = "true";
+
+              window.sagecell.makeSagecell({
+                inputLocation: host,
+                autoeval: false,
+                evalButtonText: "Run",
+                languages: ["sage"]
+              });
+            });
+          })
+          .catch(function () {
+            // Leave the original code blocks visible if SageCell cannot load.
+          });
+      }
+
+      function preprocessDiscourseMath() {
+        document.querySelectorAll("span.math, div.math").forEach(function (node) {
+          var tex = node.textContent || "";
+          if (!tex.trim()) {
+            return;
+          }
+          if (node.tagName === "SPAN") {
+            node.textContent = "\\(" + tex + "\\)";
+          } else {
+            node.textContent = "\\[" + tex + "\\]";
+          }
+          node.classList.remove("math");
+        });
+      }
+
+      window.MathJax = {
+        tex: {
+          inlineMath: [["\\(", "\\)"]],
+          displayMath: [["\\[", "\\]"]]
+        },
+        startup: {
+          pageReady() {
+            preprocessDiscourseMath();
+            return MathJax.startup.defaultPageReady().then(function () {
+              return prepareSageCells();
+            });
+          }
+        }
+      };
+    </script>
+    <script async id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="title-span">
+        <a href="../../../">
+          <img src="../../../images/ad2526334012b2ad0c3421f9b6dd94bae2ede52f.svg" height="40" alt="Site Logo" id="site-logo" />
+        </a>
+      </div>
+    </header>
+
+    <div class="main">
+    <div class="archive-span"><a href='https://meta.discourse.org/'>Discourse Meta</a> archived in May, 2026</div>
+    <h1 class="topic-title">Horizon Theme</h1>
+            <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/148734_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Discourse</div>
+          <div class="post_content">
+<div class="md-table">
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><img alt=":information_source:" class="emoji only-emoji" height="20" loading="lazy" src="../../../images/information_source.png" title=":information_source:" width="20"/></td>
+<td><strong>Summary</strong></td>
+<td>Horizon is a simple, beautiful theme that improves the out-of-the-box experience for Discourse sites.</td>
+</tr>
+<tr>
+<td><img alt=":eyeglasses:" class="emoji only-emoji" height="20" loading="lazy" src="../../../images/eyeglasses.png" title=":eyeglasses:" width="20"/></td>
+<td><strong>Preview</strong></td>
+<td>Try it out here on Meta or <a class="inline-onebox" href="https://discourse.theme-creator.io/theme/system/horizon">Theme Creator</a></td>
+</tr>
+<tr>
+<td><img alt=":hammer_and_wrench:" class="emoji only-emoji" height="20" loading="lazy" src="../../../images/hammer_and_wrench.png" title=":hammer_and_wrench:" width="20"/></td>
+<td><strong>Repository</strong></td>
+<td>Horizon is part of Discourse core.</td>
+</tr>
+<tr>
+<td><img alt=":question:" class="emoji only-emoji" height="20" loading="lazy" src="../../../images/question.png" title=":question:" width="20"/></td>
+<td><strong>Install Guide</strong></td>
+<td>There is no need to install Horizon, it is preinstalled as part of Discourse core.</td>
+</tr>
+<tr>
+<td><img alt=":open_book:" class="emoji only-emoji" height="20" loading="lazy" src="../../../images/open_book.png" title=":open_book:" width="20"/></td>
+<td><strong>New to Discourse Themes?</strong></td>
+<td><a href="https://meta.discourse.org/t/beginners-guide-to-using-discourse-themes/91966">Beginner’s guide to using Discourse Themes</a></td>
+</tr>
+</tbody>
+</table>
+</div><h2><a aria-label="Heading link" class="anchor" href="#p-1748144-features-1" name="p-1748144-features-1"></a>Features</h2>
+<p>Horizon offers a simple, user friendly design. We’ve focused on ensuring members can find the information they need and participate in meaningful conversations with fewer distractions.</p>
+<h3><a aria-label="Heading link" class="anchor" href="#p-1748144-topic-list-with-personalized-welcome-banner-2" name="p-1748144-topic-list-with-personalized-welcome-banner-2"></a>Topic list with personalized welcome banner</h3>
+<p><em>Categories and Latest Topics layout</em></p>
+<div class="d-image-grid" data-mode="carousel">
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/5ab6yArUWWwloypvCoajOUlcVAC.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/2/4/3/24316fb2efd7168486a47e2b4dcfed67b4c873b2.png" title="horizon-categories"><img alt="horizon-categories" data-base62-sha1="5ab6yArUWWwloypvCoajOUlcVAC" data-dominant-color="F2F4F8" height="500" src="../../../images/24316fb2efd7168486a47e2b4dcfed67b4c873b2_2_543x500.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/2/4/3/24316fb2efd7168486a47e2b4dcfed67b4c873b2_2_543x500.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/2/4/3/24316fb2efd7168486a47e2b4dcfed67b4c873b2_2_814x750.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/2/4/3/24316fb2efd7168486a47e2b4dcfed67b4c873b2_2_1086x1000.png 2x" width="543"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">horizon-categories</span><span class="informations">1270×1168 173 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/xDDpm8lbVd06jhYBQT8Ej426pzB.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/e/b/c/ebc2ba70f25f66a1c82748815184bd229110d433.png" title="horizon-categories-dark"><img alt="horizon-categories-dark" data-base62-sha1="xDDpm8lbVd06jhYBQT8Ej426pzB" data-dominant-color="1D1D1F" height="500" src="../../../images/ebc2ba70f25f66a1c82748815184bd229110d433_2_542x500.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/e/b/c/ebc2ba70f25f66a1c82748815184bd229110d433_2_542x500.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/e/b/c/ebc2ba70f25f66a1c82748815184bd229110d433_2_813x750.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/e/b/c/ebc2ba70f25f66a1c82748815184bd229110d433_2_1084x1000.png 2x" width="542"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">horizon-categories-dark</span><span class="informations">1268×1168 166 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+</div>
+<p><em>Latest topics list</em></p>
+<div class="d-image-grid" data-mode="carousel">
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/6XYLfvExxAjQZ6BIy8f4UsvilkD.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/3/0/d/30d4c36f46f65bb223da3bab649e9afafe77af33.png" title="horizon-latest"><img alt="horizon-latest" data-base62-sha1="6XYLfvExxAjQZ6BIy8f4UsvilkD" data-dominant-color="F4F6FB" height="500" src="../../../images/30d4c36f46f65bb223da3bab649e9afafe77af33_2_573x500.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/3/0/d/30d4c36f46f65bb223da3bab649e9afafe77af33_2_573x500.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/3/0/d/30d4c36f46f65bb223da3bab649e9afafe77af33_2_859x750.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/3/0/d/30d4c36f46f65bb223da3bab649e9afafe77af33_2_1146x1000.png 2x" width="573"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">horizon-latest</span><span class="informations">1267×1104 112 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/hZ7LJvLmLVQOxSXkwTLzlz2XqxS.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/7/e/0/7e0dd1d99ae04c15a8e5865a8333237993f9aa44.png" title="horizon-latest-dark"><img alt="horizon-latest-dark" data-base62-sha1="hZ7LJvLmLVQOxSXkwTLzlz2XqxS" data-dominant-color="1A1A1D" height="500" src="../../../images/7e0dd1d99ae04c15a8e5865a8333237993f9aa44_2_573x500.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/7/e/0/7e0dd1d99ae04c15a8e5865a8333237993f9aa44_2_573x500.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/7/e/0/7e0dd1d99ae04c15a8e5865a8333237993f9aa44_2_859x750.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/7/e/0/7e0dd1d99ae04c15a8e5865a8333237993f9aa44_2_1146x1000.png 2x" width="573"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">horizon-latest-dark</span><span class="informations">1270×1107 110 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+</div>
+<h3><a aria-label="Heading link" class="anchor" href="#p-1748144-topic-cards-that-provide-just-enough-information-3" name="p-1748144-topic-cards-that-provide-just-enough-information-3"></a>Topic cards that provide just enough information</h3>
+<div class="d-image-grid" data-mode="carousel">
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/phx6a0e6zgvaXm8iLk8ZlFi69AD.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/b/1/3/b131bfc9aa5a85a2f4648472ec0440f27bd13493.png" title="horizon-topic-card"><img alt="horizon-topic-card" data-base62-sha1="phx6a0e6zgvaXm8iLk8ZlFi69AD" data-dominant-color="F2F3F7" height="77" src="../../../images/b131bfc9aa5a85a2f4648472ec0440f27bd13493_2_690x77.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/b/1/3/b131bfc9aa5a85a2f4648472ec0440f27bd13493_2_690x77.png, https://d11a6trkgmumsb.cloudfront.net/original/4X/b/1/3/b131bfc9aa5a85a2f4648472ec0440f27bd13493.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/b/1/3/b131bfc9aa5a85a2f4648472ec0440f27bd13493.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">horizon-topic-card</span><span class="informations">971×109 10.2 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/gugXfr76deDCRuktAqvK3J7EX3p.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/7/3/8/738ed89f31468a2e67c1e2d521e24ae1680b010f.png" title="horizon-topic-card-dark"><img alt="horizon-topic-card-dark" data-base62-sha1="gugXfr76deDCRuktAqvK3J7EX3p" data-dominant-color="202121" height="72" src="../../../images/738ed89f31468a2e67c1e2d521e24ae1680b010f_2_690x72.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/7/3/8/738ed89f31468a2e67c1e2d521e24ae1680b010f_2_690x72.png, https://d11a6trkgmumsb.cloudfront.net/original/4X/7/3/8/738ed89f31468a2e67c1e2d521e24ae1680b010f.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/7/3/8/738ed89f31468a2e67c1e2d521e24ae1680b010f.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">horizon-topic-card-dark</span><span class="informations">955×100 9.44 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+</div>
+<h3><a aria-label="Heading link" class="anchor" href="#p-1748144-easy-reading-with-less-visual-noise-4" name="p-1748144-easy-reading-with-less-visual-noise-4"></a>Easy reading with less visual noise</h3>
+<div class="d-image-grid" data-mode="carousel">
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/s8pg1HqFJuW6Ru8OliZxFAXhWFU.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/c/5/3/c5302ab16d7fe462eb9b355752e28210e7ead176.png" title="horizon-topic"><img alt="horizon-topic" data-base62-sha1="s8pg1HqFJuW6Ru8OliZxFAXhWFU" data-dominant-color="F2F3F6" height="500" src="../../../images/c5302ab16d7fe462eb9b355752e28210e7ead176_2_525x500.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/c/5/3/c5302ab16d7fe462eb9b355752e28210e7ead176_2_525x500.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/c/5/3/c5302ab16d7fe462eb9b355752e28210e7ead176_2_787x750.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/c/5/3/c5302ab16d7fe462eb9b355752e28210e7ead176_2_1050x1000.png 2x" width="525"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">horizon-topic</span><span class="informations">1275×1213 170 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/5u2I7nKrKBcvD3Lf7RExIuKeGf9.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/2/6/7/267048bf40625f1ebacd9c7947cfcbcf1d68e783.png" title="horizon-topic-dark"><img alt="horizon-topic-dark" data-base62-sha1="5u2I7nKrKBcvD3Lf7RExIuKeGf9" data-dominant-color="1E1E20" height="500" src="../../../images/267048bf40625f1ebacd9c7947cfcbcf1d68e783_2_527x500.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/2/6/7/267048bf40625f1ebacd9c7947cfcbcf1d68e783_2_527x500.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/2/6/7/267048bf40625f1ebacd9c7947cfcbcf1d68e783_2_790x750.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/2/6/7/267048bf40625f1ebacd9c7947cfcbcf1d68e783_2_1054x1000.png 2x" width="527"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">horizon-topic-dark</span><span class="informations">1272×1206 171 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+</div>
+<h3><a aria-label="Heading link" class="anchor" href="#p-1748144-custom-color-palettes-for-a-unique-look-and-feel-5" name="p-1748144-custom-color-palettes-for-a-unique-look-and-feel-5"></a>Custom color palettes for a unique look and feel</h3>
+<p><em>Light mode</em></p>
+<div class="d-image-grid" data-mode="carousel">
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/z0Lh8exla3XT7r2noITUCpqTwG.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/0/3/f/03f5323034d7492efecc7da3c1e9c2389dc85646.png" title="lily-light"><img alt="lily-light" data-base62-sha1="z0Lh8exla3XT7r2noITUCpqTwG" data-dominant-color="FAF0F5" height="318" src="../../../images/03f5323034d7492efecc7da3c1e9c2389dc85646_2_690x318.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/0/3/f/03f5323034d7492efecc7da3c1e9c2389dc85646_2_690x318.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/0/3/f/03f5323034d7492efecc7da3c1e9c2389dc85646_2_1035x477.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/0/3/f/03f5323034d7492efecc7da3c1e9c2389dc85646.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">lily-light</span><span class="informations">1273×587 72.6 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/indwGz4tobC24Hc0C1u6W6omjK4.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/8/0/c/80c706a02de55ec2a5f9716c48adaf23405f0204.png" title="marigold-light"><img alt="marigold-light" data-base62-sha1="indwGz4tobC24Hc0C1u6W6omjK4" data-dominant-color="F8F4EE" height="319" src="../../../images/80c706a02de55ec2a5f9716c48adaf23405f0204_2_690x319.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/8/0/c/80c706a02de55ec2a5f9716c48adaf23405f0204_2_690x319.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/8/0/c/80c706a02de55ec2a5f9716c48adaf23405f0204_2_1035x478.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/8/0/c/80c706a02de55ec2a5f9716c48adaf23405f0204.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">marigold-light</span><span class="informations">1271×588 74.2 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/klBh4gMltwUFQGMMGfTeQ0nefQs.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/8/e/9/8e9c94e2d19eeb29a4391a4a2f0a1522f01c47f0.png" title="clover-light"><img alt="clover-light" data-base62-sha1="klBh4gMltwUFQGMMGfTeQ0nefQs" data-dominant-color="F1F5F2" height="320" src="../../../images/8e9c94e2d19eeb29a4391a4a2f0a1522f01c47f0_2_690x320.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/8/e/9/8e9c94e2d19eeb29a4391a4a2f0a1522f01c47f0_2_690x320.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/8/e/9/8e9c94e2d19eeb29a4391a4a2f0a1522f01c47f0_2_1035x480.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/8/e/9/8e9c94e2d19eeb29a4391a4a2f0a1522f01c47f0.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">clover-light</span><span class="informations">1270×590 73.7 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/xkca8YkyeZFgelENimry4tXqPzf.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/e/9/9/e9902f2130f34720ad504fc89d306afd57fc1e95.png" title="royal-light"><img alt="royal-light" data-base62-sha1="xkca8YkyeZFgelENimry4tXqPzf" data-dominant-color="EFF5F9" height="317" src="../../../images/e9902f2130f34720ad504fc89d306afd57fc1e95_2_690x317.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/e/9/9/e9902f2130f34720ad504fc89d306afd57fc1e95_2_690x317.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/e/9/9/e9902f2130f34720ad504fc89d306afd57fc1e95_2_1035x475.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/e/9/9/e9902f2130f34720ad504fc89d306afd57fc1e95.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">royal-light</span><span class="informations">1270×585 73.6 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/8lSpL9CTDxw0swrQKkPxRF4VTKl.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/3/a/8/3a8a7e7c4debe79351016ae4e8ce1b6f24e1ed2d.png" title="horizon-light"><img alt="horizon-light" data-base62-sha1="8lSpL9CTDxw0swrQKkPxRF4VTKl" data-dominant-color="F2F3FA" height="319" src="../../../images/3a8a7e7c4debe79351016ae4e8ce1b6f24e1ed2d_2_690x319.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/3/a/8/3a8a7e7c4debe79351016ae4e8ce1b6f24e1ed2d_2_690x319.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/3/a/8/3a8a7e7c4debe79351016ae4e8ce1b6f24e1ed2d_2_1035x478.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/3/a/8/3a8a7e7c4debe79351016ae4e8ce1b6f24e1ed2d.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">horizon-light</span><span class="informations">1272×589 72.2 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/nnOpIZxi41KUskPXQedVPkVfhmV.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/a/3/e/a3e31cea2af32b2e07ba7f465efa4a11237143a9.png" title="violet-light"><img alt="violet-light" data-base62-sha1="nnOpIZxi41KUskPXQedVPkVfhmV" data-dominant-color="F7F1FA" height="318" src="../../../images/a3e31cea2af32b2e07ba7f465efa4a11237143a9_2_690x318.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/a/3/e/a3e31cea2af32b2e07ba7f465efa4a11237143a9_2_690x318.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/a/3/e/a3e31cea2af32b2e07ba7f465efa4a11237143a9_2_1035x477.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/a/3/e/a3e31cea2af32b2e07ba7f465efa4a11237143a9.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">violet-light</span><span class="informations">1270×587 72.3 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+</div>
+<p><em>Dark mode</em></p>
+<div class="d-image-grid" data-mode="carousel">
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/kPSobtWMH5FdE7It1X6qU5LG81q.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/9/2/0/9208b7f2a0057a66ebc572b5ccafa4eecc3e5078.png" title="lily-dark"><img alt="lily-dark" data-base62-sha1="kPSobtWMH5FdE7It1X6qU5LG81q" data-dominant-color="1E1B1D" height="320" src="../../../images/9208b7f2a0057a66ebc572b5ccafa4eecc3e5078_2_690x320.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/9/2/0/9208b7f2a0057a66ebc572b5ccafa4eecc3e5078_2_690x320.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/9/2/0/9208b7f2a0057a66ebc572b5ccafa4eecc3e5078_2_1035x480.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/9/2/0/9208b7f2a0057a66ebc572b5ccafa4eecc3e5078.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">lily-dark</span><span class="informations">1273×591 71.2 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/hNZT1Eey4I4V57oZPQQA12k7hhb.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/7/c/c/7ccbd1c8773f3d355655469e0966dc3ee1718f75.png" title="marigold-dark"><img alt="marigold-dark" data-base62-sha1="hNZT1Eey4I4V57oZPQQA12k7hhb" data-dominant-color="1F1D1A" height="318" src="../../../images/7ccbd1c8773f3d355655469e0966dc3ee1718f75_2_690x318.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/7/c/c/7ccbd1c8773f3d355655469e0966dc3ee1718f75_2_690x318.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/7/c/c/7ccbd1c8773f3d355655469e0966dc3ee1718f75_2_1035x477.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/7/c/c/7ccbd1c8773f3d355655469e0966dc3ee1718f75.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">marigold-dark</span><span class="informations">1272×588 70.8 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/lepcK8qxEVCNXmS5pyyIeSvxaRX.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/9/4/c/94ce8dd38dff8f3d11ed492f6952374ae3c667e1.png" title="clover-dark"><img alt="clover-dark" data-base62-sha1="lepcK8qxEVCNXmS5pyyIeSvxaRX" data-dominant-color="191C1B" height="320" src="../../../images/94ce8dd38dff8f3d11ed492f6952374ae3c667e1_2_690x320.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/9/4/c/94ce8dd38dff8f3d11ed492f6952374ae3c667e1_2_690x320.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/9/4/c/94ce8dd38dff8f3d11ed492f6952374ae3c667e1_2_1035x480.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/9/4/c/94ce8dd38dff8f3d11ed492f6952374ae3c667e1.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">clover-dark</span><span class="informations">1272×591 70.2 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/imWEMpl4GjwYru0T3uyo9SSj8W5.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/8/0/b/80bf26f19b1cb8aaba19d4d9b90fe78a5f67a379.png" title="royal-dark"><img alt="royal-dark" data-base62-sha1="imWEMpl4GjwYru0T3uyo9SSj8W5" data-dominant-color="191C1F" height="320" src="../../../images/80bf26f19b1cb8aaba19d4d9b90fe78a5f67a379_2_690x320.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/8/0/b/80bf26f19b1cb8aaba19d4d9b90fe78a5f67a379_2_690x320.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/8/0/b/80bf26f19b1cb8aaba19d4d9b90fe78a5f67a379_2_1035x480.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/8/0/b/80bf26f19b1cb8aaba19d4d9b90fe78a5f67a379.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">royal-dark</span><span class="informations">1267×589 71 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/qizhMSlbXjVmcmNQTa5KNiAgX6E.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/b/8/5/b851e1e86c5e93224a72736ef94a55ca87c0d148.png" title="horizon-dark"><img alt="horizon-dark" data-base62-sha1="qizhMSlbXjVmcmNQTa5KNiAgX6E" data-dominant-color="1B1B1E" height="321" src="../../../images/b851e1e86c5e93224a72736ef94a55ca87c0d148_2_689x321.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/b/8/5/b851e1e86c5e93224a72736ef94a55ca87c0d148_2_689x321.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/b/8/5/b851e1e86c5e93224a72736ef94a55ca87c0d148_2_1033x481.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/b/8/5/b851e1e86c5e93224a72736ef94a55ca87c0d148.png 2x" width="689"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">horizon-dark</span><span class="informations">1268×590 70.1 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/AodHctFjt3HahGS0qspqL1Jh1gt.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/f/f/0/ff0b2cbd9921705acd4dba036690a1d028c54be9.png" title="violet-dark"><img alt="violet-dark" data-base62-sha1="AodHctFjt3HahGS0qspqL1Jh1gt" data-dominant-color="1D1B1F" height="320" src="../../../images/ff0b2cbd9921705acd4dba036690a1d028c54be9_2_690x320.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/f/f/0/ff0b2cbd9921705acd4dba036690a1d028c54be9_2_690x320.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/f/f/0/ff0b2cbd9921705acd4dba036690a1d028c54be9_2_1035x480.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/f/f/0/ff0b2cbd9921705acd4dba036690a1d028c54be9.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">violet-dark</span><span class="informations">1267×588 70.3 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+</div>
+<h2><a aria-label="Heading link" class="anchor" href="#p-1748144-theme-component-plugin-compatibility-6" name="p-1748144-theme-component-plugin-compatibility-6"></a>Theme component / plugin compatibility</h2>
+<p>As a relatively new theme, and one that is quite opinionated in its styling, Horizon is not perfectly compatible with all theme components at this time. While we will work to ensure the most popular components are compatible with Horizon, we recommend that sites interested in customization use the Foundation theme instead.</p>
+<h3><a aria-label="Heading link" class="anchor" href="#p-1748144-compatible-7" name="p-1748144-compatible-7"></a>Compatible</h3>
+<p><em>We have tested the following features with Horizon and confirmed they work. There may be opportunity for improvement; please let us know if you have ideas for how to improve compatibility. Anything not listed here is either only partially compatible, incompatible, or not yet tested.</em></p>
+<ul>
+<li><a href="https://meta.discourse.org/t/discourse-solved/30155">Discourse Solved</a></li>
+<li><a href="https://meta.discourse.org/t/clickable-topic/183339">Clickable Topic</a></li>
+<li><a href="https://meta.discourse.org/t/discotoc-automatic-table-of-contents/111143">DiscoTOC</a></li>
+</ul>
+<h3><a aria-label="Heading link" class="anchor" href="#p-1748144-partial-compatibility-8" name="p-1748144-partial-compatibility-8"></a>Partial compatibility</h3>
+<p><em>Please let us know if compatibility with this feature is important to you; that will help us prioritize improvements to the theme component / plugin or Horizon.</em></p>
+<ul>
+<li><a href="https://meta.discourse.org/t/brand-header/77977">Brand Header</a>: Compatible <em>except</em> when <strong>Plugin outlet</strong> is set to <code>below-site-header</code>.</li>
+<li><a href="https://meta.discourse.org/t/category-banners/86241">Category Banners</a>: Compatible <em>except</em> when <strong>Plugin outlet</strong> is set to <code>below-site-header</code>.</li>
+<li><a href="https://meta.discourse.org/t/showcased-categories/173524">Showcased Categories</a>: Functional, but with some spacing issues. Not recommended for use with the <a href="https://meta.discourse.org/t/creating-a-banner-to-display-at-the-top-of-your-site/153718">core welcome banner feature</a>.</li>
+<li><s><a href="https://meta.discourse.org/t/discourse-topic-voting/40121">Topic Voting</a>: Vote count not visible on topic cards.</s> <img alt=":right_arrow:" class="emoji" height="20" loading="lazy" src="../../../images/right_arrow.png" title=":right_arrow:" width="20"/> Use <a class="inline-onebox" href="https://meta.discourse.org/t/horizon-high-context-topic-cards/393470">Horizon: High Context Topic Cards</a> for votes display.</li>
+<li><a href="https://meta.discourse.org/t/versatile-banner/109133">Versatile Banner</a>: Compatible <em>except</em> when <strong>Plugin outlet</strong> is set to <code>below-site-header</code>. Not recommended for use with the <a href="https://meta.discourse.org/t/creating-a-banner-to-display-at-the-top-of-your-site/153718">core welcome banner feature</a>.</li>
+<li><a href="https://meta.discourse.org/t/welcome-link-banner/218743">Welcome Link Banner</a>: Compatible <em>except</em> when <strong>Plugin outlet</strong> is set to <code>below-site-header</code>.</li>
+</ul>
+<h3><a aria-label="Heading link" class="anchor" href="#p-1748144-incompatible-9" name="p-1748144-incompatible-9"></a>Incompatible</h3>
+<p><em>Please let us know if compatibility with this feature is important to you; that will help us prioritize improvements to the theme component / plugin or Horizon.</em></p>
+<ul>
+<li>Easy Footer</li>
+<li>Custom Header Links</li>
+</ul>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 25">❤️ 25</span><span class="engagement-pill reaction-pill" title="star struck: 4">:star_struck: 4</span><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span><span class="engagement-pill reaction-pill" title="chefs kiss: 1">:chefs_kiss: 1</span><span class="engagement-pill reaction-pill" title="clap: 1">👏 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/95011_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Stephen</div>
+          <div class="post_content">
+<p>It took me a moment there to realize the new topic button had been moved away from the main area.</p>
+<p>If the sidebar is hidden does that mean the only way to create a topic is via keyboard shortcut?</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span><span class="engagement-pill reaction-pill" title="chefs kiss: 1">:chefs_kiss: 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">digitaldominica</div>
+          <div class="post_content">
+<p>Hi, I want to disable fullwidth view, is this no longer possible?</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/334852_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">joo</div>
+          <div class="post_content">
+<p>I have two questions regarding the Horizon theme.</p>
+<p><img alt="chrome_2025-04-14_01-11-27" data-base62-sha1="vS4OYUx3a4AESG3IZo4xglKzw0" height="82" src="../../../images/039a53dde2de543ba02a1b10256b502e9182616c.png" width="343"/></p>
+<p>First, I cannot find the paintbrush icon for Theme Settings. Could you tell me where it is located and how to make it show?</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/vbcLgvDws57TH96AGKai4BjSvRo.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/d/a/8/da87abc769ef816707b54818b4c2b426c3c1554a.png" rel="noopener nofollow ugc" title="The image depicts a line graph with fluctuating values, a pinned post label at 15 minutes ago, a sticky note indicating 32, a calendar icon with “名日,” and an option to report anonymous comments. (由 AI 生成标题)"><img alt="The image depicts a line graph with fluctuating values, a pinned post label at 15 minutes ago, a sticky note indicating 32, a calendar icon with “名日,” and an option to report anonymous comments. (由 AI 生成标题)" data-base62-sha1="vbcLgvDws57TH96AGKai4BjSvRo" data-dominant-color="F6F9FC" height="82" src="../../../images/da87abc769ef816707b54818b4c2b426c3c1554a_2_690x82.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/d/a/8/da87abc769ef816707b54818b4c2b426c3c1554a_2_690x82.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/d/a/8/da87abc769ef816707b54818b4c2b426c3c1554a_2_1035x123.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/d/a/8/da87abc769ef816707b54818b4c2b426c3c1554a.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">The image depicts a line graph with fluctuating values, a pinned post label at 15 minutes ago, a sticky note indicating 32, a calendar icon with “名日,” and an option to report anonymous comments. (由 AI 生成标题)</span><span class="informations">1200×143 7.1 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>Second, the display appears to be incorrect when using Chinese.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/515563_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">jordan.vidrine</div>
+          <div class="post_content">
+<p>You’d need to make sure all of the horizon palettes are user selectable in the color palette area of the admin panel.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/515563_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">jordan.vidrine</div>
+          <div class="post_content">
+<p>It is not possible. We’ve integrated the full width styles into the theme. We have done this for various reasons but one of them is preparatory work to bring full width setting into core.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">digitaldominica</div>
+          <div class="post_content">
+<p>Okay, but that’s a lot of wide space on a big screen, will the setting in the core be in the theme settings ? Will i be able to turn off the fullwidth from the settings?</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/121814_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">jimkleiber</div>
+          <div class="post_content">
+<p>The one thing that seems to bother me a lot is on the main page where the category is in the bottom right corner and the username is underneath the topic title.</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/A6iDfTAZSFtlMYbSupZZ1dgBDbl.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/f/d/0/fd0496ef27134527263c699a25f04ae3f63b8253.png" rel="noopener nofollow ugc" title="The image displays a screenshot of a Discord-style community forum postboard webpage, featuring user discussions about features and issues related to the Discourse community platform. (Captioned by AI)"><img alt="The image displays a screenshot of a Discord-style community forum postboard webpage, featuring user discussions about features and issues related to the Discourse community platform. (Captioned by AI)" data-base62-sha1="A6iDfTAZSFtlMYbSupZZ1dgBDbl" data-dominant-color="282828" height="389" src="../../../images/fd0496ef27134527263c699a25f04ae3f63b8253_2_690x389.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/f/d/0/fd0496ef27134527263c699a25f04ae3f63b8253_2_690x389.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/f/d/0/fd0496ef27134527263c699a25f04ae3f63b8253_2_1035x583.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/f/d/0/fd0496ef27134527263c699a25f04ae3f63b8253_2_1380x778.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">The image displays a screenshot of a Discord-style community forum postboard webpage, featuring user discussions about features and issues related to the Discourse community platform. (Captioned by AI)</span><span class="informations">2030×1146 247 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>I find myself visually scanning every single time to the bottom right as for me, the category is much much more important than who replied last to the topic. And also I don’t seem to see any tags, those are also more important to me than who replied last. I guess unless I know a lot of people on a forum, I don’t seem to prioritize too much who replied last.</p>
+<p>Does anyone else feel the same way?</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 7">❤️ 7</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/110348_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Eduardo_Braga</div>
+          <div class="post_content">
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/WvzlC9RaB6DHtmDPeai8MvRIEH.jpeg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/0/6/9/069d27f3e1de183b882cbfa236aed2a73476fad3.jpeg" rel="noopener nofollow ugc" title="IMG_3434"><img alt="IMG_3434" data-base62-sha1="WvzlC9RaB6DHtmDPeai8MvRIEH" data-dominant-color="F6F6F5" height="376" src="../../../images/069d27f3e1de183b882cbfa236aed2a73476fad3_2_690x376.jpeg" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/0/6/9/069d27f3e1de183b882cbfa236aed2a73476fad3_2_690x376.jpeg, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/0/6/9/069d27f3e1de183b882cbfa236aed2a73476fad3_2_1035x564.jpeg 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/0/6/9/069d27f3e1de183b882cbfa236aed2a73476fad3.jpeg 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">IMG_3434</span><span class="informations">1170×639 112 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>The reply or like icon doesn’t work. I saw a theme where you clicked on the heart and it gave you the like. The reply button went to the last page.</p>
+<p>twitter, facebook, reddit all work this way.</p>
+<p>It also doesn’t display the name of the user who posted it. Having to guess who posted it from the photo is kind of weird.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/468169_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">manuel</div>
+          <div class="post_content">
+<p>Is there a reason that clicking the user-avatar and name doesn’t do anything? I’d expect it to open the user-card.</p>
+<p>I’d also love to be able to switch to showing the full name, but de-selecting <em>prioritize username</em> in site settings doesn’t change the field:</p>
+<p><img alt="image" data-base62-sha1="wJbuBORPe81px3M1ldSnzK0kRie" height="76" src="../../../images/e561279a2e43dd0dbca0e3ffb7616c674be8f31e.png" width="437"/></p>
+<p>I recently did a PR to show full name on topic cards. I’d find it quite helpful and consistent on both views and it seems a simple check?</p>
+<aside class="onebox githubpullrequest" data-onebox-src="https://github.com/discourse/discourse-topic-cards/pull/48">
+<header class="source">
+<a href="https://github.com/discourse/discourse-topic-cards/pull/48" rel="noopener" target="_blank">github.com/discourse/discourse-topic-cards</a>
+</header>
+<article class="onebox-body">
+<div class="github-row --gh-status-closed" data-github-private-repo="false">
+<div class="github-icon-container" title="Closed Pull Request">
+<svg aria-hidden="true" class="github-icon" height="60" viewbox="0 0 12 16" width="60"><path d="M11 11.28V5c-.03-.78-.34-1.47-.94-2.06C9.46 2.35 8.78 2.03 8 2H7V0L4 3l3 3V4h1c.27.02.48.11.69.31.21.2.3.42.31.69v6.28A1.993 1.993 0 0 0 10 15a1.993 1.993 0 0 0 1-3.72zm-1 2.92c-.66 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2zM4 3c0-1.11-.89-2-2-2a1.993 1.993 0 0 0-1 3.72v6.56A1.993 1.993 0 0 0 2 15a1.993 1.993 0 0 0 1-3.72V4.72c.59-.34 1-.98 1-1.72zm-.8 10c0 .66-.55 1.2-1.2 1.2-.65 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2zM2 4.2C1.34 4.2.8 3.65.8 3c0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2z" fill-rule="evenodd"></path></svg>
+</div>
+<div class="github-info-container">
+<h4>
+<a href="https://github.com/discourse/discourse-topic-cards/pull/48" rel="noopener" target="_blank">FEATURE: Show full name if available</a>
+</h4>
+<div class="branches">
+<code>main</code> ← <code>nolosb:username</code>
+</div>
+<div class="github-info">
+<div class="date">
+          closed <span class="discourse-local-date" data-date="2025-11-12" data-format="ll" data-time="09:45:02" data-timezone="UTC">09:45AM - 12 Nov 25 UTC</span>
+</div>
+<div class="user">
+<a href="https://github.com/nolosb" rel="noopener" target="_blank">
+<img alt="" class="onebox-avatar-inline" data-dominant-color="678396" height="20" src="../../../images/cbf47be696d78a970a22f827d5a4f47772613557.jpeg" width="20"/>
+            nolosb
+          </a>
+</div>
+<div class="lines" title="1 commits changed 1 files with 11 additions and 1 deletions">
+<a href="https://github.com/discourse/discourse-topic-cards/pull/48/files" rel="noopener" target="_blank">
+<span class="added">+11</span>
+<span class="removed">-1</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+<div class="github-row">
+<p class="github-body-container">The username is very visible on the cards as only the op is shown. However, this<span class="show-more-container"><a class="show-more" href="https://github.com/discourse/discourse-topic-cards/pull/48" rel="noopener" target="_blank">…</a></span><span class="excerpt hidden"> leads to inconsistencies when the full name is otherwise prioritized on an instance. The PR adds a check and shows the full name in case.
+
+![image](https://github.com/user-attachments/assets/fca4e1cb-a53e-48d3-a37c-fbb8ba8f8afe)</span></p>
+</div>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 4">❤️ 4</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">digitaldominica</div>
+          <div class="post_content">
+<p>Hi, if i enable the sidebar in the dropdown menu, the new topic button is fixed in there is there a work around?</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/487004_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Zer01</div>
+          <div class="post_content">
+<p>how to show the topics view count?</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/487004_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Zer01</div>
+          <div class="post_content">
+<p>Yes, but in all topic cards / lists</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/313494_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">NateDhaliwal</div>
+          <div class="post_content">
+<p>Hmm… looking again, I don’t think this theme shows the views.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/515563_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">jordan.vidrine</div>
+          <div class="post_content">
+<p>Thanks nolo! The PR is welcome in the theme itself. We ported the component to live inside of the theme as it is so closely related, we want to keep it all consolidated here.</p>
+<aside class="onebox githubfolder" data-onebox-src="https://github.com/discourse/horizon/tree/main/javascripts/discourse/components/card">
+<header class="source">
+<img alt="" class="site-icon" data-dominant-color="" height="32" src="../../../images/bad3e5f9ad67c1ddf145107ce7032ac1d7b22563.svg" width="32"/>
+<a href="https://github.com/discourse/horizon/tree/main/javascripts/discourse/components/card" rel="noopener" target="_blank">github.com</a>
+</header>
+<article class="onebox-body">
+<h3><a href="https://github.com/discourse/horizon/tree/main/javascripts/discourse/components/card" rel="noopener" target="_blank">horizon/javascripts/discourse/components/card at main · discourse/horizon</a></h3>
+<p><span class="label1">Contribute to discourse/horizon development by creating an account on GitHub.</span></p>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">digitaldominica</div>
+          <div class="post_content">
+<p><span class="mention">@jordan.vidrine</span> Can an option to change the color mode colors be placed into the theme settings?<br/>
+Options such as:<br/>
+var(–background-color)<br/>
+var(–d-content-background)</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">digitaldominica</div>
+          <div class="post_content">
+<p>This happens on both my instance and on <a href="http://meta.discourse.org">meta.discourse.org</a>.</p>
+<p>When the chat window is opened, and the composer window is launched it pushes the chat box untop of the composer window as seen below:</p>
+<p></p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/vzKynhA2z2XDE2qo6KZYUQbHeIv.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/d/d/4/dd4df659d49746959cb3a80e6b8bf89a1143b7d7.png" rel="noopener nofollow ugc" title='The image shows the interface of the Discourse platform on a "Horizon Theme" page, with a chat box labeled "YOU HAVE NOT JOINED ANY CHANNELS, YET!" and various menu options visible on the left and right sides of the screen. (Captioned by AI)'><img alt='The image shows the interface of the Discourse platform on a "Horizon Theme" page, with a chat box labeled "YOU HAVE NOT JOINED ANY CHANNELS, YET!" and various menu options visible on the left and right sides of the screen. (Captioned by AI)' data-base62-sha1="vzKynhA2z2XDE2qo6KZYUQbHeIv" data-dominant-color="EFF4F1" height="329" src="../../../images/dd4df659d49746959cb3a80e6b8bf89a1143b7d7_2_690x329.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/d/d/4/dd4df659d49746959cb3a80e6b8bf89a1143b7d7_2_690x329.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/d/d/4/dd4df659d49746959cb3a80e6b8bf89a1143b7d7_2_1035x493.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/d/d/4/dd4df659d49746959cb3a80e6b8bf89a1143b7d7_2_1380x658.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">The image shows the interface of the Discourse platform on a "Horizon Theme" page, with a chat box labeled "YOU HAVE NOT JOINED ANY CHANNELS, YET!" and various menu options visible on the left and right sides of the screen. (Captioned by AI)</span><span class="informations">1908×910 138 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div><p></p>
+<p>Then when the composer is on the right side position, the chatbox is floating as shown below:</p>
+<p></p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/cfXDRfYSkB95Sa8OlZw7Rq1D4T4.jpeg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/5/5/e/55e80005d9cebcd202e2e3416de7089c6753adbe.jpeg" rel="noopener nofollow ugc" title="This image showcases the Horizon Theme for Discourse, highlighting features for a clear and less noisy reading experience. (Captioned by AI)"><img alt="This image showcases the Horizon Theme for Discourse, highlighting features for a clear and less noisy reading experience. (Captioned by AI)" data-base62-sha1="cfXDRfYSkB95Sa8OlZw7Rq1D4T4" data-dominant-color="D9DCDB" height="329" src="../../../images/55e80005d9cebcd202e2e3416de7089c6753adbe_2_690x329.jpeg" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/5/5/e/55e80005d9cebcd202e2e3416de7089c6753adbe_2_690x329.jpeg, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/5/5/e/55e80005d9cebcd202e2e3416de7089c6753adbe_2_1035x493.jpeg 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/5/5/e/55e80005d9cebcd202e2e3416de7089c6753adbe_2_1380x658.jpeg 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">This image showcases the Horizon Theme for Discourse, highlighting features for a clear and less noisy reading experience. (Captioned by AI)</span><span class="informations">1908×911 238 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div><p></p>
+<p><span class="mention">@jordan.vidrine</span> <span class="mention">@Discourse</span></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/313494_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">NateDhaliwal</div>
+          <div class="post_content">
+<p>Can the table of contents button be a circle instead of an oval? IMO it would seem more consistent <img alt=":person_shrugging:" class="emoji" height="20" loading="lazy" src="../../../images/person_shrugging.png" title=":person_shrugging:" width="20"/> .</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/agfu4sFTW09VOU6nibBxDfb1ELJ.jpeg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/4/7/e/47ebfadb8551ff0753b5ecb22617d10c4b6b3237.jpeg" title="Screenshot_20250518_102253_Chrome"><img alt="Screenshot_20250518_102253_Chrome" data-base62-sha1="agfu4sFTW09VOU6nibBxDfb1ELJ" height="179" src="../../../images/47ebfadb8551ff0753b5ecb22617d10c4b6b3237.jpeg" width="388"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot_20250518_102253_Chrome</span><span class="informations">388×179 14.5 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/158064_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">StefanoCecere</div>
+          <div class="post_content">
+<p>some love is needed with the dropdown menu <a class="inline-onebox" href="https://github.com/paviliondev/discourse-dropdown-header" rel="noopener nofollow ugc">GitHub - paviliondev/discourse-dropdown-header: A theme component to add links in the header with dropdowns</a></p>
+<p>or is there a discourse-supported top menu component already compatible with Horizon?</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/oZdkhbh94WMz8U5s1tY90ZnSs6s.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/a/f/1/af1fa19c16107ab3d5808d5da6c89f8360feada0.png" rel="noopener nofollow ugc" title="Screenshot 2025-05-19 at 17.43.46"><img alt="Screenshot 2025-05-19 at 17.43.46" data-base62-sha1="oZdkhbh94WMz8U5s1tY90ZnSs6s" data-dominant-color="F5F5F9" height="292" src="../../../images/af1fa19c16107ab3d5808d5da6c89f8360feada0_2_690x292.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/a/f/1/af1fa19c16107ab3d5808d5da6c89f8360feada0_2_690x292.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/a/f/1/af1fa19c16107ab3d5808d5da6c89f8360feada0_2_1035x438.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/a/f/1/af1fa19c16107ab3d5808d5da6c89f8360feada0_2_1380x584.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2025-05-19 at 17.43.46</span><span class="informations">2040×866 88.9 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/313494_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">NateDhaliwal</div>
+          <div class="post_content">
+<p>Header Submenus, perhaps <img alt=":thinking:" class="emoji" height="20" loading="lazy" src="../../../images/thinking.png" title=":thinking:" width="20"/>?</p>
+<aside class="quote quote-modified" data-post="1" data-topic="94584">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/148734_2.png" width="24"/>
+<div class="quote-title__text-content">
+<a href="https://meta.discourse.org/t/header-submenus/94584">Header Submenus</a> <a class="badge-category__wrapper" href="/c/theme-component/120"><span class="badge-category --style-square" data-category-id="120" data-drop-close="true" style="--category-badge-color: #00dfff; --category-badge-text-color: #000000;" title="Theme components are customizations that change surface elements of your forum design, or add extra front-end features."><span class="badge-category__name">Theme component</span></span></a>
+</div>
+</div>
+<blockquote>
+<img alt="discourse2" class="emoji emoji-custom" height="20" src="../../../images/0e65eeb3631702ee91807a5f302a3f10f099dd11.png" title="discourse2" width="20"/>
+Summary
+
+Header Submenus will allow you to build a header menu - with submenus - using plain text!
+
+
+<img alt="eyeglasses" class="emoji" height="20" src="../../../images/eyeglasses.png" title="eyeglasses" width="20"/>
+Preview
+<a href="https://discourse.theme-creator.io/theme/Discourse/header-submenus">Preview on Discourse Theme Creator</a>
+<img alt="hammer_and_wrench" class="emoji" height="20" src="../../../images/hammer_and_wrench.png" title="hammer_and_wrench" width="20"/>
+Repository Link
+<a href="https://github.com/discourse/discourse-header-submenus">https://github.com/discourse/discourse-header-submenus</a>
+<img alt="open_book" class="emoji" height="20" src="../../../images/open_book.png" title="open_book" width="20"/>
+New to Discourse Themes?
+<a href="https://meta.discourse.org/t/beginners-guide-to-using-discourse-themes/91966">Beginner’s guide to using Discourse Themes</a>
+
+
+
+
+Install this theme component 
+
+
+
+<a class="anchor" href="#features-1" name="features-1"></a>Features
+Desktop 
+ <a class="lightbox" data-download-href="/uploads/short-url/jdnkaNbCwPgz2YumeroeTl4aN7Q.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/3X/8/6/86ac63e59f37ae152f40d86f412042df2b6221ba.png" title="1">[1]</a>
+<a class="lightbox" data-download-href="/uploads/short-url/iY1sWug2MUejDvzQYu8WHAct8uK.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/3X/8/4/84f01d0c212808a74c5afe0fbf34a86bb677cbaa.png" title="2">[2]</a> 
+Mobile 
+ <a class="lightbox" data-download-href="/uploads/short-url/m1WHIvykwgqZIZgEJqxG9eXp9Hn.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/3X/9/a/9a682a809379f3e8a133d6df0826bb17cc849c0d.png" title="3">[3]</a>
+<a class="anchor" href="#settings-2" name="settings-2"></a>Settings
+
+
+
+
+Name
+Description
+
+
+
+
+Menu items
+Add menu items. O…
+  </blockquote>
+</aside>
+
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/511631_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">ro_ma</div>
+          <div class="post_content">
+<p>Can’t unstall the theme!!!</p>
+<p>This theme is preinstalled and can not be deleted or customized</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554653_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Moin</div>
+          <div class="post_content">
+<p>Welcome to Meta <img alt=":waving_hand:" class="emoji" height="20" loading="lazy" src="../../../images/waving_hand.png" title=":waving_hand:" width="20"/></p>
+<p>Why do you want to uninstall it?<br/>
+Isn’t it enough to disallow users to select it and to use another theme instead?<br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/fswTQvwpyCGIIbQYdbRLl7F4eK7.jpeg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/6/c/5/6c5a3ceb444438c074dd4636651a984a7de4cfb3.jpeg" title="Screenshot_20250712_222725_Firefox"><img alt="Screenshot_20250712_222725_Firefox" data-base62-sha1="fswTQvwpyCGIIbQYdbRLl7F4eK7" data-dominant-color="F9F6F7" height="207" src="../../../images/6c5a3ceb444438c074dd4636651a984a7de4cfb3_2_690x207.jpeg" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/6/c/5/6c5a3ceb444438c074dd4636651a984a7de4cfb3_2_690x207.jpeg, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/6/c/5/6c5a3ceb444438c074dd4636651a984a7de4cfb3_2_1035x310.jpeg 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/6/c/5/6c5a3ceb444438c074dd4636651a984a7de4cfb3.jpeg 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot_20250712_222725_Firefox</span><span class="informations">1270×382 59.8 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/503796_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Robert_Niedosmialek1</div>
+          <div class="post_content">
+<p>Can someone share how to enable the Horizon theme in the latest Docker release of Discourse, as it does not exist and cannot be manually installed? This is the ideal theme for personalization, which would be great for our users if we could figure out how to enable it. We are set up with the latest version 3.4.6 ( <a href="https://github.com/discourse/discourse/commits/a83bd0f67b6f4a3f63ab5dd94008559c42e8db23" rel="noopener nofollow ugc">a83bd0f67b</a></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/447830_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">satonotdead</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="26" data-topic="360486" data-username="Robert_Niedosmialek1">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/503796_2.png" width="24"/> Robert_Niedosmialek1:</div>
+<blockquote>
+<p>Can someone share how to enable the Horizon theme in the latest Docker release of Discourse, as it does not exist and cannot be manually installed?</p>
+</blockquote>
+</aside>
+<p>You don’t need it because it’s recently embedded on Core. Just remove the added theme and update to the latest version.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554653_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Moin</div>
+          <div class="post_content">
+<p>Welcome to Meta <img alt=":waving_hand:" class="emoji" height="20" loading="lazy" src="../../../images/waving_hand.png" title=":waving_hand:" width="20"/></p>
+<p>You are using the stable branch. I think you’ll have to wait for the next release to get the theme. It was developed after the last release, so it is likely incompatible with your current version of Discourse.<br/>
+That’s the disadvantage of stable: You have to wait for new features much longer than when your forum runs on tests-passed.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">velna.b</div>
+          <div class="post_content">
+<p>I would love to have the tags on it as well, and i don’t see the “likes”, only the number of replies… I don’t understand why… Did you find a solution ?</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/537252_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">chapoi</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="29" data-topic="360486" data-username="velna.b">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/48.png" width="24"/> velna.b:</div>
+<blockquote>
+<p>and i don’t see the “likes”, only the number of replies… I don’t understand why…</p>
+</blockquote>
+</aside>
+<p>I think it’s bug actually, looking</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/317842_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Nick-Permaculture</div>
+          <div class="post_content">
+<p>Hi team, thanks for the new theme option. I think it will suit our needs well.</p>
+<p>One question - I have images for each of the categories, and these used to display on the homepage. Now they only show once you open the category. Images below for reference.</p>
+<p>Is there a setting I’m not seeing to adjust this to show the images on the homepage?</p>
+<p>Homepage:</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/qvwlUJcmekqdiUbB5lQCc6NqNRD.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/b/9/c/b9c8b60728d1b6952a3955e6d0358b7d6db42241.png" rel="noopener nofollow ugc" title="Screenshot 2025-09-04 at 9.49.11 AM"><img alt="Screenshot 2025-09-04 at 9.49.11 AM" data-base62-sha1="qvwlUJcmekqdiUbB5lQCc6NqNRD" height="248" src="../../../images/b9c8b60728d1b6952a3955e6d0358b7d6db42241.png" width="656"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2025-09-04 at 9.49.11 AM</span><span class="informations">656×248 7.11 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>On Final Design Exercise Category page.</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/uepnXD8vkUAU93tqhpvooWdD8f3.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/d/3/e/d3e23444ff1339a55ff60cc5df0be4de0ecb341d.png" rel="noopener nofollow ugc" title="Screenshot 2025-09-04 at 9.49.21 AM"><img alt="Screenshot 2025-09-04 at 9.49.21 AM" data-base62-sha1="uepnXD8vkUAU93tqhpvooWdD8f3" data-dominant-color="E4E6E6" height="197" src="../../../images/d3e23444ff1339a55ff60cc5df0be4de0ecb341d_2_690x197.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/d/3/e/d3e23444ff1339a55ff60cc5df0be4de0ecb341d_2_690x197.png, https://d11a6trkgmumsb.cloudfront.net/original/4X/d/3/e/d3e23444ff1339a55ff60cc5df0be4de0ecb341d.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/d/3/e/d3e23444ff1339a55ff60cc5df0be4de0ecb341d.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2025-09-04 at 9.49.21 AM</span><span class="informations">832×238 29.2 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<hr/>
+<p>EDIT: Looking at the console preview, it shows images in the :uploaded_logo fields, but there does not appear to be code to enable these to be shown in the css.</p>
+<p>Related Support Request:</p>
+<aside class="quote" data-post="1" data-topic="368681">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/71419_2.png" width="24"/>
+<div class="quote-title__text-content">
+<a href="https://meta.discourse.org/t/images-not-showing-in-categories-and-on-main-page/368681">Images not showing in categories and on main page</a> <a class="badge-category__wrapper" href="/c/support/6"><span class="badge-category --style-square" data-category-id="6" data-drop-close="true" style="--category-badge-color: #ce96c9; --category-badge-text-color: #000000;" title="The category for general support questions on using your Discourse site."><span class="badge-category__name">Support</span></span></a>
+</div>
+</div>
+<blockquote>
+    Hello Discourse friends, 
+Our team had some images in our categories box to serve as icons for each category as well as an image on the hero section of the home page. These images are not showing anymore and when you upload a new one it says image cannot be displayed. Is this a discourse update missed or setting to address?
+  </blockquote>
+</aside>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/423120_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">catchthewavecoke</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="2" data-topic="360486" data-username="Stephen">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/95011_2.png" width="24"/> Stephen:</div>
+<blockquote>
+<p>It took me a moment there to realize the new topic button had been moved away from the main area.</p>
+</blockquote>
+</aside>
+<p>Thanks for all the work that’s gone into Horizon. It’s a beautiful theme with a lot of polish. That said I wanted to flag something that I think is a real UX problem: the “New Topic” button being tucked away.</p>
+<p>On desktop, if the side menu is visible the new compose button can work, but on mobile it becomes much harder to find. I’ve heard the same reaction from others: “It took me a moment to realize where the button had gone.” This creates friction for new users and risks turning contributors into passive readers. The number one question I hear is: “How do I make a new post?”</p>
+<p>Discourse has always shined at encouraging participation, not just passive consumption. Hiding the main action of starting a conversation undercuts that strength.</p>
+<p>I’d love to see Horizon reconsider how prominently the “New Topic” button is surfaced, especially on mobile on the front layer without needing to press the hamburger icon so that the theme continues to be not just gorgeous but also welcoming and contribution friendly.</p>
+<p>Thanks again for your hard work. It really shows and you’ve built something that makes the platform feel fresh. Posting because I hope this one UX choice doesn’t unintentionally discourage people from joining in.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 4">❤️ 4</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554653_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Moin</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="32" data-topic="360486" data-username="catchthewavecoke">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/423120_2.png" width="24"/> catchthewavecoke:</div>
+<blockquote>
+<p>especially on mobile on the front layer without needing to press the hamburger icon so that the theme continues to be not just gorgeous but also welcoming and contribution friendly</p>
+</blockquote>
+</aside>
+<p>I think this was changed recently</p><aside class="quote" data-post="44" data-topic="369608">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/537252_2.png" width="24"/>
+<div class="quote-title__text-content">
+<a href="https://meta.discourse.org/t/introducing-horizon-our-newest-theme/369608/44"><img alt="sunrise" class="emoji" height="20" src="../../../images/sunrise.png" title="sunrise" width="20"/> Introducing Horizon, our newest theme</a> <a class="badge-category__wrapper" href="/c/announcements/67"><span class="badge-category --style-emoji" data-category-id="67" data-drop-close="true" style="--category-badge-color: #ED207B; --category-badge-text-color: #000000;" title="Important News and Updates from Discourse"><img alt="megaphone" class="emoji" height="20" loading="lazy" src="../../../images/megaphone.png" title="megaphone" width="20"/><span class="badge-category__name">Announcements</span></span></a>
+</div>
+</div>
+<blockquote>
+    Mini update: 
+Based on some feedback we received (old &amp; new), we decided to bring the Create topic button back on mobile. 
+You’ll find it back in its old spot. The new sidebar version will still remain too.
+  </blockquote>
+</aside>
+
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 4">❤️ 4</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/184869_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">asa</div>
+          <div class="post_content">
+<p>I have the problem that even on my 16-inch MacBook Pro, the spacing between the menu and the content is very large. Am I doing something wrong or does something need to be adjusted?<br/>
+<img alt="image" data-base62-sha1="nrwf4um1a6IjwmccLUKleJ31qN7" height="229" src="../../../images/a44e626c8b5eeff83d0a1dd0b92c9f88a9d03ed5.png" width="690"/></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/537252_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">chapoi</div>
+          <div class="post_content">
+<p>There is a max-width on the topic list content, so yes, even on a 16inch laptop, there will be extra evenly-distributed white-space on either side.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="cry: 1">😢 1</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/537252_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">chapoi</div>
+          <div class="post_content">
+<p>4 posts were split to a new topic: <a href="/t/how-to-hide-category-heading-on-mobile/384029">How to hide category heading on mobile</a></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/434502_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Jarjar</div>
+          <div class="post_content">
+<p>Any way to change the posts so they have this?</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/iIrhn3Lz6HA5f77X6Gi0JKx4xWt.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/8/3/2/832d262d5a344acededf7f62a3775d2569717f1d.png" rel="noopener nofollow ugc" title="image"><img alt="image" data-base62-sha1="iIrhn3Lz6HA5f77X6Gi0JKx4xWt" data-dominant-color="F9F8F7" height="500" src="../../../images/832d262d5a344acededf7f62a3775d2569717f1d_2_520x500.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/8/3/2/832d262d5a344acededf7f62a3775d2569717f1d_2_520x500.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/8/3/2/832d262d5a344acededf7f62a3775d2569717f1d_2_780x750.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/8/3/2/832d262d5a344acededf7f62a3775d2569717f1d.png 2x" width="520"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">924×888 87.8 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/537252_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">chapoi</div>
+          <div class="post_content">
+<p>No, not when using Horizon. (If you mean the table layout)</p>
+<p>If you mean the metrics themselves, activity timestamp and replies are already there. Likes and users <em>may</em> be supported in the future.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/434502_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Jarjar</div>
+          <div class="post_content">
+<p>Can you please make it happen? It’s the only thing missing to the theme and it’s quite mandatory for the community aspect</p>
+<p>I’m talking about the fact of seeing the number of replies, views and activity on the post and the avatars of users who replied</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/86627_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">HAWK</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="39" data-topic="360486" data-username="Jarjar">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/434502_2.png" width="24"/> Jarjar:</div>
+<blockquote>
+<p>I’m talking about the fact of seeing the number of replies, views and activity on the post and the avatars of users who replied</p>
+</blockquote>
+</aside>
+<p>They are already there – it is only the additional user avatars which are not, because Horizon is uncluttered and opinionated.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/434502_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Jarjar</div>
+          <div class="post_content">
+<p>That’s very sad regarding the avatars.</p>
+<p>May you tell me how to activate the replies, views and activity on the posts then? I cannot find it.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/86627_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">HAWK</div>
+          <div class="post_content">
+<p>Are you seeing these?</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/20hZB0KIdLY7TIhmyhdySjMJi8w.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/0/e/0/0e0cbf10504238049391d25847a94aff79494210.png" title="image"><img alt="image" data-base62-sha1="20hZB0KIdLY7TIhmyhdySjMJi8w" data-dominant-color="FBF9F8" height="245" src="../../../images/0e0cbf10504238049391d25847a94aff79494210_2_690x245.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/0/e/0/0e0cbf10504238049391d25847a94aff79494210_2_690x245.png, https://d11a6trkgmumsb.cloudfront.net/original/4X/0/e/0/0e0cbf10504238049391d25847a94aff79494210.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/0/e/0/0e0cbf10504238049391d25847a94aff79494210.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">958×341 64.8 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="eyes: 1">👀 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/434502_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Jarjar</div>
+          <div class="post_content">
+<p>Oh yes that indeed.<br/>
+Well I guess it’s a design choice, too bad we cannot either set it like that or like posted above.<br/>
+but ok</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="hugs: 1">🤗 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/290039_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">nathank</div>
+          <div class="post_content">
+<p>Are there any thoughts about making Horizon full width? I find that it feels a bit constrained in the middle (corset?), and going fully would relax it nicely.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span><span class="engagement-pill reaction-pill" title="100: 1">:100: 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/537252_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">chapoi</div>
+          <div class="post_content">
+<p>No, not planning on doing so. We are maintaining a limited width, which corresponds to optimal reading length.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="cry: 2">😢 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/249626_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Helga_Razinkova</div>
+          <div class="post_content">
+<p>Hi, I’ve tried to preview the theme, but this is all I’m seeing:</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/acU8PTu6KBY0wEADxB882BoiONe.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/4/7/8/478b3418ccf90465fd98cc1097b63cd6bfc43784.png" rel="noopener nofollow ugc" title="image"><img alt="image" data-base62-sha1="acU8PTu6KBY0wEADxB882BoiONe" data-dominant-color="EDF0FE" height="284" src="../../../images/478b3418ccf90465fd98cc1097b63cd6bfc43784_2_690x284.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/4/7/8/478b3418ccf90465fd98cc1097b63cd6bfc43784_2_690x284.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/4/7/8/478b3418ccf90465fd98cc1097b63cd6bfc43784_2_1035x426.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/4/7/8/478b3418ccf90465fd98cc1097b63cd6bfc43784_2_1380x568.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">2543×1047 75.7 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>Am I doing something wrong?</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/537252_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">chapoi</div>
+          <div class="post_content">
+<p>I just tested (mobile though) and it works fine for me. Is there anything in the console? Or can you try a different browser to check?</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/249626_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Helga_Razinkova</div>
+          <div class="post_content">
+<p>Thanks <span class="mention">@chapoi</span>! My console:</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/6DAJ4B8x7GxWjYi7f3CVH0Oxy1E.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/2/e/8/2e86c7818ac1371d1055fd810109246be6648646.png" rel="noopener nofollow ugc" title="image"><img alt="image" data-base62-sha1="6DAJ4B8x7GxWjYi7f3CVH0Oxy1E" data-dominant-color="F8F6F7" height="500" src="../../../images/2e86c7818ac1371d1055fd810109246be6648646_2_503x500.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/2/e/8/2e86c7818ac1371d1055fd810109246be6648646_2_503x500.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/2/e/8/2e86c7818ac1371d1055fd810109246be6648646_2_754x750.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/2/e/8/2e86c7818ac1371d1055fd810109246be6648646.png 2x" width="503"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">960×953 36.2 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/537252_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">chapoi</div>
+          <div class="post_content">
+<p>Okay yeah I can definitely repro. I think it’s because Horizon has been moved to core probably. Will need to figure out how to fix the preview link, if at all possible. (Update: link in the OP is updated now)</p>
+<p>That being said, you can just preview it here on Meta by switching to the theme</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/249626_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Helga_Razinkova</div>
+          <div class="post_content">
+<p>Thanks a lot, it works now!</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/537252_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">chapoi</div>
+          <div class="post_content">
+<p>2 posts were split to a new topic: <a href="/t/invisible-button-text-on-horizon-theme/396180">Invisible Button Text on Horizon Theme</a></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/497726_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">serkhelesheyi</div>
+          <div class="post_content">
+<p><strong>Mobile Ad Container Overflow in House Ads – RTL/LTR Layout Mismatch</strong></p>
+<p>Hi</p>
+<p>I’m using the <strong>Horizon theme</strong> with the official <strong>House Ads plugin</strong>, and I’ve created a custom component to style ads using CSS variables and layout rules compatible with Discourse’s design system.</p>
+<h3><a aria-label="Heading link" class="anchor" href="#p-1929315-issue-ad-container-overflows-viewport-on-mobile-both-ltr-rtl-1" name="p-1929315-issue-ad-container-overflows-viewport-on-mobile-both-ltr-rtl-1"></a><img alt=":mobile_phone:" class="emoji" height="20" loading="lazy" src="../../../images/mobile_phone.png" title=":mobile_phone:" width="20"/> Issue: Ad container overflows viewport on mobile (both LTR &amp; RTL)</h3>
+<ul>
+<li><strong>Theme</strong>: Horizon (not reproducible in default or other themes like Material, etc.)</li>
+<li><strong>Plugin</strong>: House Ads + custom component</li>
+<li><strong>Device</strong>: Mobile</li>
+<li><strong>Behavior</strong>:
+<ul>
+<li>When <strong>site language = English (LTR)</strong> → left edge of <code>.ad-container</code> is cut off (overflows left).</li>
+<li>When <strong>site language = Persian/Arabic (RTL)</strong> → right edge is cut off (overflows right).</li>
+</ul>
+</li>
+<li><strong>Expected</strong>: The ad card should be fully contained within the viewport, centered or aligned with post content width.</li>
+</ul>
+<h3><a aria-label="Heading link" class="anchor" href="#p-1929315-my-css-code-2" name="p-1929315-my-css-code-2"></a>my css code:</h3>
+<details>
+<summary>
+Summary</summary>
+<pre><code class="lang-plaintext">:root {
+  /* Core colors */
+  --ad-bg: var(--secondary);
+  --ad-border: var(--highlight);
+  --ad-text: var(--primary);
+
+  /* Label */
+  --ad-label-bg: var(--highlight);
+  --ad-label-text: var(--danger);
+}
+
+
+.house-creative {
+  margin-left: 0 !important;
+}
+
+
+.house-creative a.between-posts-ad {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  background-color: transparent;
+  font-family: inherit;
+}
+
+/* ===============================
+   Card Container
+   =============================== */
+
+.house-creative .ad-container {
+    direction: rtl !important;
+    text-align: center !important;
+margin-bottom: 20px;
+      padding: 10px 5px;
+     max-width: calc(#{$topic-avatar-width} + #{$topic-body-width} + (#{$topic-body-width-padding} * 2));  background-color: var(--ad-bg);
+  border: 2px solid var(--ad-border);
+  border-radius: 10px;
+
+  box-sizing: border-box;
+  line-height: 1.7;
+
+  color: var(--ad-text);
+
+  transition:
+    background-color 0.3s ease,
+    border-color 0.3s ease,
+    box-shadow 0.3s ease,
+    transform 0.2s ease;
+}
+
+.house-creative a.between-posts-ad:hover .ad-container {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+
+.house-creative .ad-label {
+    display: inline-block;       
+    text-align: center;   
+    margin-bottom: 6px;
+     padding: 4px 12px;
+
+  font-size: 0.85em;
+  font-weight: 700;
+  text-transform: uppercase;
+
+  background-color: var(--ad-label-bg);
+  color: var(--ad-label-text);
+
+  border-radius: 999px;
+}
+
+.house-creative .ad-container .ad-text {
+  margin: 0;
+
+  font-size: 1rem;
+  line-height: 1.9;
+  color: var(--ad-text);
+
+  direction: rtl ;
+  text-align: center !important ;
+  unicode-bidi: isolate;
+}
+
+
+@media (max-width: 480px) {
+  .house-creative .ad-container {
+direction: rtl !important;
+text-align: center !important; 
+padding: 16px 12px; 
+width: 100%;
+max-width: 100%;
+
+  }
+}
+
+</code></pre>
+</details>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/fYahO2LURInlEXDEdkM12Bwqgrq.jpeg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/6/f/e/6fedb55c974a4b49947480136f8f52f480b10174.jpeg" rel="noopener nofollow ugc" title="00004"><img alt="00004" data-base62-sha1="fYahO2LURInlEXDEdkM12Bwqgrq" data-dominant-color="2E2F26" height="483" src="../../../images/6fedb55c974a4b49947480136f8f52f480b10174_2_690x483.jpeg" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/6/f/e/6fedb55c974a4b49947480136f8f52f480b10174_2_690x483.jpeg, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/6/f/e/6fedb55c974a4b49947480136f8f52f480b10174_2_1035x724.jpeg 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/6/f/e/6fedb55c974a4b49947480136f8f52f480b10174.jpeg 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">00004</span><span class="informations">1080×757 20.4 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/537252_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">chapoi</div>
+          <div class="post_content">
+<p>Horizon is not compatible with all components and plugins (yet).</p>
+<aside class="quote no-group" data-post="1" data-topic="360486" data-username="Discourse">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/148734_2.png" width="24"/> Discourse:</div>
+<blockquote>
+<h3>Compatible</h3>
+<p><em>We have tested the following features with Horizon and confirmed they work. There may be opportunity for improvement; please let us know if you have ideas for how to improve compatibility. Anything not listed here is either only partially compatible, incompatible, or not yet tested.</em></p>
+<ul>
+<li><a href="https://meta.discourse.org/t/discourse-solved/30155">Discourse Solved</a></li>
+<li><a href="https://meta.discourse.org/t/clickable-topic/183339">Clickable Topic</a></li>
+<li><a href="https://meta.discourse.org/t/discotoc-automatic-table-of-contents/111143">DiscoTOC</a></li>
+</ul>
+</blockquote>
+</aside>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/528615_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">ばこん</div>
+          <div class="post_content">
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/ceoyAW6KySJbaBFuHcwXRn6WeVG.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/5/5/b/55baafa0aed055086f742962d436174a9975e9a0.png" rel="noopener nofollow ugc" title="image"><img alt="image" data-base62-sha1="ceoyAW6KySJbaBFuHcwXRn6WeVG" height="219" src="../../../images/55baafa0aed055086f742962d436174a9975e9a0.png" width="484"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">484×219 8.1 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div><br/>
+while participating in a group</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/le6EUSLGGHhygfBQLNhG5DBK7Xs.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/9/4/c/94c5e5ddebc8448ea7efff691f8beba15dedf8c2.png" rel="noopener nofollow ugc" title="image"><img alt="image" data-base62-sha1="le6EUSLGGHhygfBQLNhG5DBK7Xs" height="171" src="../../../images/94c5e5ddebc8448ea7efff691f8beba15dedf8c2.png" width="369"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">369×171 4.99 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div><br/>
+When not participating in a group</p>
+<hr/>
+<p>The header and sidebar designs appear to have changed due to the modernization of the Foundation theme.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/517827_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">stephtara</div>
+          <div class="post_content">
+<p>I don’t know if this is the right place to post this but I like the way Horizon on Meta displays a couple of lines of each topic in category view. I can’t seem to reproduce it in my side and I’m not sure where to start looking. Thanks!!</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/lmOXsGaoVnt0Dh6FUimHQZ2uLqV.jpeg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/9/5/c/95c214a89a011244e68af5a50b526171edb99f51.jpeg" rel="noopener nofollow ugc" title="IMG_6929"><img alt="IMG_6929" data-base62-sha1="lmOXsGaoVnt0Dh6FUimHQZ2uLqV" data-dominant-color="F5F5F5" height="500" src="../../../images/95c214a89a011244e68af5a50b526171edb99f51_2_231x500.jpeg" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/9/5/c/95c214a89a011244e68af5a50b526171edb99f51_2_231x500.jpeg, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/9/5/c/95c214a89a011244e68af5a50b526171edb99f51_2_346x750.jpeg 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/9/5/c/95c214a89a011244e68af5a50b526171edb99f51_2_462x1000.jpeg 2x" width="231"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">IMG_6929</span><span class="informations">1170×2532 202 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/bdnTB4HLsZsefbADduMlCS1nRTg.jpeg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/4/e/9/4e9b43e0c8d6fabb1a2314c30ab1c5462dda95ce.jpeg" rel="noopener nofollow ugc" title="IMG_6930"><img alt="IMG_6930" data-base62-sha1="bdnTB4HLsZsefbADduMlCS1nRTg" data-dominant-color="F7F6F6" height="500" src="../../../images/4e9b43e0c8d6fabb1a2314c30ab1c5462dda95ce_2_231x500.jpeg" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/4/e/9/4e9b43e0c8d6fabb1a2314c30ab1c5462dda95ce_2_231x500.jpeg, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/4/e/9/4e9b43e0c8d6fabb1a2314c30ab1c5462dda95ce_2_346x750.jpeg 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/4/e/9/4e9b43e0c8d6fabb1a2314c30ab1c5462dda95ce_2_462x1000.jpeg 2x" width="231"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">IMG_6930</span><span class="informations">1170×2532 203 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 4">❤️ 4</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554803_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Lilly</div>
+          <div class="post_content">
+<p>can read about it here</p>
+<aside class="quote quote-modified" data-post="1" data-topic="393470">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/537252_2.png" width="24"/>
+<div class="quote-title__text-content">
+<a href="https://meta.discourse.org/t/horizon-high-context-topic-cards/393470">Horizon: High Context Topic Cards</a> <a class="badge-category__wrapper" href="/c/announcements/67"><span class="badge-category --style-emoji" data-category-id="67" data-drop-close="true" style="--category-badge-color: #ED207B; --category-badge-text-color: #000000;" title="Important News and Updates from Discourse"><img alt="megaphone" class="emoji" height="20" loading="lazy" src="../../../images/megaphone.png" title="megaphone" width="20"/><span class="badge-category__name">Announcements</span></span></a>
+</div>
+</div>
+<blockquote>
+<a aria-label="Heading link" class="anchor" href="#p-1920198-whats-new-in-horizon-1" name="p-1920198-whats-new-in-horizon-1"></a>What’s new in Horizon?
+We’re happy to announce the next iteration for the Horizon theme: high-context topic cards. 
+These cards surface key signals at a glance, pulling in data from familiar favourites: 
+
+<a href="https://meta.discourse.org/t/discourse-solved/30155">Solved</a> (1)
+<a href="https://meta.discourse.org/t/discourse-topic-voting/40121">Topic Voting</a> (2)
+<a href="https://meta.discourse.org/t/discourse-assign/58044">Assign</a> (3)
+Good old tags (4)
+Excerpts
+
+We have also rearranged the layout, refined spacing and typography, and expanded the last-reply preview; aiming for a balanced experience. 
+<a aria-label="Heading link" class="anchor" href="#p-1920198-desktop-2" name="p-1920198-desktop-2"></a>Desktop
+ <a class="lightbox" data-download-href="/uploads/short-url/xvHG7YSZWi28ejCahQl4uBNoSTt.jpeg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/e/a/d/eadd37184899de57d2ffc5622d33dc9b4ee4a077.jpeg" title="CleanShot 2026-01-14 at 19.12.48@2x">[CleanShot 2026-01-14 at 19.12.48@2x]</a>
+<a aria-label="Heading link" class="anchor" href="#p-1920198-mobile-3" name="p-1920198-mobile-3"></a>Mobile
+ <a class="lightbox" data-download-href="/uploads/short-url/aAoRlhDPVHAZipp2kwAZXQ30wZG.jpeg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/4/a/3/4a331f22645a0ee5c4ad7d1e9fecf09ee2598560.jpeg" title="CleanShot 2026-01-14 at 19.19.04@2x">[CleanShot 2026-01-14 at 19.19.0…</a>
+</blockquote>
+</aside>
+
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 5">❤️ 5</span><span class="engagement-pill reaction-pill" title="100: 1">:100: 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/537252_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">chapoi</div>
+          <div class="post_content">
+<p>9 posts were split to a new topic: <a href="/t/rtl-issue-with-placement-in-user-names/395810">RTL issue with @ placement in user names</a></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/537252_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">chapoi</div>
+          <div class="post_content">
+<p>2 posts were split to a new topic: <a href="/t/compact-expanded-view-not-working-on-horizon/396206">Compact/Expanded view not working on Horizon</a></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/313494_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">NateDhaliwal</div>
+          <div class="post_content">
+<p>Globally pinned topics have its excerpt right-aligned (this is on my free forum):</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/aMNMlTWcDbuteVYyfgYZycMGYNl.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/4/b/9/4b9a031f43221d4e0cbebb374d15179db5b3e113.png" title="image"><img alt="image" data-base62-sha1="aMNMlTWcDbuteVYyfgYZycMGYNl" data-dominant-color="252020" height="158" src="../../../images/4b9a031f43221d4e0cbebb374d15179db5b3e113_2_690x158.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/4/b/9/4b9a031f43221d4e0cbebb374d15179db5b3e113_2_690x158.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/4/b/9/4b9a031f43221d4e0cbebb374d15179db5b3e113_2_1035x237.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/4/b/9/4b9a031f43221d4e0cbebb374d15179db5b3e113_2_1380x316.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1399×322 29.8 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/537252_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">chapoi</div>
+          <div class="post_content">
+<p>2 posts were split to a new topic: <a href="/t/horizon-interaction-with-brand-header/396096">Horizon interaction with Brand Header</a></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/537252_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">chapoi</div>
+          <div class="post_content">
+<p>A post was split to a new topic: <a href="/t/flair-issues-on-horizon/396097">Flair issues on Horizon</a></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/537252_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">chapoi</div>
+          <div class="post_content">
+<p>A post was split to a new topic: <a href="/t/two-level-subcategories-display-issue/396203">Two-Level Subcategories Display Issue</a></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/517827_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">stephtara</div>
+          <div class="post_content">
+<p>I’m not sure if this is about Horizon or the <a href="https://meta.discourse.org/t/header-categories-navbar/249179">Header Categories Navbar</a> component. It was pointed out to me that the menu bar on Horizon starts far left, unlike in other themes (Foundation for comparison), which is weird on wide monitors.</p>
+<p>Horizon:</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/51EHKQVmZrokSsl3hPsIXGxx8Pi.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/2/3/3/233aceb1b4b2191bfd971693fd7f5a902b415e14.png" title="b875897cb19e3dc469c3c7c344861abaecbde29a_2_1380x662"><img alt="b875897cb19e3dc469c3c7c344861abaecbde29a_2_1380x662" data-base62-sha1="51EHKQVmZrokSsl3hPsIXGxx8Pi" data-dominant-color="212122" height="331" src="../../../images/233aceb1b4b2191bfd971693fd7f5a902b415e14_2_690x331.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/2/3/3/233aceb1b4b2191bfd971693fd7f5a902b415e14_2_690x331.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/2/3/3/233aceb1b4b2191bfd971693fd7f5a902b415e14_2_1035x496.png 1.5x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">b875897cb19e3dc469c3c7c344861abaecbde29a_2_1380x662</span><span class="informations">1380×662 71.4 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>Foundation:</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/dG7jqM49k8ztPVchosOGitDuRIb.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/5/f/d/5fdf1551e0e9985b89b28755c6d6d41bc70a6be7.png" title="7ed5621e6d1b3559f327eba27e08f18e16134a96_2_1380x662"><img alt="7ed5621e6d1b3559f327eba27e08f18e16134a96_2_1380x662" data-base62-sha1="dG7jqM49k8ztPVchosOGitDuRIb" data-dominant-color="262727" height="331" src="../../../images/5fdf1551e0e9985b89b28755c6d6d41bc70a6be7_2_690x331.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/5/f/d/5fdf1551e0e9985b89b28755c6d6d41bc70a6be7_2_690x331.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/5/f/d/5fdf1551e0e9985b89b28755c6d6d41bc70a6be7_2_1035x496.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/5/f/d/5fdf1551e0e9985b89b28755c6d6d41bc70a6be7_2_1380x662.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">7ed5621e6d1b3559f327eba27e08f18e16134a96_2_1380x662</span><span class="informations">1380×662 69.2 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>Is this desired? Or something that might need fixing? I have to say that if the content width is constrained, it would seem logical to me not to have the menu bar start all the way over there to the left.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/537252_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">chapoi</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="64" data-topic="360486" data-username="NateDhaliwal">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/313494_2.png" width="24"/> NateDhaliwal:</div>
+<blockquote>
+<p>Globally pinned topics have its excerpt right-aligned (this is on my free forum):</p>
+</blockquote>
+</aside>
+<p>Can you still repro this? Atm I can’t locally.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/537252_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">chapoi</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="70" data-topic="360486" data-username="stephtara">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/517827_2.png" width="24"/> stephtara:</div>
+<blockquote>
+<p>Is this desired?</p>
+</blockquote>
+</aside>
+<p>Horizon uses the full-width component, so if you would use Foundation (full-width) theme, you’d see the same I think.</p>
+<p>So while I agree it isn’t the best-looking layout, this is currently expected for all themes that use a full-width layout yes.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/517827_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">stephtara</div>
+          <div class="post_content">
+<p>Screenshots provided shows it’s different in Horizon and Foundation <img alt=":thinking:" class="emoji" height="20" loading="lazy" src="../../../images/thinking.png" title=":thinking:" width="20"/></p>
+<p>Or am I missing something?</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/537252_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">chapoi</div>
+          <div class="post_content">
+<p>Is the screenshot from foundation or foundation-full-width?</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/nLP3Dj21XxKymDAYjAdoJ2dX7Nu.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/a/6/9/a699eeaddabafa65776ce875196c2981301a6510.png" title="image"><img alt="image" data-base62-sha1="nLP3Dj21XxKymDAYjAdoJ2dX7Nu" data-dominant-color="2E2723" height="500" src="../../../images/a699eeaddabafa65776ce875196c2981301a6510_2_563x500.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/a/6/9/a699eeaddabafa65776ce875196c2981301a6510_2_563x500.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/a/6/9/a699eeaddabafa65776ce875196c2981301a6510_2_844x750.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/a/6/9/a699eeaddabafa65776ce875196c2981301a6510.png 2x" width="563"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1084×962 62.8 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/517827_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">stephtara</div>
+          <div class="post_content">
+<p>Oh! Need to check that. Didn’t know there was a distinction!</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/517827_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">stephtara</div>
+          <div class="post_content">
+<p>I don’t seem to have installed Foundation full-width, tried searching on meta and didn’t come up?</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/537252_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">chapoi</div>
+          <div class="post_content">
+<p>Its not a specific theme, it’s this component: <a href="https://meta.discourse.org/t/discourse-full-width-component/292496">Discourse Full-width component</a></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/337776_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Lew_Grothe</div>
+          <div class="post_content">
+<p>We’re currently using the <code>Custom Header Links</code> theme component. I don’t imagine it’s a deal-killer for us but I’d just like to get a sense of whether or not it’s being considered for support – is it still under consideration for Horizon compatibility? Any guess how much work it would be?</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/537252_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">chapoi</div>
+          <div class="post_content">
+<p>We’re currently not lining up any new compatibility work. Not saying it would never happen, but for any component compatibility to be added to the roadmap, it depends on how many requests we get for it.</p>
+<p>I’m not very sure but I think it might be doable. The main conflict will be with the welcome banner setting, which uses the same outlet. So, if either completely you disable that, or set it to:</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/nIaaXLnaq8fzBt9YLkVGLDAzNEf.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/a/6/3/a6300939fb49402808a99f77b26972e23b013e8b.png" title="CleanShot 2026-04-06 at 09.13.41@2x"><img alt="CleanShot 2026-04-06 at 09.13.41@2x" data-base62-sha1="nIaaXLnaq8fzBt9YLkVGLDAzNEf" data-dominant-color="F6F6F6" height="62" src="../../../images/a6300939fb49402808a99f77b26972e23b013e8b_2_345x62.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/a/6/3/a6300939fb49402808a99f77b26972e23b013e8b_2_345x62.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/a/6/3/a6300939fb49402808a99f77b26972e23b013e8b_2_517x93.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/a/6/3/a6300939fb49402808a99f77b26972e23b013e8b_2_690x124.png 2x" width="345"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">CleanShot 2026-04-06 at 09.13.41@2x</span><span class="informations">1220×220 11.1 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>I think it might work reasonably well out of the box.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554803_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Lilly</div>
+          <div class="post_content">
+<aside class="quote no-group quote-modified" data-post="34" data-topic="360486" data-username="asa">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/184869_2.png" width="24"/> asa:</div>
+<blockquote>
+<p>I have the problem that even on my 16-inch MacBook Pro, the spacing between the menu and the content is very large. Am I doing something wrong or does something need to be adjusted?</p>
+</blockquote>
+</aside>
+<p>you can try this css in a theme  component and include it in the horizon theme:</p>
+<pre data-code-wrap="scss"><code class="lang-scss">@use "lib/viewport";
+
+// ** only apply to desktop and larger viewport sizes **
+
+@include viewport.from(lg) {
+
+  .container,
+  .list-controls {
+    margin-inline: 0!important;
+  }
+}
+</code></pre>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/3haYnHEmhlVs5rg7Aenw0RU9fK.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/0/0/5/005ed50970a47b049d26cfcea5919037272a0b04.png" title="image"><img alt="image" data-base62-sha1="3haYnHEmhlVs5rg7Aenw0RU9fK" data-dominant-color="F8F3FB" height="129" src="../../../images/005ed50970a47b049d26cfcea5919037272a0b04_2_690x129.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/0/0/5/005ed50970a47b049d26cfcea5919037272a0b04_2_690x129.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/0/0/5/005ed50970a47b049d26cfcea5919037272a0b04_2_1035x193.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/0/0/5/005ed50970a47b049d26cfcea5919037272a0b04_2_1380x258.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1689×316 39.2 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/543523_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Denis_Advert</div>
+          <div class="post_content">
+<p>Problem of view sugested threads on a mobile screen</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/ulMfgbb3ZDanMp6w3CaAdRsUcdp.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/d/4/b/d4b7711edef025d50988e33f18808e512fdde80f.png" rel="noopener nofollow ugc" title="Screenshot_2"><img alt="Screenshot_2" data-base62-sha1="ulMfgbb3ZDanMp6w3CaAdRsUcdp" data-dominant-color="F8F7F7" height="500" src="../../../images/d4b7711edef025d50988e33f18808e512fdde80f_2_355x500.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/d/4/b/d4b7711edef025d50988e33f18808e512fdde80f_2_355x500.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/d/4/b/d4b7711edef025d50988e33f18808e512fdde80f_2_532x750.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/d/4/b/d4b7711edef025d50988e33f18808e512fdde80f.png 2x" width="355"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot_2</span><span class="informations">547×770 45.1 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554803_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Lilly</div>
+          <div class="post_content">
+<p>hmm i can’t reproduce this on my iphone15 in latest chrome, safari or firefox.</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/c8v70LeveOSRNXiSSlr8CO13hQY.jpeg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/5/5/1/55101daa4c8e678a919c0b7b9b63dfdfd9ce8d50.jpeg" title="IMG5301"><img alt="IMG5301" data-base62-sha1="c8v70LeveOSRNXiSSlr8CO13hQY" data-dominant-color="F6F5F6" height="500" src="../../../images/55101daa4c8e678a919c0b7b9b63dfdfd9ce8d50_2_266x500.jpeg" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/5/5/1/55101daa4c8e678a919c0b7b9b63dfdfd9ce8d50_2_266x500.jpeg, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/5/5/1/55101daa4c8e678a919c0b7b9b63dfdfd9ce8d50_2_399x750.jpeg 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/5/5/1/55101daa4c8e678a919c0b7b9b63dfdfd9ce8d50_2_532x1000.jpeg 2x" width="266"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">IMG5301</span><span class="informations">1290×2419 238 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>what device and browser are you using?  seems odd it is trying to load the excerpts there. <img alt=":thinking:" class="emoji" height="20" loading="lazy" src="../../../images/thinking.png" title=":thinking:" width="20"/></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/543523_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Denis_Advert</div>
+          <div class="post_content">
+<p>I tested it in a desktop using Chrome browser. I simply set the screen size to match that of a phone using F12. When I refresh the page from the cache (Ctrl + F5), the problem persists.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554803_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Lilly</div>
+          <div class="post_content">
+<p>yea i just tested on my desktop chrome with console for mobile and still cannot reproduce.</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/5s8Dr1PDT3uTbQI2R3yWk3kT65C.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/2/6/3/26392c3d78325b530d84168a7f19e6a67c16a39c.png" title="image"><img alt="image" data-base62-sha1="5s8Dr1PDT3uTbQI2R3yWk3kT65C" data-dominant-color="F6F4F6" height="500" src="../../../images/26392c3d78325b530d84168a7f19e6a67c16a39c_2_268x500.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/2/6/3/26392c3d78325b530d84168a7f19e6a67c16a39c_2_268x500.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/2/6/3/26392c3d78325b530d84168a7f19e6a67c16a39c_2_402x750.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/2/6/3/26392c3d78325b530d84168a7f19e6a67c16a39c.png 2x" width="268"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">458×854 60.4 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/543523_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Denis_Advert</div>
+          <div class="post_content">
+<p>Okay, maybe this issue will go away after a Chrome update (though I think I have the latest version). Oh well.</p>
+<p>I have one more question. Why doesn’t that block with the tag selection and buttons hide when I scroll down? Is it just me, or does this happen to everyone? It takes up quite a bit of screen space; it would make sense to hide it when scrolling down.</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/sR6DzIGHvbof6bAnsM1LvWDbJNt.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/c/a/3/ca3db2eb6ef082469dded9cefb391e3adb0864c7.png" rel="noopener nofollow ugc" title="Screenshot_3"><img alt="Screenshot_3" data-base62-sha1="sR6DzIGHvbof6bAnsM1LvWDbJNt" data-dominant-color="2A2929" height="499" src="../../../images/ca3db2eb6ef082469dded9cefb391e3adb0864c7_2_304x499.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/c/a/3/ca3db2eb6ef082469dded9cefb391e3adb0864c7_2_304x499.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/c/a/3/ca3db2eb6ef082469dded9cefb391e3adb0864c7_2_456x748.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/c/a/3/ca3db2eb6ef082469dded9cefb391e3adb0864c7.png 2x" width="304"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot_3</span><span class="informations">470×773 55.6 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="100: 1">:100: 1</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554803_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Lilly</div>
+          <div class="post_content">
+<p>that is apparently the expected behavior for horizon theme (probably to always show what category/tag the user is in?), but i agree that it takes up too much space to be anchored there when scrolling.  looks like the category and tag breadcrumb selectors are inside the <code>navigation-container</code>.</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/o2DUKgTAQ44LHDLMcAOkQWTgtIN.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/a/8/8/a880aea12be5d85cae341fec93ebb2ca367526fd.png" title="image"><img alt="image" data-base62-sha1="o2DUKgTAQ44LHDLMcAOkQWTgtIN" data-dominant-color="313236" height="499" src="../../../images/a880aea12be5d85cae341fec93ebb2ca367526fd_2_395x499.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/a/8/8/a880aea12be5d85cae341fec93ebb2ca367526fd_2_395x499.png, https://d11a6trkgmumsb.cloudfront.net/original/4X/a/8/8/a880aea12be5d85cae341fec93ebb2ca367526fd.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/a/8/8/a880aea12be5d85cae341fec93ebb2ca367526fd.png 2x" width="395"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">551×696 62.4 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/529329_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">jack222</div>
+          <div class="post_content">
+<p>On smaller phone screens, these two buttons take up a lot of space in the title list content.</p>
+<p>I believe the trend in information density is toward greater compactness. My approach was to remove the fixed property for this row in CSS.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/555233_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">moebis</div>
+          <div class="post_content">
+<p>Is this normal for these buttons to stack on 3 rows instead of 1 compact one?</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/fWvzuFG9dDKDy0VRvZHY5FpIDGb.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/6/f/b/6fbdc44653481b4a8266ea4c4f3186e4ea6ec723.png" rel="noopener nofollow ugc" title="image"><img alt="image" data-base62-sha1="fWvzuFG9dDKDy0VRvZHY5FpIDGb" data-dominant-color="202123" height="154" src="../../../images/6fbdc44653481b4a8266ea4c4f3186e4ea6ec723_2_690x154.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/6/f/b/6fbdc44653481b4a8266ea4c4f3186e4ea6ec723_2_690x154.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/6/f/b/6fbdc44653481b4a8266ea4c4f3186e4ea6ec723_2_1035x231.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/6/f/b/6fbdc44653481b4a8266ea4c4f3186e4ea6ec723_2_1380x308.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1788×400 21.8 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554803_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Lilly</div>
+          <div class="post_content">
+<p>yea that looks like expected behavior unfortunately.  the pinned button and topic notifications buttons are outside the <code>topic-footer-main-buttons</code> div.  <s>not sure if it’s possible but those two buttons should at the very least be in their own row together, but it would definitely be more ideal if they could render inside the topic footer main buttons row here.</s></p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/dETrHU93RTCYWSlcreh5JB2CPqm.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/5/f/b/5fbbac3f7ad1ec04fff3e7c94dd1c0c0e73f5e3e.png" title="Screenshot 2026-05-19 at 8.59.55 AM"><img alt="Screenshot 2026-05-19 at 8.59.55 AM" data-base62-sha1="dETrHU93RTCYWSlcreh5JB2CPqm" data-dominant-color="EEEDF4" height="343" src="../../../images/5fbbac3f7ad1ec04fff3e7c94dd1c0c0e73f5e3e_2_517x343.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/5/f/b/5fbbac3f7ad1ec04fff3e7c94dd1c0c0e73f5e3e_2_517x343.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/5/f/b/5fbbac3f7ad1ec04fff3e7c94dd1c0c0e73f5e3e_2_775x514.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/5/f/b/5fbbac3f7ad1ec04fff3e7c94dd1c0c0e73f5e3e_2_1034x686.png 2x" width="517"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2026-05-19 at 8.59.55 AM</span><span class="informations">1266×842 85.2 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>edit: Moin pointed out to me that this is because Horizon hides the text explainers (that i don’t usually pay attention to lol)</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/Au3YQhsMoOT6oBpsuiuSLOWGxvb.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/f/f/b/ffb445151209258eeb37eadb96748e2778f48be1.png" title="Screenshot 2026-05-19 at 9.57.24 AM"><img alt="Screenshot 2026-05-19 at 9.57.24 AM" data-base62-sha1="Au3YQhsMoOT6oBpsuiuSLOWGxvb" data-dominant-color="F3F1F4" height="170" src="../../../images/ffb445151209258eeb37eadb96748e2778f48be1_2_690x170.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/f/f/b/ffb445151209258eeb37eadb96748e2778f48be1_2_690x170.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/f/f/b/ffb445151209258eeb37eadb96748e2778f48be1_2_1035x255.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/f/f/b/ffb445151209258eeb37eadb96748e2778f48be1_2_1380x340.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2026-05-19 at 9.57.24 AM</span><span class="informations">1558×384 34.9 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>they can be displayed by using this CSS if one needs:</p>
+<pre data-code-wrap="css"><code class="lang-css">.notifications-button-footer .reason .text, 
+.pinned-button .reason .text {
+    display: inline-flex;
+}
+</code></pre>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+
+    </div>
+  </body>
+</html>

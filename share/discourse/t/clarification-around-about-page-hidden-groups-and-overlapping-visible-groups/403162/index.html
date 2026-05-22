@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width">
+    <title>Clarification around about page hidden groups and overlapping visible groups</title>
+    <link rel="stylesheet" href="../../../archived.css" />
+    <script>
+      function findSageCodeBlocks() {
+        return Array.prototype.slice.call(
+          document.querySelectorAll(
+            "pre[data-code-wrap='sage'] > code, pre > code.lang-sage, pre > code.language-sage, pre > code.sage"
+          )
+        );
+      }
+
+      function loadScript(src) {
+        return new Promise(function (resolve, reject) {
+          var existing = document.querySelector("script[src='" + src + "']");
+          if (existing) {
+            if (existing.dataset.loaded === "true") {
+              resolve();
+              return;
+            }
+            existing.addEventListener("load", resolve, { once: true });
+            existing.addEventListener("error", reject, { once: true });
+            return;
+          }
+
+          var script = document.createElement("script");
+          script.src = src;
+          script.async = true;
+          script.addEventListener("load", function () {
+            script.dataset.loaded = "true";
+            resolve();
+          }, { once: true });
+          script.addEventListener("error", reject, { once: true });
+          document.head.appendChild(script);
+        });
+      }
+
+      function prepareSageCells() {
+        var sageBlocks = findSageCodeBlocks();
+        if (!sageBlocks.length) {
+          return Promise.resolve();
+        }
+
+        return loadScript("https://sagecell.sagemath.org/static/embedded_sagecell.js")
+          .then(function () {
+            if (!window.sagecell || !window.sagecell.makeSagecell) {
+              return;
+            }
+
+            sageBlocks.forEach(function (codeTag, index) {
+              var preTag = codeTag.parentElement;
+              if (!preTag || preTag.dataset.sageMounted === "true") {
+                return;
+              }
+
+              var host = document.createElement("div");
+              host.className = "sagecell-archive";
+
+              var source = document.createElement("script");
+              source.type = "text/x-sage";
+              source.text = codeTag.textContent || "";
+              host.appendChild(source);
+
+              preTag.insertAdjacentElement("afterend", host);
+              preTag.classList.add("sage-source-hidden");
+              preTag.dataset.sageMounted = "true";
+
+              window.sagecell.makeSagecell({
+                inputLocation: host,
+                autoeval: false,
+                evalButtonText: "Run",
+                languages: ["sage"]
+              });
+            });
+          })
+          .catch(function () {
+            // Leave the original code blocks visible if SageCell cannot load.
+          });
+      }
+
+      function preprocessDiscourseMath() {
+        document.querySelectorAll("span.math, div.math").forEach(function (node) {
+          var tex = node.textContent || "";
+          if (!tex.trim()) {
+            return;
+          }
+          if (node.tagName === "SPAN") {
+            node.textContent = "\\(" + tex + "\\)";
+          } else {
+            node.textContent = "\\[" + tex + "\\]";
+          }
+          node.classList.remove("math");
+        });
+      }
+
+      window.MathJax = {
+        tex: {
+          inlineMath: [["\\(", "\\)"]],
+          displayMath: [["\\[", "\\]"]]
+        },
+        startup: {
+          pageReady() {
+            preprocessDiscourseMath();
+            return MathJax.startup.defaultPageReady().then(function () {
+              return prepareSageCells();
+            });
+          }
+        }
+      };
+    </script>
+    <script async id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="title-span">
+        <a href="../../../">
+          <img src="../../../images/ad2526334012b2ad0c3421f9b6dd94bae2ede52f.svg" height="40" alt="Site Logo" id="site-logo" />
+        </a>
+      </div>
+    </header>
+
+    <div class="main">
+    <div class="archive-span"><a href='https://meta.discourse.org/'>Discourse Meta</a> archived in May, 2026</div>
+    <h1 class="topic-title">Clarification around about page hidden groups and overlapping visible groups</h1>
+            <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/522255_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Ethsim2</div>
+          <div class="post_content">
+<p>my Discourse version: 2026.5.0-latest (<a href="https://github.com/discourse/discourse/commits/601e66da6050862ca9c62bc2f043238cdfc84bb7" rel="noopener nofollow ugc">601e66da60</a>)</p>
+<hr/>
+<p>I was testing some group visibility behaviour on the /about page and wanted to check whether the current behaviour is intentional, or whether I may be misunderstanding the purpose of about page hidden groups.</p>
+<h2><a aria-label="Heading link" class="anchor" href="#p-1982182-scenario-1" name="p-1982182-scenario-1"></a>Scenario</h2>
+<p>I had:</p>
+<ul>
+<li>about page hidden groups = admins, friends, Mods</li>
+<li>about page extra groups = Mods</li>
+</ul>
+<p>A user was:</p>
+<ul>
+<li>a member of the hidden friends group</li>
+<li>and also a member of the visible Mods group</li>
+</ul>
+<p>I initially expected membership in a hidden group to suppress the user from appearing anywhere on /about.</p>
+<p>However, the user still appeared via the visible Mods group section.</p>
+<p>After more testing (including impersonating a non-admin user), I discovered the behaviour instead seems to be:</p>
+<ul>
+<li>about page hidden groups hides the group section itself</li>
+<li>but does not suppress individual users from appearing through another visible group</li>
+</ul>
+<p>The thing that ultimately prevented the user appearing publicly was changing:</p>
+<p>Who can see this group’s members?</p>
+<p>from:</p>
+<ul>
+<li>Everyone</li>
+</ul>
+<p>to:</p>
+<ul>
+<li>Group owners, members and moderators</li>
+</ul>
+<p>on the visible group.</p>
+<h2><a aria-label="Heading link" class="anchor" href="#p-1982182-question-2" name="p-1982182-question-2"></a>Question</h2>
+<p>Is this the intended behaviour?</p>
+<p>If so, it may be worth clarifying in the setting description or documentation, because the name about page hidden groups could reasonably be interpreted as:</p>
+<blockquote>
+<p>“hide members of these groups from the About page”</p>
+</blockquote>
+<p>rather than:</p>
+<blockquote>
+<p>“hide these group sections from the About page”</p>
+</blockquote>
+<p>The interaction between:</p>
+<ul>
+<li>about page hidden groups</li>
+<li>about page extra groups</li>
+<li>and group member visibility permissions</li>
+</ul>
+<p>is subtle enough that I suspect other admins may make the same assumption I initially did.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/313494_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">NateDhaliwal</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="1" data-topic="403162" data-username="Ethsim2">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/522255_2.png" width="24"/> Ethsim2:</div>
+<blockquote>
+<ul>
+<li>about page hidden groups = admins, friends, Mods</li>
+<li>about page extra groups = Mods</li>
+</ul>
+</blockquote>
+</aside>
+<p>Why bother putting the same group to be hidden AND to be shown on purpose? IIRC the former setting hides the ‘Our Admins’ / ‘Our Moderators’ section, while the latter adds more groups below. From my testing, it does not look at the first setting to control the visibility. So if you add Moderators to both, a new section titled ‘moderators’ will be shown with members, while the ‘Our Moderators’ section will be removed.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="100: 1">:100: 1</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/522255_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Ethsim2</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="2" data-topic="403162" data-username="NateDhaliwal">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/313494_2.png" width="24"/> NateDhaliwal:</div>
+<blockquote>
+<p>Why bother putting the same group to be hidden AND to be shown on purpose?</p>
+</blockquote>
+</aside>
+<p>that was a demonstration, the same behaviour was observed on the non-admin account, regardless of whether <code>Mods</code> is also in <code>about page hidden groups</code></p>
+<aside class="quote no-group" data-post="2" data-topic="403162" data-username="NateDhaliwal">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/313494_2.png" width="24"/> NateDhaliwal:</div>
+<blockquote>
+<p>IIRC the former setting hides the ‘Our Admins’ / ‘Our Moderators’ section</p>
+</blockquote>
+</aside>
+<p>yes, site-wide administrators disappear and the <code>moderators</code> has one numeric member not listed, when looking on the admin account, despite <code>Who can see this group?</code> and <code>Who can see this group’s members?</code> both being set to <code>Group owners, moderators, and members</code></p>
+<aside class="quote no-group" data-post="2" data-topic="403162" data-username="NateDhaliwal">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/313494_2.png" width="24"/> NateDhaliwal:</div>
+<blockquote>
+<p>while the latter adds more groups below.</p>
+</blockquote>
+</aside>
+<p>the full name for the <code>Mods</code> group is <code>Our Moderators</code>.</p>
+<aside class="quote no-group" data-post="2" data-topic="403162" data-username="NateDhaliwal">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/313494_2.png" width="24"/> NateDhaliwal:</div>
+<blockquote>
+<p>From my testing, it does not look at the first setting to control the visibility.</p>
+</blockquote>
+</aside>
+<p>I’m proposing change here, where any user in a group in <code>about page hidden groups</code> cannot be shown as a member of a group on the /about page as being in any of the <code>about page extra groups</code></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/522255_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Ethsim2</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="3" data-topic="403162" data-username="Ethsim2">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/522255_2.png" width="24"/> Ethsim2:</div>
+<blockquote>
+<p>I’m proposing change here, where any user in a group in <code>about page hidden groups</code> cannot be shown as a member of a group on the /about page as being in any of the <code>about page extra groups</code></p>
+</blockquote>
+</aside>
+<p>I think this behaviour may be better controlled by a boolean site setting, perhaps something like:</p>
+<p><code>about_page_exclude_hidden_group_members</code></p>
+<p>The wording intentionally avoids implying any broader anonymity/privacy guarantee, since this would only affect how users are rendered in <code>/about</code> group listings, not whether administrators may reference those users elsewhere via customized text/content.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/313494_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">NateDhaliwal</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="3" data-topic="403162" data-username="Ethsim2">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/522255_2.png" width="24"/> Ethsim2:</div>
+<blockquote>
+<p><code>Who can see this group?</code> and <code>Who can see this group’s members?</code> both being set to <code>Group owners, moderators, and members</code></p>
+</blockquote>
+</aside>
+<p>IIRC this applies to the Groups page and not the About page.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/522255_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Ethsim2</div>
+          <div class="post_content">
+<aside class="quote no-group quote-modified" data-full="true" data-post="5" data-topic="403162" data-username="NateDhaliwal">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/313494_2.png" width="24"/> NateDhaliwal:</div>
+<blockquote>
+<aside class="quote no-group" data-post="3" data-topic="403162" data-username="Ethsim2">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/522255_2.png" width="24"/> Ethsim2:</div>
+<blockquote>
+<p><code>Who can see this group?</code> and <code>Who can see this group’s members?</code> both being set to <code>Group owners, moderators, and members</code></p>
+</blockquote>
+</aside>
+<p>IIRC this applies to the Groups page and not the About page.</p>
+</blockquote>
+</aside>
+<p>In my testing, a combination of these Group Interaction settings can take precedence on the <code>/about</code> page, because it can hide groups on the <code>/about</code> page for an admin user as-well.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="eyes: 1">👀 1</span></div>
+        </div>
+      </div>
+
+
+    </div>
+  </body>
+</html>

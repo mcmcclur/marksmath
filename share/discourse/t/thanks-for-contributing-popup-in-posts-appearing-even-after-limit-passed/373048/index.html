@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width">
+    <title>&ldquo;Thanks for Contributing&rdquo; Popup in Posts Appearing Even After Limit Passed?</title>
+    <link rel="stylesheet" href="../../../archived.css" />
+    <script>
+      function findSageCodeBlocks() {
+        return Array.prototype.slice.call(
+          document.querySelectorAll(
+            "pre[data-code-wrap='sage'] > code, pre > code.lang-sage, pre > code.language-sage, pre > code.sage"
+          )
+        );
+      }
+
+      function loadScript(src) {
+        return new Promise(function (resolve, reject) {
+          var existing = document.querySelector("script[src='" + src + "']");
+          if (existing) {
+            if (existing.dataset.loaded === "true") {
+              resolve();
+              return;
+            }
+            existing.addEventListener("load", resolve, { once: true });
+            existing.addEventListener("error", reject, { once: true });
+            return;
+          }
+
+          var script = document.createElement("script");
+          script.src = src;
+          script.async = true;
+          script.addEventListener("load", function () {
+            script.dataset.loaded = "true";
+            resolve();
+          }, { once: true });
+          script.addEventListener("error", reject, { once: true });
+          document.head.appendChild(script);
+        });
+      }
+
+      function prepareSageCells() {
+        var sageBlocks = findSageCodeBlocks();
+        if (!sageBlocks.length) {
+          return Promise.resolve();
+        }
+
+        return loadScript("https://sagecell.sagemath.org/static/embedded_sagecell.js")
+          .then(function () {
+            if (!window.sagecell || !window.sagecell.makeSagecell) {
+              return;
+            }
+
+            sageBlocks.forEach(function (codeTag, index) {
+              var preTag = codeTag.parentElement;
+              if (!preTag || preTag.dataset.sageMounted === "true") {
+                return;
+              }
+
+              var host = document.createElement("div");
+              host.className = "sagecell-archive";
+
+              var source = document.createElement("script");
+              source.type = "text/x-sage";
+              source.text = codeTag.textContent || "";
+              host.appendChild(source);
+
+              preTag.insertAdjacentElement("afterend", host);
+              preTag.classList.add("sage-source-hidden");
+              preTag.dataset.sageMounted = "true";
+
+              window.sagecell.makeSagecell({
+                inputLocation: host,
+                autoeval: false,
+                evalButtonText: "Run",
+                languages: ["sage"]
+              });
+            });
+          })
+          .catch(function () {
+            // Leave the original code blocks visible if SageCell cannot load.
+          });
+      }
+
+      function preprocessDiscourseMath() {
+        document.querySelectorAll("span.math, div.math").forEach(function (node) {
+          var tex = node.textContent || "";
+          if (!tex.trim()) {
+            return;
+          }
+          if (node.tagName === "SPAN") {
+            node.textContent = "\\(" + tex + "\\)";
+          } else {
+            node.textContent = "\\[" + tex + "\\]";
+          }
+          node.classList.remove("math");
+        });
+      }
+
+      window.MathJax = {
+        tex: {
+          inlineMath: [["\\(", "\\)"]],
+          displayMath: [["\\[", "\\]"]]
+        },
+        startup: {
+          pageReady() {
+            preprocessDiscourseMath();
+            return MathJax.startup.defaultPageReady().then(function () {
+              return prepareSageCells();
+            });
+          }
+        }
+      };
+    </script>
+    <script async id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="title-span">
+        <a href="../../../">
+          <img src="../../../images/ad2526334012b2ad0c3421f9b6dd94bae2ede52f.svg" height="40" alt="Site Logo" id="site-logo" />
+        </a>
+      </div>
+    </header>
+
+    <div class="main">
+    <div class="archive-span"><a href='https://meta.discourse.org/'>Discourse Meta</a> archived in May, 2026</div>
+    <h1 class="topic-title">&ldquo;Thanks for Contributing&rdquo; Popup in Posts Appearing Even After Limit Passed?</h1>
+            <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">phoenix1</div>
+          <div class="post_content">
+<p>Hello! I just updated to Discourse v3.5.0.beta7 +123 according to the admin control panel (forgive me for being new to all of this, I have just started using Discourse over the past few days <img alt=":grin:" class="emoji" height="20" loading="lazy" src="../../../images/grin.png" title=":grin:" width="20"/>). I noticed recently that the “thanks for contributing” dialog that appears to the right of the posting window no longer disappears for users who have passed the post limit (I believe 2 is the default). I set it to 0 so that the dialog is not displayed at all, but it would be nice to have for new users, if only I could fix this behaviour somehow! The problem seems to go away if you sign out and sign back in, I created a test account and the dialog would appear for every post that I made with that account, until I signed out and signed back in. At that point everything worked as expected. Very strange, perhaps someone else has seen this!</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/102149_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">sam</div>
+          <div class="post_content">
+<p>Just double checking, can anyone else reproduce this regression?</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">phoenix1</div>
+          <div class="post_content">
+<p>I have noticed that if the popup is enabled and a person is seeing it, logging out and logging back in seems to solve the problem (the popup no longer appears). I have just left them disabled for the moment, however <img alt=":slight_smile:" class="emoji" height="20" loading="lazy" src="../../../images/slight_smile.png" title=":slight_smile:" width="20"/></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">phoenix1</div>
+          <div class="post_content">
+<p><strong>Steps to reproduce</strong></p>
+<ul>
+<li>Register an entirely new account (do not create it via the admin interface).</li>
+<li>Create some test posts. The default limit for the “education” dialog is 2 posts, after which you should no longer see it.</li>
+<li>The dialog continues to appear after the required number of posts.</li>
+<li>Now log out and log back in. The dialog will no longer appear for that user.</li>
+</ul>
+<p>Perhaps this will help someone else in reproducing <img alt=":slight_smile:" class="emoji" height="20" loading="lazy" src="../../../images/slight_smile.png" title=":slight_smile:" width="20"/> Sorry for “bumping” the post so to speak, but I thought the additional information might be helpful. I can also state that as of updating to <a href="https://github.com/discourse/discourse/commit/31ed2620caa780c941c6cff2a8ecaeffcbdbb14b" rel="noopener nofollow ugc">v3.5.0.beta7 +139</a> the bug still appears to exist, at least on my end. I was <strong>also</strong> concerned that this may just have been a browser related hiccup (I normally use Safari), so I tried the reproducing steps with Firefox and the problem still occurred!</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/254611_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">JammyDodger</div>
+          <div class="post_content">
+<p>Hello and welcome <span class="mention">@phoenix1</span> <img alt=":slight_smile:" class="emoji" height="20" loading="lazy" src="../../../images/slight_smile.png" title=":slight_smile:" width="20"/></p>
+<p>I managed a tentative repro earlier, but with the caveat that it only seemed to happen on the new topic education message and not the new post education message. Though it also stopped by itself rather than needing a logout/login. My test user saw the topic education message for their first 3 topics that went on to be published and then also in the draft of the fourth, but after trying to see if the post one would also do the same the topic one stopped showing.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">phoenix1</div>
+          <div class="post_content">
+<p>Thanks very much, I appreciate it! <img alt=":slight_smile:" class="emoji" height="20" loading="lazy" src="../../../images/slight_smile.png" title=":slight_smile:" width="20"/> If there is any additional information that I can provide to help improve the report please let me know, I am pretty new to all of this so have not ruled out that I have made a silly mistake yet <img alt=":stuck_out_tongue:" class="emoji" height="20" loading="lazy" src="../../../images/stuck_out_tongue.png" title=":stuck_out_tongue:" width="20"/></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554671_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">davidb</div>
+          <div class="post_content">
+<p>Thank you for reporting. I made some changes to simplify the post count as we were previously counting topics and posts separately.</p>
+<p>I think this should solve it:</p>
+<aside class="onebox githubcommit" data-onebox-src="https://github.com/discourse/discourse/commit/793c55aa58aa9b74ebd8aa0541ff23a73fd87f4f">
+<header class="source">
+<a href="https://github.com/discourse/discourse/commit/793c55aa58aa9b74ebd8aa0541ff23a73fd87f4f" rel="noopener" target="_blank">github.com/discourse/discourse</a>
+</header>
+<article class="onebox-body">
+<div class="github-row">
+<div class="github-icon-container" title="Commit">
+<svg aria-hidden="true" class="github-icon" height="60" viewbox="0 0 14 16" width="60"><path d="M10.86 7c-.45-1.72-2-3-3.86-3-1.86 0-3.41 1.28-3.86 3H0v2h3.14c.45 1.72 2 3 3.86 3 1.86 0 3.41-1.28 3.86-3H14V7h-3.14zM7 10.2c-1.22 0-2.2-.98-2.2-2.2 0-1.22.98-2.2 2.2-2.2 1.22 0 2.2.98 2.2 2.2 0 1.22-.98 2.2-2.2 2.2z" fill-rule="evenodd"></path></svg>
+</div>
+<div class="github-info-container">
+<h4>
+<a href="https://github.com/discourse/discourse/commit/793c55aa58aa9b74ebd8aa0541ff23a73fd87f4f" rel="noopener" target="_blank">FIX: composer educational limit should use post count (#33650)</a>
+</h4>
+<div class="github-info">
+<div class="date">
+        committed <span class="discourse-local-date" data-date="2025-07-17" data-format="ll" data-time="14:15:18" data-timezone="UTC">02:15PM - 17 Jul 25 UTC</span>
+</div>
+<div class="user">
+<a href="https://github.com/dbattersby" rel="noopener" target="_blank">
+<img alt="" class="onebox-avatar-inline" data-dominant-color="7B6A5C" height="20" src="../../../images/05d443351f04a3f94c013c74dbaf9d719ed43c3e.jpeg" width="20"/>
+          dbattersby
+        </a>
+</div>
+<div class="lines" title="changed 2 files with 7 additions and 10 deletions">
+<a href="https://github.com/discourse/discourse/commit/793c55aa58aa9b74ebd8aa0541ff23a73fd87f4f" rel="noopener" target="_blank">
+<span class="added">+7</span>
+<span class="removed">-10</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+<div class="github-row">
+<p class="github-body-container">The educational posts site setting (`educate_until_posts`) feels buggy,
+this is <span class="show-more-container"><a class="show-more" href="https://github.com/discourse/discourse/commit/793c55aa58aa9b74ebd8aa0541ff23a73fd87f4f" rel="noopener" target="_blank">…</a></span><span class="excerpt hidden">because the logic for showing these messages treats topics and
+replies (posts) as a separate count.
+
+If `SiteSetting.educate_until_posts` has a value of 2, the user can
+write multiple replies to existing topics and see the "Welcome to our
+community! You are brand new here..." message for the first 2 times then
+it will not show again.
+
+However, once they decide to create a topic they will see the message
+again which doesn't feel right.
+
+The solution is to use a combined count (`user.topic_count` and
+`user.post_count`) and check against the site setting value. That way we
+don't double up educational messages for both topics and replies when
+using composer.</span></p>
+</div>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554653_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Moin</div>
+          <div class="post_content">
+<p>Is the message shown now the same?</p>
+<p>I agree that the welcome part at the top was confusing after a year of participating. But I think even when the user has joined a while ago it still makes sense to tell them about choosing an interesting title.</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/3JhDzRHTPmyLQqRk3TCGyWxvEmQ.jpeg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/1/a/2/1a24fa43a3a07d933a15f6137aea8e58fc0d7c80.jpeg" title="Screenshot_20250717_082524_Chrome"><img alt="Screenshot_20250717_082524_Chrome" data-base62-sha1="3JhDzRHTPmyLQqRk3TCGyWxvEmQ" data-dominant-color="F4F5F4" height="313" src="../../../images/1a24fa43a3a07d933a15f6137aea8e58fc0d7c80_2_690x313.jpeg" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/1/a/2/1a24fa43a3a07d933a15f6137aea8e58fc0d7c80_2_690x313.jpeg, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/1/a/2/1a24fa43a3a07d933a15f6137aea8e58fc0d7c80_2_1035x469.jpeg 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/1/a/2/1a24fa43a3a07d933a15f6137aea8e58fc0d7c80.jpeg 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot_20250717_082524_Chrome</span><span class="informations">1082×492 86.2 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<hr/>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/6QqoIgdOvKoNnZpOmpDohWsm7Gw.jpeg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/2/f/f/2ffa28064fb8cd5ab1e050889db5644628d58c78.jpeg" title="Screenshot_20250717_082443_Chrome"><img alt="Screenshot_20250717_082443_Chrome" data-base62-sha1="6QqoIgdOvKoNnZpOmpDohWsm7Gw" data-dominant-color="F6F7F6" height="270" src="../../../images/2ffa28064fb8cd5ab1e050889db5644628d58c78_2_690x270.jpeg" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/2/f/f/2ffa28064fb8cd5ab1e050889db5644628d58c78_2_690x270.jpeg, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/2/f/f/2ffa28064fb8cd5ab1e050889db5644628d58c78_2_1035x405.jpeg 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/2/f/f/2ffa28064fb8cd5ab1e050889db5644628d58c78.jpeg 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot_20250717_082443_Chrome</span><span class="informations">1099×431 122 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<hr/>
+<p>Edit:<br/>
+I just noticed the texts were changed 2 months ago.</p>
+<p>Now they are much more alike, so it does not matter as much. But I think the detailed instructions were more interesting than the general “please read the guidelines”</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/opPHkuNFyH8fkHxKlkXU2O1mkE7.jpeg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/a/b/1/ab1fc34549e02d9e3c6d95538832343da214bca7.jpeg" title="Screenshot_20250717_191441_Chrome"><img alt="Screenshot_20250717_191441_Chrome" data-base62-sha1="opPHkuNFyH8fkHxKlkXU2O1mkE7" data-dominant-color="F5F6F5" height="189" src="../../../images/ab1fc34549e02d9e3c6d95538832343da214bca7_2_690x189.jpeg" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/a/b/1/ab1fc34549e02d9e3c6d95538832343da214bca7_2_690x189.jpeg, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/a/b/1/ab1fc34549e02d9e3c6d95538832343da214bca7_2_1035x283.jpeg 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/a/b/1/ab1fc34549e02d9e3c6d95538832343da214bca7.jpeg 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot_20250717_191441_Chrome</span><span class="informations">1119×308 101 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div><br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/yJJePCRQGEbawwrU4t5GPQolwTR.jpeg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/f/3/7/f37540d4a26b9c591cc7437a954c9965405d6a1f.jpeg" title="Screenshot_20250717_191419_Chrome"><img alt="Screenshot_20250717_191419_Chrome" data-base62-sha1="yJJePCRQGEbawwrU4t5GPQolwTR" data-dominant-color="F7F8F7" height="283" src="../../../images/f37540d4a26b9c591cc7437a954c9965405d6a1f_2_690x283.jpeg" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/f/3/7/f37540d4a26b9c591cc7437a954c9965405d6a1f_2_690x283.jpeg, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/f/3/7/f37540d4a26b9c591cc7437a954c9965405d6a1f_2_1035x424.jpeg 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/f/3/7/f37540d4a26b9c591cc7437a954c9965405d6a1f.jpeg 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot_20250717_191419_Chrome</span><span class="informations">1084×445 113 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/254611_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">JammyDodger</div>
+          <div class="post_content">
+<aside class="quote group-team" data-post="14" data-topic="373048" data-username="davidb">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/554671_2.png" width="24"/> davidb:</div>
+<blockquote>
+<p>I made some changes to simplify the post count as we were previously counting topics and posts separately.</p>
+</blockquote>
+</aside>
+<p>Aren’t those separate counts needed for showing the right message? (Either <code>education.new-topic</code> or <code>education.new-reply</code>)</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">phoenix1</div>
+          <div class="post_content">
+<p>I would like to thank you very much for looking into this! <img alt=":slight_smile:" class="emoji" height="20" loading="lazy" src="../../../images/slight_smile.png" title=":slight_smile:" width="20"/> The post count change certainly does help, in that the topics and replies are both considered in the count now, so that took care of some buggy behaviour, excellent!</p>
+<p>I must be doing something wrong though, if I take the following steps:</p>
+<ul>
+<li>Register a new account manually (not through the admin interface)</li>
+<li>Post several topics through that new account <em>without</em> logging out</li>
+</ul>
+<p>In this particular case (and it is a particular one <img alt=":slight_smile:" class="emoji" height="20" loading="lazy" src="../../../images/slight_smile.png" title=":slight_smile:" width="20"/> ), the welcome dialog continues to appear no matter how many topics and replies are posted, at least in my testing. It <em>does</em> disappear once you logout and log back in, though. I think the reason I was seeing it more often than before was due to the bug you have fixed here, so it’s certainly improved upon the situation! <img alt=":slight_smile:" class="emoji" height="20" loading="lazy" src="../../../images/slight_smile.png" title=":slight_smile:" width="20"/></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554671_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">davidb</div>
+          <div class="post_content">
+<p>No I don’t think so. The translation key hasn’t changed as far as I can tell.</p>
+<p>Only the count value has changed to combine both topic count and post count.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/254611_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">JammyDodger</div>
+          <div class="post_content">
+<p>I think I’m being a <img alt=":derp:" class="emoji emoji-custom" height="20" loading="lazy" src="../../../images/fbcb0c6bef4f3950dc9f78533cd864d856763440.png" title=":derp:" width="20"/> <img alt=":slight_smile:" class="emoji" height="20" loading="lazy" src="../../../images/slight_smile.png" title=":slight_smile:" width="20"/></p>
+<p>So, the <code>education.new-topic</code> still shows up for your first two topics, and <code>education.new-reply</code> still shows up for your first two ‘non-op’ posts?</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554653_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Moin</div>
+          <div class="post_content">
+<p>I can reproduce that problem. The education message is shown even after the first two topics were created. It works when I create replies, but not for topics.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">phoenix1</div>
+          <div class="post_content">
+<p>Thanks for testing this, I wasn’t sure if I might have just been using something incorrectly <img alt=":slight_smile:" class="emoji" height="20" loading="lazy" src="../../../images/slight_smile.png" title=":slight_smile:" width="20"/> I had also not tested it for replies, only for topics, so good idea there!</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554653_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Moin</div>
+          <div class="post_content">
+<p>I think this was fixed in</p><aside class="onebox githubpullrequest" data-onebox-src="https://github.com/discourse/discourse/pull/40074">
+<header class="source">
+<a href="https://github.com/discourse/discourse/pull/40074" rel="noopener" target="_blank">github.com/discourse/discourse</a>
+</header>
+<article class="onebox-body">
+<div class="github-row --gh-status-merged" data-github-private-repo="false">
+<div class="github-icon-container" title="Merged Pull Request">
+<svg aria-hidden="true" class="github-icon" height="60" viewbox="0 0 12 16" width="60"><path d="M11 11.28V5c-.03-.78-.34-1.47-.94-2.06C9.46 2.35 8.78 2.03 8 2H7V0L4 3l3 3V4h1c.27.02.48.11.69.31.21.2.3.42.31.69v6.28A1.993 1.993 0 0 0 10 15a1.993 1.993 0 0 0 1-3.72zm-1 2.92c-.66 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2zM4 3c0-1.11-.89-2-2-2a1.993 1.993 0 0 0-1 3.72v6.56A1.993 1.993 0 0 0 2 15a1.993 1.993 0 0 0 1-3.72V4.72c.59-.34 1-.98 1-1.72zm-.8 10c0 .66-.55 1.2-1.2 1.2-.65 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2zM2 4.2C1.34 4.2.8 3.65.8 3c0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2z" fill-rule="evenodd"></path></svg>
+</div>
+<div class="github-info-container">
+<h4>
+<a href="https://github.com/discourse/discourse/pull/40074" rel="noopener" target="_blank">FIX: make composer education notice truly one-time (#40074)</a>
+</h4>
+<div class="branches">
+<code>main</code> ← <code>fix/educational-messages-display</code>
+</div>
+<div class="github-info">
+<div class="date">
+          merged <span class="discourse-local-date" data-date="2026-05-15" data-format="ll" data-time="13:48:13" data-timezone="UTC">01:48PM - 15 May 26 UTC</span>
+</div>
+<div class="user">
+<a href="https://github.com/romanrizzi" rel="noopener" target="_blank">
+<img alt="" class="onebox-avatar-inline" data-dominant-color="745B51" height="20" src="../../../images/84e640bfded14c9ba0f3060f116805cb71a9a4f9.jpeg" width="20"/>
+            romanrizzi
+          </a>
+</div>
+<div class="lines" title="1 commits changed 5 files with 82 additions and 4 deletions">
+<a href="https://github.com/discourse/discourse/pull/40074/files" rel="noopener" target="_blank">
+<span class="added">+82</span>
+<span class="removed">-4</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+<div class="github-row">
+<p class="github-body-container">The “Thanks for contributing to SITENAME” composer education notice could keep s<span class="show-more-container"><a class="show-more" href="https://github.com/discourse/discourse/pull/40074" rel="noopener" target="_blank">…</a></span><span class="excerpt hidden">howing even after it had already been displayed once. This happened because the backend did not persist a one-time marker for that specific notice, and the frontend could reuse stale composer message data during the same page session.
+
+This change makes the education notice one-time per user by recording when it has been shown and skipping it on future checks. It also fixes composer-side behavior so typing-triggered messages are consumed once instead of being re-shown repeatedly after closing, and avoids reusing cached composer message responses that include the education notice. Together, these updates make the education message behavior consistent and prevent repeated prompts.</span></p>
+</div>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/102149_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">sam</div>
+          <div class="post_content">
+
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+  </body>
+</html>

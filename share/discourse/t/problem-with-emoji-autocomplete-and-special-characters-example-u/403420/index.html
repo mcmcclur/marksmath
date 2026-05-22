@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width">
+    <title>Problem with emoji autocomplete and special characters (example ü)</title>
+    <link rel="stylesheet" href="../../../archived.css" />
+    <script>
+      function findSageCodeBlocks() {
+        return Array.prototype.slice.call(
+          document.querySelectorAll(
+            "pre[data-code-wrap='sage'] > code, pre > code.lang-sage, pre > code.language-sage, pre > code.sage"
+          )
+        );
+      }
+
+      function loadScript(src) {
+        return new Promise(function (resolve, reject) {
+          var existing = document.querySelector("script[src='" + src + "']");
+          if (existing) {
+            if (existing.dataset.loaded === "true") {
+              resolve();
+              return;
+            }
+            existing.addEventListener("load", resolve, { once: true });
+            existing.addEventListener("error", reject, { once: true });
+            return;
+          }
+
+          var script = document.createElement("script");
+          script.src = src;
+          script.async = true;
+          script.addEventListener("load", function () {
+            script.dataset.loaded = "true";
+            resolve();
+          }, { once: true });
+          script.addEventListener("error", reject, { once: true });
+          document.head.appendChild(script);
+        });
+      }
+
+      function prepareSageCells() {
+        var sageBlocks = findSageCodeBlocks();
+        if (!sageBlocks.length) {
+          return Promise.resolve();
+        }
+
+        return loadScript("https://sagecell.sagemath.org/static/embedded_sagecell.js")
+          .then(function () {
+            if (!window.sagecell || !window.sagecell.makeSagecell) {
+              return;
+            }
+
+            sageBlocks.forEach(function (codeTag, index) {
+              var preTag = codeTag.parentElement;
+              if (!preTag || preTag.dataset.sageMounted === "true") {
+                return;
+              }
+
+              var host = document.createElement("div");
+              host.className = "sagecell-archive";
+
+              var source = document.createElement("script");
+              source.type = "text/x-sage";
+              source.text = codeTag.textContent || "";
+              host.appendChild(source);
+
+              preTag.insertAdjacentElement("afterend", host);
+              preTag.classList.add("sage-source-hidden");
+              preTag.dataset.sageMounted = "true";
+
+              window.sagecell.makeSagecell({
+                inputLocation: host,
+                autoeval: false,
+                evalButtonText: "Run",
+                languages: ["sage"]
+              });
+            });
+          })
+          .catch(function () {
+            // Leave the original code blocks visible if SageCell cannot load.
+          });
+      }
+
+      function preprocessDiscourseMath() {
+        document.querySelectorAll("span.math, div.math").forEach(function (node) {
+          var tex = node.textContent || "";
+          if (!tex.trim()) {
+            return;
+          }
+          if (node.tagName === "SPAN") {
+            node.textContent = "\\(" + tex + "\\)";
+          } else {
+            node.textContent = "\\[" + tex + "\\]";
+          }
+          node.classList.remove("math");
+        });
+      }
+
+      window.MathJax = {
+        tex: {
+          inlineMath: [["\\(", "\\)"]],
+          displayMath: [["\\[", "\\]"]]
+        },
+        startup: {
+          pageReady() {
+            preprocessDiscourseMath();
+            return MathJax.startup.defaultPageReady().then(function () {
+              return prepareSageCells();
+            });
+          }
+        }
+      };
+    </script>
+    <script async id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="title-span">
+        <a href="../../../">
+          <img src="../../../images/ad2526334012b2ad0c3421f9b6dd94bae2ede52f.svg" height="40" alt="Site Logo" id="site-logo" />
+        </a>
+      </div>
+    </header>
+
+    <div class="main">
+    <div class="archive-span"><a href='https://meta.discourse.org/'>Discourse Meta</a> archived in May, 2026</div>
+    <h1 class="topic-title">Problem with emoji autocomplete and special characters (example ü)</h1>
+            <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554653_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Moin</div>
+          <div class="post_content">
+<p>The emoji autocomplete seems to struggle with special characters in some cases. The <code>ü</code> in <code>glücklich</code> isn’t a problem when I use one of the options provided by the autocomplete, but when I use “more” instead to choose an emoji, the letters I entered are not replaced. However, the same steps work fine with <code>traurig</code>, which is why I think the <code>ü</code> is the problem.</p>
+<p></p><div class="video-placeholder-container" data-thumbnail-src="https://d11a6trkgmumsb.cloudfront.net/original/4X/c/9/2/c929039b7c5ce666493e6efe35ad9d9946f7ce97.png" data-video-base62-sha1="fHYlvg9iERRYn644al0AoBGt62U.mp4" data-video-src="https://d11a6trkgmumsb.cloudfront.net/original/4X/6/e/1/6e191f67ec3f300935426f509c285eeb585ff4e4.mp4">
+</div><p></p>
+<p>In chat, it’s a little worse, because there I not only need to delete a few characters, but selecting the emoji doesn’t work at all.<br/>
+</p><div class="video-placeholder-container" data-thumbnail-src="https://d11a6trkgmumsb.cloudfront.net/original/4X/4/b/1/4b192d9e26728ec21a3d3b9fd6b542da16b47af4.png" data-video-base62-sha1="t3umYGV6PFTNAQrA2BsAhkTL2iO.mp4" data-video-src="https://d11a6trkgmumsb.cloudfront.net/original/4X/c/b/a/cba4090cffbeaa7a599c10462ed8fe264b09934e.mp4">
+</div><p></p>
+<p>In chat there is also an error in the browser console:</p>
+<pre><code class="lang-plaintext">chat-composer.gjs:445 Uncaught (in promise) TypeError: Cannot read properties of null (reading 'emojiTermStart')
+    at Ll.onSelectEmoji (chat-composer.gjs:445:17)
+    at Proxy.didSelectEmoji (chat-composer.gjs:603:22)
+    at $.didSelectEmoji (content.gjs:324:31)
+onSelectEmoji @ chat-composer.gjs:445
+(anonymous) @ chat-composer.gjs:603
+didSelectEmoji @ content.gjs:324
+
+</code></pre>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+
+    </div>
+  </body>
+</html>

@@ -1,0 +1,1671 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width">
+    <title>Modernizing the Foundation theme</title>
+    <link rel="stylesheet" href="../../../archived.css" />
+    <script>
+      function findSageCodeBlocks() {
+        return Array.prototype.slice.call(
+          document.querySelectorAll(
+            "pre[data-code-wrap='sage'] > code, pre > code.lang-sage, pre > code.language-sage, pre > code.sage"
+          )
+        );
+      }
+
+      function loadScript(src) {
+        return new Promise(function (resolve, reject) {
+          var existing = document.querySelector("script[src='" + src + "']");
+          if (existing) {
+            if (existing.dataset.loaded === "true") {
+              resolve();
+              return;
+            }
+            existing.addEventListener("load", resolve, { once: true });
+            existing.addEventListener("error", reject, { once: true });
+            return;
+          }
+
+          var script = document.createElement("script");
+          script.src = src;
+          script.async = true;
+          script.addEventListener("load", function () {
+            script.dataset.loaded = "true";
+            resolve();
+          }, { once: true });
+          script.addEventListener("error", reject, { once: true });
+          document.head.appendChild(script);
+        });
+      }
+
+      function prepareSageCells() {
+        var sageBlocks = findSageCodeBlocks();
+        if (!sageBlocks.length) {
+          return Promise.resolve();
+        }
+
+        return loadScript("https://sagecell.sagemath.org/static/embedded_sagecell.js")
+          .then(function () {
+            if (!window.sagecell || !window.sagecell.makeSagecell) {
+              return;
+            }
+
+            sageBlocks.forEach(function (codeTag, index) {
+              var preTag = codeTag.parentElement;
+              if (!preTag || preTag.dataset.sageMounted === "true") {
+                return;
+              }
+
+              var host = document.createElement("div");
+              host.className = "sagecell-archive";
+
+              var source = document.createElement("script");
+              source.type = "text/x-sage";
+              source.text = codeTag.textContent || "";
+              host.appendChild(source);
+
+              preTag.insertAdjacentElement("afterend", host);
+              preTag.classList.add("sage-source-hidden");
+              preTag.dataset.sageMounted = "true";
+
+              window.sagecell.makeSagecell({
+                inputLocation: host,
+                autoeval: false,
+                evalButtonText: "Run",
+                languages: ["sage"]
+              });
+            });
+          })
+          .catch(function () {
+            // Leave the original code blocks visible if SageCell cannot load.
+          });
+      }
+
+      function preprocessDiscourseMath() {
+        document.querySelectorAll("span.math, div.math").forEach(function (node) {
+          var tex = node.textContent || "";
+          if (!tex.trim()) {
+            return;
+          }
+          if (node.tagName === "SPAN") {
+            node.textContent = "\\(" + tex + "\\)";
+          } else {
+            node.textContent = "\\[" + tex + "\\]";
+          }
+          node.classList.remove("math");
+        });
+      }
+
+      window.MathJax = {
+        tex: {
+          inlineMath: [["\\(", "\\)"]],
+          displayMath: [["\\[", "\\]"]]
+        },
+        startup: {
+          pageReady() {
+            preprocessDiscourseMath();
+            return MathJax.startup.defaultPageReady().then(function () {
+              return prepareSageCells();
+            });
+          }
+        }
+      };
+    </script>
+    <script async id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="title-span">
+        <a href="../../../">
+          <img src="../../../images/ad2526334012b2ad0c3421f9b6dd94bae2ede52f.svg" height="40" alt="Site Logo" id="site-logo" />
+        </a>
+      </div>
+    </header>
+
+    <div class="main">
+    <div class="archive-span"><a href='https://meta.discourse.org/'>Discourse Meta</a> archived in May, 2026</div>
+    <h1 class="topic-title">Modernizing the Foundation theme</h1>
+            <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/515563_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">jordan.vidrine</div>
+          <div class="post_content">
+<p>The design team are in the process of making small but powerful changes/tweaks to the foundation theme to align a bit closer to modern web standards. To view these changes live on meta, join this group:</p>
+<p><a href="https://meta.discourse.org/g/modernized-foundation">https://meta.discourse.org/g/modernized-foundation</a></p>
+<div class="d-image-grid" data-mode="carousel">
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/wnMJRZ22JHXRSFW0Kr0epAbMqL4.jpeg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/e/2/f/e2f5e596a85acbea02b90b671acf6869f82145be.jpeg" title="CleanShot 2026-02-05 at 16.42.34@2x"><img alt="CleanShot 2026-02-05 at 16.42.34@2x" data-base62-sha1="wnMJRZ22JHXRSFW0Kr0epAbMqL4" data-dominant-color="F7F8F8" height="468" src="../../../images/e2f5e596a85acbea02b90b671acf6869f82145be_2_690x468.jpeg" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/e/2/f/e2f5e596a85acbea02b90b671acf6869f82145be_2_690x468.jpeg, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/e/2/f/e2f5e596a85acbea02b90b671acf6869f82145be_2_1035x702.jpeg 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/e/2/f/e2f5e596a85acbea02b90b671acf6869f82145be_2_1380x936.jpeg 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">CleanShot 2026-02-05 at 16.42.34@2x</span><span class="informations">1920×1303 203 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/cpq0gKr2pTwLdmg84sRptUKvR70.jpeg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/5/6/f/56f9aeac5f7cbee6c6133cd69dd01eca2df80d2e.jpeg" title="CleanShot 2026-02-05 at 16.43.58@2x"><img alt="CleanShot 2026-02-05 at 16.43.58@2x" data-base62-sha1="cpq0gKr2pTwLdmg84sRptUKvR70" data-dominant-color="F7F7F7" height="471" src="../../../images/56f9aeac5f7cbee6c6133cd69dd01eca2df80d2e_2_690x471.jpeg" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/5/6/f/56f9aeac5f7cbee6c6133cd69dd01eca2df80d2e_2_690x471.jpeg, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/5/6/f/56f9aeac5f7cbee6c6133cd69dd01eca2df80d2e_2_1035x706.jpeg 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/5/6/f/56f9aeac5f7cbee6c6133cd69dd01eca2df80d2e_2_1380x942.jpeg 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">CleanShot 2026-02-05 at 16.43.58@2x</span><span class="informations">1920×1312 243 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/jb2OCN4SP0ekb6P7xQLYHfvuqPT.jpeg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/8/6/6/8668f0f30f3195f549bc0e120a4236237764bfd9.jpeg" title="CleanShot 2026-02-05 at 16.44.40@2x"><img alt="CleanShot 2026-02-05 at 16.44.40@2x" data-base62-sha1="jb2OCN4SP0ekb6P7xQLYHfvuqPT" data-dominant-color="F5F6F6" height="473" src="../../../images/8668f0f30f3195f549bc0e120a4236237764bfd9_2_690x473.jpeg" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/8/6/6/8668f0f30f3195f549bc0e120a4236237764bfd9_2_690x473.jpeg, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/8/6/6/8668f0f30f3195f549bc0e120a4236237764bfd9_2_1035x709.jpeg 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/8/6/6/8668f0f30f3195f549bc0e120a4236237764bfd9_2_1380x946.jpeg 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">CleanShot 2026-02-05 at 16.44.40@2x</span><span class="informations">1920×1317 218 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+</div>
+<p>We will be making this change live through the new <a href="https://meta.discourse.org/t/introducing-upcoming-changes-a-system-to-manage-new-features-and-changes-to-existing-functionality-in-your-community/392894">Upcoming </a>Changes feature available in Discourse. This will allow site owners to enable the changes for any group they specify, in order to test the roll out of the changes without the fear of possibly breaking themes or current customizations.</p>
+<h1><a aria-label="Heading link" class="anchor" href="#p-1933050-what-will-change-1" name="p-1933050-what-will-change-1"></a>What will change?</h1>
+<h2><a aria-label="Heading link" class="anchor" href="#p-1933050-header-shrinks-in-height-2" name="p-1933050-header-shrinks-in-height-2"></a>Header shrinks in height</h2>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/44JSO5T9OlhC6u2jlIfEw78v5NQ.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/1/c/9/1c91dd801de887858fd5d3136ddccdbc371b25ce.png" title="CleanShot 2026-02-05 at 16.19.32@2x"><img alt="CleanShot 2026-02-05 at 16.19.32@2x" data-base62-sha1="44JSO5T9OlhC6u2jlIfEw78v5NQ" data-dominant-color="8F8F90" height="171" src="../../../images/1c91dd801de887858fd5d3136ddccdbc371b25ce_2_690x171.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/1/c/9/1c91dd801de887858fd5d3136ddccdbc371b25ce_2_690x171.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/1/c/9/1c91dd801de887858fd5d3136ddccdbc371b25ce_2_1035x256.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/1/c/9/1c91dd801de887858fd5d3136ddccdbc371b25ce_2_1380x342.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">CleanShot 2026-02-05 at 16.19.32@2x</span><span class="informations">3090×766 195 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>We have decreased the site of the header along with some of the icons &amp; avatar slightly to utilize onscreen real estate.</p>
+<h2><a aria-label="Heading link" class="anchor" href="#p-1933050-default-buttons-3" name="p-1933050-default-buttons-3"></a>Default buttons</h2>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/oViOd2rYXGpM2Z9ukmk1kWcxipN.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/a/e/a/aeae6fec97af0897a628878fb0f405fa27fd247f.png" title="CleanShot 2026-02-05 at 16.23.37@2x"><img alt="CleanShot 2026-02-05 at 16.23.37@2x" data-base62-sha1="oViOd2rYXGpM2Z9ukmk1kWcxipN" data-dominant-color="F0F4F6" height="88" src="../../../images/aeae6fec97af0897a628878fb0f405fa27fd247f_2_517x88.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/a/e/a/aeae6fec97af0897a628878fb0f405fa27fd247f_2_517x88.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/a/e/a/aeae6fec97af0897a628878fb0f405fa27fd247f_2_775x132.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/a/e/a/aeae6fec97af0897a628878fb0f405fa27fd247f_2_1034x176.png 2x" width="517"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">CleanShot 2026-02-05 at 16.23.37@2x</span><span class="informations">1484×254 21.7 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>We are moving from a grey default button background to a transparent / “secondary” background with a border.</p>
+<ul>
+<li>removal of grey background</li>
+<li>addition of borders</li>
+<li>icon color matches text color</li>
+<li>buttons now have a set height</li>
+</ul>
+<h2><a aria-label="Heading link" class="anchor" href="#p-1933050-create-new-topic-button-on-topic-list-page-4" name="p-1933050-create-new-topic-button-on-topic-list-page-4"></a>Create new topic button on topic list page</h2>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/v5uWZQQD0NETWDHKqVn5R71MgBB.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/d/9/e/d9e287f1634f461b20d7045c8898fe8a135282cb.png" title="image"><img alt="image" data-base62-sha1="v5uWZQQD0NETWDHKqVn5R71MgBB" height="108" src="../../../images/d9e287f1634f461b20d7045c8898fe8a135282cb.png" width="262"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">262×108 2.16 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>Matching Horizon and giving this a “CTA” background color of <code>tertiary</code></p>
+<h2><a aria-label="Heading link" class="anchor" href="#p-1933050-lots-of-gray-background-removal-5" name="p-1933050-lots-of-gray-background-removal-5"></a>Lots of gray background removal</h2>
+<div class="d-image-grid" data-mode="carousel">
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/crHhJWujJhQ6mzZRFENuQApiz8l.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/5/7/3/573ba0076fb62971c7980adeb617ff018b703511.png" title="image"><img alt="image" data-base62-sha1="crHhJWujJhQ6mzZRFENuQApiz8l" data-dominant-color="F7F5F3" height="289" src="../../../images/573ba0076fb62971c7980adeb617ff018b703511_2_690x289.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/5/7/3/573ba0076fb62971c7980adeb617ff018b703511_2_690x289.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/5/7/3/573ba0076fb62971c7980adeb617ff018b703511_2_1035x433.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/5/7/3/573ba0076fb62971c7980adeb617ff018b703511_2_1380x578.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1380×578 46.6 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/eUnCBDug5unCkaDdosjmbp929ez.jpeg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/6/8/7/687e016f734b670ce142c6e8fad2a9059f3f84cb.jpeg" title="CleanShot 2026-02-05 at 16.26.46@2x"><img alt="CleanShot 2026-02-05 at 16.26.46@2x" data-base62-sha1="eUnCBDug5unCkaDdosjmbp929ez" data-dominant-color="F9FAFA" height="500" src="../../../images/687e016f734b670ce142c6e8fad2a9059f3f84cb_2_523x500.jpeg" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/6/8/7/687e016f734b670ce142c6e8fad2a9059f3f84cb_2_523x500.jpeg, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/6/8/7/687e016f734b670ce142c6e8fad2a9059f3f84cb_2_784x750.jpeg 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/6/8/7/687e016f734b670ce142c6e8fad2a9059f3f84cb_2_1046x1000.jpeg 2x" width="523"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">CleanShot 2026-02-05 at 16.26.46@2x</span><span class="informations">1920×1835 185 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/j5FuXpDTlchnddYEVhcxc2flGtf.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/8/5/c/85cd5dd4cad4af1ca86db1af120b90be8378dd45.png" title="CleanShot 2026-02-05 at 16.28.04@2x"><img alt="CleanShot 2026-02-05 at 16.28.04@2x" data-base62-sha1="j5FuXpDTlchnddYEVhcxc2flGtf" data-dominant-color="F6F6F6" height="209" src="../../../images/85cd5dd4cad4af1ca86db1af120b90be8378dd45_2_690x209.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/8/5/c/85cd5dd4cad4af1ca86db1af120b90be8378dd45_2_690x209.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/8/5/c/85cd5dd4cad4af1ca86db1af120b90be8378dd45_2_1035x313.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/8/5/c/85cd5dd4cad4af1ca86db1af120b90be8378dd45_2_1380x418.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">CleanShot 2026-02-05 at 16.28.04@2x</span><span class="informations">2192×666 61.5 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+</div>
+<h2><a aria-label="Heading link" class="anchor" href="#p-1933050-topic-list-6" name="p-1933050-topic-list-6"></a>Topic list</h2>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/okxz0SJg7iKTY1Y6qcvh9Yery4r.jpeg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/a/a/8/aa869b76c4212763f322d6320aaea15a325181e3.jpeg" title="CleanShot 2026-02-05 at 16.29.53@2x"><img alt="CleanShot 2026-02-05 at 16.29.53@2x" data-base62-sha1="okxz0SJg7iKTY1Y6qcvh9Yery4r" data-dominant-color="F7F7F7" height="297" src="../../../images/aa869b76c4212763f322d6320aaea15a325181e3_2_690x297.jpeg" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/a/a/8/aa869b76c4212763f322d6320aaea15a325181e3_2_690x297.jpeg, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/a/a/8/aa869b76c4212763f322d6320aaea15a325181e3_2_1035x445.jpeg 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/a/a/8/aa869b76c4212763f322d6320aaea15a325181e3_2_1380x594.jpeg 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">CleanShot 2026-02-05 at 16.29.53@2x</span><span class="informations">2216×956 198 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<ul>
+<li>removal of 3 px thicc top border</li>
+<li>decrease font size of table header data</li>
+<li>consistent color for table data items</li>
+<li>color value changes to read/unread</li>
+<li>slight increase in font weight to unread</li>
+</ul>
+<h3><a aria-label="Heading link" class="anchor" href="#p-1933050-category-boxes-7" name="p-1933050-category-boxes-7"></a>Category boxes</h3>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/kdN9tMu20e5UormBXRmDnqELlAI.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/8/d/b/8dba9e7d45cfeb17921d4cfc9fa99919a9145940.png" title="CleanShot 2026-02-05 at 16.30.23@2x"><img alt="CleanShot 2026-02-05 at 16.30.23@2x" data-base62-sha1="kdN9tMu20e5UormBXRmDnqELlAI" data-dominant-color="F5F6F7" height="323" src="../../../images/8dba9e7d45cfeb17921d4cfc9fa99919a9145940_2_690x323.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/8/d/b/8dba9e7d45cfeb17921d4cfc9fa99919a9145940_2_690x323.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/8/d/b/8dba9e7d45cfeb17921d4cfc9fa99919a9145940_2_1035x484.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/8/d/b/8dba9e7d45cfeb17921d4cfc9fa99919a9145940_2_1380x646.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">CleanShot 2026-02-05 at 16.30.23@2x</span><span class="informations">2208×1036 292 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<ul>
+<li>left alignment of text</li>
+<li>removal of thicc left colored border</li>
+<li>slightly rounded badges</li>
+<li>thinner border on box</li>
+</ul>
+<h2><a aria-label="Heading link" class="anchor" href="#p-1933050-nav-bar-8" name="p-1933050-nav-bar-8"></a>Nav bar</h2>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/6XNtYbXODOKI5oYcOsmx3NuFcOg.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/3/0/c/30cf7fc67b7bd521ed01112a17244d782e16d014.png" title="CleanShot 2026-02-05 at 16.31.26@2x"><img alt="CleanShot 2026-02-05 at 16.31.26@2x" data-base62-sha1="6XNtYbXODOKI5oYcOsmx3NuFcOg" data-dominant-color="F5F6F7" height="79" src="../../../images/30cf7fc67b7bd521ed01112a17244d782e16d014_2_689x79.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/3/0/c/30cf7fc67b7bd521ed01112a17244d782e16d014_2_689x79.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/3/0/c/30cf7fc67b7bd521ed01112a17244d782e16d014_2_1033x118.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/3/0/c/30cf7fc67b7bd521ed01112a17244d782e16d014.png 2x" width="689"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">CleanShot 2026-02-05 at 16.31.26@2x</span><span class="informations">1194×138 10.4 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<ul>
+<li>The nav pills on topic list pages will be the same height as buttons in this zone</li>
+<li>darker color text &amp; icon on select kit</li>
+</ul>
+<h2><a aria-label="Heading link" class="anchor" href="#p-1933050-sidebar-9" name="p-1933050-sidebar-9"></a>Sidebar</h2>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/pQPjAUIw4GY2jdGBvsF9BvKWRr.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/0/2/e/02ec1d485a938f45f36d78cad837da19ba542579.png" title="CleanShot 2026-02-05 at 16.31.59@2x"><img alt="CleanShot 2026-02-05 at 16.31.59@2x" data-base62-sha1="pQPjAUIw4GY2jdGBvsF9BvKWRr" data-dominant-color="F9F9F9" height="499" src="../../../images/02ec1d485a938f45f36d78cad837da19ba542579_2_279x499.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/0/2/e/02ec1d485a938f45f36d78cad837da19ba542579_2_279x499.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/0/2/e/02ec1d485a938f45f36d78cad837da19ba542579_2_418x748.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/0/2/e/02ec1d485a938f45f36d78cad837da19ba542579.png 2x" width="279"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">CleanShot 2026-02-05 at 16.31.59@2x</span><span class="informations">542×968 17.2 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<ul>
+<li>icon &amp; text match color</li>
+<li>darker text &amp; icons</li>
+<li>lighter “active” background</li>
+<li>heavier active font weight</li>
+</ul>
+<h2><a aria-label="Heading link" class="anchor" href="#p-1933050-welcome-banner-10" name="p-1933050-welcome-banner-10"></a>Welcome banner</h2>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/kxSEFm3MxB4McOon5lUuARipBMT.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/8/f/f/8ffff4127cccd259fd68229715e8e6aacdeff423.png" title="image"><img alt="image" data-base62-sha1="kxSEFm3MxB4McOon5lUuARipBMT" data-dominant-color="F2F2F2" height="163" src="../../../images/8ffff4127cccd259fd68229715e8e6aacdeff423_2_690x163.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/8/f/f/8ffff4127cccd259fd68229715e8e6aacdeff423_2_690x163.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/8/f/f/8ffff4127cccd259fd68229715e8e6aacdeff423_2_1035x244.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/8/f/f/8ffff4127cccd259fd68229715e8e6aacdeff423_2_1380x326.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1380×326 32.8 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<ul>
+<li>balanced spacing</li>
+<li>added variables for easier left/right/center alignment via customization</li>
+<li>header font weight decreased</li>
+<li>sub title font size decrease</li>
+</ul>
+<h2><a aria-label="Heading link" class="anchor" href="#p-1933050-calendar-11" name="p-1933050-calendar-11"></a>Calendar</h2>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/tiK7lzuKDrrWYiklEkSufoGcOmw.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/c/d/5/cd5d75c0ed98b335a5b8126b9609ac22abf5723c.png" title="image"><img alt="image" data-base62-sha1="tiK7lzuKDrrWYiklEkSufoGcOmw" data-dominant-color="FCFCFC" height="145" src="../../../images/cd5d75c0ed98b335a5b8126b9609ac22abf5723c_2_690x145.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/c/d/5/cd5d75c0ed98b335a5b8126b9609ac22abf5723c_2_690x145.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/c/d/5/cd5d75c0ed98b335a5b8126b9609ac22abf5723c_2_1035x217.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/c/d/5/cd5d75c0ed98b335a5b8126b9609ac22abf5723c_2_1380x290.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1380×290 11.9 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<ul>
+<li>removed grey background from “buttons”</li>
+<li>use grey only to signify “active”</li>
+<li>switch to “bordered transparent” button styling</li>
+</ul>
+<h2><a aria-label="Heading link" class="anchor" href="#p-1933050-drop-downs-12" name="p-1933050-drop-downs-12"></a>Drop downs</h2>
+<div class="d-image-grid" data-mode="carousel">
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/9yUGibbqi1iTz0LopInmOOQEpHG.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/4/3/0/4305ec7c801f9dc2d20d6d7d0d0b6116cb121238.png" title="CleanShot 2026-02-05 at 16.34.54@2x"><img alt="CleanShot 2026-02-05 at 16.34.54@2x" data-base62-sha1="9yUGibbqi1iTz0LopInmOOQEpHG" data-dominant-color="F3F3F3" height="499" src="../../../images/4305ec7c801f9dc2d20d6d7d0d0b6116cb121238_2_525x499.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/4/3/0/4305ec7c801f9dc2d20d6d7d0d0b6116cb121238_2_525x499.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/4/3/0/4305ec7c801f9dc2d20d6d7d0d0b6116cb121238_2_787x748.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/4/3/0/4305ec7c801f9dc2d20d6d7d0d0b6116cb121238.png 2x" width="525"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">CleanShot 2026-02-05 at 16.34.54@2x</span><span class="informations">834×794 64.8 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/6DAziLrjoRQP9ngcC3a0nxFh3yC.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/2/e/8/2e86b4ac9b7e9ab0ea91af21c9b228f704e46416.png" title="CleanShot 2026-02-05 at 16.35.09@2x"><img alt="CleanShot 2026-02-05 at 16.35.09@2x" data-base62-sha1="6DAziLrjoRQP9ngcC3a0nxFh3yC" data-dominant-color="F3F3F3" height="499" src="../../../images/2e86b4ac9b7e9ab0ea91af21c9b228f704e46416_2_272x499.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/2/e/8/2e86b4ac9b7e9ab0ea91af21c9b228f704e46416_2_272x499.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/2/e/8/2e86b4ac9b7e9ab0ea91af21c9b228f704e46416_2_408x748.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/2/e/8/2e86b4ac9b7e9ab0ea91af21c9b228f704e46416.png 2x" width="272"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">CleanShot 2026-02-05 at 16.35.09@2x</span><span class="informations">528×968 41 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/fHNsNkQc7EYa5WgQptYCSnGptH6.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/6/e/1/6e140b198f4d17633d58d1ed090a9da4cb06a45c.png" title="CleanShot 2026-02-05 at 16.34.32@2x"><img alt="CleanShot 2026-02-05 at 16.34.32@2x" data-base62-sha1="fHNsNkQc7EYa5WgQptYCSnGptH6" data-dominant-color="F6F6F6" height="500" src="../../../images/6e140b198f4d17633d58d1ed090a9da4cb06a45c.png" width="332"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">CleanShot 2026-02-05 at 16.34.32@2x</span><span class="informations">508×764 16.8 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+</div>
+<ul>
+<li>padding added to drop down container</li>
+<li>height, padding, gap now matches sidebar items
+<ul>
+<li>unification of “clickable lists”</li>
+</ul>
+</li>
+<li>border inherits <code>--d-border-radius</code> variable</li>
+</ul>
+<h1><a aria-label="Heading link" class="anchor" href="#p-1933050-new-variables-13" name="p-1933050-new-variables-13"></a>New Variables</h1>
+<p>Some of the changes here will be introduced via additional variables added into core.</p>
+<h2><a aria-label="Heading link" class="anchor" href="#p-1933050-welcome-banner-alignment-14" name="p-1933050-welcome-banner-alignment-14"></a>Welcome banner alignment</h2>
+<p>The alignment of the welcome banner will now be able to be changed via:</p>
+<pre><code class="lang-plaintext">// default
+  --welcome-banner-text-align: center;
+  --welcome-banner-search-menu-margin-inline: auto;
+
+// custom
+  --welcome-banner-text-align: left;
+  --welcome-banner-search-menu-margin-inline: 0 auto;
+</code></pre>
+<h2><a aria-label="Heading link" class="anchor" href="#p-1933050-button-height-15" name="p-1933050-button-height-15"></a>Button height</h2>
+<p>We will now have a set button height via:</p>
+<pre><code class="lang-plaintext">// default
+  --button-height: var(--space-8);
+</code></pre>
+<h3><a aria-label="Heading link" class="anchor" href="#p-1933050-font-smoothing-16" name="p-1933050-font-smoothing-16"></a>Font smoothing</h3>
+<p>We are already doing this in Horizon, it makes sense to bring to foundation.</p>
+<pre><code class="lang-plaintext">// new default
+--webkit-font-smoothing: antialiased;
+</code></pre>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 31">❤️ 31</span><span class="engagement-pill reaction-pill" title="clap: 2">👏 2</span><span class="engagement-pill reaction-pill" title="rocket: 2">🚀 2</span><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span><span class="engagement-pill reaction-pill" title="star struck: 1">:star_struck: 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/515563_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">jordan.vidrine</div>
+          <div class="post_content">
+
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554803_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Lilly</div>
+          <div class="post_content">
+<p>the gist button dropdown has a scrollbar (<code>overflow</code> on the <code>fk-d-menu</code> maybe?), and probably doesn’t need the same <code>min-width: 200px</code> as other such <code>dropdown-menu</code> classes.<br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/8mhHwCRAfNPvWTy30hkt5Jxd80S.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/3/a/9/3a964be6ee91f9fcd306dec92d86f437586dc41e.png" title="image"><img alt="image" data-base62-sha1="8mhHwCRAfNPvWTy30hkt5Jxd80S" height="153" src="../../../images/3a964be6ee91f9fcd306dec92d86f437586dc41e.png" width="267"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">267×153 8.09 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>edit: nevermind, fixed already <img alt=":smiley:" class="emoji" height="20" loading="lazy" src="../../../images/smiley.png" title=":smiley:" width="20"/></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 6">❤️ 6</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/119591_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Canapin</div>
+          <div class="post_content">
+<aside class="quote group-team" data-post="1" data-topic="395331" data-username="jordan.vidrine">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/515563_2.png" width="24"/> jordan.vidrine:</div>
+<blockquote>
+<h3>Categories</h3>
+</blockquote>
+</aside>
+<p>I can see the modern foundation theme, but why do I still have the old categories layout?</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/qhkw8NwOwKVIl2HZ6FKksSdgnQg.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/b/8/2/b82e0d0fa624f6b58eaa48b9d08dd41fc3005894.png" title="image"><img alt="image" data-base62-sha1="qhkw8NwOwKVIl2HZ6FKksSdgnQg" data-dominant-color="272828" height="500" src="../../../images/b82e0d0fa624f6b58eaa48b9d08dd41fc3005894_2_615x500.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/b/8/2/b82e0d0fa624f6b58eaa48b9d08dd41fc3005894_2_615x500.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/b/8/2/b82e0d0fa624f6b58eaa48b9d08dd41fc3005894_2_922x750.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/b/8/2/b82e0d0fa624f6b58eaa48b9d08dd41fc3005894_2_1230x1000.png 2x" width="615"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1438×1168 122 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554653_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Moin</div>
+          <div class="post_content">
+<p>I think Meta doesn’t use “Boxes with subcategories” but “Categories only” in their <code>Desktop category page style</code> site setting.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/119591_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Canapin</div>
+          <div class="post_content">
+<p>Oops, I assumed the screenshots were taken on meta but I didn’t even think of checking it.</p>
+<hr/>
+<p><s>Small but weird behavior. On the regular theme, when we release the mouse button on <span class="d-wrap" data-id="bars" data-wrap="icon"></span>, it instantly triggers the show or close sidebar’s animation.</s></p>
+<p><s>On the new theme, when we release the mouse button on <span class="d-wrap" data-id="bars" data-wrap="icon"></span> when the sidebar is closed, there’s a split second of waiting before the sliding animation is triggered. Doesn’t happen if we click the icon when the sidebar is visible.</s></p>
+<p>I’m probably hallucinating <img alt=":thinking:" class="emoji" height="20" loading="lazy" src="../../../images/thinking.png" title=":thinking:" width="20"/></p>
+<hr/>
+<p>Can I leave the group to compare changes with the old theme? I don’t see the leave option.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/142900_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">awesomerobot</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="6" data-topic="395331" data-username="Canapin">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/119591_2.png" width="24"/> Canapin:</div>
+<blockquote>
+<p>Can I leave the group to compare changes with the old theme? I don’t see the leave option.</p>
+</blockquote>
+</aside>
+<p>oh yes, fixed that… should be able to leave at will now</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 4">❤️ 4</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554653_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Moin</div>
+          <div class="post_content">
+<p><s>Would you please allow me to leave the <a class="mention-group" href="/groups/modernized-foundation">@modernized-foundation</a> group.</s><br/>
+Edit: Now, after leaving the group, I can add a comparison screenshot of the new topic button.<br/>
+<img alt="image" data-base62-sha1="x1c1oKsLhfehswrOeC8aqZjBj98" height="62" src="../../../images/e76a4a6ef6a8a18dcb6f7ede986b4eb2d244e86a.png" width="229"/></p>
+<p>It seems some icon colors don’t work well with the wcag palette.<br/>
+<img alt="image" data-base62-sha1="kmmUtiWHpVmq9r1mA3IM5snnaFI" height="73" src="../../../images/8eb2d0b87de9391c14c7a1681793545f4b59e9ba.png" width="228"/></p>
+<p>And, for example, the group selector on the top left of the group page doesn’t really support 2 lines.<br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/eq03KmPSRKh8uIy83oXQptTSJyK.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/6/5/0/650edbfc07363c62e92613d01c9dee8a95b70b7e.png" title="image"><img alt="image" data-base62-sha1="eq03KmPSRKh8uIy83oXQptTSJyK" height="116" src="../../../images/650edbfc07363c62e92613d01c9dee8a95b70b7e.png" width="526"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">526×116 5.5 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>This is how it looks when I log out.<br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/aEaRXTCsGYfUIZY5FjlqnCZK0tX.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/4/a/a/4aa05852d1333421031e930d5270516e4bd032a1.png" title="image"><img alt="image" data-base62-sha1="aEaRXTCsGYfUIZY5FjlqnCZK0tX" height="135" src="../../../images/4aa05852d1333421031e930d5270516e4bd032a1.png" width="515"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">515×135 5.77 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/119591_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Canapin</div>
+          <div class="post_content">
+<p>I like most of the changes. They are subtle. Some I don’t even see the difference unless I look at the CSS values <img alt=":smile:" class="emoji" height="20" loading="lazy" src="../../../images/smile.png" title=":smile:" width="20"/> (sidebar icon and text colors, topic list read and unread colors)</p>
+<p>Before / After<br/>
+<img alt="image" data-base62-sha1="wkkTzBnv4Pda0Yqt5Ngupc48lx6" height="61" src="../../../images/e292160b000bc5e4b9060099187a72f9d433cb18.png" width="235"/> <img alt="image" data-base62-sha1="epvFP6R2Lh9eqKfyAuf39kJA16R" height="63" src="../../../images/6500ad43ccdd2bcc28822912470c0e76b81ec79d.png" width="225"/></p>
+<p>I like the emphasized new topic button. I actually customized it like that on my forum a long time ago <small>(until my code broke and I didn’t bother fixing it)</small>.</p>
+<hr/>
+<p>Before / After<br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/sEBsiskxa3bPaAB4OgLERkBc7uV.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/c/8/d/c8d3e2a801a8862fb2bf10d2ceab6d780b9e0c49.png" title="image"><img alt="image" data-base62-sha1="sEBsiskxa3bPaAB4OgLERkBc7uV" height="156" src="../../../images/c8d3e2a801a8862fb2bf10d2ceab6d780b9e0c49.png" width="264"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">264×156 4.38 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div><br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/umDrpYQ856bOru2lKDR0lLRR9oX.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/d/4/d/d4d0455eaa9a19456e39098b8fe039ccb1c7b837.png" title="image"><img alt="image" data-base62-sha1="umDrpYQ856bOru2lKDR0lLRR9oX" height="162" src="../../../images/d4d0455eaa9a19456e39098b8fe039ccb1c7b837.png" width="252"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">252×162 3.84 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>I also like this; At least on dark palette, the dark blue on dark grey was a weird pairing.</p>
+<hr/>
+<p>Before / After<br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/uKIxMgDn7N8GXhaXVIgrr056SCj.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/d/7/8/d7892bea05d62a936d71608618472f8f18a21b7f.png" title="image"><img alt="image" data-base62-sha1="uKIxMgDn7N8GXhaXVIgrr056SCj" data-dominant-color="292A2B" height="358" src="../../../images/d7892bea05d62a936d71608618472f8f18a21b7f_2_690x358.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/d/7/8/d7892bea05d62a936d71608618472f8f18a21b7f_2_690x358.png, https://d11a6trkgmumsb.cloudfront.net/original/4X/d/7/8/d7892bea05d62a936d71608618472f8f18a21b7f.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/d/7/8/d7892bea05d62a936d71608618472f8f18a21b7f.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">847×440 42.8 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div> <div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/zKPPP20BkJ10nc6VIwW1ZgX9Ynr.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/f/a/9/fa9771c7acf2a8afa8c3e491ca5b1a42c531bfc5.png" title="image"><img alt="image" data-base62-sha1="zKPPP20BkJ10nc6VIwW1ZgX9Ynr" data-dominant-color="272829" height="364" src="../../../images/fa9771c7acf2a8afa8c3e491ca5b1a42c531bfc5_2_690x364.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/f/a/9/fa9771c7acf2a8afa8c3e491ca5b1a42c531bfc5_2_690x364.png, https://d11a6trkgmumsb.cloudfront.net/original/4X/f/a/9/fa9771c7acf2a8afa8c3e491ca5b1a42c531bfc5.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/f/a/9/fa9771c7acf2a8afa8c3e491ca5b1a42c531bfc5.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">849×449 42.3 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>While I like the new button style, I feel they lack contrast with the background in certain areas, especially the topic footer.<br/>
+It looks messy. The buttons don’t look like they belong to a specific section, unlike the previous version. They just kind of… sit there. I don’t know if it makes sense.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 6">❤️ 6</span><span class="engagement-pill reaction-pill" title="hugs: 1">🤗 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554653_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Moin</div>
+          <div class="post_content">
+<aside class="quote group-team" data-post="1" data-topic="395331" data-username="jordan.vidrine">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/515563_2.png" width="24"/> jordan.vidrine:</div>
+<blockquote>
+<p>decrease font size of table header data</p>
+</blockquote>
+</aside>
+<p>This seems to work on the read and topics activity in some screen sizes<br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/y3L7ACzJ54kGHR7cs49CywSv1l6.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/e/e/b/eeb6b95b17582568a70f8a535cafd55f181a7608.png" title="image"><img alt="image" data-base62-sha1="y3L7ACzJ54kGHR7cs49CywSv1l6" data-dominant-color="F7F7F8" height="206" src="../../../images/eeb6b95b17582568a70f8a535cafd55f181a7608_2_690x206.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/e/e/b/eeb6b95b17582568a70f8a535cafd55f181a7608_2_690x206.png, https://d11a6trkgmumsb.cloudfront.net/original/4X/e/e/b/eeb6b95b17582568a70f8a535cafd55f181a7608.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/e/e/b/eeb6b95b17582568a70f8a535cafd55f181a7608.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">751×225 17.3 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>But once I reduce the width a little, “Replies” and “activity” seem too big (This is also a problem on /latest)<br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/nXAWONdIj2Db3dZWLG86e2KCdHr.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/a/7/e/a7ee9b26f4f0c6e8fca97d89c4f08b5fb25b49a9.png" title="image"><img alt="image" data-base62-sha1="nXAWONdIj2Db3dZWLG86e2KCdHr" height="227" src="../../../images/a7ee9b26f4f0c6e8fca97d89c4f08b5fb25b49a9.png" width="665"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">665×227 12.6 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>There is a similar problem with “updated” and “activity” on <code>/my/activity/bookmarks</code><br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/hjsh6Oc6gigvoRZzZzk3TlS7qg1.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/7/9/5/7957fb9178d8f4a60f7bb793fb3e65caefbb1a11.png" title="image"><img alt="image" data-base62-sha1="hjsh6Oc6gigvoRZzZzk3TlS7qg1" data-dominant-color="F4F5F6" height="238" src="../../../images/7957fb9178d8f4a60f7bb793fb3e65caefbb1a11_2_690x238.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/7/9/5/7957fb9178d8f4a60f7bb793fb3e65caefbb1a11_2_690x238.png, https://d11a6trkgmumsb.cloudfront.net/original/4X/7/9/5/7957fb9178d8f4a60f7bb793fb3e65caefbb1a11.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/7/9/5/7957fb9178d8f4a60f7bb793fb3e65caefbb1a11.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">774×268 21 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<aside class="quote group-team" data-post="1" data-topic="395331" data-username="jordan.vidrine">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/515563_2.png" width="24"/> jordan.vidrine:</div>
+<blockquote>
+<p>icon color matches text color</p>
+</blockquote>
+</aside>
+<p>Another example where the icon and text color do not match is the expand button on my profile<br/>
+</p><div class="video-placeholder-container" data-thumbnail-src="https://d11a6trkgmumsb.cloudfront.net/original/4X/f/c/7/fc7d57a187d42e1e5af8aee142f33c2b4cf606f9.png" data-video-base62-sha1="pPXakN9t7ggtTq9N9IO33azCDqI.mp4" data-video-src="https://d11a6trkgmumsb.cloudfront.net/original/4X/b/5/1/b515d15f3bf0eb7f2929249587fd486cee6c7714.mp4">
+</div><p></p>
+<p>This is how it looks when I leave the group:<br/>
+</p><div class="video-placeholder-container" data-thumbnail-src="https://d11a6trkgmumsb.cloudfront.net/original/4X/b/f/c/bfccd6a19a6ca4f77493bfa8bd7c30170ce6a3b3.png" data-video-base62-sha1="mQVY62uCCiNIdp2sqIl3Cq9c609.mp4" data-video-src="https://d11a6trkgmumsb.cloudfront.net/original/4X/a/0/2/a02bace4d3ab62c1f6bfab4d70248f95d391f811.mp4">
+</div><p></p>
+<aside class="quote group-team" data-post="1" data-topic="395331" data-username="jordan.vidrine">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/515563_2.png" width="24"/> jordan.vidrine:</div>
+<blockquote>
+<p>Topic list</p>
+</blockquote>
+</aside>
+<p>I think you didn’t mention that not only the font size of the table headers, but also the size of the numbers in the Replies, Views, and Activity columns, seem to be decreased.</p>
+<aside class="quote group-team" data-post="1" data-topic="395331" data-username="jordan.vidrine">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/515563_2.png" width="24"/> jordan.vidrine:</div>
+<blockquote>
+<p>header</p>
+</blockquote>
+</aside>
+<p>I think the icon in the language dropdown is now very large in relation to the text.<br/>
+Before:<br/>
+<img alt="image" data-base62-sha1="vU7IxBwl1BTVW6zQ3zJjJ78V1Yf" height="66" src="../../../images/df9b8a31185bf9a93c29cb208fbd6056a9871733.png" width="163"/></p>
+<p>After:<br/>
+<img alt="image" data-base62-sha1="idC433FqrpMY59g24mr0s5Gi6Ka" height="53" src="../../../images/7fb11897947ff93c4c54ee2fc4681f9c1a9f46b6.png" width="163"/></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 7">❤️ 7</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/51636_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">hellekin</div>
+          <div class="post_content">
+<p>Thank you so much for the before/after. I thought it was missing from the OP.</p>
+<aside class="quote no-group" data-post="9" data-topic="395331" data-username="Canapin">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/119591_2.png" width="24"/> Canapin:</div>
+<blockquote>
+<p>Before / After<br/>
+<img alt="image" data-base62-sha1="wkkTzBnv4Pda0Yqt5Ngupc48lx6" height="61" src="../../../images/e292160b000bc5e4b9060099187a72f9d433cb18.png" width="235"/> <img alt="image" data-base62-sha1="epvFP6R2Lh9eqKfyAuf39kJA16R" height="63" src="../../../images/6500ad43ccdd2bcc28822912470c0e76b81ec79d.png" width="225"/></p>
+</blockquote>
+</aside>
+<aside class="quote no-group" data-post="10" data-topic="395331" data-username="Moin">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/554653_2.png" width="24"/> Moin:</div>
+<blockquote>
+<p>Before:<br/>
+<img alt="image" data-base62-sha1="vU7IxBwl1BTVW6zQ3zJjJ78V1Yf" height="66" src="../../../images/df9b8a31185bf9a93c29cb208fbd6056a9871733.png" width="163"/></p>
+<p>After:<br/>
+<img alt="image" data-base62-sha1="idC433FqrpMY59g24mr0s5Gi6Ka" height="53" src="../../../images/7fb11897947ff93c4c54ee2fc4681f9c1a9f46b6.png" width="163"/></p>
+</blockquote>
+</aside>
+<p>Both these changes look weird: the <em>after</em> side looks much less contrasted and may cause A11y issues, or?</p>
+<p>I’m heading to the new group for a test drive!</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554653_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Moin</div>
+          <div class="post_content">
+<p>The word “link” in the topic map is only partly shown after I join the group:</p>
+<div class="d-image-grid" data-mode="carousel">
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/GtqLMgXWpwpVwtw7yAOhIytYIj.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/0/4/c/04cd25362e6666a38693d4ad242f1386103e09a3.png" title="now"><img alt="now" data-base62-sha1="GtqLMgXWpwpVwtw7yAOhIytYIj" data-dominant-color="FBFBFB" height="189" src="../../../images/04cd25362e6666a38693d4ad242f1386103e09a3_2_690x189.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/0/4/c/04cd25362e6666a38693d4ad242f1386103e09a3_2_690x189.png, https://d11a6trkgmumsb.cloudfront.net/original/4X/0/4/c/04cd25362e6666a38693d4ad242f1386103e09a3.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/0/4/c/04cd25362e6666a38693d4ad242f1386103e09a3.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">now</span><span class="informations">746×205 12 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div><br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/mJps6JVae698Unc2lmVzIA1y2zM.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/9/f/5/9f51ee3dc356a977fa3608b78b75d7c734d7c9b2.png" title="before"><img alt="before" data-base62-sha1="mJps6JVae698Unc2lmVzIA1y2zM" data-dominant-color="FAFAFA" height="192" src="../../../images/9f51ee3dc356a977fa3608b78b75d7c734d7c9b2_2_690x192.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/9/f/5/9f51ee3dc356a977fa3608b78b75d7c734d7c9b2_2_690x192.png, https://d11a6trkgmumsb.cloudfront.net/original/4X/9/f/5/9f51ee3dc356a977fa3608b78b75d7c734d7c9b2.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/9/f/5/9f51ee3dc356a977fa3608b78b75d7c734d7c9b2.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">before</span><span class="informations">772×215 12.1 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+</div>
+<p>Screenshot taken at <a class="inline-onebox" href="https://meta.discourse.org/t/add-link-to-sidebar-category-setting-to-new-admin-menu-in-categories-section-of-the-sidebar/393322">Add link to sidebar category setting to new admin menu in categories section of the sidebar</a></p>
+<p>And the text in this modal is difficult to read on hover. I think the contrast was better before</p>
+<div class="d-image-grid" data-mode="carousel">
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/sus5YKYeWhoFO8VQZWfjrWZhW5b.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/c/7/a/c7ae223d38e1d0c2e027928fc37af336b3b59371.png" title="now"><img alt="now" data-base62-sha1="sus5YKYeWhoFO8VQZWfjrWZhW5b" height="296" src="../../../images/c7ae223d38e1d0c2e027928fc37af336b3b59371.png" width="500"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">now</span><span class="informations">500×296 14.1 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div><br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/dvy5qp17G1u1QuHTFd38Uu44tOT.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/5/e/a/5ead424178db0b6586a591f60116026551c40f27.png" title="before"><img alt="before" data-base62-sha1="dvy5qp17G1u1QuHTFd38Uu44tOT" height="299" src="../../../images/5ead424178db0b6586a591f60116026551c40f27.png" width="490"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">before</span><span class="informations">490×299 14.2 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/545002_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">sniper756</div>
+          <div class="post_content">
+<p>I’m really looking forward to the changes to the default style, when will it be released approximately?</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="star struck: 1">:star_struck: 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/119591_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Canapin</div>
+          <div class="post_content">
+<p>Search input and submit are squished!</p>
+<p><img alt="squish!" height="20" src="../../../images/melting_face.png" width="50"/></p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/lPSDMYME3es21XzyAfxbxT2TTyT.jpeg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/9/9/0/990b028ebab539c56331e262081c6d47fe7b7097.jpeg" title="Screenshot_20260209_125824_Chrome"><img alt="Screenshot_20260209_125824_Chrome" data-base62-sha1="lPSDMYME3es21XzyAfxbxT2TTyT" data-dominant-color="272B2F" height="500" src="../../../images/990b028ebab539c56331e262081c6d47fe7b7097_2_230x500.jpeg" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/9/9/0/990b028ebab539c56331e262081c6d47fe7b7097_2_230x500.jpeg, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/9/9/0/990b028ebab539c56331e262081c6d47fe7b7097_2_345x750.jpeg 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/9/9/0/990b028ebab539c56331e262081c6d47fe7b7097_2_460x1000.jpeg 2x" width="230"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot_20260209_125824_Chrome</span><span class="informations">1080×2340 167 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>edit : on mobile only</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span><span class="engagement-pill reaction-pill" title="100: 1">:100: 1</span><span class="engagement-pill reaction-pill" title="laughing: 1">😆 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/515563_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">jordan.vidrine</div>
+          <div class="post_content">
+<p>All great feedback / bug finding so far. Thanks for the updates.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 5">❤️ 5</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/515563_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">jordan.vidrine</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="9" data-topic="395331" data-username="Canapin">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/119591_2.png" width="24"/> Canapin:</div>
+<blockquote>
+<p>While I like the new button style, I feel they lack contrast with the background in certain areas, especially the topic footer.</p>
+</blockquote>
+</aside>
+<p>This is a good callout. I think the new button style is quite nice as well, but for some reason in this section (with so many of them together), it doesn’t feel quite right.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 5">❤️ 5</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/119591_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Canapin</div>
+          <div class="post_content">
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/nhqYl6mNBIALznbCSYHPQWkDxtw.jpeg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/a/3/2/a32a8ab85f2511040bb7f99f2c82d7b9eab49af2.jpeg" title="Screenshot_20260210_002050_Chrome"><img alt="Screenshot_20260210_002050_Chrome" data-base62-sha1="nhqYl6mNBIALznbCSYHPQWkDxtw" data-dominant-color="312F30" height="500" src="../../../images/a32a8ab85f2511040bb7f99f2c82d7b9eab49af2_2_230x500.jpeg" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/a/3/2/a32a8ab85f2511040bb7f99f2c82d7b9eab49af2_2_230x500.jpeg, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/a/3/2/a32a8ab85f2511040bb7f99f2c82d7b9eab49af2_2_345x750.jpeg 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/a/3/2/a32a8ab85f2511040bb7f99f2c82d7b9eab49af2_2_460x1000.jpeg 2x" width="230"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot_20260210_002050_Chrome</span><span class="informations">1080×2340 276 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>The unread font weight is heavier than on read topics.<br/>
+It didn’t strike me on desktop, but I see it on mobile.</p>
+<p>It looks a bit blunt to me.</p>
+<p>I liked that discourse mostly opted for just a color change, which felt more elegant than the canonical weight difference we see on many forum software.</p>
+<p>Now we have both. The difference is subtle, yet I’d prefer only a color change <img alt=":paintbrush:" class="emoji" height="20" loading="lazy" src="../../../images/paintbrush.png" title=":paintbrush:" width="20"/></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/515563_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">jordan.vidrine</div>
+          <div class="post_content">
+<p>Latest round of changes should be live soon from the PR here:</p>
+<aside class="onebox githubpullrequest" data-onebox-src="https://github.com/discourse/discourse/pull/37653">
+<header class="source">
+<a href="https://github.com/discourse/discourse/pull/37653" rel="noopener" target="_blank">github.com/discourse/discourse</a>
+</header>
+<article class="onebox-body">
+<div class="github-row --gh-status-merged" data-github-private-repo="false">
+<div class="github-icon-container" title="Merged Pull Request">
+<svg aria-hidden="true" class="github-icon" height="60" viewbox="0 0 12 16" width="60"><path d="M11 11.28V5c-.03-.78-.34-1.47-.94-2.06C9.46 2.35 8.78 2.03 8 2H7V0L4 3l3 3V4h1c.27.02.48.11.69.31.21.2.3.42.31.69v6.28A1.993 1.993 0 0 0 10 15a1.993 1.993 0 0 0 1-3.72zm-1 2.92c-.66 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2zM4 3c0-1.11-.89-2-2-2a1.993 1.993 0 0 0-1 3.72v6.56A1.993 1.993 0 0 0 2 15a1.993 1.993 0 0 0 1-3.72V4.72c.59-.34 1-.98 1-1.72zm-.8 10c0 .66-.55 1.2-1.2 1.2-.65 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2zM2 4.2C1.34 4.2.8 3.65.8 3c0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2z" fill-rule="evenodd"></path></svg>
+</div>
+<div class="github-info-container">
+<h4>
+<a href="https://github.com/discourse/discourse/pull/37653" rel="noopener" target="_blank">UX: Foundation feedback (#37653)</a>
+</h4>
+<div class="branches">
+<code>main</code> ← <code>foundation-feedback</code>
+</div>
+<div class="github-info">
+<div class="date">
+          merged <span class="discourse-local-date" data-date="2026-02-10" data-format="ll" data-time="10:55:11" data-timezone="UTC">10:55AM - 10 Feb 26 UTC</span>
+</div>
+<div class="user">
+<a href="https://github.com/jordanvidrine" rel="noopener" target="_blank">
+<img alt="" class="onebox-avatar-inline" data-dominant-color="878269" height="20" src="../../../images/79d03f642694bb67e036746d892c0c939a4ba29d.jpeg" width="20"/>
+            jordanvidrine
+          </a>
+</div>
+<div class="lines" title="9 commits changed 2 files with 56 additions and 8 deletions">
+<a href="https://github.com/discourse/discourse/pull/37653/files" rel="noopener" target="_blank">
+<span class="added">+56</span>
+<span class="removed">-8</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+<div class="github-row">
+<p class="github-body-container">Addressing most of the feedback from https://meta.discourse.org/t/modernizing-th<span class="show-more-container"><a class="show-more" href="https://github.com/discourse/discourse/pull/37653" rel="noopener" target="_blank">…</a></span><span class="excerpt hidden">e-foundation-theme/395331
+
+I've separated them into individual commits with descriptive titles.</span></p>
+</div>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 4">❤️ 4</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/545002_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">sniper756</div>
+          <div class="post_content">
+<p>When is the final version expected to be released? I am really looking forward to this style upgrade.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554653_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Moin</div>
+          <div class="post_content">
+<aside class="quote" data-post="13" data-topic="395331">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/545002_2.png" width="24"/>
+<div class="quote-title__text-content">
+<a href="https://meta.discourse.org/t/modernizing-the-foundation-theme/395331/13">Modernizing the Foundation theme</a> <a class="badge-category__wrapper" href="/c/news-and-events/announcements/67"><span class="badge-category --style-emoji --has-parent" data-category-id="67" data-drop-close="true" data-parent-category-id="207" style="--category-badge-color: #ED207B; --category-badge-text-color: #000000; --parent-category-badge-color: #00AEEF;" title="Important News and Updates from Discourse"><img alt="megaphone" class="emoji" height="20" loading="lazy" src="../../../images/megaphone.png" title="megaphone" width="20"/><span class="badge-category__name">Announcements</span></span></a>
+</div>
+</div>
+<blockquote>
+    很期待这次对默认风格的修改，大概什么时间发布？
+  </blockquote>
+</aside>
+<aside class="quote" data-post="19" data-topic="395331">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/545002_2.png" width="24"/>
+<div class="quote-title__text-content">
+<a href="https://meta.discourse.org/t/modernizing-the-foundation-theme/395331/19">Modernizing the Foundation theme</a> <a class="badge-category__wrapper" href="/c/news-and-events/announcements/67"><span class="badge-category --style-emoji --has-parent" data-category-id="67" data-drop-close="true" data-parent-category-id="207" style="--category-badge-color: #ED207B; --category-badge-text-color: #000000; --parent-category-badge-color: #00AEEF;" title="Important News and Updates from Discourse"><img alt="megaphone" class="emoji" height="20" loading="lazy" src="../../../images/megaphone.png" title="megaphone" width="20"/><span class="badge-category__name">Announcements</span></span></a>
+</div>
+</div>
+<blockquote>
+    请问最终版大概什么时间发布？我很期待这个风格升级
+  </blockquote>
+</aside>
+<p>
+You seem really excited. While the changes are currently still in an experimental state, you can enable <code>Modernize Foundation theme</code> today: <a class="inline-onebox" href="https://meta.discourse.org/t/upcoming-changes/395390">Upcoming Changes</a></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/545002_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">sniper756</div>
+          <div class="post_content">
+<p>I’m using it and it feels great……………………………..</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span><span class="engagement-pill reaction-pill" title="star struck: 1">:star_struck: 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/428592_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">gormus</div>
+          <div class="post_content">
+<p>I was using the Foundation theme on my local, without the experimental new features enabled.</p>
+<p>Then I realized every once in a while the theme components I had enabled for the theme started to show up as unassigned, randomly.</p>
+<p>Has this happened to anyone?</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="eyes: 1">👀 1</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/268115_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Lhc_fl</div>
+          <div class="post_content">
+<p>This looks fantastic and so modern!</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/c8qb48OrS5XnU3KvOpU60IzSCH0.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/5/5/0/550dd00b223bd99ee9bdd0e3b3b67edbd1752d02.png" rel="noopener nofollow ugc" title="image"><img alt="image" data-base62-sha1="c8qb48OrS5XnU3KvOpU60IzSCH0" height="401" src="../../../images/550dd00b223bd99ee9bdd0e3b3b67edbd1752d02.png" width="562"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">562×401 10.3 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>The translation button seems to be too dark.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span><span class="engagement-pill reaction-pill" title="star struck: 1">:star_struck: 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/244677_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">dax</div>
+          <div class="post_content">
+<p>Not assigned:<br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/7P560mw8OrrukFGosqqfqbneMmZ.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/3/6/d/36d5731309891ff9509c744e79be7c899713a8f1.png" title="msedge_pcmF2JqoZN"><img alt="msedge_pcmF2JqoZN" data-base62-sha1="7P560mw8OrrukFGosqqfqbneMmZ" data-dominant-color="EDF3F6" height="79" src="../../../images/36d5731309891ff9509c744e79be7c899713a8f1_2_690x79.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/3/6/d/36d5731309891ff9509c744e79be7c899713a8f1_2_690x79.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/3/6/d/36d5731309891ff9509c744e79be7c899713a8f1_2_1035x118.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/3/6/d/36d5731309891ff9509c744e79be7c899713a8f1.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">msedge_pcmF2JqoZN</span><span class="informations">1065×123 8.1 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>Assigned (button border missing):<br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/l6PnNkC9xjbBCnVtRB94wifLLjV.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/9/3/f/93f3442c472d7719e20e5501ecbbd07d0adb81c7.png" title="msedge_uw4nX8jWEV"><img alt="msedge_uw4nX8jWEV" data-base62-sha1="l6PnNkC9xjbBCnVtRB94wifLLjV" data-dominant-color="EBF2F5" height="69" src="../../../images/93f3442c472d7719e20e5501ecbbd07d0adb81c7_2_690x69.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/9/3/f/93f3442c472d7719e20e5501ecbbd07d0adb81c7_2_690x69.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/9/3/f/93f3442c472d7719e20e5501ecbbd07d0adb81c7_2_1035x103.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/9/3/f/93f3442c472d7719e20e5501ecbbd07d0adb81c7.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">msedge_uw4nX8jWEV</span><span class="informations">1096×111 10.4 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/553057_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">David_Ghost</div>
+          <div class="post_content">
+<p>there’s a problem when i try to search for a ip adress:<br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/vj2xwjjvyDRlr0cSw23Mhpyzb0A.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/d/b/6/db6a68090f83b0bbbaf07b9a0c37c73c1a0ddb78.png" rel="noopener nofollow ugc" title="Capture d'écran 2026-02-11 174145"><img alt="Capture d'écran 2026-02-11 174145" data-base62-sha1="vj2xwjjvyDRlr0cSw23Mhpyzb0A" height="125" src="../../../images/db6a68090f83b0bbbaf07b9a0c37c73c1a0ddb78.png" width="387"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Capture d'écran 2026-02-11 174145</span><span class="informations">387×125 2.04 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 4">❤️ 4</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/537252_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">chapoi</div>
+          <div class="post_content">
+<p>4 posts were split to a new topic: <a href="/t/issue-with-enabling-upcoming-changes/395881">Issue with enabling upcoming changes</a></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/537252_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">chapoi</div>
+          <div class="post_content">
+<p>A post was merged into an existing topic: <a href="https://meta.discourse.org/t/horizon-theme/360486">Horizon Theme</a></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/515563_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">jordan.vidrine</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="23" data-topic="395331" data-username="Lhc_fl">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/268115_2.png" width="24"/> Lhc_fl:</div>
+<blockquote>
+<p>The translation button seems to be too dark.</p>
+</blockquote>
+</aside>
+<aside class="quote group-team" data-post="24" data-topic="395331" data-username="dax">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/244677_2.png" width="24"/> dax:</div>
+<blockquote>
+<p>Not assigned:</p>
+</blockquote>
+</aside>
+<p>These issues have been addressed.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/515563_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">jordan.vidrine</div>
+          <div class="post_content">
+<aside class="quote no-group" data-full="true" data-post="25" data-topic="395331" data-username="David_Ghost">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/553057_2.png" width="24"/> David_Ghost:</div>
+<blockquote>
+<p>there’s a problem when i try to search for a ip adress:</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/vj2xwjjvyDRlr0cSw23Mhpyzb0A.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/d/b/6/db6a68090f83b0bbbaf07b9a0c37c73c1a0ddb78.png" title="Capture d'écran 2026-02-11 174145"><img alt="Capture d'écran 2026-02-11 174145" data-base62-sha1="vj2xwjjvyDRlr0cSw23Mhpyzb0A" height="125" src="../../../images/db6a68090f83b0bbbaf07b9a0c37c73c1a0ddb78.png" width="387"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Capture d'écran 2026-02-11 174145</span><span class="informations">387×125 2.04 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+</blockquote>
+</aside>
+<p>Would you mind pointing me to the relative url to access this UI? (Yes, I’ve worked at Discourse for 6 years and still don’t know where some things live <img alt=":sweat_smile:" class="emoji" height="20" loading="lazy" src="../../../images/sweat_smile.png" title=":sweat_smile:" width="20"/>)</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 4">❤️ 4</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/537252_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">chapoi</div>
+          <div class="post_content">
+<p>That’s the admin-profile view I believe. Not sure related to the Foundation changes; saw it earlier today on another theme too.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/553057_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">David_Ghost</div>
+          <div class="post_content">
+<p>I can see it at /admin/users/id/USERHERE</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/515563_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">jordan.vidrine</div>
+          <div class="post_content">
+<p>thanks! It was addressed in this PR → <a class="inline-onebox" href="https://github.com/discourse/discourse/pull/37831">FIX: Change @class to @triggerClass on ip lookup menu by jordanvidrine · Pull Request #37831 · discourse/discourse · GitHub</a></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 5">❤️ 5</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/545002_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">sniper756</div>
+          <div class="post_content">
+<p>There is a black dot to the right of the small handle</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/tO7roSZojfrNQ3JB4U2u6dZfGMb.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/d/0/e/d0e96edf7949ad3925d3d330d2ea0659f56e098b.png" title="screenshot_20260214_130446"><img alt="screenshot_20260214_130446" data-base62-sha1="tO7roSZojfrNQ3JB4U2u6dZfGMb" data-dominant-color="F7F8F9" height="243" src="../../../images/d0e96edf7949ad3925d3d330d2ea0659f56e098b_2_690x243.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/d/0/e/d0e96edf7949ad3925d3d330d2ea0659f56e098b_2_690x243.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/d/0/e/d0e96edf7949ad3925d3d330d2ea0659f56e098b_2_1035x364.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/d/0/e/d0e96edf7949ad3925d3d330d2ea0659f56e098b.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">screenshot_20260214_130446</span><span class="informations">1320×465 48.7 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/268115_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Lhc_fl</div>
+          <div class="post_content">
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/jW3p6fjKo31r746WQTcHVqI1CFS.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/8/b/b/8bb950bf6f7a78e195f056894358e0c240cf25f4.png" rel="noopener nofollow ugc" title="image"><img alt="image" data-base62-sha1="jW3p6fjKo31r746WQTcHVqI1CFS" height="336" src="../../../images/8bb950bf6f7a78e195f056894358e0c240cf25f4.png" width="558"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">558×336 11.4 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>When the button is hovered over, the icon disappears. <img alt=":winking_face_with_tongue:" class="emoji" height="20" loading="lazy" src="../../../images/winking_face_with_tongue.png" title=":winking_face_with_tongue:" width="20"/></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/119591_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Canapin</div>
+          <div class="post_content">
+<p>The compose icon is off-center:</p>
+<p><img alt="image" data-base62-sha1="bvbSmfd5qXYsBXoj0irDTPCWsvs" height="55" src="../../../images/509e8b48a4eefbcd072446fb5d1778cdfd90597e.png" width="239"/></p>
+<p><img alt="image" data-base62-sha1="z6CLxcrlZwUdDD1Qgb3wccwINga" height="51" src="../../../images/f60bd018abb0ded3b2de386a0b3801215ead46ce.png" width="183"/></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/119591_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Canapin</div>
+          <div class="post_content">
+<p>On an empty search page, there’s a floating border:</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/sVEiz1Ba5NI2AzTsk34rOz4BZuE.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/c/a/c/cac129cc41e4aace6ddea3ad48e1b879bb516e18.png" title="image"><img alt="image" data-base62-sha1="sVEiz1Ba5NI2AzTsk34rOz4BZuE" data-dominant-color="242424" height="453" src="../../../images/cac129cc41e4aace6ddea3ad48e1b879bb516e18_2_690x453.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/c/a/c/cac129cc41e4aace6ddea3ad48e1b879bb516e18_2_690x453.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/c/a/c/cac129cc41e4aace6ddea3ad48e1b879bb516e18_2_1035x679.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/c/a/c/cac129cc41e4aace6ddea3ad48e1b879bb516e18.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1103×725 29.2 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/4qvwQDxmuQBBwwzTMDaK76ZFSiU.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/1/f/0/1f07cecf2b5022574e513deb1a1dc33ed20e4af4.png" title="image"><img alt="image" data-base62-sha1="4qvwQDxmuQBBwwzTMDaK76ZFSiU" data-dominant-color="2A2C2E" height="397" src="../../../images/1f07cecf2b5022574e513deb1a1dc33ed20e4af4_2_690x397.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/1/f/0/1f07cecf2b5022574e513deb1a1dc33ed20e4af4_2_690x397.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/1/f/0/1f07cecf2b5022574e513deb1a1dc33ed20e4af4_2_1035x595.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/1/f/0/1f07cecf2b5022574e513deb1a1dc33ed20e4af4.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1092×629 29.6 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="eyes: 1">👀 1</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/119591_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Canapin</div>
+          <div class="post_content">
+<p>On mobile, the post count container is too tall, or the translation button is too short, I don’t know which one should be tweaked <img alt=":face_with_tongue:" class="emoji" height="20" loading="lazy" src="../../../images/face_with_tongue.png" title=":face_with_tongue:" width="20"/></p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/iIMUtLnjyeOr7ichuSU1Y3VVNtN.jpeg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/8/3/3/83373ec6ccbd0384ad831bd4da33496b7d9d61e3.jpeg" title="Screenshot_20260216_015646_Chrome"><img alt="Screenshot_20260216_015646_Chrome" data-base62-sha1="iIMUtLnjyeOr7ichuSU1Y3VVNtN" height="339" src="../../../images/83373ec6ccbd0384ad831bd4da33496b7d9d61e3.jpeg" width="577"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot_20260216_015646_Chrome</span><span class="informations">577×339 16.8 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/515563_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">jordan.vidrine</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="41" data-topic="395331" data-username="Canapin">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/119591_2.png" width="24"/> Canapin:</div>
+<blockquote>
+<p>On mobile, the post count container is too tall, or the translation button is too short, I don’t know which one should be tweaked <img alt=":face_with_tongue:" class="emoji" height="20" loading="lazy" src="../../../images/face_with_tongue.png" title=":face_with_tongue:" width="20"/></p>
+</blockquote>
+</aside>
+<p><img alt=":winking_face_with_tongue:" class="emoji only-emoji" height="20" loading="lazy" src="../../../images/winking_face_with_tongue.png" title=":winking_face_with_tongue:" width="20"/></p>
+<p>this made me laugh.</p>
+<p>Thanks for all of the feedback again everyone, will work on this round and have it updated by EOW.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/553057_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">David_Ghost</div>
+          <div class="post_content">
+<p>it’s the same if i try to remove a tc at /admin/config/customize/components</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/z4oYJBCDn7G06tsXWZjYQxIXd7T.jpeg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/f/5/c/f5cb804fbfafe4ce5b47b25ed3c43e2cc4897ee5.jpeg" title="Screenshot_20260218_183014_Brave"><img alt="Screenshot_20260218_183014_Brave" data-base62-sha1="z4oYJBCDn7G06tsXWZjYQxIXd7T" data-dominant-color="262727" height="304" src="../../../images/f5cb804fbfafe4ce5b47b25ed3c43e2cc4897ee5_2_690x304.jpeg" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/f/5/c/f5cb804fbfafe4ce5b47b25ed3c43e2cc4897ee5_2_690x304.jpeg, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/f/5/c/f5cb804fbfafe4ce5b47b25ed3c43e2cc4897ee5_2_1035x456.jpeg 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/f/5/c/f5cb804fbfafe4ce5b47b25ed3c43e2cc4897ee5.jpeg 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot_20260218_183014_Brave</span><span class="informations">1080×477 69.5 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/515563_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">jordan.vidrine</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="40" data-topic="395331" data-username="Canapin">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/119591_2.png" width="24"/> Canapin:</div>
+<blockquote>
+<p>On an empty search page, there’s a floating border:</p>
+</blockquote>
+</aside>
+<p>This is actually an issue with AI search not with these foundation improvements.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/515563_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">jordan.vidrine</div>
+          <div class="post_content">
+<p>What page is this on?</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/553057_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">David_Ghost</div>
+          <div class="post_content">
+<p>It’s on the /categories page. I have the same</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/119591_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Canapin</div>
+          <div class="post_content">
+<p>Avatars have a higher z-index than the category list when we edit a topic’s title:</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/czg1it5drIHqVKjSR75l7hp8jX5.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/5/8/1/581667cdfc5b3133bc3a473b3861348ab824b10b.png" title="image"><img alt="image" data-base62-sha1="czg1it5drIHqVKjSR75l7hp8jX5" data-dominant-color="303638" height="446" src="../../../images/581667cdfc5b3133bc3a473b3861348ab824b10b_2_690x446.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/5/8/1/581667cdfc5b3133bc3a473b3861348ab824b10b_2_690x446.png, https://d11a6trkgmumsb.cloudfront.net/original/4X/5/8/1/581667cdfc5b3133bc3a473b3861348ab824b10b.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/5/8/1/581667cdfc5b3133bc3a473b3861348ab824b10b.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">791×512 49.6 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span><span class="engagement-pill reaction-pill" title="eyes: 1">👀 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/549022_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">gilles</div>
+          <div class="post_content">
+<p>I’m trying to activate the theme but I don’t see how to proceed!</p>
+<p>I have activated the Foundation theme in upcoming, but in my themes, there is only the old Foundation theme.</p>
+<p>Is this normal? <img alt=":sweat_smile:" class="emoji" height="20" loading="lazy" src="../../../images/sweat_smile.png" title=":sweat_smile:" width="20"/></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554653_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Moin</div>
+          <div class="post_content">
+<p>Yes that’s normal. The upcoming changes affect how the Foundation theme looks like. It’s not a different theme.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/545002_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">sniper756</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="37" data-topic="395331" data-username="sniper756">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/545002_2.png" width="24"/> sniper756:</div>
+<blockquote>
+<p>There is a black dot to the right of the small handle</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/tO7roSZojfrNQ3JB4U2u6dZfGMb.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/d/0/e/d0e96edf7949ad3925d3d330d2ea0659f56e098b.png" title="screenshot_20260214_130446"><img alt="screenshot_20260214_130446" data-base62-sha1="tO7roSZojfrNQ3JB4U2u6dZfGMb" data-dominant-color="F7F8F9" height="243" src="../../../images/d0e96edf7949ad3925d3d330d2ea0659f56e098b_2_690x243.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/d/0/e/d0e96edf7949ad3925d3d330d2ea0659f56e098b_2_690x243.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/d/0/e/d0e96edf7949ad3925d3d330d2ea0659f56e098b_2_1035x364.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/d/0/e/d0e96edf7949ad3925d3d330d2ea0659f56e098b.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">screenshot_20260214_130446</span><span class="informations">1320×465 48.7 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+</blockquote>
+</aside>
+<p>Switch the homepage to categories, the upper right corner ~~~~~~~~~~~~~~~~~~~~~~~~</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/515563_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">jordan.vidrine</div>
+          <div class="post_content">
+<p>This is not happening for me. Here is what I am seeing locally:<br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/lczXJ2j3hH3MvHBL6qXAxuL5qhC.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/9/4/9/9499b2d68f1b8aa93cf1710dbfb04e0239d475f4.png" title="CleanShot 2026-02-26 at 09.44.46@2x"><img alt="CleanShot 2026-02-26 at 09.44.46@2x" data-base62-sha1="lczXJ2j3hH3MvHBL6qXAxuL5qhC" data-dominant-color="F5F8FA" height="177" src="../../../images/9499b2d68f1b8aa93cf1710dbfb04e0239d475f4_2_345x177.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/9/4/9/9499b2d68f1b8aa93cf1710dbfb04e0239d475f4_2_345x177.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/9/4/9/9499b2d68f1b8aa93cf1710dbfb04e0239d475f4_2_517x265.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/9/4/9/9499b2d68f1b8aa93cf1710dbfb04e0239d475f4_2_690x354.png 2x" width="345"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">CleanShot 2026-02-26 at 09.44.46@2x</span><span class="informations">1746×896 81.2 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<aside class="quote no-group" data-post="47" data-topic="395331" data-username="Canapin">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/119591_2.png" width="24"/> Canapin:</div>
+<blockquote>
+<p>Avatars have a higher z-index than the category list when we edit a topic’s title:</p>
+</blockquote>
+</aside>
+<p>Can you confirm this <em>doesnt</em> happen when this update is turned off? I didn’t edit any z-index so am wondering how this would have happened.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/119591_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Canapin</div>
+          <div class="post_content">
+<p>It doesn’t happen anymore. No clue why.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/545002_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">sniper756</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="37" data-topic="395331" data-username="sniper756">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/545002_2.png" width="24"/> sniper756:</div>
+<blockquote>
+<p>There is a black dot to the right of the small handle.</p>
+</blockquote>
+</aside>
+<p>Uh~ I just celebrated that this issue was fixed these few days. But after I rebuilt just now, this problem appeared again.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/553546_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">small-lovely-cat</div>
+          <div class="post_content">
+<p>Specifically, only the post-approval will hit this bug:</p>
+<p>Left is the original, right is the one without <code>padding-inline</code> set, seems that the No button is shorter than the Edit Post button.</p>
+<div class="d-image-grid">
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/r1MoGXh3WyQH0cRwU11veglKUuo.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/b/d/6/bd6e39a553b13696b2975eef5f69a65ab29f031c.png" rel="noopener nofollow ugc" title="屏幕截图 2026-03-05 130823"><img alt="屏幕截图 2026-03-05 130823" data-base62-sha1="r1MoGXh3WyQH0cRwU11veglKUuo" data-dominant-color="F4F2F0" height="500" src="../../../images/bd6e39a553b13696b2975eef5f69a65ab29f031c_2_485x500.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/b/d/6/bd6e39a553b13696b2975eef5f69a65ab29f031c_2_485x500.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/b/d/6/bd6e39a553b13696b2975eef5f69a65ab29f031c_2_727x750.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/b/d/6/bd6e39a553b13696b2975eef5f69a65ab29f031c.png 2x" width="485"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">屏幕截图 2026-03-05 130823</span><span class="informations">827×852 51.9 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div><br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/z25BXroRhwRMXlqSHsaEqgWlnzx.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/f/5/8/f58895c17c15e4874c4032783e30fb5ac740526f.png" rel="noopener nofollow ugc" title="屏幕截图 2026-03-05 130805"><img alt="屏幕截图 2026-03-05 130805" data-base62-sha1="z25BXroRhwRMXlqSHsaEqgWlnzx" data-dominant-color="F3F2F0" height="500" src="../../../images/f58895c17c15e4874c4032783e30fb5ac740526f_2_484x500.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/f/5/8/f58895c17c15e4874c4032783e30fb5ac740526f_2_484x500.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/f/5/8/f58895c17c15e4874c4032783e30fb5ac740526f_2_726x750.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/f/5/8/f58895c17c15e4874c4032783e30fb5ac740526f.png 2x" width="484"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">屏幕截图 2026-03-05 130805</span><span class="informations">825×852 51.8 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+</div>
+<p>Not sure if it is by-designed, just report it.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/553546_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">small-lovely-cat</div>
+          <div class="post_content">
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/hvosv46gCgc8oYk3hORN9Y7auDu.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/7/a/b/7ab175ffd6e52f04663bf9d5dcdd4bea5a910168.png" rel="noopener nofollow ugc" title="IMG_9277"><img alt="IMG_9277" data-base62-sha1="hvosv46gCgc8oYk3hORN9Y7auDu" data-dominant-color="CCCDCD" height="336" src="../../../images/7ab175ffd6e52f04663bf9d5dcdd4bea5a910168_2_689x336.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/7/a/b/7ab175ffd6e52f04663bf9d5dcdd4bea5a910168_2_689x336.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/7/a/b/7ab175ffd6e52f04663bf9d5dcdd4bea5a910168_2_1033x504.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/7/a/b/7ab175ffd6e52f04663bf9d5dcdd4bea5a910168.png 2x" width="689"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">IMG_9277</span><span class="informations">1206×589 77.1 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>And in mobile view, there seem to be an unnecessary outline when clicking more button.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/553546_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">small-lovely-cat</div>
+          <div class="post_content">
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/sOmtSGM3dNgjAXblNQFFKtesLRY.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/c/9/e/c9ee476cba0584b2f16481d67898a2e8ab74672e.png" rel="noopener nofollow ugc" title="image"><img alt="image" data-base62-sha1="sOmtSGM3dNgjAXblNQFFKtesLRY" height="334" src="../../../images/c9ee476cba0584b2f16481d67898a2e8ab74672e.png" width="608"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">608×334 12.5 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>Another issue: The tags fail to display here with proper color.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/553546_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">small-lovely-cat</div>
+          <div class="post_content">
+<p><img alt="image" data-base62-sha1="lck9e3Rp1yg6HVz8CJ9efhrPmvY" height="68" src="../../../images/949251352d3c02bcb2cfc2c0883ff3f89fa428ce.png" width="349"/></p>
+<p>The card at the end of a PM is also misaligned in height.</p>
+<p>(The “x” button expand the card’s height)</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/529329_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">jack222</div>
+          <div class="post_content">
+<p>hello，It seems like this hasn’t been fully fixed yet.</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/wudk1w71YACBec7QBpbz6a3hsQ9.jpeg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/e/3/a/e3afef24a080036444529b993f7c4c64ae09cf79.jpeg" rel="noopener nofollow ugc" title="IMG_4202"><img alt="IMG_4202" data-base62-sha1="wudk1w71YACBec7QBpbz6a3hsQ9" data-dominant-color="E8EAE9" height="500" src="../../../images/e3afef24a080036444529b993f7c4c64ae09cf79_2_230x500.jpeg" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/e/3/a/e3afef24a080036444529b993f7c4c64ae09cf79_2_230x500.jpeg, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/e/3/a/e3afef24a080036444529b993f7c4c64ae09cf79_2_345x750.jpeg 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/e/3/a/e3afef24a080036444529b993f7c4c64ae09cf79_2_460x1000.jpeg 2x" width="230"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">IMG_4202</span><span class="informations">1320×2868 284 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/119591_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Canapin</div>
+          <div class="post_content">
+<p>On mobile, the notification button’s transparent background cause issues:</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/nLZexI16s9akhV1oFHnMCTq4RYU.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/a/6/9/a69eae936720edb490f7731386ff69eb5cbc93b4.png" title="image"><img alt="image" data-base62-sha1="nLZexI16s9akhV1oFHnMCTq4RYU" height="320" src="../../../images/a69eae936720edb490f7731386ff69eb5cbc93b4.png" width="596"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">596×320 52.4 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554803_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Lilly</div>
+          <div class="post_content">
+<p>when is this actually going to be made official? having 2 foundations with different classes is a pain for theme and component dev.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/119591_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Canapin</div>
+          <div class="post_content">
+<p>I’m curious as well to know if there’s an estimated release date, and if the release will need <code>.uc-modernize-foundation-theme</code> as a parent selector or if it’s just temporary.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/515563_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">jordan.vidrine</div>
+          <div class="post_content">
+<p>Thanks for the pings everyone. This project is still in the works, amidst a ton of other things we are trying to keep in check. My plan is to merge some of the smaller items into core while keeping things like buttons, header, and anti aliased font behind the feature flag for now.</p>
+<p>I have made room for this next week and will begin sharing some more updates then.</p>
+<aside class="quote no-group" data-post="63" data-topic="395331" data-username="Lilly">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/554803_2.png" width="24"/> Lilly:</div>
+<blockquote>
+<p>having 2 foundations with different classes is a pain for theme and component dev.</p>
+</blockquote>
+</aside>
+<p>What sort of issues have you run into with your theme and component work with this feature turned on or off?</p>
+<aside class="quote no-group" data-post="64" data-topic="395331" data-username="Canapin">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/119591_2.png" width="24"/> Canapin:</div>
+<blockquote>
+<p>if the release will need <code>.uc-modernize-foundation-theme</code> as a parent selector or if it’s just temporary.</p>
+</blockquote>
+</aside>
+<p>This is just temporary for now as it is scoped to the upcoming changes feature being enabled.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="hugs: 1">🤗 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554803_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Lilly</div>
+          <div class="post_content">
+<aside class="quote group-team" data-post="65" data-topic="395331" data-username="jordan.vidrine">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/515563_2.png" width="24"/> jordan.vidrine:</div>
+<blockquote>
+<p>What sort of issues have you run into with your theme and component work with this feature turned on or off?</p>
+</blockquote>
+</aside>
+<p>mostly the buttons!  lately i have been formatting buttons for new foundation not realizing they look different in old foundation until a certain awesome robot pointed it out recently lol.  <img alt=":woman_facepalming:" class="emoji" height="20" loading="lazy" src="../../../images/woman_facepalming.png" title=":woman_facepalming:" width="20"/>  new foundation looks better too  <img alt=":+1:" class="emoji" height="20" loading="lazy" src="../../../images/+1.png" title=":+1:" width="20"/></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="laughing: 1">😆 1</span><span class="engagement-pill reaction-pill" title="star struck: 1">:star_struck: 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/119591_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Canapin</div>
+          <div class="post_content">
+<p>Thank you for your reply!<br/>
+I’ve been halting a custom theme for several weeks now because it will be based on the new foundation, and I don’t want to mess my code with temporary stuff, I prefer to wait and work from the final release <img alt=":slight_smile:" class="emoji" height="20" loading="lazy" src="../../../images/slight_smile.png" title=":slight_smile:" width="20"/></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/119591_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Canapin</div>
+          <div class="post_content">
+<p>How it looks on Foundation and Meta Branded:</p>
+<p><img alt="image" data-base62-sha1="6IMLNY7BZlLUnNDVTeQ2LOWS1tV" height="80" src="../../../images/2f1d17a09764fa1e14fce22a7a07081dac8662b3.png" width="80"/> <img alt="image" data-base62-sha1="wktRmW7J9191N7gfKJ352TgHcR8" height="77" src="../../../images/e296452dd5ca41170aaa92e35c6e2b5db0cfbdd6.png" width="78"/></p>
+<p>The number and arrow containers should be the same size.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/313494_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">NateDhaliwal</div>
+          <div class="post_content">
+<p>I do not see this on mobile. I assume this is <a class="hashtag-cooked" data-icon="tag" data-id="450" data-slug="desktop" data-style-type="icon" data-type="tag" href="/tag/desktop/450"><span class="hashtag-icon-placeholder"><svg class="fa d-icon d-icon-square-full svg-icon svg-node"><use href="#square-full"></use></svg></span><span>desktop</span></a>?</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/119591_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Canapin</div>
+          <div class="post_content">
+<p>Thanks, I dug more: It’s because of the new foundation theme, which is also used on Meta Branded, and happens both on desktop and mobile.</p>
+<p>I’m not sure if it should be moved to <a class="inline-onebox" href="https://meta.discourse.org/t/modernizing-the-foundation-theme/395331">Modernizing the Foundation theme</a> or not.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/537252_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">chapoi</div>
+          <div class="post_content">
+<p>Made the exec decision to do so <img alt=":wink:" class="emoji" height="20" loading="lazy" src="../../../images/wink.png" title=":wink:" width="20"/></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="chefs kiss: 1">:chefs_kiss: 1</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/515563_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">jordan.vidrine</div>
+          <div class="post_content">
+<p>This has been fixed &amp; will be updated soon</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/119591_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Canapin</div>
+          <div class="post_content">
+<p>On dark theme, the <code>active</code> state on certain buttons (mostly visible with keyboard navigation, only transient when using mouse/touch) is dark purple on dark background and harsh to the eyes:<br/>
+<img alt="image" data-base62-sha1="vqzWH6yBdIHg3ZMW8Jed2pLstEu" height="47" src="../../../images/dc44910abc696b1ea6b542b3803b57ac0f253a32.png" width="91"/></p>
+<p>Red <code>hover</code> state as well:<br/>
+<img alt="image" data-base62-sha1="YRpSRY0nMWTcc5MC4VvnlAA17z" height="39" src="../../../images/06e13ad5e62249b0666c85196cbf5f19b0724e99.png" width="95"/></p>
+<p>But the worst is the “danger” button with a red background and dark text:<br/>
+<img alt="image" data-base62-sha1="ytBzXAArI0HCxv5W2c63OtoWJII" height="54" src="../../../images/f1a2aa6adbdcc8db8f0054cab36be1f8f431ed98.png" width="114"/></p>
+<p>Perhaps simply tweaking the red value/brightness would fix the 2nd and 3rd points.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/515563_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">jordan.vidrine</div>
+          <div class="post_content">
+<p>Is this only on this meta theme?</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/119591_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Canapin</div>
+          <div class="post_content">
+<p>Yeah. On foundation:</p>
+<p>active<br/>
+<img alt="image" data-base62-sha1="513VTn6ISQ88Rz7J1kbKK15ENa" height="42" src="../../../images/009130144c6b6e725e96563ad60ff9138c6c31b0.png" width="93"/></p>
+<p>hover<br/>
+<img alt="image" data-base62-sha1="raqabtu9tgUcVCdNyKX325ou6Pt" height="44" src="../../../images/be684aca052f77166aa731b03897f858e67dc27f.png" width="91"/></p>
+<p>danger<br/>
+<img alt="image" data-base62-sha1="np0AHVBdF439VjU8JxZeFMDM6xY" height="69" src="../../../images/a405bc20f7140914d8ec3171e4af0c24f627f782.png" width="133"/></p>
+<p>Better contrasts than Meta Branded.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554653_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Moin</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="8" data-topic="395331" data-username="Moin">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/554653_2.png" width="24"/> Moin:</div>
+<blockquote>
+<p>It seems some icon colors don’t work well with the wcag palette.<br/>
+<img alt="image" data-base62-sha1="kmmUtiWHpVmq9r1mA3IM5snnaFI" height="73" src="../../../images/8eb2d0b87de9391c14c7a1681793545f4b59e9ba.png" width="228"/></p>
+</blockquote>
+</aside>
+<p>This is still the case:<br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/lsGLR4VZqV82QMD7aDgRlrYK6WG.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/9/6/6/966be39b4a29d551122a1e64269535ac601ff9fe.png" title="image"><img alt="image" data-base62-sha1="lsGLR4VZqV82QMD7aDgRlrYK6WG" height="237" src="../../../images/966be39b4a29d551122a1e64269535ac601ff9fe.png" width="395"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">395×237 6.82 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>Are there any plans to adjust the borders of the buttons when using the WCAG color palette? I currently find the thin, very light border difficult to see, so in some places it looks to me like there are just icons floating around rather than buttons. This wasn’t a problem with the previous solid-gray buttons.</p>
+<p>I also felt similar when the shadow below the header was removed and when the colored line at the top of the composer was removed. But while those are clear zones of my screen, the buttons are at different places, which makes the fact that they are difficult to tell apart from their surroundings more difficult for me.</p>
+<p>Text fields in the settings, for example, have a darker outline:<br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/sso9VvIJUUFehgBxwTTVgexJiB2.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/c/7/7/c7726b7e82b1330e20a57e8918b683d618c1b5a8.png" title="image"><img alt="image" data-base62-sha1="sso9VvIJUUFehgBxwTTVgexJiB2" height="86" src="../../../images/c7726b7e82b1330e20a57e8918b683d618c1b5a8.png" width="416"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">555×115 2.69 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>I also noticed that this seems to break the styling of the category security:<br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/1PV2K9Kam3CrQqEUVjrDG6oOON2.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/0/c/e/0ce0a6e7552f768606f60634593c892f9d3047d8.png" title="image"><img alt="image" data-base62-sha1="1PV2K9Kam3CrQqEUVjrDG6oOON2" data-dominant-color="F9F6F7" height="250" src="../../../images/0ce0a6e7552f768606f60634593c892f9d3047d8_2_333x250.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/0/c/e/0ce0a6e7552f768606f60634593c892f9d3047d8_2_333x250.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/0/c/e/0ce0a6e7552f768606f60634593c892f9d3047d8_2_499x375.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/0/c/e/0ce0a6e7552f768606f60634593c892f9d3047d8_2_666x500.png 2x" width="333"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">697×523 14 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/mlQoNy2w9Dvn8FxN3VjgaRlP8qH.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/9/c/a/9ca7fd29b934b2864e4fbff6b6bdbf388f1adc2f.png" title="image"><img alt="image" data-base62-sha1="mlQoNy2w9Dvn8FxN3VjgaRlP8qH" data-dominant-color="F9F6F7" height="250" src="../../../images/9ca7fd29b934b2864e4fbff6b6bdbf388f1adc2f_2_325x250.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/9/c/a/9ca7fd29b934b2864e4fbff6b6bdbf388f1adc2f_2_325x250.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/9/c/a/9ca7fd29b934b2864e4fbff6b6bdbf388f1adc2f_2_487x375.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/9/c/a/9ca7fd29b934b2864e4fbff6b6bdbf388f1adc2f_2_650x500.png 2x" width="325"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">687×527 14 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>The group selection for the upcoming change also looks unusually large in the new design:<br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/LFbn0zDEBo2WAcHfUHaAUbl21N.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/0/5/6/05635263dd27c9f94004c9065036b7c43bbe017f.png" title="image"><img alt="image" data-base62-sha1="LFbn0zDEBo2WAcHfUHaAUbl21N" data-dominant-color="F6F5F5" height="81" src="../../../images/05635263dd27c9f94004c9065036b7c43bbe017f.png" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1067×126 5.32 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div><br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/esM5F23kqUCqEXn2t4mSb51zNd1.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/6/5/5/655f2775b57ebed6808ab28ef5f7778a220b0003.png" title="image"><img alt="image" data-base62-sha1="esM5F23kqUCqEXn2t4mSb51zNd1" data-dominant-color="F6F5F5" height="82" src="../../../images/655f2775b57ebed6808ab28ef5f7778a220b0003.png" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1083×129 5.3 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/547175_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">sk-or-v1-contents</div>
+          <div class="post_content">
+<p>I think the navbar text size is too small on mobile (less legible than it looks like in the screenshot as it’s at the top of the page). The Suggested/Related font is too small too.</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/246RrWgbKua4XN47vR2XZ10ieTG.jpeg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/0/e/7/0e7b4dd078d977613e3629adf9e1103ef740b6c4.jpeg" rel="noopener nofollow ugc" title="New font sizes too small"><img alt="New font sizes too small" data-base62-sha1="246RrWgbKua4XN47vR2XZ10ieTG" data-dominant-color="F0F1F2" height="500" src="../../../images/0e7b4dd078d977613e3629adf9e1103ef740b6c4_2_290x500.jpeg" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/0/e/7/0e7b4dd078d977613e3629adf9e1103ef740b6c4_2_290x500.jpeg, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/0/e/7/0e7b4dd078d977613e3629adf9e1103ef740b6c4_2_435x750.jpeg 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/0/e/7/0e7b4dd078d977613e3629adf9e1103ef740b6c4_2_580x1000.jpeg 2x" width="290"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">New font sizes too small</span><span class="informations">1080×1859 211 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>Old font sizes are good:</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/nybCGtrgm17knx0lzo0F4ZHSF5q.jpeg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/a/5/0/a50f541dbec1c75e081c4fb566cfe5e2f57320d4.jpeg" rel="noopener nofollow ugc" title="Old font sizes"><img alt="Old font sizes" data-base62-sha1="nybCGtrgm17knx0lzo0F4ZHSF5q" data-dominant-color="F0F0F0" height="499" src="../../../images/a50f541dbec1c75e081c4fb566cfe5e2f57320d4_2_291x499.jpeg" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/a/5/0/a50f541dbec1c75e081c4fb566cfe5e2f57320d4_2_291x499.jpeg, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/a/5/0/a50f541dbec1c75e081c4fb566cfe5e2f57320d4_2_436x748.jpeg 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/a/5/0/a50f541dbec1c75e081c4fb566cfe5e2f57320d4_2_582x998.jpeg 2x" width="291"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Old font sizes</span><span class="informations">1080×1852 209 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>See also</p>
+<aside class="quote quote-modified" data-post="1" data-topic="402055">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/547175_2.png" width="24"/>
+<div class="quote-title__text-content">
+<a href="https://meta.discourse.org/t/theme-font-size-gets-smaller-due-to-hosted-instance-updates/402055">Theme font size gets smaller due to hosted instance updates?</a> <a class="badge-category__wrapper" href="/c/general/124"><span class="badge-category --style-emoji" data-category-id="124" data-drop-close="true" style="--category-badge-color: #25AAE2; --category-badge-text-color: #000000;" title="For open discussions among the community that don’t belong somewhere else"><img alt="blue_book" class="emoji" height="20" loading="lazy" src="../../../images/blue_book.png" title="blue_book" width="20"/><span class="badge-category__name">General</span></span></a>
+</div>
+</div>
+<blockquote>
+    About a month ago I noticed the font of many Discourse sites got smaller on mobile. Haven’t had the time to write this until now. This meta site doesn’t have this problem, but it can be observed on <a href="http://users.rust-lang.org" rel="noopener nofollow ugc">users.rust-lang.org</a> and <a href="http://discuss.python.org" rel="noopener nofollow ugc">discuss.python.org</a>. But <a href="http://talk.commonmark.org" rel="noopener nofollow ugc">talk.commonmark.org</a> and OpenAI site (<a href="http://community.openai.com" rel="noopener nofollow ugc">community.openai.com</a>) don’t have this problem. I guess the problem is because of a Discourse hosted instance update and the CommonMark forum didn’t update and OpenAI used a theme that foesn’t have the problem. 
+The na…
+  </blockquote>
+</aside>
+
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554803_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Lilly</div>
+          <div class="post_content">
+<p>i think this is clearly a matter of taste because i think exactly the opposite of the old vs new.  the old foundation fonts and buttons feel too chunky, while the new foundation sleeker elements look much nicer in the overall layout comparitively.  i have no complaints about functional usage on desktop or mobile, nor have any of my users since i enabled it.  <img alt=":woman_shrugging:t2:" class="emoji" height="20" loading="lazy" src="../../../images/2.png" title=":woman_shrugging:t2:" width="20"/></p>
+<p>i think you could give feedback to your admins as well and perhaps they could create another theme with the old changes?  enlarging those fonts you indicated isn’t difficult with css. or you could use a stylus type scripting browser extension to add your own mods (i do that with all the discourse sites i visit, including this one).</p>
+<p>edit:</p>
+<p>for example, something like these:</p>
+<p>topic header text</p>
+<pre data-code-wrap="scss"><code class="lang-scss">.extra-info-wrapper .topic-link {
+    font-size: larger;
+}
+</code></pre>
+<p>related/suggest topic footer buttons <a href="https://meta.discourse.org/t/modernizing-the-foundation-theme/395331/82">see also below</a></p>
+<pre data-code-wrap="scss"><code class="lang-scss">.more-topics__container .nav {
+    font-size: larger;
+}
+</code></pre>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span><span class="engagement-pill reaction-pill" title="eyes: 1">👀 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/547175_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">sk-or-v1-contents</div>
+          <div class="post_content">
+<p>Theres a small gap under the Related button</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/yT7Co7IRdt5Or00y09EI9gaY3rE.jpeg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/f/4/8/f48513bd5e5f37f6cc877879e2ba064b01b0d6be.jpeg" rel="noopener nofollow ugc" title="Related button"><img alt="Related button" data-base62-sha1="yT7Co7IRdt5Or00y09EI9gaY3rE" height="320" src="../../../images/f48513bd5e5f37f6cc877879e2ba064b01b0d6be.jpeg" width="577"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Related button</span><span class="informations">577×320 45.5 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div><br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/zsJu2bQ31kVNr1xiY3RKgsOkarw.jpeg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/f/8/8/f88b973a61f19de7b60b4196634eb62d048383d2.jpeg" rel="noopener nofollow ugc" title="Suggested button"><img alt="Suggested button" data-base62-sha1="zsJu2bQ31kVNr1xiY3RKgsOkarw" height="319" src="../../../images/f88b973a61f19de7b60b4196634eb62d048383d2.jpeg" width="614"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Suggested button</span><span class="informations">614×319 51.4 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>Becomes more obvious if the font size is increased</p>
+<p>Stylus</p>
+<pre data-code-wrap="css"><code class="lang-css">.more-topics__container .nav .d-button-label {
+   font-size: 150%;
+}
+</code></pre>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/e9RHEGmCaonyOZRUimD8YIESXLF.jpeg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/6/3/3/633bf246e614ce9f22e58e9500c3d3a0be3f8cc7.jpeg" rel="noopener nofollow ugc" title="Related button enlarged font"><img alt="Related button enlarged font" data-base62-sha1="e9RHEGmCaonyOZRUimD8YIESXLF" data-dominant-color="2A2A2D" height="309" src="../../../images/633bf246e614ce9f22e58e9500c3d3a0be3f8cc7_2_690x309.jpeg" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/6/3/3/633bf246e614ce9f22e58e9500c3d3a0be3f8cc7_2_690x309.jpeg, https://d11a6trkgmumsb.cloudfront.net/original/4X/6/3/3/633bf246e614ce9f22e58e9500c3d3a0be3f8cc7.jpeg 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/6/3/3/633bf246e614ce9f22e58e9500c3d3a0be3f8cc7.jpeg 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Related button enlarged font</span><span class="informations">711×319 50.6 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div><br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/zT8WAZCgtLnF1KyIRezRkh0ANmO.jpeg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/f/b/8/fb87deb507fa84355f7bdb437f36bca7c353978a.jpeg" rel="noopener nofollow ugc" title="Suggested button enlarged font"><img alt="Suggested button enlarged font" data-base62-sha1="zT8WAZCgtLnF1KyIRezRkh0ANmO" data-dominant-color="2B2A2C" height="305" src="../../../images/fb87deb507fa84355f7bdb437f36bca7c353978a_2_690x305.jpeg" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/f/b/8/fb87deb507fa84355f7bdb437f36bca7c353978a_2_690x305.jpeg, https://d11a6trkgmumsb.cloudfront.net/original/4X/f/b/8/fb87deb507fa84355f7bdb437f36bca7c353978a.jpeg 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/f/b/8/fb87deb507fa84355f7bdb437f36bca7c353978a.jpeg 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Suggested button enlarged font</span><span class="informations">720×319 54.6 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554803_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Lilly</div>
+          <div class="post_content">
+<p>yea that is why i said “something like”, because they may have some other things going on with their theme.  i was using meta, not Rust forum.  i’ll have a look for you because i am nice.  but i have to wait until there is some new and unread items to get the full footer header. i assume from the screenshot with avatar that that is in mobile viewport?</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/547175_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">sk-or-v1-contents</div>
+          <div class="post_content">
+<p>The quirk is visible here</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/fudKd50X5iRfrQWGgMx9sH0uq8D.jpeg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/6/c/8/6c8b2c7f5678eb029d77caad2351f0b534a4bbaf.jpeg" rel="noopener nofollow ugc" title="Screenshot"><img alt="Screenshot" data-base62-sha1="fudKd50X5iRfrQWGgMx9sH0uq8D" data-dominant-color="F5F6F6" height="203" src="../../../images/6c8b2c7f5678eb029d77caad2351f0b534a4bbaf_2_690x203.jpeg" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/6/c/8/6c8b2c7f5678eb029d77caad2351f0b534a4bbaf_2_690x203.jpeg, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/6/c/8/6c8b2c7f5678eb029d77caad2351f0b534a4bbaf_2_1035x304.jpeg 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/6/c/8/6c8b2c7f5678eb029d77caad2351f0b534a4bbaf.jpeg 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot</span><span class="informations">1080×319 56 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554803_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Lilly</div>
+          <div class="post_content">
+<p>OK this looks like a UX bug with the new foundation theme and the injected AI related topic button.  the button classes are a bit different:</p>
+<p><img alt="image" data-base62-sha1="7SHypsylBYMmAqXJiXDdav1mFyz" height="55" src="../../../images/373e36ef1c63c2c438a0613ffe6b99f76ab6de83.png" width="194"/></p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/fJK6AVAkHXLwHpWdPD4lmcSnz3B.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/6/e/4/6e4c5a422d4f85e0f8ed598521191d86d60f1993.png" title="Screenshot from 2026-05-02 18-53-50"><img alt="Screenshot from 2026-05-02 18-53-50" data-base62-sha1="fJK6AVAkHXLwHpWdPD4lmcSnz3B" height="106" src="../../../images/6e4c5a422d4f85e0f8ed598521191d86d60f1993.png" width="661"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot from 2026-05-02 18-53-50</span><span class="informations">661×106 13.6 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>but this will fix it a bit - can patch it with some padding and line-height adjustment:</p>
+<pre data-code-wrap="scss"><code class="lang-scss">.more-topics__container .nav li .btn {
+  padding: .5em;
+  line-height: 0;
+}
+</code></pre>
+<p>desktop:</p>
+<div class="d-image-grid">
+<p><img alt="Screenshot from 2026-05-02 20-18-28" data-base62-sha1="mMFL5slTPZ9kGrEwdVb4hxVzCLM" height="74" src="../../../images/9fb05b3816579ee0902296bfac4ce2b2a9ea18c2.png" width="280"/></p>
+<p><img alt="Screenshot from 2026-05-02 20-18-34" data-base62-sha1="dNiyooJ65UQGwnKoQB6kIavjZ12" height="74" src="../../../images/60aee5ed8eacb56345e06f791f56b82b57a98a4c.png" width="280"/></p>
+</div>
+<p>mobile:</p>
+<div class="d-image-grid">
+<p><img alt="Screenshot from 2026-05-02 20-22-43" data-base62-sha1="zMq351KABaqRB1F4q0gUJ1hTbHD" height="92" src="../../../images/fac54911e535ed825b70c5bdcce212c823614735.png" width="289"/></p>
+<p><img alt="Screenshot from 2026-05-02 20-22-47" data-base62-sha1="4r3Taz2YZDL2g4mrwIF4zLeSmSH" height="92" src="../../../images/1f17d863cc6ec8793f65a2f9bcd591305c1e7ea7.png" width="289"/></p>
+</div>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/313494_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">NateDhaliwal</div>
+          <div class="post_content">
+<p>For the pinned state menu, the options overlap severely:</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/9LrqqY9cVtcTfbsr6XOwtdGr0ZU.jpeg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/4/4/7/4470776d04afcc58a5e4a8d94ca318356602d766.jpeg" title="Screenshot20260514233946Chrome"><img alt="Screenshot20260514233946Chrome" data-base62-sha1="9LrqqY9cVtcTfbsr6XOwtdGr0ZU" data-dominant-color="171818" height="500" src="../../../images/4470776d04afcc58a5e4a8d94ca318356602d766_2_224x500.jpeg" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/4/4/7/4470776d04afcc58a5e4a8d94ca318356602d766_2_224x500.jpeg, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/4/4/7/4470776d04afcc58a5e4a8d94ca318356602d766_2_336x750.jpeg 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/4/4/7/4470776d04afcc58a5e4a8d94ca318356602d766_2_448x1000.jpeg 2x" width="224"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot20260514233946Chrome</span><span class="informations">1080×2408 176 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/545002_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">sniper756</div>
+          <div class="post_content">
+<p><a href="https://meta.discourse.org/t/topic/403180">Opening the Manage Tag Groups page in a mobile browser displays layout issues - Contributions / User Experience - Discourse Meta</a></p>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+  </body>
+</html>

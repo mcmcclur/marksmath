@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width">
+    <title>PHPBB to Discourse Migration Speed Optimization</title>
+    <link rel="stylesheet" href="../../../archived.css" />
+    <script>
+      function findSageCodeBlocks() {
+        return Array.prototype.slice.call(
+          document.querySelectorAll(
+            "pre[data-code-wrap='sage'] > code, pre > code.lang-sage, pre > code.language-sage, pre > code.sage"
+          )
+        );
+      }
+
+      function loadScript(src) {
+        return new Promise(function (resolve, reject) {
+          var existing = document.querySelector("script[src='" + src + "']");
+          if (existing) {
+            if (existing.dataset.loaded === "true") {
+              resolve();
+              return;
+            }
+            existing.addEventListener("load", resolve, { once: true });
+            existing.addEventListener("error", reject, { once: true });
+            return;
+          }
+
+          var script = document.createElement("script");
+          script.src = src;
+          script.async = true;
+          script.addEventListener("load", function () {
+            script.dataset.loaded = "true";
+            resolve();
+          }, { once: true });
+          script.addEventListener("error", reject, { once: true });
+          document.head.appendChild(script);
+        });
+      }
+
+      function prepareSageCells() {
+        var sageBlocks = findSageCodeBlocks();
+        if (!sageBlocks.length) {
+          return Promise.resolve();
+        }
+
+        return loadScript("https://sagecell.sagemath.org/static/embedded_sagecell.js")
+          .then(function () {
+            if (!window.sagecell || !window.sagecell.makeSagecell) {
+              return;
+            }
+
+            sageBlocks.forEach(function (codeTag, index) {
+              var preTag = codeTag.parentElement;
+              if (!preTag || preTag.dataset.sageMounted === "true") {
+                return;
+              }
+
+              var host = document.createElement("div");
+              host.className = "sagecell-archive";
+
+              var source = document.createElement("script");
+              source.type = "text/x-sage";
+              source.text = codeTag.textContent || "";
+              host.appendChild(source);
+
+              preTag.insertAdjacentElement("afterend", host);
+              preTag.classList.add("sage-source-hidden");
+              preTag.dataset.sageMounted = "true";
+
+              window.sagecell.makeSagecell({
+                inputLocation: host,
+                autoeval: false,
+                evalButtonText: "Run",
+                languages: ["sage"]
+              });
+            });
+          })
+          .catch(function () {
+            // Leave the original code blocks visible if SageCell cannot load.
+          });
+      }
+
+      function preprocessDiscourseMath() {
+        document.querySelectorAll("span.math, div.math").forEach(function (node) {
+          var tex = node.textContent || "";
+          if (!tex.trim()) {
+            return;
+          }
+          if (node.tagName === "SPAN") {
+            node.textContent = "\\(" + tex + "\\)";
+          } else {
+            node.textContent = "\\[" + tex + "\\]";
+          }
+          node.classList.remove("math");
+        });
+      }
+
+      window.MathJax = {
+        tex: {
+          inlineMath: [["\\(", "\\)"]],
+          displayMath: [["\\[", "\\]"]]
+        },
+        startup: {
+          pageReady() {
+            preprocessDiscourseMath();
+            return MathJax.startup.defaultPageReady().then(function () {
+              return prepareSageCells();
+            });
+          }
+        }
+      };
+    </script>
+    <script async id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="title-span">
+        <a href="../../../">
+          <img src="../../../images/ad2526334012b2ad0c3421f9b6dd94bae2ede52f.svg" height="40" alt="Site Logo" id="site-logo" />
+        </a>
+      </div>
+    </header>
+
+    <div class="main">
+    <div class="archive-span"><a href='https://meta.discourse.org/'>Discourse Meta</a> archived in May, 2026</div>
+    <h1 class="topic-title">PHPBB to Discourse Migration Speed Optimization</h1>
+            <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Mattash</div>
+          <div class="post_content">
+<p>Hey been with phpbb since 2004 so transferring a decent size forum. Right now I’m two days in 303139/2167314 (14%) 446 per min. How can I speed it up? I’m on digital ocean and only using 4% CPU.  Redis keeps timing out on me. I have have attachments turned off.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/522255_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Ethsim2</div>
+          <div class="post_content">
+<p>A few useful details would help narrow this down:</p>
+<ul>
+<li>Droplet size: RAM, vCPU count, disk type/size</li>
+<li>The exact import command you are running</li>
+<li>Your <code>app.yml</code> resource-related settings, with secrets removed, especially:
+<ul>
+<li><code>UNICORN_WORKERS</code></li>
+<li><code>db_shared_buffers</code></li>
+<li><code>db_work_mem</code></li>
+</ul>
+</li>
+<li>Whether the import is running inside the standard Discourse Docker container</li>
+<li>Any Redis timeout messages/log excerpts</li>
+<li>Whether the database is local in the same container or external</li>
+</ul>
+<p>One thing to note: <code>UNICORN_WORKERS</code> probably will not speed up the import much, because the phpBB importer is not primarily served through the web workers. Increasing it may just consume more RAM. The PostgreSQL memory settings and disk I/O are more likely to matter.</p>
+<p>Since CPU usage is only around 4%, this may be I/O-bound, database-bound, or waiting on Redis rather than lacking CPU. Redis timing out is worth investigating separately.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Mattash</div>
+          <div class="post_content">
+<p><img alt="image" data-base62-sha1="d1ekrE54FiEwyXaZrvCeTvFLR1R" height="77" src="../../../images/5b3fe364e38fd93a5ff89b4182f74d9d38366d3f.png" width="383"/></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Mattash</div>
+          <div class="post_content">
+<p>My updated log<br/>
+script/import_scripts/phpbb3.rb:15:in ‘’<br/>
+302570 / 2167314 ( 14.0%)  [448 items/min]  Exception while creating post 304683. Skipping.<br/>
+Waited 1.0 seconds<br/>
+/var/www/discourse/vendor/bundle/ruby/3.4.0/gems/redis-client-0.28.0/lib/redis_client/ruby_connection/buffered_io.rb:214:in ‘block in RedisClient::RubyConnection::BufferedIO#fill_buffer’<br/>
+<a>internal:kernel</a>:168:in ‘Kernel#loop’<br/>
+/var/www/discourse/vendor/bundle/ruby/3.4.0/gems/redis-client-0.28.0/lib/redis_client/ruby_connection/buffered_io.rb:197:in ‘RedisClient::RubyConnection::BufferedIO#fill_buffer’<br/>
+/var/www/discourse/vendor/bundle/ruby/3.4.0/gems/redis-client-0.28.0/lib/redis_client/ruby_connection/buffered_io.rb:187:in ‘RedisClient::RubyConnection::BufferedIO#ensure_remaining’<br/>
+/var/www/discourse/vendor/bundle/ruby/3.4.0/gems/redis-client-0.28.0/lib/redis_client/ruby_connection/buffered_io.rb:152:in ‘RedisClient::RubyConnection::BufferedIO#getbyte’<br/>
+/var/www/discourse/vendor/bundle/ruby/3.4.0/gems/redis-client-0.28.0/lib/redis_client/ruby_connection/resp3.rb:113:in ‘RedisClient::RESP3.parse’<br/>
+/var/www/discourse/vendor/bundle/ruby/3.4.0/gems/redis-client-0.28.0/lib/redis_client/ruby_connection/resp3.rb:50:in ‘RedisClient::RESP3.load’<br/>
+/var/www/discourse/vendor/bundle/ruby/3.4.0/gems/redis-client-0.28.0/lib/redis_client/ruby_connection.rb:97:in ‘RedisClient::RubyConnection#read’<br/>
+/var/www/discourse/vendor/bundle/ruby/3.4.0/gems/redis-client-0.28.0/lib/redis_client/connection_mixin.rb:37:in ‘RedisClient::ConnectionMixin#call’<br/>
+/var/www/discourse/vendor/bundle/ruby/3.4.0/gems/redis-client-0.28.0/lib/redis_client.rb:374:in ‘block (2 levels) in RedisClient#call_v’<br/>
+/var/www/discourse/vendor/bundle/ruby/3.4.0/gems/redis-client-0.28.0/lib/redis_client/middlewares.rb:16:in ‘RedisClient::BasicMiddleware#call’<br/>
+/var/www/discourse/vendor/bundle/ruby/3.4.0/gems/redis-client-0.28.0/lib/redis_client.rb:373:in ‘block in RedisClient#call_v’<br/>
+/var/www/discourse/vendor/bundle/ruby/3.4.0/gems/redis-client-0.28.0/lib/redis_client.rb:781:in ‘RedisClient#ensure_connected’<br/>
+/var/www/discourse/vendor/bundle/ruby/3.4.0/gems/redis-client-0.28.0/lib/redis_client.rb:372:in ‘RedisClient#call_v’<br/>
+/var/www/discourse/vendor/bundle/ruby/3.4.0/gems/redis-5.4.0/lib/redis/client.rb:90:in ‘Redis::Client#call_v’<br/>
+/var/www/discourse/vendor/bundle/ruby/3.4.0/gems/rack-mini-profiler-4.0.1/lib/mini_profiler/profiling_methods.rb:90:in ‘block in Redis::Client#profile_method’<br/>
+/var/www/discourse/vendor/bundle/ruby/3.4.0/gems/redis-5.4.0/lib/redis.rb:152:in ‘block in Redis#send_command’<br/>
+/var/www/discourse/vendor/bundle/ruby/3.4.0/gems/redis-5.4.0/lib/redis.rb:151:in ‘Monitor#synchronize’<br/>
+/var/www/discourse/vendor/bundle/ruby/3.4.0/gems/redis-5.4.0/lib/redis.rb:151:in ‘Redis#send_command’<br/>
+/var/www/discourse/vendor/bundle/ruby/3.4.0/gems/redis-5.4.0/lib/redis/commands/scripting.rb:110:in ‘Redis::Commands::Scripting#_eval’<br/>
+/var/www/discourse/vendor/bundle/ruby/3.4.0/gems/redis-5.4.0/lib/redis/commands/scripting.rb:97:in ‘Redis::Commands::Scripting#evalsha’<br/>
+/var/www/discourse/lib/discourse_redis.rb:38:in ‘Kernel#public_send’<br/>
+/var/www/discourse/lib/discourse_redis.rb:38:in ‘block in DiscourseRedis#method_missing’<br/>
+/var/www/discourse/lib/discourse_redis.rb:29:in ‘DiscourseRedis.ignore_readonly’<br/>
+/var/www/discourse/lib/discourse_redis.rb:38:in ‘DiscourseRedis#method_missing’<br/>
+/var/www/discourse/lib/discourse_redis.rb:270:in ‘DiscourseRedis::EvalHelper#eval’<br/>
+/var/www/discourse/lib/distributed_mutex.rb:82:in ‘DistributedMutex#get_lock’<br/>
+/var/www/discourse/lib/distributed_mutex.rb:50:in ‘block in DistributedMutex#synchronize’<br/>
+/var/www/discourse/lib/distributed_mutex.rb:49:in ‘Thread::Mutex#synchronize’<br/>
+/var/www/discourse/lib/distributed_mutex.rb:49:in ‘DistributedMutex#synchronize’<br/>
+/var/www/discourse/lib/distributed_mutex.rb:34:in ‘DistributedMutex.synchronize’<br/>
+/var/www/discourse/lib/post_creator.rb:410:in ‘PostCreator#transaction’<br/>
+/var/www/discourse/lib/post_creator.rb:200:in ‘PostCreator#create’<br/>
+/var/www/discourse/script/import_scripts/base.rb:611:in ‘ImportScripts::Base#create_post’<br/>
+/var/www/discourse/script/import_scripts/base.rb:555:in ‘block in ImportScripts::Base#create_posts’<br/>
+/var/www/discourse/vendor/bundle/ruby/3.4.0/gems/rack-mini-profiler-4.0.1/lib/patches/db/mysql2/alias_method.rb:8:in ‘Mysql2::Result#each’<br/>
+/var/www/discourse/vendor/bundle/ruby/3.4.0/gems/rack-mini-profiler-4.0.1/lib/patches/db/mysql2/alias_method.rb:8:in ‘Mysql2::Result#each’<br/>
+/var/www/discourse/script/import_scripts/base.rb:542:in ‘ImportScripts::Base#create_posts’<br/>
+/var/www/discourse/script/import_scripts/phpbb3/importer.rb:212:in ‘block in ImportScripts::PhpBB3::Importer#import_posts’<br/>
+/var/www/discourse/script/import_scripts/base.rb:943:in ‘block in ImportScripts::Base#batches’<br/>
+<a>internal:kernel</a>:168:in ‘Kernel#loop’<br/>
+/var/www/discourse/script/import_scripts/base.rb:942:in ‘ImportScripts::Base#batches’<br/>
+/var/www/discourse/script/import_scripts/phpbb3/importer.rb:293:in ‘ImportScripts::PhpBB3::Importer#batches’<br/>
+/var/www/discourse/script/import_scripts/phpbb3/importer.rb:208:in ‘ImportScripts::PhpBB3::Importer#import_posts’<br/>
+/var/www/discourse/script/import_scripts/phpbb3/importer.rb:38:in ‘ImportScripts::PhpBB3::Importer#execute’<br/>
+/var/www/discourse/script/import_scripts/base.rb:47:in ‘ImportScripts::Base#perform’<br/>
+/var/www/discourse/script/import_scripts/phpbb3/importer.rb:22:in ‘ImportScripts::PhpBB3::Importer#perform’<br/>
+script/import_scripts/phpbb3.rb:35:in ‘<a>module:PhpBB3</a>’<br/>
+script/import_scripts/phpbb3.rb:16:in ‘<a>module:ImportScripts</a>’<br/>
+script/import_scripts/phpbb3.rb:15:in ‘’<br/>
+333919 / 2167314 ( 15.4%)  [441 items/min]</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Mattash</div>
+          <div class="post_content">
+<p>Seems to be working though, not complaining.<br/>
+so far</p>
+<p>stopped unicorn</p>
+<p>disabled attachments and avatars</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/522255_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Ethsim2</div>
+          <div class="post_content">
+<p>That droplet size looks reasonably strong for this kind of import, so I would not expect <code>UNICORN_WORKERS</code> to be the main limiter here.</p>
+<p>A couple of observations:</p>
+<ul>
+<li>Stopping Unicorn is probably fine for an import-only/staging container, but it likely will not massively speed up the importer itself.</li>
+<li>Attachments and avatars being disabled should remove two of the slower parts, so if you are still only getting ~440 posts/min, the bottleneck may be database I/O, the source phpBB MySQL query side, or Redis/PostgreSQL waits.</li>
+<li>The log line is worth watching carefully:</li>
+</ul>
+<p><code>Exception while creating post 304683. Skipping.</code></p>
+<p>Even though the import continues, that means at least that post was skipped. If this happens repeatedly, the final migration may be missing posts.</p>
+<p>The Redis part looks like a 1-second Redis client timeout during Discourse’s distributed mutex lock while <code>PostCreator</code> is creating a post. I would check whether Redis is actually overloaded or whether the timeout is just too aggressive during a long import.</p>
+<p>Useful next checks would be:</p>
+<pre data-code-wrap="bash"><code class="lang-bash">free -h
+</code></pre>
+<pre><code class="lang-plaintext">df -h
+</code></pre>
+<pre><code class="lang-plaintext">iostat -xz 1
+</code></pre>
+<pre><code class="lang-plaintext">vmstat 1
+</code></pre>
+<pre><code class="lang-plaintext">redis-cli INFO memory
+</code></pre>
+<pre><code class="lang-plaintext">redis-cli INFO stats
+</code></pre>
+<pre><code class="lang-plaintext">redis-cli SLOWLOG GET 20
+</code></pre>
+<p>Also, is the phpBB MySQL database local on the same droplet, or being read over the network? Since the stack trace is iterating through mysql2, a slow source database or slow disk can keep CPU usage low while the importer waits.</p>
+<p>At the current rate, from 333919 / 2167314 at about 441 items/min, you still have roughly 69 hours left, so it may finish, but I would mainly be concerned about whether those Redis timeout exceptions are causing skipped posts.</p>
+<p>I’d <strong>not</strong> suggest raising <code>UNICORN_WORKERS</code>. On an import-only run, Unicorn is mostly irrelevant. The important thing is that his import is continuing but <strong>skipping posts</strong>, which is the part I’d flag.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/120154_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">pfaffman</div>
+          <div class="post_content">
+<p>The bulk importers are orders of magnitude faster, but harder to configure and make work.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/231474_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">cocococosti</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="6" data-topic="403319" data-username="Ethsim2">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/522255_2.png" width="24"/> Ethsim2:</div>
+<blockquote>
+<p>the bottleneck may be database I/O, the source phpBB MySQL query side,</p>
+</blockquote>
+</aside>
+<p>Most of the time, this is it. I’ve been able to speed up the import by adding indexes, creating views, and tweaking the database settings. I suggest you invest a bit of time on that because if you find an error in your data later on and need to run the import again… it’ll be a headache <img alt=":grimacing:" class="emoji" height="20" loading="lazy" src="../../../images/grimacing.png" title=":grimacing:" width="20"/></p>
+<p>By the way, we are working on new tooling that will make migrations run so so much faster!</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 5">❤️ 5</span><span class="engagement-pill reaction-pill" title="chefs kiss: 1">:chefs_kiss: 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Mattash</div>
+          <div class="post_content">
+<p>Still moving along though!</p>
+<pre><code class="lang-plaintext">var/www/discourse/script/import_scripts/phpbb3/importer.rb:38:in 'ImportScripts::PhpBB3::Importer#execute'
+/var/www/discourse/script/import_scripts/base.rb:47:in 'ImportScripts::Base#perform'
+/var/www/discourse/script/import_scripts/phpbb3/importer.rb:22:in 'ImportScripts::PhpBB3::Importer#perform'
+script/import_scripts/phpbb3.rb:35:in '&lt;module:PhpBB3&gt;'
+script/import_scripts/phpbb3.rb:16:in '&lt;module:ImportScripts&gt;'
+script/import_scripts/phpbb3.rb:15:in ''
+606484 / 2167314 ( 28.0%)  \[415 items/min\]  Exception while creating post 608597. Skipping.
+Waited 1.0 seconds
+/var/www/discourse/vendor/bundle/ruby/3.4.0/gems/redis-client-0.28.0/lib/redis_client/ruby_connection/buffered_io.rb:214:in 'block in RedisClient::RubyConnection::BufferedIO#fill_buffer'
+&lt;internal:kernel&gt;:168:in 'Kernel#loop'
+/var/www/discourse/vendor/bundle/ruby/3.4.0/gems/redis-client-0.28.0/lib/redis_client/ruby_connection/buffered_io.rb:197:in 'RedisClient::RubyConnection::BufferedIO#fill_buffer'
+/var/www/discourse/vendor/bundle/ruby/3.4.0/gems/redis-client-0.28.0/lib/redis_client/ruby_connection/buffered_io.rb:187:in 'RedisClient::RubyConnection::BufferedIO#ensure_remaining'
+/var/www/discourse/vendor/bundle/ruby/3.4.0/gems/redis-client-0.28.0/lib/redis_client/ruby_connection/buffered_io.rb:152:in 'RedisClient::RubyConnection::BufferedIO#getbyte'
+/var/www/discourse/vendor/bundle/ruby/3.4.0/gems/redis-client-0.28.0/lib/redis_client/ruby_connection/resp3.rb:113:in 'RedisClient::RESP3.parse'
+/var/www/discourse/vendor/bundle/ruby/3.4.0/gems/redis-client-0.28.0/lib/redis_client/ruby_connection/resp3.rb:50:in 'RedisClient::RESP3.load'
+/var/www/discourse/vendor/bundle/ruby/3.4.0/gems/redis-client-0.28.0/lib/redis_client/ruby_connection.rb:97:in 'RedisClient::RubyConnection#read'
+/var/www/discourse/vendor/bundle/ruby/3.4.0/gems/redis-client-0.28.0/lib/redis_client/connection_mixin.rb:37:in 'RedisClient::ConnectionMixin#call'
+/var/www/discourse/vendor/bundle/ruby/3.4.0/gems/redis-client-0.28.0/lib/redis_client.rb:374:in 'block (2 levels) in RedisClient#call_v'
+/var/www/discourse/vendor/bundle/ruby/3.4.0/gems/redis-client-0.28.0/lib/redis_client/middlewares.rb:16:in 'RedisClient::BasicMiddleware#call'
+/var/www/discourse/vendor/bundle/ruby/3.4.0/gems/redis-client-0.28.0/lib/redis_client.rb:373:in 'block in RedisClient#call_v'
+/var/www/discourse/vendor/bundle/ruby/3.4.0/gems/redis-client-0.28.0/lib/redis_client.rb:781:in 'RedisClient#ensure_connected'
+/var/www/discourse/vendor/bundle/ruby/3.4.0/gems/redis-client-0.28.0/lib/redis_client.rb:372:in 'RedisClient#call_v'
+/var/www/discourse/vendor/bundle/ruby/3.4.0/gems/redis-5.4.0/lib/redis/client.rb:90:in 'Redis::Client#call_v'
+/var/www/discourse/vendor/bundle/ruby/3.4.0/gems/rack-mini-profiler-4.0.1/lib/mini_profiler/profiling_methods.rb:90:in 'block in Redis::Client#profile_method'
+/var/www/discourse/vendor/bundle/ruby/3.4.0/gems/redis-5.4.0/lib/redis.rb:152:in 'block in Redis#send_command'
+/var/www/discourse/vendor/bundle/ruby/3.4.0/gems/redis-5.4.0/lib/redis.rb:151:in 'Monitor#synchronize'
+/var/www/discourse/vendor/bundle/ruby/3.4.0/gems/redis-5.4.0/lib/redis.rb:151:in 'Redis#send_command'
+/var/www/discourse/vendor/bundle/ruby/3.4.0/gems/redis-5.4.0/lib/redis/commands/server.rb:178:in 'Redis::Commands::Server#time'
+/var/www/discourse/lib/discourse_redis.rb:38:in 'Kernel#public_send'
+/var/www/discourse/lib/discourse_redis.rb:38:in 'block in DiscourseRedis#method_missing'
+/var/www/discourse/lib/discourse_redis.rb:29:in 'DiscourseRedis.ignore_readonly'
+/var/www/discourse/lib/discourse_redis.rb:38:in 'DiscourseRedis#method_missing'
+/var/www/discourse/lib/distributed_mutex.rb:55:in 'block in DistributedMutex#synchronize'
+/var/www/discourse/lib/distributed_mutex.rb:49:in 'Thread::Mutex#synchronize'
+/var/www/discourse/lib/distributed_mutex.rb:49:in 'DistributedMutex#synchronize'
+/var/www/discourse/lib/distributed_mutex.rb:34:in 'DistributedMutex.synchronize'
+/var/www/discourse/lib/post_creator.rb:410:in 'PostCreator#transaction'
+/var/www/discourse/lib/post_creator.rb:200:in 'PostCreator#create'
+/var/www/discourse/script/import_scripts/base.rb:611:in 'ImportScripts::Base#create_post'
+/var/www/discourse/script/import_scripts/base.rb:555:in 'block in ImportScripts::Base#create_posts'
+/var/www/discourse/vendor/bundle/ruby/3.4.0/gems/rack-mini-profiler-4.0.1/lib/patches/db/mysql2/alias_method.rb:8:in 'Mysql2::Result#each'
+/var/www/discourse/vendor/bundle/ruby/3.4.0/gems/rack-mini-profiler-4.0.1/lib/patches/db/mysql2/alias_method.rb:8:in 'Mysql2::Result#each'
+/var/www/discourse/script/import_scripts/base.rb:542:in 'ImportScripts::Base#create_posts'
+/var/www/discourse/script/import_scripts/phpbb3/importer.rb:212:in 'block in ImportScripts::PhpBB3::Importer#import_posts'
+/var/www/discourse/script/import_scripts/base.rb:943:in 'block in ImportScripts::Base#batches'
+&lt;internal:kernel&gt;:168:in 'Kernel#loop'
+/var/www/discourse/script/import_scripts/base.rb:942:in 'ImportScripts::Base#batches'
+/var/www/discourse/script/import_scripts/phpbb3/importer.rb:293:in 'ImportScripts::PhpBB3::Importer#batches'
+/var/www/discourse/script/import_scripts/phpbb3/importer.rb:208:in 'ImportScripts::PhpBB3::Importer#import_posts'
+/var/www/discourse/script/import_scripts/phpbb3/importer.rb:38:in 'ImportScripts::PhpBB3::Importer#execute'
+/var/www/discourse/script/import_scripts/base.rb:47:in 'ImportScripts::Base#perform'
+/var/www/discourse/script/import_scripts/phpbb3/importer.rb:22:in 'ImportScripts::PhpBB3::Importer#perform'
+script/import_scripts/phpbb3.rb:35:in '&lt;module:PhpBB3&gt;'
+script/import_scripts/phpbb3.rb:16:in '&lt;module:ImportScripts&gt;'
+script/import_scripts/phpbb3.rb:15:in ''
+615718 / 2167314 ( 28.4%)  \[415 items/min\]
+\[phpbbimpo0:docker\*
+</code></pre>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+
+    </div>
+  </body>
+</html>

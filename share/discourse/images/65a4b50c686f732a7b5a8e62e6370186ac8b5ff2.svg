@@ -1,0 +1,123 @@
+<?xml version="1.0"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100%" height="100%">
+  <style>
+    .mug-group {
+      transform-origin: 50px 80px;
+      animation: cozy-bob 3s infinite ease-in-out;
+    }
+    .mug-body {
+      fill: #0088cc;
+    }
+    .saucer {
+      fill: #e2e8f0;
+    }
+
+    .eyes {
+      transform-origin: 50px 67px;
+      animation: blink 4s infinite steps(1);
+    }
+
+    .steam {
+      opacity: 0;
+      transform-origin: center;
+    }
+
+    .steam-heart {
+      animation: steam-left 3.2s infinite ease-out;
+      animation-delay: 0s;
+    }
+    .steam-bubble {
+      animation: steam-right 3.2s infinite ease-out;
+      animation-delay: 0.8s;
+    }
+    .steam-bell {
+      animation: steam-left-narrow 3.2s infinite ease-out;
+      animation-delay: 1.6s;
+    }
+    .steam-sparkle {
+      animation: steam-right-narrow 3.2s infinite ease-out;
+      animation-delay: 2.4s;
+    }
+
+
+    @keyframes cozy-bob {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-3px) rotate(1.5deg); }
+    }
+
+    @keyframes blink {
+      0%, 95%, 100% { transform: scaleY(1); }
+      97.5% { transform: scaleY(0.1); }
+    }
+
+    @keyframes steam-left {
+      0% { transform: translate(46px, 50px) scale(0) rotate(0deg); opacity: 0; }
+      15% { opacity: 1; transform: translate(40px, 40px) scale(1) rotate(-10deg); }
+      55% { transform: translate(48px, 24px) scale(0.9) rotate(10deg); }
+      100% { transform: translate(36px, 8px) scale(0.5) rotate(-20deg); opacity: 0; }
+    }
+
+    @keyframes steam-right {
+      0% { transform: translate(54px, 50px) scale(0) rotate(0deg); opacity: 0; }
+      15% { opacity: 1; transform: translate(60px, 40px) scale(1.1) rotate(15deg); }
+      55% { transform: translate(52px, 24px) scale(0.95) rotate(-5deg); }
+      100% { transform: translate(64px, 8px) scale(0.5) rotate(25deg); opacity: 0; }
+    }
+
+    @keyframes steam-left-narrow {
+      0% { transform: translate(48px, 50px) scale(0) rotate(0deg); opacity: 0; }
+      15% { opacity: 1; transform: translate(44px, 40px) scale(1) rotate(-5deg); }
+      55% { transform: translate(47px, 24px) scale(0.9) rotate(5deg); }
+      100% { transform: translate(42px, 8px) scale(0.5) rotate(-10deg); opacity: 0; }
+    }
+
+    @keyframes steam-right-narrow {
+      0% { transform: translate(52px, 50px) scale(0) rotate(0deg); opacity: 0; }
+      15% { opacity: 1; transform: translate(55px, 40px) scale(1) rotate(5deg); }
+      55% { transform: translate(51px, 24px) scale(0.9) rotate(-5deg); }
+      100% { transform: translate(56px, 8px) scale(0.5) rotate(10deg); opacity: 0; }
+    }
+  </style>
+
+  <!-- Cozy Saucer Plate -->
+  <ellipse class="saucer" cx="50" cy="84" rx="20" ry="2.5"/>
+
+  <!-- Animated Floating Steam (Forum Reactions) -->
+
+  <!-- Heart Steam (Like) -->
+  <g class="steam steam-heart">
+    <path d="M0,1.5 C0,1.5 0.7,0 2,0 C3.2,0 4,1 4,2.2 C4,3.7 2,5 0,6 C-2,5 -4,3.7 -4,2.2 C-4,1 -3.2,0 -2,0 C-0.7,0 0,1.5 0,1.5 Z" fill="#ef4444"/>
+  </g>
+
+  <!-- Speech Bubble Steam (Reply) -->
+  <g class="steam steam-bubble">
+    <path d="M-3,-2 h6 a1.5,1.5 0 0 1 1.5,1.5 v2 a1.5,1.5 0 0 1 -1.5,1.5 h-3 l-2,1.5 v-1.5 a1.5,1.5 0 0 1 -1.5,-1.5 v-2 a1.5,1.5 0 0 1 1.5,-1.5 Z" fill="#10b981"/>
+  </g>
+
+  <!-- Notification Bell Steam (Alert) -->
+  <g class="steam steam-bell">
+    <path d="M0,-3 C-1.5,-3 -2,-1.5 -2,0 L-2.5,1.5 L2.5,1.5 L2,0 C2,-1.5 1.5,-3 0,-3 Z M-1,2 L1,2 C1,2.5 0.5,3 0,3 C-0.5,3 -1,2.5 -1,2 Z" fill="#f59e0b"/>
+  </g>
+
+  <!-- Sparkle Steam (Idea / Badge) -->
+  <g class="steam steam-sparkle">
+    <path d="M0,-3.5 L1,-1 L3.5,0 L1,1 L0,3.5 L-1,1 L-3.5,0 L-1,-1 Z" fill="#3b82f6"/>
+  </g>
+
+  <!-- Cozy Mug Group -->
+  <g class="mug-group">
+    <!-- Speech-Bubble shaped Mug Handle -->
+    <path d="M 64,60 C 70,58 75,63 72,70 C 70,74 65,72 63,68" fill="none" stroke="#0088cc" stroke-width="4" stroke-linecap="round"/>
+
+    <!-- Mug Body -->
+    <path class="mug-body" d="M35,55 L38,78 C39,81 42,83 45,83 L55,83 C58,83 61,81 62,78 L65,55 Z"/>
+    <ellipse cx="50" cy="55" rx="15" ry="3" fill="#2d3748"/> <!-- Hot liquid interior -->
+
+    <!-- Cute Mug Emoticon Face -->
+    <g class="eyes">
+      <circle cx="45" cy="67" r="1.5" fill="#ffffff"/>
+      <circle cx="55" cy="67" r="1.5" fill="#ffffff"/>
+    </g>
+    <path d="M48,71 Q50,74 52,71" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round"/>
+  </g>
+</svg>

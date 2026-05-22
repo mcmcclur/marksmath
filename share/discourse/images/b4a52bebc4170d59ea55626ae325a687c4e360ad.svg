@@ -1,0 +1,120 @@
+<?xml version="1.0"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" width="600" height="600">
+
+<style>
+
+.logo-piece{
+fill:var(--primary);
+opacity:0;
+transform-box:fill-box;
+transform-origin:center;
+}
+
+.logo-a{animation:pieceA 1.2s cubic-bezier(.22,1,.36,1) forwards;}
+.logo-b{animation:pieceB 1.2s cubic-bezier(.22,1,.36,1) forwards .08s;}
+.logo-c{animation:pieceC 1.2s cubic-bezier(.22,1,.36,1) forwards .16s;}
+.logo-d{animation:pieceD 1.2s cubic-bezier(.22,1,.36,1) forwards .24s;}
+
+/* &#x4E3B;&#x6807;&#x9898; */
+
+.title{
+font-family:Consolas,monospace;
+font-size:36px;
+letter-spacing:.35em;
+fill:#ffffff;
+opacity:0;
+animation:titleFade 0.9s ease forwards 0.9s;
+}
+
+/* &#x526F;&#x6807;&#x9898; */
+
+.sub{
+font-family:Consolas,monospace;
+font-size:14px;
+letter-spacing:.28em;
+fill:#ffffff;
+opacity:0;
+animation:subFade 1s ease forwards 1.2s;
+}
+
+/* LOGO &#x52A8;&#x753B; */
+
+@keyframes pieceA{
+0%{opacity:0;transform:translate(-80px,20px) rotate(-20deg) scale(.85);}
+60%{opacity:1;}
+100%{opacity:1;transform:translate(0,0) rotate(0) scale(1);}
+}
+
+@keyframes pieceB{
+0%{opacity:0;transform:translate(0,-90px) rotate(15deg) scale(.85);}
+60%{opacity:1;}
+100%{opacity:1;transform:translate(0,0) rotate(0) scale(1);}
+}
+
+@keyframes pieceC{
+0%{opacity:0;transform:translate(80px,10px) rotate(18deg) scale(.85);}
+60%{opacity:1;}
+100%{opacity:1;transform:translate(0,0) rotate(0) scale(1);}
+}
+
+@keyframes pieceD{
+0%{opacity:0;transform:translate(10px,80px) rotate(10deg) scale(.85);}
+60%{opacity:1;}
+100%{opacity:1;transform:translate(0,0) rotate(0) scale(1);}
+}
+
+/* &#x6587;&#x5B57;&#x52A8;&#x753B; */
+
+@keyframes titleFade{
+0%{
+opacity:0;
+transform:translateY(10px);
+}
+100%{
+opacity:1;
+transform:translateY(0);
+}
+}
+
+@keyframes subFade{
+0%{
+opacity:0;
+transform:translateY(6px);
+}
+100%{
+opacity:.85;
+transform:translateY(0);
+}
+}
+
+</style>
+
+
+<!-- LOGO -->
+
+<g transform="translate(300 260)">
+
+<path class="logo-piece logo-a" d="M-120 20 L-30 -30 L10 -10 L-40 60 Z"/>
+
+<path class="logo-piece logo-b" d="M0 -120 L60 -40 L30 0 L-20 -60 Z"/>
+
+<path class="logo-piece logo-c" d="M30 -10 L120 -40 L140 20 L60 40 Z"/>
+
+<path class="logo-piece logo-d" d="M0 0 L60 40 L30 120 L-30 70 Z"/>
+
+</g>
+
+
+<!-- 标题 -->
+
+<text class="title" x="300" y="430" text-anchor="middle">
+&#x5B85;&#x5B85;&#x7684;&#x5999;&#x5999;&#x5C4B;
+</text>
+
+<!-- 副标题 -->
+
+<text class="sub" x="300" y="460" text-anchor="middle">
+JUSTNAINAI://BOOT
+</text>
+
+</svg>

@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width">
+    <title>DistributedMutex error warnings frequently appearing in logs</title>
+    <link rel="stylesheet" href="../../../archived.css" />
+    <script>
+      function findSageCodeBlocks() {
+        return Array.prototype.slice.call(
+          document.querySelectorAll(
+            "pre[data-code-wrap='sage'] > code, pre > code.lang-sage, pre > code.language-sage, pre > code.sage"
+          )
+        );
+      }
+
+      function loadScript(src) {
+        return new Promise(function (resolve, reject) {
+          var existing = document.querySelector("script[src='" + src + "']");
+          if (existing) {
+            if (existing.dataset.loaded === "true") {
+              resolve();
+              return;
+            }
+            existing.addEventListener("load", resolve, { once: true });
+            existing.addEventListener("error", reject, { once: true });
+            return;
+          }
+
+          var script = document.createElement("script");
+          script.src = src;
+          script.async = true;
+          script.addEventListener("load", function () {
+            script.dataset.loaded = "true";
+            resolve();
+          }, { once: true });
+          script.addEventListener("error", reject, { once: true });
+          document.head.appendChild(script);
+        });
+      }
+
+      function prepareSageCells() {
+        var sageBlocks = findSageCodeBlocks();
+        if (!sageBlocks.length) {
+          return Promise.resolve();
+        }
+
+        return loadScript("https://sagecell.sagemath.org/static/embedded_sagecell.js")
+          .then(function () {
+            if (!window.sagecell || !window.sagecell.makeSagecell) {
+              return;
+            }
+
+            sageBlocks.forEach(function (codeTag, index) {
+              var preTag = codeTag.parentElement;
+              if (!preTag || preTag.dataset.sageMounted === "true") {
+                return;
+              }
+
+              var host = document.createElement("div");
+              host.className = "sagecell-archive";
+
+              var source = document.createElement("script");
+              source.type = "text/x-sage";
+              source.text = codeTag.textContent || "";
+              host.appendChild(source);
+
+              preTag.insertAdjacentElement("afterend", host);
+              preTag.classList.add("sage-source-hidden");
+              preTag.dataset.sageMounted = "true";
+
+              window.sagecell.makeSagecell({
+                inputLocation: host,
+                autoeval: false,
+                evalButtonText: "Run",
+                languages: ["sage"]
+              });
+            });
+          })
+          .catch(function () {
+            // Leave the original code blocks visible if SageCell cannot load.
+          });
+      }
+
+      function preprocessDiscourseMath() {
+        document.querySelectorAll("span.math, div.math").forEach(function (node) {
+          var tex = node.textContent || "";
+          if (!tex.trim()) {
+            return;
+          }
+          if (node.tagName === "SPAN") {
+            node.textContent = "\\(" + tex + "\\)";
+          } else {
+            node.textContent = "\\[" + tex + "\\]";
+          }
+          node.classList.remove("math");
+        });
+      }
+
+      window.MathJax = {
+        tex: {
+          inlineMath: [["\\(", "\\)"]],
+          displayMath: [["\\[", "\\]"]]
+        },
+        startup: {
+          pageReady() {
+            preprocessDiscourseMath();
+            return MathJax.startup.defaultPageReady().then(function () {
+              return prepareSageCells();
+            });
+          }
+        }
+      };
+    </script>
+    <script async id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="title-span">
+        <a href="../../../">
+          <img src="../../../images/ad2526334012b2ad0c3421f9b6dd94bae2ede52f.svg" height="40" alt="Site Logo" id="site-logo" />
+        </a>
+      </div>
+    </header>
+
+    <div class="main">
+    <div class="archive-span"><a href='https://meta.discourse.org/'>Discourse Meta</a> archived in May, 2026</div>
+    <h1 class="topic-title">DistributedMutex error warnings frequently appearing in logs</h1>
+            <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/545002_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">sniper756</div>
+          <div class="post_content">
+<p>Discourse is deployed via a container in 1Panel, with a reverse proxy configured for access. The website is used primarily for personal knowledge management; registration is disabled, and only I am online. The VPS specifications are 10 vCore (ARM64), 16 GB RAM, and 512 GB NVMe.</p>
+<p>The Discourse logs frequently show warnings similar to the following error:</p>
+<blockquote>
+<p>DistributedMutex(“memoize_lock_post#<span class="hashtag-raw">#2f7d40f44a4b0fa66a711ca8f2ff9278fed9fa72</span>”): held for too long, expected max: 1 secs, took an extra 1 secs</p>
+</blockquote>
+<blockquote>
+<p>activesupport-8.0.5/lib/active_support/broadcast_logger.rb:218:in ‘block in ActiveSupport::BroadcastLogger#dispatch’<a href="https://github.com/rails/rails/tree/v8.0.5/activesupport/lib/active_support/broadcast_logger.rb#L218" rel="noopener nofollow ugc"> </a><br/>
+activesupport-8.0.5/lib/active_support/broadcast_logger.rb:217:in ‘Array#map’<a href="https://github.com/rails/rails/tree/v8.0.5/activesupport/lib/active_support/broadcast_logger.rb#L217" rel="noopener nofollow ugc"> </a><br/>
+activesupport-8.0.5/lib/active_support/broadcast_logger.rb:217:in ‘ActiveSupport::BroadcastLogger#dispatch’<a href="https://github.com/rails/rails/tree/v8.0.5/activesupport/lib/active_support/broadcast_logger.rb#L217" rel="noopener nofollow ugc"> </a><br/>
+activesupport-8.0.5/lib/active_support/broadcast_logger.rb:129:in ‘ActiveSupport::BroadcastLogger#warn’<a href="https://github.com/rails/rails/tree/v8.0.5/activesupport/lib/active_support/broadcast_logger.rb#L129" rel="noopener nofollow ugc"> </a><br/>
+/var/www/discourse/lib/distributed_mutex.rb:103:in ‘DistributedMutex#warn’<a href="https://github.com/discourse/discourse/blob/1aa8f702d8e3b864f7804a9e8d4bf9e3e4bb1c72/lib/distributed_mutex.rb#L103" rel="noopener nofollow ugc"> </a><br/>
+/var/www/discourse/lib/distributed_mutex.rb:57:in ‘block in DistributedMutex#synchronize’<a href="https://github.com/discourse/discourse/blob/1aa8f702d8e3b864f7804a9e8d4bf9e3e4bb1c72/lib/distributed_mutex.rb#L57" rel="noopener nofollow ugc"> </a><br/>
+/var/www/discourse/lib/distributed_mutex.rb:49:in ‘Thread::Mutex#synchronize’<a href="https://github.com/discourse/discourse/blob/1aa8f702d8e3b864f7804a9e8d4bf9e3e4bb1c72/lib/distributed_mutex.rb#L49" rel="noopener nofollow ugc"> </a><br/>
+/var/www/discourse/lib/distributed_mutex.rb:49:in ‘DistributedMutex#synchronize’<a href="https://github.com/discourse/discourse/blob/1aa8f702d8e3b864f7804a9e8d4bf9e3e4bb1c72/lib/distributed_mutex.rb#L49" rel="noopener nofollow ugc"> </a><br/>
+/var/www/discourse/lib/distributed_mutex.rb:34:in ‘DistributedMutex.synchronize’<a href="https://github.com/discourse/discourse/blob/1aa8f702d8e3b864f7804a9e8d4bf9e3e4bb1c72/lib/distributed_mutex.rb#L34" rel="noopener nofollow ugc"> </a><br/>
+/var/www/discourse/lib/distributed_memoizer.rb:12:in ‘DistributedMemoizer.memoize’<a href="https://github.com/discourse/discourse/blob/1aa8f702d8e3b864f7804a9e8d4bf9e3e4bb1c72/lib/distributed_memoizer.rb#L12" rel="noopener nofollow ugc"> </a><br/>
+/var/www/discourse/app/controllers/posts_controller.rb:208:in ‘PostsController#create’<a href="https://github.com/discourse/discourse/blob/1aa8f702d8e3b864f7804a9e8d4bf9e3e4bb1c72/app/controllers/posts_controller.rb#L208" rel="noopener nofollow ugc"> </a><br/>
+actionpack-8.0.5/lib/action_controller/metal/basic_implicit_render.rb:8:in ‘ActionController::BasicImplicitRender#send_action’<a href="https://github.com/rails/rails/tree/v8.0.5/actionpack/lib/action_controller/metal/basic_implicit_render.rb#L8" rel="noopener nofollow ugc"> </a><br/>
+actionpack-8.0.5/lib/abstract_controller/base.rb:215:in ‘AbstractController::Base#process_action’<a href="https://github.com/rails/rails/tree/v8.0.5/actionpack/lib/abstract_controller/base.rb#L215" rel="noopener nofollow ugc"> </a><br/>
+actionpack-8.0.5/lib/action_controller/metal/rendering.rb:193:in ‘ActionController::Rendering#process_action’<a href="https://github.com/rails/rails/tree/v8.0.5/actionpack/lib/action_controller/metal/rendering.rb#L193" rel="noopener nofollow ugc"> </a><br/>
+actionpack-8.0.5/lib/abstract_controller/callbacks.rb:261:in ‘block in AbstractController::Callbacks#process_action’<a href="https://github.com/rails/rails/tree/v8.0.5/actionpack/lib/abstract_controller/callbacks.rb#L261" rel="noopener nofollow ugc"> </a><br/>
+activesupport-8.0.5/lib/active_support/callbacks.rb:120:in ‘block in ActiveSupport::Callbacks#run_callbacks’<a href="https://github.com/rails/rails/tree/v8.0.5/activesupport/lib/active_support/callbacks.rb#L120" rel="noopener nofollow ugc"> </a><br/>
+/var/www/discourse/app/controllers/application_controller.rb:452:in ‘block in ApplicationController#with_resolved_locale’<a href="https://github.com/discourse/discourse/blob/1aa8f702d8e3b864f7804a9e8d4bf9e3e4bb1c72/app/controllers/application_controller.rb#L452" rel="noopener nofollow ugc"> </a><br/>
+i18n-1.14.8/lib/i18n.rb:354:in ‘I18n::Base#with_locale’<a href="https://github.com/ruby-i18n/i18n/blob/master/lib/i18n.rb#L354" rel="noopener nofollow ugc"> </a><br/>
+/var/www/discourse/app/controllers/application_controller.rb:452:in ‘ApplicationController#with_resolved_locale’<a href="https://github.com/discourse/discourse/blob/1aa8f702d8e3b864f7804a9e8d4bf9e3e4bb1c72/app/controllers/application_controller.rb#L452" rel="noopener nofollow ugc"> </a><br/>
+activesupport-8.0.5/lib/active_support/callbacks.rb:129:in ‘block in ActiveSupport::Callbacks#run_callbacks’<a href="https://github.com/rails/rails/tree/v8.0.5/activesupport/lib/active_support/callbacks.rb#L129" rel="noopener nofollow ugc"> </a><br/>
+/var/www/discourse/app/controllers/application_controller.rb:1103:in ‘ApplicationController#ensure_dont_cache_page’<a href="https://github.com/discourse/discourse/blob/1aa8f702d8e3b864f7804a9e8d4bf9e3e4bb1c72/app/controllers/application_controller.rb#L1103" rel="noopener nofollow ugc"> </a><br/>
+activesupport-8.0.5/lib/active_support/callbacks.rb:129:in ‘block in ActiveSupport::Callbacks#run_callbacks’<a href="https://github.com/rails/rails/tree/v8.0.5/activesupport/lib/active_support/callbacks.rb#L129" rel="noopener nofollow ugc"> </a><br/>
+activesupport-8.0.5/lib/active_support/callbacks.rb:140:in ‘ActiveSupport::Callbacks#run_callbacks’<a href="https://github.com/rails/rails/tree/v8.0.5/activesupport/lib/active_support/callbacks.rb#L140" rel="noopener nofollow ugc"> </a><br/>
+actionpack-8.0.5/lib/abstract_controller/callbacks.rb:260:in ‘AbstractController::Callbacks#process_action’<a href="https://github.com/rails/rails/tree/v8.0.5/actionpack/lib/abstract_controller/callbacks.rb#L260" rel="noopener nofollow ugc"> </a><br/>
+actionpack-8.0.5/lib/action_controller/metal/rescue.rb:27:in ‘ActionController::Rescue#process_action’<a href="https://github.com/rails/rails/tree/v8.0.5/actionpack/lib/action_controller/metal/rescue.rb#L27" rel="noopener nofollow ugc"> </a><br/>
+actionpack-8.0.5/lib/action_controller/metal/instrumentation.rb:76:in ‘block in ActionController::Instrumentation#process_action’<a href="https://github.com/rails/rails/tree/v8.0.5/actionpack/lib/action_controller/metal/instrumentation.rb#L76" rel="noopener nofollow ugc"> </a><br/>
+activesupport-8.0.5/lib/active_support/notifications.rb:210:in ‘block in ActiveSupport::Notifications.instrument’<a href="https://github.com/rails/rails/tree/v8.0.5/activesupport/lib/active_support/notifications.rb#L210" rel="noopener nofollow ugc"> </a><br/>
+activesupport-8.0.5/lib/active_support/notifications/instrumenter.rb:58:in ‘ActiveSupport::Notifications::Instrumenter#instrument’<a href="https://github.com/rails/rails/tree/v8.0.5/activesupport/lib/active_support/notifications/instrumenter.rb#L58" rel="noopener nofollow ugc"> </a><br/>
+activesupport-8.0.5/lib/active_support/notifications.rb:210:in ‘ActiveSupport::Notifications.instrument’<a href="https://github.com/rails/rails/tree/v8.0.5/activesupport/lib/active_support/notifications.rb#L210" rel="noopener nofollow ugc"> </a><br/>
+actionpack-8.0.5/lib/action_controller/metal/instrumentation.rb:75:in ‘ActionController::Instrumentation#process_action’<a href="https://github.com/rails/rails/tree/v8.0.5/actionpack/lib/action_controller/metal/instrumentation.rb#L75" rel="noopener nofollow ugc"> </a><br/>
+actionpack-8.0.5/lib/action_controller/metal/params_wrapper.rb:259:in ‘ActionController::ParamsWrapper#process_action’<a href="https://github.com/rails/rails/tree/v8.0.5/actionpack/lib/action_controller/metal/params_wrapper.rb#L259" rel="noopener nofollow ugc"> </a><br/>
+activerecord-8.0.5/lib/active_record/railties/controller_runtime.rb:39:in ‘ActiveRecord::Railties::ControllerRuntime#process_action’<a href="https://github.com/rails/rails/tree/v8.0.5/activerecord/lib/active_record/railties/controller_runtime.rb#L39" rel="noopener nofollow ugc"> </a><br/>
+actionpack-8.0.5/lib/abstract_controller/base.rb:152:in ‘AbstractController::Base#process’<a href="https://github.com/rails/rails/tree/v8.0.5/actionpack/lib/abstract_controller/base.rb#L152" rel="noopener nofollow ugc"> </a><br/>
+actionview-8.0.5/lib/action_view/rendering.rb:40:in ‘ActionView::Rendering#process’<a href="https://github.com/rails/rails/tree/v8.0.5/actionview/lib/action_view/rendering.rb#L40" rel="noopener nofollow ugc"> </a><br/>
+rack-mini-profiler-4.0.1/lib/mini_profiler/profiling_methods.rb:90:in ‘block in ActionController::Base#profile_method’<a href="https://github.com/MiniProfiler/rack-mini-profiler/blob/master/lib/mini_profiler/profiling_methods.rb#L90" rel="noopener nofollow ugc"> </a><br/>
+actionpack-8.0.5/lib/action_controller/metal.rb:252:in ‘ActionController::Metal#dispatch’<a href="https://github.com/rails/rails/tree/v8.0.5/actionpack/lib/action_controller/metal.rb#L252" rel="noopener nofollow ugc"> </a><br/>
+actionpack-8.0.5/lib/action_controller/metal.rb:335:in ‘ActionController::Metal.dispatch’<a href="https://github.com/rails/rails/tree/v8.0.5/actionpack/lib/action_controller/metal.rb#L335" rel="noopener nofollow ugc"> </a><br/>
+actionpack-8.0.5/lib/action_dispatch/routing/route_set.rb:67:in ‘ActionDispatch::Routing::RouteSet::Dispatcher#dispatch’<a href="https://github.com/rails/rails/tree/v8.0.5/actionpack/lib/action_dispatch/routing/route_set.rb#L67" rel="noopener nofollow ugc"> </a><br/>
+actionpack-8.0.5/lib/action_dispatch/routing/route_set.rb:50:in ‘ActionDispatch::Routing::RouteSet::Dispatcher#serve’<a href="https://github.com/rails/rails/tree/v8.0.5/actionpack/lib/action_dispatch/routing/route_set.rb#L50" rel="noopener nofollow ugc"> </a><br/>
+actionpack-8.0.5/lib/action_dispatch/journey/router.rb:53:in ‘block in ActionDispatch::Journey::Router#serve’<a href="https://github.com/rails/rails/tree/v8.0.5/actionpack/lib/action_dispatch/journey/router.rb#L53" rel="noopener nofollow ugc"> </a><br/>
+actionpack-8.0.5/lib/action_dispatch/journey/router.rb:133:in ‘block in ActionDispatch::Journey::Router#find_routes’<a href="https://github.com/rails/rails/tree/v8.0.5/actionpack/lib/action_dispatch/journey/router.rb#L133" rel="noopener nofollow ugc"> </a><br/>
+actionpack-8.0.5/lib/action_dispatch/journey/router.rb:126:in ‘Array#each’<a href="https://github.com/rails/rails/tree/v8.0.5/actionpack/lib/action_dispatch/journey/router.rb#L126" rel="noopener nofollow ugc"> </a><br/>
+actionpack-8.0.5/lib/action_dispatch/journey/router.rb:126:in ‘ActionDispatch::Journey::Router#find_routes’<a href="https://github.com/rails/rails/tree/v8.0.5/actionpack/lib/action_dispatch/journey/router.rb#L126" rel="noopener nofollow ugc"> </a><br/>
+actionpack-8.0.5/lib/action_dispatch/journey/router.rb:34:in ‘ActionDispatch::Journey::Router#serve’<a href="https://github.com/rails/rails/tree/v8.0.5/actionpack/lib/action_dispatch/journey/router.rb#L34" rel="noopener nofollow ugc"> </a><br/>
+actionpack-8.0.5/lib/action_dispatch/routing/route_set.rb:908:in ‘ActionDispatch::Routing::RouteSet#call’<a href="https://github.com/rails/rails/tree/v8.0.5/actionpack/lib/action_dispatch/routing/route_set.rb#L908" rel="noopener nofollow ugc"> </a><br/>
+/var/www/discourse/lib/middleware/omniauth_bypass_middleware.rb:35:in ‘Middleware::OmniauthBypassMiddleware#call’<a href="https://github.com/discourse/discourse/blob/1aa8f702d8e3b864f7804a9e8d4bf9e3e4bb1c72/lib/middleware/omniauth_bypass_middleware.rb#L35" rel="noopener nofollow ugc"> </a><br/>
+/var/www/discourse/lib/middleware/crawler_hooks.rb:13:in ‘Middleware::CrawlerHooks#call’<a href="https://github.com/discourse/discourse/blob/1aa8f702d8e3b864f7804a9e8d4bf9e3e4bb1c72/lib/middleware/crawler_hooks.rb#L13" rel="noopener nofollow ugc"> </a><br/>
+rack-2.2.23/lib/rack/tempfile_reaper.rb:15:in ‘Rack::TempfileReaper#call’<a href="https://github.com/rack/rack/blob/master/lib/rack/tempfile_reaper.rb#L15" rel="noopener nofollow ugc"> </a><br/>
+rack-2.2.23/lib/rack/conditional_get.rb:40:in ‘Rack::ConditionalGet#call’<a href="https://github.com/rack/rack/blob/master/lib/rack/conditional_get.rb#L40" rel="noopener nofollow ugc"> </a><br/>
+rack-2.2.23/lib/rack/head.rb:12:in ‘Rack::Head#call’<a href="https://github.com/rack/rack/blob/master/lib/rack/head.rb#L12" rel="noopener nofollow ugc"> </a><br/>
+actionpack-8.0.5/lib/action_dispatch/http/permissions_policy.rb:38:in ‘ActionDispatch::PermissionsPolicy::Middleware#call’<a href="https://github.com/rails/rails/tree/v8.0.5/actionpack/lib/action_dispatch/http/permissions_policy.rb#L38" rel="noopener nofollow ugc"> </a><br/>
+/var/www/discourse/lib/content_security_policy/middleware.rb:12:in ‘ContentSecurityPolicy::Middleware#call’<a href="https://github.com/discourse/discourse/blob/1aa8f702d8e3b864f7804a9e8d4bf9e3e4bb1c72/lib/content_security_policy/middleware.rb#L12" rel="noopener nofollow ugc"> </a><br/>
+/var/www/discourse/lib/middleware/anonymous_cache.rb:420:in ‘Middleware::AnonymousCache#call’<a href="https://github.com/discourse/discourse/blob/1aa8f702d8e3b864f7804a9e8d4bf9e3e4bb1c72/lib/middleware/anonymous_cache.rb#L420" rel="noopener nofollow ugc"> </a><br/>
+/var/www/discourse/lib/middleware/csp_script_nonce_injector.rb:12:in ‘Middleware::CspScriptNonceInjector#call’<a href="https://github.com/discourse/discourse/blob/1aa8f702d8e3b864f7804a9e8d4bf9e3e4bb1c72/lib/middleware/csp_script_nonce_injector.rb#L12" rel="noopener nofollow ugc"> </a><br/>
+/var/www/discourse/lib/middleware/track_view_session_id_injector.rb:12:in ‘Middleware::TrackViewSessionIdInjector#call’<a href="https://github.com/discourse/discourse/blob/1aa8f702d8e3b864f7804a9e8d4bf9e3e4bb1c72/lib/middleware/track_view_session_id_injector.rb#L12" rel="noopener nofollow ugc"> </a><br/>
+/var/www/discourse/config/initializers/008-rack-cors.rb:14:in ‘Discourse::Cors#call’<a href="https://github.com/discourse/discourse/blob/1aa8f702d8e3b864f7804a9e8d4bf9e3e4bb1c72/config/initializers/008-rack-cors.rb#L14" rel="noopener nofollow ugc"> </a><br/>
+rack-2.2.23/lib/rack/session/abstract/id.rb:266:in ‘Rack::Session::Abstract::Persisted#context’<a href="https://github.com/rack/rack/blob/master/lib/rack/session/abstract/id.rb#L266" rel="noopener nofollow ugc"> </a><br/>
+rack-2.2.23/lib/rack/session/abstract/id.rb:260:in ‘Rack::Session::Abstract::Persisted#call’<a href="https://github.com/rack/rack/blob/master/lib/rack/session/abstract/id.rb#L260" rel="noopener nofollow ugc"> </a><br/>
+actionpack-8.0.5/lib/action_dispatch/middleware/cookies.rb:706:in ‘ActionDispatch::Cookies#call’<a href="https://github.com/rails/rails/tree/v8.0.5/actionpack/lib/action_dispatch/middleware/cookies.rb#L706" rel="noopener nofollow ugc"> </a><br/>
+actionpack-8.0.5/lib/action_dispatch/middleware/callbacks.rb:31:in ‘block in ActionDispatch::Callbacks#call’<a href="https://github.com/rails/rails/tree/v8.0.5/actionpack/lib/action_dispatch/middleware/callbacks.rb#L31" rel="noopener nofollow ugc"> </a><br/>
+activesupport-8.0.5/lib/active_support/callbacks.rb:100:in ‘ActiveSupport::Callbacks#run_callbacks’<a href="https://github.com/rails/rails/tree/v8.0.5/activesupport/lib/active_support/callbacks.rb#L100" rel="noopener nofollow ugc"> </a><br/>
+actionpack-8.0.5/lib/action_dispatch/middleware/callbacks.rb:30:in ‘ActionDispatch::Callbacks#call’<a href="https://github.com/rails/rails/tree/v8.0.5/actionpack/lib/action_dispatch/middleware/callbacks.rb#L30" rel="noopener nofollow ugc"> </a><br/>
+actionpack-8.0.5/lib/action_dispatch/middleware/debug_exceptions.rb:31:in ‘ActionDispatch::DebugExceptions#call’<a href="https://github.com/rails/rails/tree/v8.0.5/actionpack/lib/action_dispatch/middleware/debug_exceptions.rb#L31" rel="noopener nofollow ugc"> </a><br/>
+actionpack-8.0.5/lib/action_dispatch/middleware/show_exceptions.rb:32:in ‘ActionDispatch::ShowExceptions#call’<a href="https://github.com/rails/rails/tree/v8.0.5/actionpack/lib/action_dispatch/middleware/show_exceptions.rb#L32" rel="noopener nofollow ugc"> </a><br/>
+logster-2.21.0/lib/logster/middleware/reporter.rb:40:in ‘Logster::Middleware::Reporter#call’<a href="https://github.com/discourse/logster/blob/master/lib/logster/middleware/reporter.rb#L40" rel="noopener nofollow ugc"> </a><br/>
+/var/www/discourse/lib/middleware/default_headers.rb:13:in ‘Middleware::DefaultHeaders#call’<a href="https://github.com/discourse/discourse/blob/1aa8f702d8e3b864f7804a9e8d4bf9e3e4bb1c72/lib/middleware/default_headers.rb#L13" rel="noopener nofollow ugc"> </a><br/>
+railties-8.0.5/lib/rails/rack/logger.rb:41:in ‘Rails::Rack::Logger#call_app’<a href="https://github.com/rails/rails/tree/v8.0.5/railties/lib/rails/rack/logger.rb#L41" rel="noopener nofollow ugc"> </a><br/>
+railties-8.0.5/lib/rails/rack/logger.rb:29:in ‘Rails::Rack::Logger#call’<a href="https://github.com/rails/rails/tree/v8.0.5/railties/lib/rails/rack/logger.rb#L29" rel="noopener nofollow ugc"> </a><br/>
+/var/www/discourse/config/initializers/100-quiet_logger.rb:20:in ‘DiscourseRackQuietAssetsLogger#call’<a href="https://github.com/discourse/discourse/blob/1aa8f702d8e3b864f7804a9e8d4bf9e3e4bb1c72/config/initializers/100-quiet_logger.rb#L20" rel="noopener nofollow ugc"> </a><br/>
+/var/www/discourse/config/initializers/100-silence_logger.rb:29:in ‘SilenceLogger#call’<a href="https://github.com/discourse/discourse/blob/1aa8f702d8e3b864f7804a9e8d4bf9e3e4bb1c72/config/initializers/100-silence_logger.rb#L29" rel="noopener nofollow ugc"> </a><br/>
+actionpack-8.0.5/lib/action_dispatch/middleware/request_id.rb:34:in ‘ActionDispatch::RequestId#call’<a href="https://github.com/rails/rails/tree/v8.0.5/actionpack/lib/action_dispatch/middleware/request_id.rb#L34" rel="noopener nofollow ugc"> </a><br/>
+/var/www/discourse/lib/middleware/enforce_hostname.rb:23:in ‘Middleware::EnforceHostname#call’<a href="https://github.com/discourse/discourse/blob/1aa8f702d8e3b864f7804a9e8d4bf9e3e4bb1c72/lib/middleware/enforce_hostname.rb#L23" rel="noopener nofollow ugc"> </a><br/>
+rack-2.2.23/lib/rack/method_override.rb:24:in ‘Rack::MethodOverride#call’<a href="https://github.com/rack/rack/blob/master/lib/rack/method_override.rb#L24" rel="noopener nofollow ugc"> </a><br/>
+actionpack-8.0.5/lib/action_dispatch/middleware/executor.rb:16:in ‘ActionDispatch::Executor#call’<a href="https://github.com/rails/rails/tree/v8.0.5/actionpack/lib/action_dispatch/middleware/executor.rb#L16" rel="noopener nofollow ugc"> </a><br/>
+rack-2.2.23/lib/rack/sendfile.rb:127:in ‘Rack::Sendfile#call’<a href="https://github.com/rack/rack/blob/master/lib/rack/sendfile.rb#L127" rel="noopener nofollow ugc"> </a><br/>
+rack-mini-profiler-4.0.1/lib/mini_profiler.rb:191:in ‘Rack::MiniProfiler#call’<a href="https://github.com/MiniProfiler/rack-mini-profiler/blob/master/lib/mini_profiler.rb#L191" rel="noopener nofollow ugc"> </a><br/>
+message_bus-4.5.2/lib/message_bus/rack/middleware.rb:60:in ‘MessageBus::Rack::Middleware#call’<a href="https://github.com/discourse/message_bus/blob/master/lib/message_bus/rack/middleware.rb#L60" rel="noopener nofollow ugc"> </a><br/>
+/var/www/discourse/lib/middleware/request_tracker.rb:372:in ‘Middleware::RequestTracker#call’<a href="https://github.com/discourse/discourse/blob/1aa8f702d8e3b864f7804a9e8d4bf9e3e4bb1c72/lib/middleware/request_tracker.rb#L372" rel="noopener nofollow ugc"> </a><br/>
+actionpack-8.0.5/lib/action_dispatch/middleware/remote_ip.rb:96:in ‘ActionDispatch::RemoteIp#call’<a href="https://github.com/rails/rails/tree/v8.0.5/actionpack/lib/action_dispatch/middleware/remote_ip.rb#L96" rel="noopener nofollow ugc"> </a><br/>
+/var/www/discourse/lib/middleware/overload_protections.rb:18:in ‘Middleware::OverloadProtections#call’<a href="https://github.com/discourse/discourse/blob/1aa8f702d8e3b864f7804a9e8d4bf9e3e4bb1c72/lib/middleware/overload_protections.rb#L18" rel="noopener nofollow ugc"> </a><br/>
+/var/www/discourse/lib/middleware/processing_request.rb:14:in ‘Middleware::ProcessingRequest#call’<a href="https://github.com/discourse/discourse/blob/1aa8f702d8e3b864f7804a9e8d4bf9e3e4bb1c72/lib/middleware/processing_request.rb#L14" rel="noopener nofollow ugc"> </a><br/>
+railties-8.0.5/lib/rails/engine.rb:535:in ‘Rails::Engine#call’<a href="https://github.com/rails/rails/tree/v8.0.5/railties/lib/rails/engine.rb#L535" rel="noopener nofollow ugc"> </a><br/>
+railties-8.0.5/lib/rails/railtie.rb:226:in ‘Kernel#public_send’<a href="https://github.com/rails/rails/tree/v8.0.5/railties/lib/rails/railtie.rb#L226" rel="noopener nofollow ugc"> </a><br/>
+railties-8.0.5/lib/rails/railtie.rb:226:in ‘Rails::Railtie.method_missing’<a href="https://github.com/rails/rails/tree/v8.0.5/railties/lib/rails/railtie.rb#L226" rel="noopener nofollow ugc"> </a><br/>
+rack-2.2.23/lib/rack/urlmap.rb:74:in ‘block in Rack::URLMap#call’<a href="https://github.com/rack/rack/blob/master/lib/rack/urlmap.rb#L74" rel="noopener nofollow ugc"> </a><br/>
+rack-2.2.23/lib/rack/urlmap.rb:58:in ‘Array#each’<a href="https://github.com/rack/rack/blob/master/lib/rack/urlmap.rb#L58" rel="noopener nofollow ugc"> </a><br/>
+rack-2.2.23/lib/rack/urlmap.rb:58:in ‘Rack::URLMap#call’<a href="https://github.com/rack/rack/blob/master/lib/rack/urlmap.rb#L58" rel="noopener nofollow ugc"> </a><br/>
+rack-2.2.23/lib/rack/tempfile_reaper.rb:15:in ‘Rack::TempfileReaper#call’<a href="https://github.com/rack/rack/blob/master/lib/rack/tempfile_reaper.rb#L15" rel="noopener nofollow ugc"> </a><br/>
+pitchfork-0.18.2/lib/pitchfork/chunked.rb:105:in ‘Pitchfork::Chunked#call’<a href="https://github.com/Shopify/pitchfork/blob/master/lib/pitchfork/chunked.rb#L105" rel="noopener nofollow ugc"> </a><br/>
+rack-2.2.23/lib/rack/content_length.rb:17:in ‘Rack::ContentLength#call’<a href="https://github.com/rack/rack/blob/master/lib/rack/content_length.rb#L17" rel="noopener nofollow ugc"> </a><br/>
+pitchfork-0.18.2/lib/pitchfork/http_server.rb:868:in ‘Pitchfork::HttpServer#process_client’<a href="https://github.com/Shopify/pitchfork/blob/master/lib/pitchfork/http_server.rb#L868" rel="noopener nofollow ugc"> </a><br/>
+pitchfork-0.18.2/lib/pitchfork/http_server.rb:1017:in ‘Pitchfork::HttpServer#worker_loop’<a href="https://github.com/Shopify/pitchfork/blob/master/lib/pitchfork/http_server.rb#L1017" rel="noopener nofollow ugc"> </a><br/>
+pitchfork-0.18.2/lib/pitchfork/http_server.rb:616:in ‘block in Pitchfork::HttpServer#spawn_worker’<a href="https://github.com/Shopify/pitchfork/blob/master/lib/pitchfork/http_server.rb#L616" rel="noopener nofollow ugc"> </a><br/>
+pitchfork-0.18.2/lib/pitchfork/http_server.rb:1222:in ‘block in Pitchfork::HttpServer#fork_sibling’<a href="https://github.com/Shopify/pitchfork/blob/master/lib/pitchfork/http_server.rb#L1222" rel="noopener nofollow ugc"> </a><br/>
+pitchfork-0.18.2/lib/pitchfork.rb:170:in ‘block in Pitchfork.clean_fork’<a href="https://github.com/Shopify/pitchfork/blob/master/lib/pitchfork.rb#L170" rel="noopener nofollow ugc"> </a><br/>
+pitchfork-0.18.2/lib/pitchfork.rb:168:in ‘Kernel#catch’<a href="https://github.com/Shopify/pitchfork/blob/master/lib/pitchfork.rb#L168" rel="noopener nofollow ugc"> </a><br/>
+pitchfork-0.18.2/lib/pitchfork.rb:168:in ‘Pitchfork.clean_fork’<a href="https://github.com/Shopify/pitchfork/blob/master/lib/pitchfork.rb#L168" rel="noopener nofollow ugc"> </a><br/>
+pitchfork-0.18.2/lib/pitchfork/http_server.rb:690:in ‘Pitchfork::HttpServer#spawn_initial_mold’<a href="https://github.com/Shopify/pitchfork/blob/master/lib/pitchfork/http_server.rb#L690" rel="noopener nofollow ugc"> </a><br/>
+pitchfork-0.18.2/lib/pitchfork/http_server.rb:176:in ‘Pitchfork::HttpServer#start’<a href="https://github.com/Shopify/pitchfork/blob/master/lib/pitchfork/http_server.rb#L176" rel="noopener nofollow ugc"> </a><br/>
+pitchfork-0.18.2/exe/pitchfork:110:in ‘&lt;top (required)&gt;’<a href="https://github.com/Shopify/pitchfork/blob/master/exe/pitchfork#L110" rel="noopener nofollow ugc"> </a><br/>
+/var/www/discourse/vendor/bundle/ruby/3.4.0/bin/pitchfork:25:in ‘Kernel#load’<a href="https://github.com/discourse/discourse/blob/1aa8f702d8e3b864f7804a9e8d4bf9e3e4bb1c72/vendor/bundle/ruby/3.4.0/bin/pitchfork#L25" rel="noopener nofollow ugc"> </a><br/>
+/var/www/discourse/vendor/bundle/ruby/3.4.0/bin/pitchfork:25:in '&lt;<a href="https://github.com/discourse/discourse/blob/1aa8f702d8e3b864f7804a9e8d4bf9e3e4bb1c72/vendor/bundle/ruby/3.4.0/bin/pitchfork#L25" rel="noopener nofollow ugc"> </a></p>
+</blockquote>
+<p>My VPS configuration is as follows:</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/wnl4MZ2iqjPAcUSDF2QOuIrkwAU.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/e/2/e/e2e8fc43cc43458bd794ffcd42b91cc68d1a6380.png" title="screenshot_20260513_214658_com.microsoft.emmx"><img alt="screenshot_20260513_214658_com.microsoft.emmx" data-base62-sha1="wnl4MZ2iqjPAcUSDF2QOuIrkwAU" data-dominant-color="2C2F3C" height="500" src="../../../images/e2e8fc43cc43458bd794ffcd42b91cc68d1a6380_2_460x500.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/e/2/e/e2e8fc43cc43458bd794ffcd42b91cc68d1a6380_2_460x500.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/e/2/e/e2e8fc43cc43458bd794ffcd42b91cc68d1a6380_2_690x750.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/e/2/e/e2e8fc43cc43458bd794ffcd42b91cc68d1a6380_2_920x1000.png 2x" width="460"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">screenshot_20260513_214658_com.microsoft.emmx</span><span class="informations">1320×1432 75.8 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/522255_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Ethsim2</div>
+          <div class="post_content">
+<p>This is probably not caused directly by the reverse proxy.</p>
+<p>For API-created posts, Discourse uses <code>DistributedMemoizer</code> around <code>PostsController#create</code> to avoid duplicate API post creation. That memoizer uses a Redis-backed <code>DistributedMutex</code> with a very short validity time of 1 second. The warning means that the post creation / serialization work inside that lock took longer than expected.</p>
+<p>So:</p>
+<ul>
+<li>if the API post is still created successfully, this is a warning rather than the root failure;</li>
+<li><code>expected max: 1 secs, took an extra 1 secs</code> means the lock was held for roughly 2 seconds;</li>
+<li>it is more likely related to server performance, Redis/Postgres latency, disk I/O, CPU/RAM pressure, plugins, or slow post-processing than to nginx/1Panel reverse proxy itself;</li>
+<li>the reason it only appears for API posting is that this memoizer path is used for API requests.</li>
+</ul>
+<p>Things worth checking:</p>
+<ol>
+<li>Does the API request succeed and create only one post?</li>
+<li>How long does the API request take from the client side?</li>
+<li>Are CPU, memory, swap, or disk I/O saturated during API posting?</li>
+<li>Are Redis and Postgres inside the same container/host, and are they healthy?</li>
+<li>Does the warning still happen with a very small plain-text post and no images/uploads?</li>
+<li>Are there non-standard plugins installed?</li>
+</ol>
+<p>Since this is a 1Panel/container deployment rather than the standard Discourse Docker install, it may also be useful to reproduce on an official supported install if possible before treating it as a Discourse core bug.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/545002_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">sniper756</div>
+          <div class="post_content">
+<p>Thank you for your reply.</p>
+<p>This website is primarily used for personal knowledge management. It is not open for registration, and I am the only user online. My VPS has the following specifications: 10 vCore (ARM64), 16 GB RAM, and 512 GB NVMe. I believe the performance should be sufficient.</p>
+<p><strong>1. Did the API request succeed, and was only one post created?</strong></p>
+<pre><code>Yes, the API post was successful, and only one post was created.
+</code></pre>
+<p><strong>2. From the client’s perspective, how long did the API request take?</strong></p>
+<pre><code>How should I check this? I'm not quite sure.
+</code></pre>
+<p><strong>3. During the API post, were CPU, memory, swap space, or disk I/O saturated?</strong></p>
+<pre><code>I checked the monitoring logs, and none of these resources were saturated during the API post.
+</code></pre>
+<p><strong>4. Are Redis and Postgres located in the same container/host and running properly?</strong></p>
+<pre><code>They are in the same container and running properly.
+</code></pre>
+<p><strong>5. If posting a small plain-text post without images or uploads, does the warning still appear?</strong></p>
+<pre><code>Yes, the warning also appears for small plain-text posts.
+</code></pre>
+<p><strong>6. Are any non-standard plugins installed?</strong></p>
+<pre><code>Apart from the plugins installed by default, no other plugins have been installed.
+</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/545002_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">sniper756</div>
+          <div class="post_content">
+<p>I just turned off the AI plugin and posted via the API; no warnings appeared in the logs.<br/>
+I then re-enabled the AI plugin and posted via the API again; still no warnings in the logs.<br/>
+I’ll continue observing and testing.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/522255_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Ethsim2</div>
+          <div class="post_content">
+<p>Thanks, that extra detail is useful.</p>
+<p>Since you are running on ARM64, that may be relevant. Discourse’s ARM/aarch64 container support has historically had some special handling compared with x86_64, so I would mention that clearly in the topic title or first post.</p>
+<p>The AI plugin result is also interesting. Since the warning disappeared after disabling the AI plugin, but did not immediately return after re-enabling it, this might have been caused by some one-time initialisation, cache warm-up, model/provider setup, or background state rather than a consistent reproducible plugin bug.</p>
+<p>At this point I would keep observing, but if it happens again I would try to capture:</p>
+<ol>
+<li>the exact API endpoint and payload shape, with any private content removed;</li>
+<li>whether the warning appears on the first API post after restart/rebuild only, or every API post;</li>
+<li>the client-side request duration;</li>
+<li>whether disabling the AI plugin reliably removes the warning across multiple tests;</li>
+<li>whether the same happens on x86_64 or only ARM64, if you are able to test that.</li>
+</ol>
+<p>For checking client-side request duration, you can use <code>curl</code> with timing output, for example:</p>
+<pre data-code-wrap="bash"><code class="lang-bash">curl -s -o /dev/null \
+  -w "total=%{time_total}s connect=%{time_connect}s starttransfer=%{time_starttransfer}s\n" \
+  -X POST "https://your-site.example.com/posts.json" \
+  -H "Api-Key: YOUR_API_KEY" \
+  -H "Api-Username: YOUR_USERNAME" \
+  --data-urlencode "title=API timing test" \
+  --data-urlencode "raw=Small plain text API test post" \
+  --data-urlencode "category=1"
+</code></pre>
+<p>If the request itself is taking around 2 seconds or more, then the mutex warning is probably just reporting that the post-create path took longer than Discourse expected. If the request is very fast but the warning still appears, that would be more interesting.</p>
+<p>The hardware looks more than sufficient for a single-user site, so this may be architecture/deployment/plugin-path specific rather than simple under-provisioning.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/545002_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">sniper756</div>
+          <div class="post_content">
+<p>I’ll disable Discourse AI for a while to see if this warning still appears.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/545002_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">sniper756</div>
+          <div class="post_content">
+<p>Current testing shows that the appearance of warning logs is unrelated to whether Discourse AI is enabled.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/522255_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Ethsim2</div>
+          <div class="post_content">
+<p>Thanks for testing that.</p>
+<p>In that case I would not treat the AI plugin as the likely cause. It may just have been a coincidence, or the disable/re-enable cycle may have changed some transient state temporarily.</p>
+<p>The most useful next thing to capture is probably the request timing and the pattern of when the warning appears.</p>
+<p>For example:</p>
+<pre data-code-wrap="bash"><code class="lang-bash">curl -s -o /dev/null \
+  -w "total=%{time_total}s connect=%{time_connect}s starttransfer=%{time_starttransfer}s\n" \
+  -X POST "https://your-site.example.com/posts.json" \
+  -H "Api-Key: YOUR_API_KEY" \
+  -H "Api-Username: YOUR_USERNAME" \
+  --data-urlencode "title=API timing test" \
+  --data-urlencode "raw=Small plain text API test post" \
+  --data-urlencode "category=1"
+</code></pre>
+<p>If the warning appears again, it would be useful to compare:</p>
+<ol>
+<li>the <code>time_total</code> value from the client side;</li>
+<li>whether it happens only sometimes or on every API post;</li>
+<li>whether it happens after a restart/rebuild, or during normal running;</li>
+<li>whether multiple API requests are being made close together;</li>
+<li>whether the same API call creates the post successfully and only once.</li>
+</ol>
+<p>At this point it still sounds like a warning from the API post-create path taking longer than the short mutex window, rather than evidence of a failed post or duplicate-post problem.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/545002_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">sniper756</div>
+          <div class="post_content">
+<p>No posts were made today, and a warning appeared in the logs:</p>
+<pre><code class="lang-plaintext">
+DistributedMutex("memoize_lock_post##59c6dac7790176d15fddc068dea5f734b254f591"): held for too long, expected max: 1 secs, took an extra 1 secs
+</code></pre>
+<pre><code class="lang-plaintext">activesupport-8.0.5/lib/active_support/broadcast_logger.rb:218:in 'block in ActiveSupport::BroadcastLogger#dispatch' 
+activesupport-8.0.5/lib/active_support/broadcast_logger.rb:217:in 'Array#map' 
+activesupport-8.0.5/lib/active_support/broadcast_logger.rb:217:in 'ActiveSupport::BroadcastLogger#dispatch' 
+activesupport-8.0.5/lib/active_support/broadcast_logger.rb:129:in 'ActiveSupport::BroadcastLogger#warn' 
+/var/www/discourse/lib/distributed_mutex.rb:103:in 'DistributedMutex#warn' 
+/var/www/discourse/lib/distributed_mutex.rb:57:in 'block in DistributedMutex#synchronize' 
+/var/www/discourse/lib/distributed_mutex.rb:49:in 'Thread::Mutex#synchronize' 
+/var/www/discourse/lib/distributed_mutex.rb:49:in 'DistributedMutex#synchronize' 
+/var/www/discourse/lib/distributed_mutex.rb:34:in 'DistributedMutex.synchronize' 
+/var/www/discourse/lib/distributed_memoizer.rb:12:in 'DistributedMemoizer.memoize' 
+/var/www/discourse/app/controllers/posts_controller.rb:208:in 'PostsController#create' 
+actionpack-8.0.5/lib/action_controller/metal/basic_implicit_render.rb:8:in 'ActionController::BasicImplicitRender#send_action' 
+actionpack-8.0.5/lib/abstract_controller/base.rb:215:in 'AbstractController::Base#process_action' 
+actionpack-8.0.5/lib/action_controller/metal/rendering.rb:193:in 'ActionController::Rendering#process_action' 
+actionpack-8.0.5/lib/abstract_controller/callbacks.rb:261:in 'block in AbstractController::Callbacks#process_action' 
+activesupport-8.0.5/lib/active_support/callbacks.rb:120:in 'block in ActiveSupport::Callbacks#run_callbacks' 
+/var/www/discourse/app/controllers/application_controller.rb:452:in 'block in ApplicationController#with_resolved_locale' 
+i18n-1.14.8/lib/i18n.rb:354:in 'I18n::Base#with_locale' 
+/var/www/discourse/app/controllers/application_controller.rb:452:in 'ApplicationController#with_resolved_locale' 
+activesupport-8.0.5/lib/active_support/callbacks.rb:129:in 'block in ActiveSupport::Callbacks#run_callbacks' 
+/var/www/discourse/app/controllers/application_controller.rb:1103:in 'ApplicationController#ensure_dont_cache_page' 
+activesupport-8.0.5/lib/active_support/callbacks.rb:129:in 'block in ActiveSupport::Callbacks#run_callbacks' 
+activesupport-8.0.5/lib/active_support/callbacks.rb:140:in 'ActiveSupport::Callbacks#run_callbacks' 
+actionpack-8.0.5/lib/abstract_controller/callbacks.rb:260:in 'AbstractController::Callbacks#process_action' 
+actionpack-8.0.5/lib/action_controller/metal/rescue.rb:27:in 'ActionController::Rescue#process_action' 
+actionpack-8.0.5/lib/action_controller/metal/instrumentation.rb:76:in 'block in ActionController::Instrumentation#process_action' 
+activesupport-8.0.5/lib/active_support/notifications.rb:210:in 'block in ActiveSupport::Notifications.instrument' 
+activesupport-8.0.5/lib/active_support/notifications/instrumenter.rb:58:in 'ActiveSupport::Notifications::Instrumenter#instrument' 
+activesupport-8.0.5/lib/active_support/notifications.rb:210:in 'ActiveSupport::Notifications.instrument' 
+actionpack-8.0.5/lib/action_controller/metal/instrumentation.rb:75:in 'ActionController::Instrumentation#process_action' 
+actionpack-8.0.5/lib/action_controller/metal/params_wrapper.rb:259:in 'ActionController::ParamsWrapper#process_action' 
+activerecord-8.0.5/lib/active_record/railties/controller_runtime.rb:39:in 'ActiveRecord::Railties::ControllerRuntime#process_action' 
+actionpack-8.0.5/lib/abstract_controller/base.rb:152:in 'AbstractController::Base#process' 
+actionview-8.0.5/lib/action_view/rendering.rb:40:in 'ActionView::Rendering#process' 
+rack-mini-profiler-4.0.1/lib/mini_profiler/profiling_methods.rb:90:in 'block in ActionController::Base#profile_method' 
+actionpack-8.0.5/lib/action_controller/metal.rb:252:in 'ActionController::Metal#dispatch' 
+actionpack-8.0.5/lib/action_controller/metal.rb:335:in 'ActionController::Metal.dispatch' 
+actionpack-8.0.5/lib/action_dispatch/routing/route_set.rb:67:in 'ActionDispatch::Routing::RouteSet::Dispatcher#dispatch' 
+actionpack-8.0.5/lib/action_dispatch/routing/route_set.rb:50:in 'ActionDispatch::Routing::RouteSet::Dispatcher#serve' 
+actionpack-8.0.5/lib/action_dispatch/journey/router.rb:53:in 'block in ActionDispatch::Journey::Router#serve' 
+actionpack-8.0.5/lib/action_dispatch/journey/router.rb:133:in 'block in ActionDispatch::Journey::Router#find_routes' 
+actionpack-8.0.5/lib/action_dispatch/journey/router.rb:126:in 'Array#each' 
+actionpack-8.0.5/lib/action_dispatch/journey/router.rb:126:in 'ActionDispatch::Journey::Router#find_routes' 
+actionpack-8.0.5/lib/action_dispatch/journey/router.rb:34:in 'ActionDispatch::Journey::Router#serve' 
+actionpack-8.0.5/lib/action_dispatch/routing/route_set.rb:908:in 'ActionDispatch::Routing::RouteSet#call' 
+/var/www/discourse/lib/middleware/omniauth_bypass_middleware.rb:35:in 'Middleware::OmniauthBypassMiddleware#call' 
+/var/www/discourse/lib/middleware/crawler_hooks.rb:13:in 'Middleware::CrawlerHooks#call' 
+rack-2.2.23/lib/rack/tempfile_reaper.rb:15:in 'Rack::TempfileReaper#call' 
+rack-2.2.23/lib/rack/conditional_get.rb:40:in 'Rack::ConditionalGet#call' 
+rack-2.2.23/lib/rack/head.rb:12:in 'Rack::Head#call' 
+actionpack-8.0.5/lib/action_dispatch/http/permissions_policy.rb:38:in 'ActionDispatch::PermissionsPolicy::Middleware#call' 
+/var/www/discourse/lib/content_security_policy/middleware.rb:12:in 'ContentSecurityPolicy::Middleware#call' 
+/var/www/discourse/lib/middleware/anonymous_cache.rb:420:in 'Middleware::AnonymousCache#call' 
+/var/www/discourse/lib/middleware/csp_script_nonce_injector.rb:12:in 'Middleware::CspScriptNonceInjector#call' 
+/var/www/discourse/lib/middleware/track_view_session_id_injector.rb:12:in 'Middleware::TrackViewSessionIdInjector#call' 
+/var/www/discourse/config/initializers/008-rack-cors.rb:14:in 'Discourse::Cors#call' 
+rack-2.2.23/lib/rack/session/abstract/id.rb:266:in 'Rack::Session::Abstract::Persisted#context' 
+rack-2.2.23/lib/rack/session/abstract/id.rb:260:in 'Rack::Session::Abstract::Persisted#call' 
+actionpack-8.0.5/lib/action_dispatch/middleware/cookies.rb:706:in 'ActionDispatch::Cookies#call' 
+actionpack-8.0.5/lib/action_dispatch/middleware/callbacks.rb:31:in 'block in ActionDispatch::Callbacks#call' 
+activesupport-8.0.5/lib/active_support/callbacks.rb:100:in 'ActiveSupport::Callbacks#run_callbacks' 
+actionpack-8.0.5/lib/action_dispatch/middleware/callbacks.rb:30:in 'ActionDispatch::Callbacks#call' 
+actionpack-8.0.5/lib/action_dispatch/middleware/debug_exceptions.rb:31:in 'ActionDispatch::DebugExceptions#call' 
+actionpack-8.0.5/lib/action_dispatch/middleware/show_exceptions.rb:32:in 'ActionDispatch::ShowExceptions#call' 
+logster-2.21.0/lib/logster/middleware/reporter.rb:40:in 'Logster::Middleware::Reporter#call' 
+/var/www/discourse/lib/middleware/default_headers.rb:13:in 'Middleware::DefaultHeaders#call' 
+railties-8.0.5/lib/rails/rack/logger.rb:41:in 'Rails::Rack::Logger#call_app' 
+railties-8.0.5/lib/rails/rack/logger.rb:29:in 'Rails::Rack::Logger#call' 
+/var/www/discourse/config/initializers/100-quiet_logger.rb:20:in 'DiscourseRackQuietAssetsLogger#call' 
+/var/www/discourse/config/initializers/100-silence_logger.rb:29:in 'SilenceLogger#call' 
+actionpack-8.0.5/lib/action_dispatch/middleware/request_id.rb:34:in 'ActionDispatch::RequestId#call' 
+/var/www/discourse/lib/middleware/enforce_hostname.rb:23:in 'Middleware::EnforceHostname#call' 
+rack-2.2.23/lib/rack/method_override.rb:24:in 'Rack::MethodOverride#call' 
+actionpack-8.0.5/lib/action_dispatch/middleware/executor.rb:16:in 'ActionDispatch::Executor#call' 
+rack-2.2.23/lib/rack/sendfile.rb:127:in 'Rack::Sendfile#call' 
+rack-mini-profiler-4.0.1/lib/mini_profiler.rb:191:in 'Rack::MiniProfiler#call' 
+message_bus-4.5.2/lib/message_bus/rack/middleware.rb:60:in 'MessageBus::Rack::Middleware#call' 
+/var/www/discourse/lib/middleware/request_tracker.rb:372:in 'Middleware::RequestTracker#call' 
+actionpack-8.0.5/lib/action_dispatch/middleware/remote_ip.rb:96:in 'ActionDispatch::RemoteIp#call' 
+/var/www/discourse/lib/middleware/overload_protections.rb:18:in 'Middleware::OverloadProtections#call' 
+/var/www/discourse/lib/middleware/processing_request.rb:14:in 'Middleware::ProcessingRequest#call' 
+railties-8.0.5/lib/rails/engine.rb:535:in 'Rails::Engine#call' 
+railties-8.0.5/lib/rails/railtie.rb:226:in 'Kernel#public_send' 
+railties-8.0.5/lib/rails/railtie.rb:226:in 'Rails::Railtie.method_missing' 
+rack-2.2.23/lib/rack/urlmap.rb:74:in 'block in Rack::URLMap#call' 
+rack-2.2.23/lib/rack/urlmap.rb:58:in 'Array#each' 
+rack-2.2.23/lib/rack/urlmap.rb:58:in 'Rack::URLMap#call' 
+rack-2.2.23/lib/rack/tempfile_reaper.rb:15:in 'Rack::TempfileReaper#call' 
+pitchfork-0.18.2/lib/pitchfork/chunked.rb:105:in 'Pitchfork::Chunked#call' 
+rack-2.2.23/lib/rack/content_length.rb:17:in 'Rack::ContentLength#call' 
+pitchfork-0.18.2/lib/pitchfork/http_server.rb:868:in 'Pitchfork::HttpServer#process_client' 
+pitchfork-0.18.2/lib/pitchfork/http_server.rb:1017:in 'Pitchfork::HttpServer#worker_loop' 
+pitchfork-0.18.2/lib/pitchfork/http_server.rb:616:in 'block in Pitchfork::HttpServer#spawn_worker' 
+pitchfork-0.18.2/lib/pitchfork/http_server.rb:1222:in 'block in Pitchfork::HttpServer#fork_sibling' 
+pitchfork-0.18.2/lib/pitchfork.rb:170:in 'block in Pitchfork.clean_fork' 
+pitchfork-0.18.2/lib/pitchfork.rb:168:in 'Kernel#catch' 
+pitchfork-0.18.2/lib/pitchfork.rb:168:in 'Pitchfork.clean_fork' 
+pitchfork-0.18.2/lib/pitchfork/http_server.rb:690:in 'Pitchfork::HttpServer#spawn_initial_mold' 
+pitchfork-0.18.2/lib/pitchfork/http_server.rb:176:in 'Pitchfork::HttpServer#start' 
+pitchfork-0.18.2/exe/pitchfork:110:in '&lt;top (required)&gt;' 
+/var/www/discourse/vendor/bundle/ruby/3.4.0/bin/pitchfork:25:in 'Kernel#load' 
+/var/www/discourse/vendor/bundle/ruby/3.4.0/bin/pitchfork:25:in '&lt;' 
+</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/545002_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">sniper756</div>
+          <div class="post_content">
+<p>The following two images show consecutive logs. This warning has been appearing quite frequently~<img alt=":rofl:" class="emoji" height="20" loading="lazy" src="../../../images/rofl.png" title=":rofl:" width="20"/></p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/vqctfC5DorZPeWyyIs7jzHeAwyN.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/d/c/3/dc399c181e30b55379861260e8a03037a7e3c98d.png" title="image"><img alt="image" data-base62-sha1="vqctfC5DorZPeWyyIs7jzHeAwyN" data-dominant-color="F1F1F1" height="260" src="../../../images/dc399c181e30b55379861260e8a03037a7e3c98d_2_690x260.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/d/c/3/dc399c181e30b55379861260e8a03037a7e3c98d_2_690x260.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/d/c/3/dc399c181e30b55379861260e8a03037a7e3c98d_2_1035x390.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/d/c/3/dc399c181e30b55379861260e8a03037a7e3c98d_2_1380x520.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1800×680 157 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/1Iahrybp0lVS75oZmu8TuVujxcY.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/0/c/0/0c0041ec438faaf595179c42f2c585a3576641d0.png" title="image"><img alt="image" data-base62-sha1="1Iahrybp0lVS75oZmu8TuVujxcY" data-dominant-color="F1F1F1" height="73" src="../../../images/0c0041ec438faaf595179c42f2c585a3576641d0_2_690x73.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/0/c/0/0c0041ec438faaf595179c42f2c585a3576641d0_2_690x73.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/0/c/0/0c0041ec438faaf595179c42f2c585a3576641d0_2_1035x109.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/0/c/0/0c0041ec438faaf595179c42f2c585a3576641d0_2_1380x146.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1831×196 43.3 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+  </body>
+</html>

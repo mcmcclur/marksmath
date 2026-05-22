@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width">
+    <title>Where did the tag info button go?</title>
+    <link rel="stylesheet" href="../../../archived.css" />
+    <script>
+      function findSageCodeBlocks() {
+        return Array.prototype.slice.call(
+          document.querySelectorAll(
+            "pre[data-code-wrap='sage'] > code, pre > code.lang-sage, pre > code.language-sage, pre > code.sage"
+          )
+        );
+      }
+
+      function loadScript(src) {
+        return new Promise(function (resolve, reject) {
+          var existing = document.querySelector("script[src='" + src + "']");
+          if (existing) {
+            if (existing.dataset.loaded === "true") {
+              resolve();
+              return;
+            }
+            existing.addEventListener("load", resolve, { once: true });
+            existing.addEventListener("error", reject, { once: true });
+            return;
+          }
+
+          var script = document.createElement("script");
+          script.src = src;
+          script.async = true;
+          script.addEventListener("load", function () {
+            script.dataset.loaded = "true";
+            resolve();
+          }, { once: true });
+          script.addEventListener("error", reject, { once: true });
+          document.head.appendChild(script);
+        });
+      }
+
+      function prepareSageCells() {
+        var sageBlocks = findSageCodeBlocks();
+        if (!sageBlocks.length) {
+          return Promise.resolve();
+        }
+
+        return loadScript("https://sagecell.sagemath.org/static/embedded_sagecell.js")
+          .then(function () {
+            if (!window.sagecell || !window.sagecell.makeSagecell) {
+              return;
+            }
+
+            sageBlocks.forEach(function (codeTag, index) {
+              var preTag = codeTag.parentElement;
+              if (!preTag || preTag.dataset.sageMounted === "true") {
+                return;
+              }
+
+              var host = document.createElement("div");
+              host.className = "sagecell-archive";
+
+              var source = document.createElement("script");
+              source.type = "text/x-sage";
+              source.text = codeTag.textContent || "";
+              host.appendChild(source);
+
+              preTag.insertAdjacentElement("afterend", host);
+              preTag.classList.add("sage-source-hidden");
+              preTag.dataset.sageMounted = "true";
+
+              window.sagecell.makeSagecell({
+                inputLocation: host,
+                autoeval: false,
+                evalButtonText: "Run",
+                languages: ["sage"]
+              });
+            });
+          })
+          .catch(function () {
+            // Leave the original code blocks visible if SageCell cannot load.
+          });
+      }
+
+      function preprocessDiscourseMath() {
+        document.querySelectorAll("span.math, div.math").forEach(function (node) {
+          var tex = node.textContent || "";
+          if (!tex.trim()) {
+            return;
+          }
+          if (node.tagName === "SPAN") {
+            node.textContent = "\\(" + tex + "\\)";
+          } else {
+            node.textContent = "\\[" + tex + "\\]";
+          }
+          node.classList.remove("math");
+        });
+      }
+
+      window.MathJax = {
+        tex: {
+          inlineMath: [["\\(", "\\)"]],
+          displayMath: [["\\[", "\\]"]]
+        },
+        startup: {
+          pageReady() {
+            preprocessDiscourseMath();
+            return MathJax.startup.defaultPageReady().then(function () {
+              return prepareSageCells();
+            });
+          }
+        }
+      };
+    </script>
+    <script async id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="title-span">
+        <a href="../../../">
+          <img src="../../../images/ad2526334012b2ad0c3421f9b6dd94bae2ede52f.svg" height="40" alt="Site Logo" id="site-logo" />
+        </a>
+      </div>
+    </header>
+
+    <div class="main">
+    <div class="archive-span"><a href='https://meta.discourse.org/'>Discourse Meta</a> archived in May, 2026</div>
+    <h1 class="topic-title">Where did the tag info button go?</h1>
+            <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554653_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Moin</div>
+          <div class="post_content">
+<p>There used to be a <span class="d-wrap" data-id="circle-info" data-wrap="icon"></span> button next to the new topic button on the topic list filtered for a tag.</p>
+<aside class="quote group-team" data-post="23" data-topic="125187" data-username="awesomerobot">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/142900_2.png" width="24"/><a href="https://meta.discourse.org/t/add-title-and-description-to-tags/125187/23">Add Title and Description to Tags</a></div>
+<blockquote>
+<p>The descriptions are available by clicking the info button on the top right of the tag page (this appears as a wrench to edit the tag for admins)… for example, on <a class="hashtag-cooked" data-icon="tag" data-id="83" data-ref="official::tag" data-slug="official" data-style-type="icon" data-type="tag" href="/tag/official/83"><span class="hashtag-icon-placeholder"><svg class="fa d-icon d-icon-square-full svg-icon svg-node"><use href="#square-full"></use></svg></span><span>official</span></a></p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/iGNS9losr7MCdb1DrLt4m0cBoNO.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/8/2/f/82fdd15ec3c413d54f4cf98bc7a5822718dbe988.png" title="Screenshot 2023-07-14 at 1.58.11 PM"><img alt="Screenshot 2023-07-14 at 1.58.11 PM" data-base62-sha1="iGNS9losr7MCdb1DrLt4m0cBoNO" data-dominant-color="FAFAFA" height="213" src="../../../images/82fdd15ec3c413d54f4cf98bc7a5822718dbe988_2_690x213.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/8/2/f/82fdd15ec3c413d54f4cf98bc7a5822718dbe988_2_690x213.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/8/2/f/82fdd15ec3c413d54f4cf98bc7a5822718dbe988_2_1035x319.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/8/2/f/82fdd15ec3c413d54f4cf98bc7a5822718dbe988.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2023-07-14 at 1.58.11 PM</span><span class="informations">1174×364 18.8 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+</blockquote>
+</aside>
+<aside class="onebox githubblob" data-onebox-src="https://github.com/discourse/discourse/blob/08484ffbc9f67fd8db3700924d35db2f4596f0ed/frontend/discourse/app/components/d-navigation.gjs#L277-L292">
+<header class="source">
+<a href="https://github.com/discourse/discourse/blob/08484ffbc9f67fd8db3700924d35db2f4596f0ed/frontend/discourse/app/components/d-navigation.gjs#L277-L292" rel="noopener" target="_blank">github.com/discourse/discourse</a>
+</header>
+<article class="onebox-body">
+<h4><a href="https://github.com/discourse/discourse/blob/08484ffbc9f67fd8db3700924d35db2f4596f0ed/frontend/discourse/app/components/d-navigation.gjs#L277-L292" rel="noopener" target="_blank">frontend/discourse/app/components/d-navigation.gjs</a></h4>
+<div class="git-blob-info">
+<a href="https://github.com/discourse/discourse/blob/08484ffbc9f67fd8db3700924d35db2f4596f0ed/frontend/discourse/app/components/d-navigation.gjs#L277-L292" rel="noopener"><code>08484ffbc</code></a>
+</div>
+<pre class="onebox"><code class="lang-gjs">
+      <ol class="start lines" start="277" style="counter-reset: li-counter 276 ;">
+          <li>&lt;DButton</li>
+          <li>  @icon={{if this.currentUser.canEditTags "wrench" "circle-info"}}</li>
+          <li>  @ariaLabel={{if</li>
+          <li>    this.currentUser.canEditTags</li>
+          <li>    "tagging.edit"</li>
+          <li>    "tagging.info"</li>
+          <li>  }}</li>
+          <li>  @title={{if</li>
+          <li>    this.currentUser.canEditTags</li>
+          <li>    "tagging.edit"</li>
+          <li>    "tagging.info"</li>
+          <li>  }}</li>
+          <li>  @action={{this.toggleInfo}}</li>
+          <li>  id="show-tag-info"</li>
+          <li>  class="btn-default"</li>
+          <li>/&gt;</li>
+      </ol>
+    </code></pre>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+<p>But I can no longer find it.</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/owvLT1BeScdNlE1gKaHD29WkB1G.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/a/b/e/abe107b9bbe968cab4f200452fcb869c327f09dc.png" title="image"><img alt="image" data-base62-sha1="owvLT1BeScdNlE1gKaHD29WkB1G" data-dominant-color="F1F3F7" height="151" src="../../../images/abe107b9bbe968cab4f200452fcb869c327f09dc_2_690x151.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/a/b/e/abe107b9bbe968cab4f200452fcb869c327f09dc_2_690x151.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/a/b/e/abe107b9bbe968cab4f200452fcb869c327f09dc_2_1035x226.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/a/b/e/abe107b9bbe968cab4f200452fcb869c327f09dc.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1073×235 25.6 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>I can only see the wrench when I am admin. Where do I find the description and information on usage as a user now? I know there is the tag banner component, but that doesn’t provide information on usage like the button did (and obviously I cannot install it to get the information)</p>
+<aside class="quote no-group" data-post="6" data-topic="307762" data-username="JammyDodger">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/254611_2.png" width="24"/><a href="https://meta.discourse.org/t/trouble-with-finding-out-which-categories-restrict-a-tag-group/307762/6">Trouble with finding out which categories restrict a tag group</a></div>
+<blockquote>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/yIasyUtaOBmGHvzBVVaBcfhX4F.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/0/3/e/03ec8477e85ea4b8f5e4b0f9412797fb0de04835.png" title="tag info"><img alt="tag info" data-base62-sha1="yIasyUtaOBmGHvzBVVaBcfhX4F" data-dominant-color="F5F6F2" height="196" src="../../../images/03ec8477e85ea4b8f5e4b0f9412797fb0de04835_2_690x196.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/0/3/e/03ec8477e85ea4b8f5e4b0f9412797fb0de04835_2_690x196.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/0/3/e/03ec8477e85ea4b8f5e4b0f9412797fb0de04835_2_1035x294.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/0/3/e/03ec8477e85ea4b8f5e4b0f9412797fb0de04835.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">tag info</span><span class="informations">1370×391 32.2 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+</blockquote>
+</aside>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554803_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Lilly</div>
+          <div class="post_content">
+<p>looks like it may have been moved in this commit</p>
+<aside class="onebox githubcommit" data-onebox-src="https://github.com/discourse/discourse/commit/5f0d95e1f11a9cb5acbe8c7a61142400fc506f06#diff-42668bf25f525b38adcc400d504f13cb913d98cd334f888c91f051864eb08b30L280-L296">
+<header class="source">
+<a href="https://github.com/discourse/discourse/commit/5f0d95e1f11a9cb5acbe8c7a61142400fc506f06#diff-42668bf25f525b38adcc400d504f13cb913d98cd334f888c91f051864eb08b30L280-L296" rel="noopener" target="_blank">github.com/discourse/discourse</a>
+</header>
+<article class="onebox-body">
+<div class="github-row">
+<div class="github-icon-container" title="Commit">
+<svg aria-hidden="true" class="github-icon" height="60" viewbox="0 0 14 16" width="60"><path d="M10.86 7c-.45-1.72-2-3-3.86-3-1.86 0-3.41 1.28-3.86 3H0v2h3.14c.45 1.72 2 3 3.86 3 1.86 0 3.41-1.28 3.86-3H14V7h-3.14zM7 10.2c-1.22 0-2.2-.98-2.2-2.2 0-1.22.98-2.2 2.2-2.2 1.22 0 2.2.98 2.2 2.2 0 1.22-.98 2.2-2.2 2.2z" fill-rule="evenodd"></path></svg>
+</div>
+<div class="github-info-container">
+<h4>
+<a href="https://github.com/discourse/discourse/commit/5f0d95e1f11a9cb5acbe8c7a61142400fc506f06" rel="noopener" target="_blank">FEATURE: Tags get a dedicated settings page (#39057)</a>
+</h4>
+<div class="github-info">
+<div class="date">
+        committed <span class="discourse-local-date" data-date="2026-04-02" data-format="ll" data-time="09:52:30" data-timezone="UTC">09:52AM - 02 Apr 26 UTC</span>
+</div>
+<div class="user">
+<a href="https://github.com/nattsw" rel="noopener" target="_blank">
+<img alt="" class="onebox-avatar-inline" data-dominant-color="575757" height="20" src="../../../images/5bbbe88eb88916fc73970fdabedec63f1d053d4d.jpeg" width="20"/>
+          nattsw
+        </a>
+</div>
+<div class="lines" title="changed 18 files with 67 additions and 1302 deletions">
+<a href="https://github.com/discourse/discourse/commit/5f0d95e1f11a9cb5acbe8c7a61142400fc506f06" rel="noopener" target="_blank">
+<span class="added">+67</span>
+<span class="removed">-1302</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+<div class="github-row">
+<p class="github-body-container">The dedicated tag settings page at /tag/:slug/:id/edit is now the
+default. This <span class="show-more-container"><a class="show-more" href="https://github.com/discourse/discourse/commit/5f0d95e1f11a9cb5acbe8c7a61142400fc506f06" rel="noopener" target="_blank">…</a></span><span class="excerpt hidden">removes the `experimental_tag_settings_page` site setting
+and all code for the old same-page inline tag editing UI.</span></p>
+</div>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/142900_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">awesomerobot</div>
+          <div class="post_content">
+<p>Yes it was removed when we added a dedicated tag settings page, and I’ve opened a PR to bring back the info button and revamp the old info banner align it with our category banner styles</p>
+<aside class="onebox githubpullrequest" data-onebox-src="https://github.com/discourse/discourse/pull/40171">
+<header class="source">
+<a href="https://github.com/discourse/discourse/pull/40171" rel="noopener" target="_blank">github.com/discourse/discourse</a>
+</header>
+<article class="onebox-body">
+<div class="github-row --gh-status-open" data-github-private-repo="false">
+<div class="github-icon-container" title="Open Pull Request">
+<svg aria-hidden="true" class="github-icon" height="60" viewbox="0 0 12 16" width="60"><path d="M11 11.28V5c-.03-.78-.34-1.47-.94-2.06C9.46 2.35 8.78 2.03 8 2H7V0L4 3l3 3V4h1c.27.02.48.11.69.31.21.2.3.42.31.69v6.28A1.993 1.993 0 0 0 10 15a1.993 1.993 0 0 0 1-3.72zm-1 2.92c-.66 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2zM4 3c0-1.11-.89-2-2-2a1.993 1.993 0 0 0-1 3.72v6.56A1.993 1.993 0 0 0 2 15a1.993 1.993 0 0 0 1-3.72V4.72c.59-.34 1-.98 1-1.72zm-.8 10c0 .66-.55 1.2-1.2 1.2-.65 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2zM2 4.2C1.34 4.2.8 3.65.8 3c0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2z" fill-rule="evenodd"></path></svg>
+</div>
+<div class="github-info-container">
+<h4>
+<a href="https://github.com/discourse/discourse/pull/40171" rel="noopener" target="_blank">FEATURE: new tag info heading (#40171)</a>
+</h4>
+<div class="branches">
+<code>main</code> ← <code>restore-tag-info-panel</code>
+</div>
+<div class="github-info">
+<div class="date">
+          opened <span class="discourse-local-date" data-date="2026-05-19" data-format="ll" data-time="16:50:12" data-timezone="UTC">04:50PM - 19 May 26 UTC</span>
+</div>
+<div class="user">
+<a href="https://github.com/awesomerobot" rel="noopener" target="_blank">
+<img alt="" class="onebox-avatar-inline" data-dominant-color="444444" height="20" src="../../../images/ebb06c587c9d2602025f6ecd393d9b77e6247929.png" width="20"/>
+            awesomerobot
+          </a>
+</div>
+<div class="lines" title="1 commits changed 15 files with 412 additions and 59 deletions">
+<a href="https://github.com/discourse/discourse/pull/40171/files" rel="noopener" target="_blank">
+<span class="added">+412</span>
+<span class="removed">-59</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+<div class="github-row">
+<p class="github-body-container">In 5f0d95e1f11 we added a dedicated tag settings page, but removed some informat<span class="show-more-container"><a class="show-more" href="https://github.com/discourse/discourse/pull/40171" rel="noopener" target="_blank">…</a></span><span class="excerpt hidden">ion for tags that was available to regular visitors. This PR adds an info button back to the UI and revamps that tag information so it's better aligned with our category heading styles. 
+
+The ℹ️ button also now reflects the state (blue icon = active) and it can persist while navigating between tag routes. 
+
+There are now some shared styles between the two banners with a new `.discovery-heading` class. 
+
+&lt;img width="2188" height="502" alt="image" src="https://github.com/user-attachments/assets/b430a694-1f7a-4891-bdde-40276b526aad" /&gt;
+
+
+and the existing category banner, for comparison 
+
+&lt;img width="2194" height="602" alt="image" src="https://github.com/user-attachments/assets/a3fcc6df-78a8-42d0-acc2-a48e69eae6f1" /&gt;</span></p>
+</div>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/eRAKgYwfwonGeYtX6AugUrIYLaE.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/6/8/2/682d50efdcc71d17d63ff2bb40e13bd8daa91dd0.png" title="image"><img alt="image" data-base62-sha1="eRAKgYwfwonGeYtX6AugUrIYLaE" data-dominant-color="F7F9FA" height="158" src="../../../images/682d50efdcc71d17d63ff2bb40e13bd8daa91dd0_2_690x158.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/6/8/2/682d50efdcc71d17d63ff2bb40e13bd8daa91dd0_2_690x158.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/6/8/2/682d50efdcc71d17d63ff2bb40e13bd8daa91dd0_2_1035x237.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/6/8/2/682d50efdcc71d17d63ff2bb40e13bd8daa91dd0_2_1380x316.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">2188×502 47.5 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="chefs kiss: 1">:chefs_kiss: 1</span></div>
+        </div>
+      </div>
+
+
+    </div>
+  </body>
+</html>

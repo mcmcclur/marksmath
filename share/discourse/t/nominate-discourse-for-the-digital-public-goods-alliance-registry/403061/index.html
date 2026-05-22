@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width">
+    <title>Nominate Discourse for the Digital Public Goods Alliance registry</title>
+    <link rel="stylesheet" href="../../../archived.css" />
+    <script>
+      function findSageCodeBlocks() {
+        return Array.prototype.slice.call(
+          document.querySelectorAll(
+            "pre[data-code-wrap='sage'] > code, pre > code.lang-sage, pre > code.language-sage, pre > code.sage"
+          )
+        );
+      }
+
+      function loadScript(src) {
+        return new Promise(function (resolve, reject) {
+          var existing = document.querySelector("script[src='" + src + "']");
+          if (existing) {
+            if (existing.dataset.loaded === "true") {
+              resolve();
+              return;
+            }
+            existing.addEventListener("load", resolve, { once: true });
+            existing.addEventListener("error", reject, { once: true });
+            return;
+          }
+
+          var script = document.createElement("script");
+          script.src = src;
+          script.async = true;
+          script.addEventListener("load", function () {
+            script.dataset.loaded = "true";
+            resolve();
+          }, { once: true });
+          script.addEventListener("error", reject, { once: true });
+          document.head.appendChild(script);
+        });
+      }
+
+      function prepareSageCells() {
+        var sageBlocks = findSageCodeBlocks();
+        if (!sageBlocks.length) {
+          return Promise.resolve();
+        }
+
+        return loadScript("https://sagecell.sagemath.org/static/embedded_sagecell.js")
+          .then(function () {
+            if (!window.sagecell || !window.sagecell.makeSagecell) {
+              return;
+            }
+
+            sageBlocks.forEach(function (codeTag, index) {
+              var preTag = codeTag.parentElement;
+              if (!preTag || preTag.dataset.sageMounted === "true") {
+                return;
+              }
+
+              var host = document.createElement("div");
+              host.className = "sagecell-archive";
+
+              var source = document.createElement("script");
+              source.type = "text/x-sage";
+              source.text = codeTag.textContent || "";
+              host.appendChild(source);
+
+              preTag.insertAdjacentElement("afterend", host);
+              preTag.classList.add("sage-source-hidden");
+              preTag.dataset.sageMounted = "true";
+
+              window.sagecell.makeSagecell({
+                inputLocation: host,
+                autoeval: false,
+                evalButtonText: "Run",
+                languages: ["sage"]
+              });
+            });
+          })
+          .catch(function () {
+            // Leave the original code blocks visible if SageCell cannot load.
+          });
+      }
+
+      function preprocessDiscourseMath() {
+        document.querySelectorAll("span.math, div.math").forEach(function (node) {
+          var tex = node.textContent || "";
+          if (!tex.trim()) {
+            return;
+          }
+          if (node.tagName === "SPAN") {
+            node.textContent = "\\(" + tex + "\\)";
+          } else {
+            node.textContent = "\\[" + tex + "\\]";
+          }
+          node.classList.remove("math");
+        });
+      }
+
+      window.MathJax = {
+        tex: {
+          inlineMath: [["\\(", "\\)"]],
+          displayMath: [["\\[", "\\]"]]
+        },
+        startup: {
+          pageReady() {
+            preprocessDiscourseMath();
+            return MathJax.startup.defaultPageReady().then(function () {
+              return prepareSageCells();
+            });
+          }
+        }
+      };
+    </script>
+    <script async id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="title-span">
+        <a href="../../../">
+          <img src="../../../images/ad2526334012b2ad0c3421f9b6dd94bae2ede52f.svg" height="40" alt="Site Logo" id="site-logo" />
+        </a>
+      </div>
+    </header>
+
+    <div class="main">
+    <div class="archive-span"><a href='https://meta.discourse.org/'>Discourse Meta</a> archived in May, 2026</div>
+    <h1 class="topic-title">Nominate Discourse for the Digital Public Goods Alliance registry</h1>
+            <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/539204_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">tobiaseigen</div>
+          <div class="post_content">
+<p>Discourse is one of the only open source products in my tech stack that is not in the Digital Public Goods registry, which connects open source software with the UN sustainable development goals. I think nomination is pretty easy and I’m happy to do it, but I think it would make sense for the Discourse team to do it because it’s a good marketing opportunity. Starts at the link below:</p>
+<aside class="onebox allowlistedgeneric" data-onebox-src="https://www.digitalpublicgoods.net/">
+<header class="source">
+<img alt="" class="site-icon" data-dominant-color="2E27A3" height="64" src="../../../images/4c0df151a7a1391dd42666a448de4dead62d789e.png" width="64"/>
+<a href="https://www.digitalpublicgoods.net/" rel="noopener nofollow ugc" target="_blank">Digital Public Goods Alliance - Promoting digital public goods to create a more...</a>
+</header>
+<article class="onebox-body">
+<h3><a href="https://www.digitalpublicgoods.net/" rel="noopener nofollow ugc" target="_blank">Digital Public Goods Alliance - Digital Public Goods Alliance</a></h3>
+<p>Unlocking the potential of open-source technologies for a more equitable world. Explore and learn more about digital public goods The Digital Public Goods Alliance is a multi-stakeholder initiative that accelerates the attainment of the Sustainable...</p>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+<p>The <a href="https://www.digitalpublicgoods.net/registry" rel="noopener nofollow ugc">registry</a> itself is a super interesting list of projects to scroll through - seems there’s open source for every function you can imagine! It has a github activity indicator for each project, so you can see which ones are active (or completely dead).</p>
+<p>Each project also gets a very nice page in the registry explaining how they meet the criteria for inclusion,for example <a href="https://new.digitalpublicgoods.net/r/ghost?ref=ghost.org" rel="noopener nofollow ugc">ghost</a>.</p>
+<p>Here’s how Nextcloud and Ghost talk about the DPG on their blogs:</p>
+<aside class="onebox allowlistedgeneric" data-onebox-src="https://nextcloud.com/blog/nextcloud-recognized-as-a-digital-public-good/">
+<header class="source">
+<img alt="" class="site-icon" data-dominant-color="389DD5" height="32" src="../../../images/235f2c38f38cd910872cef21e479fac5022cfe8e.png" width="32"/>
+<a href="https://nextcloud.com/blog/nextcloud-recognized-as-a-digital-public-good/" rel="noopener nofollow ugc" target="_blank" title="09:51AM - 05 February 2026">Nextcloud – 5 Feb 26</a>
+</header>
+<article class="onebox-body">
+<div class="aspect-image" style="--aspect-ratio:690/387;"><img alt="" class="thumbnail" data-dominant-color="8BC0E3" height="388" src="../../../images/5b2989560a9d61f59fb24ccf47af5b1f1bc9bf47_2_690x388.jpeg" width="690"/></div>
+<h3><a href="https://nextcloud.com/blog/nextcloud-recognized-as-a-digital-public-good/" rel="noopener nofollow ugc" target="_blank">Nextcloud recognized as a Digital Public Good - Nextcloud</a></h3>
+<p>Nextcloud's long-standing commitment to open source, privacy, and data control has been recognized by the Digital Public Good Alliance.</p>
+<p>
+<span class="label1">Est. reading time: 3 minutes</span>
+</p>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+<aside class="onebox allowlistedgeneric" data-onebox-src="https://ghost.org/changelog/digital-public-good/">
+<header class="source">
+<img alt="" class="site-icon" data-dominant-color="23231B" height="256" src="../../../images/97863281efb5645a8a26b401cb86ffc93094f0a4.png" width="256"/>
+<a href="https://ghost.org/changelog/digital-public-good/" rel="noopener nofollow ugc" target="_blank" title="03:34PM - 29 April 2026">Changelog – 29 Apr 26</a>
+</header>
+<article class="onebox-body">
+<div class="aspect-image" style="--aspect-ratio:690/360;"><img alt="" class="thumbnail" data-dominant-color="BAADA3" height="360" src="../../../images/0cc033380a50d7a85e08efd271234f68503c192b_2_690x360.png" width="690"/></div>
+<h3><a href="https://ghost.org/changelog/digital-public-good/" rel="noopener nofollow ugc" target="_blank">Ghost is now a digital public good</a></h3>
+<p>Ghost has been reviewed and is now recognized by the Digital Public Goods Alliance (DPGA) as a digital public good.
+
+The DPGA is a multi-stakeholder initiative endorsed by the United Nations Secretary-General, working to promote open source software,...</p>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 7">❤️ 7</span><span class="engagement-pill reaction-pill" title="100: 1">:100: 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/265245_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">mae</div>
+          <div class="post_content">
+<p>I actually submitted Discourse for this April 29th! <span class="mention">@pmusaraj</span> recommended it.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span><span class="engagement-pill reaction-pill" title="rocket: 1">🚀 1</span><span class="engagement-pill reaction-pill" title="star struck: 1">:star_struck: 1</span></div>
+        </div>
+      </div>
+
+
+    </div>
+  </body>
+</html>

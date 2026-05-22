@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width">
+    <title>Tag Icons component bug</title>
+    <link rel="stylesheet" href="../../../archived.css" />
+    <script>
+      function findSageCodeBlocks() {
+        return Array.prototype.slice.call(
+          document.querySelectorAll(
+            "pre[data-code-wrap='sage'] > code, pre > code.lang-sage, pre > code.language-sage, pre > code.sage"
+          )
+        );
+      }
+
+      function loadScript(src) {
+        return new Promise(function (resolve, reject) {
+          var existing = document.querySelector("script[src='" + src + "']");
+          if (existing) {
+            if (existing.dataset.loaded === "true") {
+              resolve();
+              return;
+            }
+            existing.addEventListener("load", resolve, { once: true });
+            existing.addEventListener("error", reject, { once: true });
+            return;
+          }
+
+          var script = document.createElement("script");
+          script.src = src;
+          script.async = true;
+          script.addEventListener("load", function () {
+            script.dataset.loaded = "true";
+            resolve();
+          }, { once: true });
+          script.addEventListener("error", reject, { once: true });
+          document.head.appendChild(script);
+        });
+      }
+
+      function prepareSageCells() {
+        var sageBlocks = findSageCodeBlocks();
+        if (!sageBlocks.length) {
+          return Promise.resolve();
+        }
+
+        return loadScript("https://sagecell.sagemath.org/static/embedded_sagecell.js")
+          .then(function () {
+            if (!window.sagecell || !window.sagecell.makeSagecell) {
+              return;
+            }
+
+            sageBlocks.forEach(function (codeTag, index) {
+              var preTag = codeTag.parentElement;
+              if (!preTag || preTag.dataset.sageMounted === "true") {
+                return;
+              }
+
+              var host = document.createElement("div");
+              host.className = "sagecell-archive";
+
+              var source = document.createElement("script");
+              source.type = "text/x-sage";
+              source.text = codeTag.textContent || "";
+              host.appendChild(source);
+
+              preTag.insertAdjacentElement("afterend", host);
+              preTag.classList.add("sage-source-hidden");
+              preTag.dataset.sageMounted = "true";
+
+              window.sagecell.makeSagecell({
+                inputLocation: host,
+                autoeval: false,
+                evalButtonText: "Run",
+                languages: ["sage"]
+              });
+            });
+          })
+          .catch(function () {
+            // Leave the original code blocks visible if SageCell cannot load.
+          });
+      }
+
+      function preprocessDiscourseMath() {
+        document.querySelectorAll("span.math, div.math").forEach(function (node) {
+          var tex = node.textContent || "";
+          if (!tex.trim()) {
+            return;
+          }
+          if (node.tagName === "SPAN") {
+            node.textContent = "\\(" + tex + "\\)";
+          } else {
+            node.textContent = "\\[" + tex + "\\]";
+          }
+          node.classList.remove("math");
+        });
+      }
+
+      window.MathJax = {
+        tex: {
+          inlineMath: [["\\(", "\\)"]],
+          displayMath: [["\\[", "\\]"]]
+        },
+        startup: {
+          pageReady() {
+            preprocessDiscourseMath();
+            return MathJax.startup.defaultPageReady().then(function () {
+              return prepareSageCells();
+            });
+          }
+        }
+      };
+    </script>
+    <script async id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="title-span">
+        <a href="../../../">
+          <img src="../../../images/ad2526334012b2ad0c3421f9b6dd94bae2ede52f.svg" height="40" alt="Site Logo" id="site-logo" />
+        </a>
+      </div>
+    </header>
+
+    <div class="main">
+    <div class="archive-span"><a href='https://meta.discourse.org/'>Discourse Meta</a> archived in May, 2026</div>
+    <h1 class="topic-title">Tag Icons component bug</h1>
+            <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/201966_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">AquaL1te</div>
+          <div class="post_content">
+<p>I’ve set the following, and that worked really well. But since a few weeks it doesn’t work well anymore.</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/uwhIGsWCMH6guql9JtDNuoZTv2h.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/d/5/e/d5e783f32a3aad9d654d90ece31add32129f3621.png" rel="noopener nofollow ugc" title="image"><img alt="image" data-base62-sha1="uwhIGsWCMH6guql9JtDNuoZTv2h" data-dominant-color="282421" height="331" src="../../../images/d5e783f32a3aad9d654d90ece31add32129f3621_2_690x331.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/d/5/e/d5e783f32a3aad9d654d90ece31add32129f3621_2_690x331.png, https://d11a6trkgmumsb.cloudfront.net/original/4X/d/5/e/d5e783f32a3aad9d654d90ece31add32129f3621.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/d/5/e/d5e783f32a3aad9d654d90ece31add32129f3621.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">898×431 39.8 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>So these tags should all look like below, and they do, in the sidebar, but not in topics.</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/aoXayBuzh4jXzYqdoYZRLenrz2x.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/4/8/e/48e7e04d342bdb47acb07635ae77a33002cb8c41.png" rel="noopener nofollow ugc" title="image"><img alt="image" data-base62-sha1="aoXayBuzh4jXzYqdoYZRLenrz2x" height="282" src="../../../images/48e7e04d342bdb47acb07635ae77a33002cb8c41.png" width="310"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">310×282 5.35 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>So as you can see, it works well in the sidebar, but then when I check topics and the tag overview.</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/x1AaP5aoRGUAKfpUOrI4OjBAv94.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/e/7/7/e7759049c0980ace563368115e52b6f83fdeeafe.png" rel="noopener nofollow ugc" title="image"><img alt="image" data-base62-sha1="x1AaP5aoRGUAKfpUOrI4OjBAv94" data-dominant-color="3A3A3A" height="68" src="../../../images/e7759049c0980ace563368115e52b6f83fdeeafe.png" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1071×107 15.6 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/hF0S0GEwS7DcxHkOWaSIyiRM9Xs.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/7/b/c/7bc7d57e4d9b35a8920889fdb98cd9ff8f56519a.png" rel="noopener nofollow ugc" title="image"><img alt="image" data-base62-sha1="hF0S0GEwS7DcxHkOWaSIyiRM9Xs" data-dominant-color="252525" height="94" src="../../../images/7bc7d57e4d9b35a8920889fdb98cd9ff8f56519a.png" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1190×163 6.17 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>Not all tags get the &gt;&gt; icon.</p>
+<p>How can I fix this or troubleshoot this better?</p>
+<p>There are more tag icons that are missing, but are configured with one in the theme component and it worked fine in the past.</p>
+<aside class="onebox allowlistedgeneric" data-onebox-src="https://tzm.one/tags">
+<header class="source">
+<img alt="" class="site-icon" data-dominant-color="A6A6A6" height="32" src="../../../images/c7e263bed1ec53d082f21d7c0ab44b71783f5978.png" width="32"/>
+<a href="https://tzm.one/tags" rel="noopener nofollow ugc" target="_blank">TZM Forum</a>
+</header>
+<article class="onebox-body">
+<img alt="" class="thumbnail onebox-avatar" data-dominant-color="A8A8A8" height="500" src="../../../images/4c9a2350718d8c09da8f7a8992ec2ddacf5cbbf9_2_500x500.png" width="500"/>
+<h3><a href="https://tzm.one/tags" rel="noopener nofollow ugc" target="_blank">Tags</a></h3>
+<p>Tags</p>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+<p>I’m using the latest Discourse release (2026.5.0-latest.1  ( <a href="https://github.com/discourse/discourse/commits/4f17eef310094fb07f70c0c9b3024d0374aa5fcf" rel="noopener nofollow ugc">4f17eef310 </a>) and the latest version of this theme component.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/549022_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">gilles</div>
+          <div class="post_content">
+<p>It works on my end, so I think there’s a conflict with another component or plugin. Try disabling the components to see which one is causing the conflict.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/201966_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">AquaL1te</div>
+          <div class="post_content">
+<p>Do you have a URL to your forum? Maybe I can compare some things. Maybe the amount of tags or something like that triggers it. Because 95% of my tags work fine. I can try disabling components, but I need more time for that.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554803_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Lilly</div>
+          <div class="post_content">
+<p>without installing this component and testing, i’m going to just guess that it is the <code>_</code> underscore in the tag names.  looks like all the tags that have underscores are not showing their icons.</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/fp1eamwgrklidn2tGHGxjbbaCEx.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/6/b/f/6bf4a3e2b6def2a31fc7b781f8e769ab451e4da9.png" title="Screenshot 2026-05-20 at 2.28.49 AM"><img alt="Screenshot 2026-05-20 at 2.28.49 AM" data-base62-sha1="fp1eamwgrklidn2tGHGxjbbaCEx" height="216" src="../../../images/6bf4a3e2b6def2a31fc7b781f8e769ab451e4da9.png" width="267"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2026-05-20 at 2.28.49 AM</span><span class="informations">534×432 7.55 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p><img alt="Screenshot 2026-05-20 at 2.29.00 AM" data-base62-sha1="mqeSYl5GytGCZgWinRoHET3aywA" height="40" src="../../../images/9d272bd09154622275fea41cc3ae1ecbbf08efec.png" width="198"/></p>
+<p>i’m thinking this commit reconfigured your tag slugs that have underscores <code>_</code> to dashes <code>-</code></p>
+<aside class="onebox githubcommit" data-onebox-src="https://github.com/discourse/discourse-tag-icons/commit/46ee338ae4fb7b316e25501744e779f5f96c48e9">
+<header class="source">
+<a href="https://github.com/discourse/discourse-tag-icons/commit/46ee338ae4fb7b316e25501744e779f5f96c48e9" rel="noopener" target="_blank">github.com/discourse/discourse-tag-icons</a>
+</header>
+<article class="onebox-body">
+<div class="github-row">
+<div class="github-icon-container" title="Commit">
+<svg aria-hidden="true" class="github-icon" height="60" viewbox="0 0 14 16" width="60"><path d="M10.86 7c-.45-1.72-2-3-3.86-3-1.86 0-3.41 1.28-3.86 3H0v2h3.14c.45 1.72 2 3 3.86 3 1.86 0 3.41-1.28 3.86-3H14V7h-3.14zM7 10.2c-1.22 0-2.2-.98-2.2-2.2 0-1.22.98-2.2 2.2-2.2 1.22 0 2.2.98 2.2 2.2 0 1.22-.98 2.2-2.2 2.2z" fill-rule="evenodd"></path></svg>
+</div>
+<div class="github-info-container">
+<h4>
+<a href="https://github.com/discourse/discourse-tag-icons/commit/46ee338ae4fb7b316e25501744e779f5f96c48e9" rel="noopener" target="_blank">FIX: Use slug to match showing tag icons per setting description (#61)</a>
+</h4>
+<div class="github-info">
+<div class="date">
+        committed <span class="discourse-local-date" data-date="2026-04-01" data-format="ll" data-time="17:40:35" data-timezone="UTC">05:40PM - 01 Apr 26 UTC</span>
+</div>
+<div class="user">
+<a href="https://github.com/nattsw" rel="noopener" target="_blank">
+<img alt="" class="onebox-avatar-inline" data-dominant-color="575757" height="20" src="../../../images/cd211726239bef58b7751a815c8db92a67bbf045.jpeg" width="20"/>
+          nattsw
+        </a>
+</div>
+<div class="lines" title="changed 2 files with 67 additions and 2 deletions">
+<a href="https://github.com/discourse/discourse-tag-icons/commit/46ee338ae4fb7b316e25501744e779f5f96c48e9" rel="noopener" target="_blank">
+<span class="added">+67</span>
+<span class="removed">-2</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+<div class="github-row">
+<p class="github-body-container">When content localization is enabled, tag icons break because the component matc<span class="show-more-container"><a class="show-more" href="https://github.com/discourse/discourse-tag-icons/commit/46ee338ae4fb7b316e25501744e779f5f96c48e9" rel="noopener" target="_blank">…</a></span><span class="excerpt hidden">hes on `tag.name` which gets translated.
+
+This switches iconTagRenderer to match on tag.slug instead. Slugs are not translated, and matches the actual description of the setting as well.</span></p>
+</div>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/v2NOz9pWl2VgH10dRqbG8P3cBSH.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/d/9/9/d99485581d3db92ac69a09c47a19b206fda16a43.png" title="Screenshot 2026-05-20 at 2.34.59 AM"><img alt="Screenshot 2026-05-20 at 2.34.59 AM" data-base62-sha1="v2NOz9pWl2VgH10dRqbG8P3cBSH" height="151" src="../../../images/d99485581d3db92ac69a09c47a19b206fda16a43.png" width="336"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2026-05-20 at 2.34.59 AM</span><span class="informations">672×302 10.6 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>edit: testing now and indeed this is the case - if you change the tag slugs in this component from underscore to dash (don’t change the tag names themselves), it should work again.</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/atbLbcFbTi9SsFsNMMXiuhzIkR0.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/4/9/6/49627082790ca535e09f573e49f66da70191e956.png" title="Screenshot 2026-05-20 at 2.52.49 AM"><img alt="Screenshot 2026-05-20 at 2.52.49 AM" data-base62-sha1="atbLbcFbTi9SsFsNMMXiuhzIkR0" data-dominant-color="D2BCE3" height="122" src="../../../images/49627082790ca535e09f573e49f66da70191e956_2_345x122.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/4/9/6/49627082790ca535e09f573e49f66da70191e956_2_345x122.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/4/9/6/49627082790ca535e09f573e49f66da70191e956_2_517x183.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/4/9/6/49627082790ca535e09f573e49f66da70191e956_2_690x244.png 2x" width="345"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2026-05-20 at 2.52.49 AM</span><span class="informations">774×274 10.9 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/q0LcYLG3efECE7swUDMlmkq0FNt.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/b/6/4/b64e8ed8fc9b15f3f3ff2539b50a0f931e409fbf.png" title="Screenshot 2026-05-20 at 2.56.53 AM"><img alt="Screenshot 2026-05-20 at 2.56.53 AM" data-base62-sha1="q0LcYLG3efECE7swUDMlmkq0FNt" height="210" src="../../../images/b64e8ed8fc9b15f3f3ff2539b50a0f931e409fbf.png" width="163"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2026-05-20 at 2.56.53 AM</span><span class="informations">326×420 6.32 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/n4ttl3zTdfFb267XOXjT3sMusAm.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/a/1/b/a1b382cee0559efaa55cdc530e0d73e750ead80e.png" title="Screenshot 2026-05-20 at 2.53.19 AM"><img alt="Screenshot 2026-05-20 at 2.53.19 AM" data-base62-sha1="n4ttl3zTdfFb267XOXjT3sMusAm" data-dominant-color="D2BCE3" height="122" src="../../../images/a1b382cee0559efaa55cdc530e0d73e750ead80e_2_345x122.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/a/1/b/a1b382cee0559efaa55cdc530e0d73e750ead80e_2_345x122.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/a/1/b/a1b382cee0559efaa55cdc530e0d73e750ead80e_2_517x183.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/a/1/b/a1b382cee0559efaa55cdc530e0d73e750ead80e_2_690x244.png 2x" width="345"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2026-05-20 at 2.53.19 AM</span><span class="informations">774×274 10.9 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/1ZwjKGRUyuQo2y8PgqCjDDz5asI.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/0/d/f/0df67e86c7f6eb74055e3ed4b85882d66e2f1784.png" title="Screenshot 2026-05-20 at 2.55.25 AM"><img alt="Screenshot 2026-05-20 at 2.55.25 AM" data-base62-sha1="1ZwjKGRUyuQo2y8PgqCjDDz5asI" height="210" src="../../../images/0df67e86c7f6eb74055e3ed4b85882d66e2f1784.png" width="163"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2026-05-20 at 2.55.25 AM</span><span class="informations">326×420 6.55 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/201966_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">AquaL1te</div>
+          <div class="post_content">
+<p>That’s a strange commit, why would a component need to change that behavior? That makes things unpredictable. When I change <code>strategic_access</code> to <code>strategic-access</code> in the theme component it works in topics, but then breaks in the sidepanel.</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/hneEpAx468gCKH32vjx1nX8WAgD.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/7/9/c/79c560777fec8d3758a01fef357e8a4c023dfe27.png" rel="noopener nofollow ugc" title="image"><img alt="image" data-base62-sha1="hneEpAx468gCKH32vjx1nX8WAgD" data-dominant-color="1D2022" height="292" src="../../../images/79c560777fec8d3758a01fef357e8a4c023dfe27_2_690x292.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/7/9/c/79c560777fec8d3758a01fef357e8a4c023dfe27_2_690x292.png, https://d11a6trkgmumsb.cloudfront.net/original/4X/7/9/c/79c560777fec8d3758a01fef357e8a4c023dfe27.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/7/9/c/79c560777fec8d3758a01fef357e8a4c023dfe27.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">938×397 40.7 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+  </body>
+</html>

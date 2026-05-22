@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width">
+    <title>How to regain Admin access when Discourse ID is disabled and before ticking Enable Local Login option?</title>
+    <link rel="stylesheet" href="../../../archived.css" />
+    <script>
+      function findSageCodeBlocks() {
+        return Array.prototype.slice.call(
+          document.querySelectorAll(
+            "pre[data-code-wrap='sage'] > code, pre > code.lang-sage, pre > code.language-sage, pre > code.sage"
+          )
+        );
+      }
+
+      function loadScript(src) {
+        return new Promise(function (resolve, reject) {
+          var existing = document.querySelector("script[src='" + src + "']");
+          if (existing) {
+            if (existing.dataset.loaded === "true") {
+              resolve();
+              return;
+            }
+            existing.addEventListener("load", resolve, { once: true });
+            existing.addEventListener("error", reject, { once: true });
+            return;
+          }
+
+          var script = document.createElement("script");
+          script.src = src;
+          script.async = true;
+          script.addEventListener("load", function () {
+            script.dataset.loaded = "true";
+            resolve();
+          }, { once: true });
+          script.addEventListener("error", reject, { once: true });
+          document.head.appendChild(script);
+        });
+      }
+
+      function prepareSageCells() {
+        var sageBlocks = findSageCodeBlocks();
+        if (!sageBlocks.length) {
+          return Promise.resolve();
+        }
+
+        return loadScript("https://sagecell.sagemath.org/static/embedded_sagecell.js")
+          .then(function () {
+            if (!window.sagecell || !window.sagecell.makeSagecell) {
+              return;
+            }
+
+            sageBlocks.forEach(function (codeTag, index) {
+              var preTag = codeTag.parentElement;
+              if (!preTag || preTag.dataset.sageMounted === "true") {
+                return;
+              }
+
+              var host = document.createElement("div");
+              host.className = "sagecell-archive";
+
+              var source = document.createElement("script");
+              source.type = "text/x-sage";
+              source.text = codeTag.textContent || "";
+              host.appendChild(source);
+
+              preTag.insertAdjacentElement("afterend", host);
+              preTag.classList.add("sage-source-hidden");
+              preTag.dataset.sageMounted = "true";
+
+              window.sagecell.makeSagecell({
+                inputLocation: host,
+                autoeval: false,
+                evalButtonText: "Run",
+                languages: ["sage"]
+              });
+            });
+          })
+          .catch(function () {
+            // Leave the original code blocks visible if SageCell cannot load.
+          });
+      }
+
+      function preprocessDiscourseMath() {
+        document.querySelectorAll("span.math, div.math").forEach(function (node) {
+          var tex = node.textContent || "";
+          if (!tex.trim()) {
+            return;
+          }
+          if (node.tagName === "SPAN") {
+            node.textContent = "\\(" + tex + "\\)";
+          } else {
+            node.textContent = "\\[" + tex + "\\]";
+          }
+          node.classList.remove("math");
+        });
+      }
+
+      window.MathJax = {
+        tex: {
+          inlineMath: [["\\(", "\\)"]],
+          displayMath: [["\\[", "\\]"]]
+        },
+        startup: {
+          pageReady() {
+            preprocessDiscourseMath();
+            return MathJax.startup.defaultPageReady().then(function () {
+              return prepareSageCells();
+            });
+          }
+        }
+      };
+    </script>
+    <script async id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="title-span">
+        <a href="../../../">
+          <img src="../../../images/ad2526334012b2ad0c3421f9b6dd94bae2ede52f.svg" height="40" alt="Site Logo" id="site-logo" />
+        </a>
+      </div>
+    </header>
+
+    <div class="main">
+    <div class="archive-span"><a href='https://meta.discourse.org/'>Discourse Meta</a> archived in May, 2026</div>
+    <h1 class="topic-title">How to regain Admin access when Discourse ID is disabled and before ticking Enable Local Login option?</h1>
+            <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/491661_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">smokiebacon</div>
+          <div class="post_content">
+<p>So I may have completely messed up and unable to forever gain access to my community. I wanted to turn off Discourse ID and let users sign up locally, with their own username and password, and not route through Discourse ID.</p>
+<p>I am logged on my Discourse ID connected account, went to admin section, disabled Discourse ID, and ticked the “Enable Local Login.” However, I didn’t create any local accounts as admins.</p>
+<p>Now I am unable to access my community at all. I click Sign Up, it just says Welcome with no login fields.</p>
+<p>I go to Sign In, and it says No login methods are configured. Administrators can visit <a href="https://asiamonger.com/u/admin-login" rel="noopener nofollow ugc">/u/admin-login</a> to reconfigure the site.</p>
+<p>I go to /u/admin-login, and enter my email, and I never receive the email.</p>
+<p>What do I do?</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/180717_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">itsbhanusharma</div>
+          <div class="post_content">
+<p>Do you have ssh access to this site? You may be able to use the command line to gain access. Do you have email credentials configured for sending?</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554803_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Lilly</div>
+          <div class="post_content">
+<p>are you hosted or self-hosted?  if hosted, contact whoever is hosting your site.</p>
+<p>if self-hosted:</p>
+<pre><code class="lang-plaintext">cd /var/discourse
+./launcher enter app
+rake admin:create
+</code></pre>
+<p>follow the prompts to create an admin login.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+
+    </div>
+  </body>
+</html>

@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <style>
+    /* Keyframes for the "page fold" animation */
+    @keyframes fold {
+      0%, 100% {
+        transform: scaleX(1);
+        opacity: 1;
+      }
+      50% {
+        transform: scaleX(0.2);
+        opacity: 0.7;
+      }
+    }
+
+    /* Target the inner colored paths */
+    .page {
+      transform-origin: left center;
+      animation: fold 2s ease-in-out infinite;
+    }
+
+    /* Stagger the animation for each color layer */
+    .red    { animation-delay: 0.0s; fill: #D14D33; }
+    .orange { animation-delay: 0.2s; fill: #F18A31; }
+    .yellow { animation-delay: 0.4s; fill: #FFF9C4; }
+    .green  { animation-delay: 0.6s; fill: #4CAF50; }
+    .blue   { animation-delay: 0.8s; fill: #64B5F6; }
+  </style>
+
+  <path d="M100,10 C50,10 10,50 10,100 C10,140 35,175 70,185 L35,220 L75,205 C83,208 91,210 100,210 C150,210 190,170 190,120 C190,70 150,30 100,30 Z" fill="black"/>
+
+  <g transform="translate(45, 45) scale(0.7)">
+    <path class="page red" d="M80,0 C35,0 0,35 0,80 C0,125 35,160 80,160 C125,160 160,125 160,80 C160,35 125,0 80,0 Z"/>
+    <path class="page orange" d="M80,5 C40,5 10,40 10,80 C10,120 40,155 80,155 C120,155 150,120 150,80 C150,40 120,5 80,5 Z"/>
+    <path class="page yellow" d="M80,10 C45,10 20,45 20,80 C20,115 45,150 80,150 C115,150 140,115 140,80 C140,45 115,10 80,10 Z"/>
+    <path class="page green" d="M80,15 C50,15 30,50 30,80 C30,110 50,145 80,145 C110,145 130,110 130,80 C130,50 110,15 80,15 Z"/>
+    <path class="page blue" d="M80,20 C55,20 40,55 40,80 C40,105 55,140 80,140 C105,140 120,105 120,80 C120,55 105,20 80,20 Z"/>
+  </g>
+</svg>

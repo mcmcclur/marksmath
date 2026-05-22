@@ -1,0 +1,1694 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width">
+    <title>Process Manager :left_right_arrow: - formerly &ldquo;Discourse Workflow&rdquo;</title>
+    <link rel="stylesheet" href="../../../archived.css" />
+    <script>
+      function findSageCodeBlocks() {
+        return Array.prototype.slice.call(
+          document.querySelectorAll(
+            "pre[data-code-wrap='sage'] > code, pre > code.lang-sage, pre > code.language-sage, pre > code.sage"
+          )
+        );
+      }
+
+      function loadScript(src) {
+        return new Promise(function (resolve, reject) {
+          var existing = document.querySelector("script[src='" + src + "']");
+          if (existing) {
+            if (existing.dataset.loaded === "true") {
+              resolve();
+              return;
+            }
+            existing.addEventListener("load", resolve, { once: true });
+            existing.addEventListener("error", reject, { once: true });
+            return;
+          }
+
+          var script = document.createElement("script");
+          script.src = src;
+          script.async = true;
+          script.addEventListener("load", function () {
+            script.dataset.loaded = "true";
+            resolve();
+          }, { once: true });
+          script.addEventListener("error", reject, { once: true });
+          document.head.appendChild(script);
+        });
+      }
+
+      function prepareSageCells() {
+        var sageBlocks = findSageCodeBlocks();
+        if (!sageBlocks.length) {
+          return Promise.resolve();
+        }
+
+        return loadScript("https://sagecell.sagemath.org/static/embedded_sagecell.js")
+          .then(function () {
+            if (!window.sagecell || !window.sagecell.makeSagecell) {
+              return;
+            }
+
+            sageBlocks.forEach(function (codeTag, index) {
+              var preTag = codeTag.parentElement;
+              if (!preTag || preTag.dataset.sageMounted === "true") {
+                return;
+              }
+
+              var host = document.createElement("div");
+              host.className = "sagecell-archive";
+
+              var source = document.createElement("script");
+              source.type = "text/x-sage";
+              source.text = codeTag.textContent || "";
+              host.appendChild(source);
+
+              preTag.insertAdjacentElement("afterend", host);
+              preTag.classList.add("sage-source-hidden");
+              preTag.dataset.sageMounted = "true";
+
+              window.sagecell.makeSagecell({
+                inputLocation: host,
+                autoeval: false,
+                evalButtonText: "Run",
+                languages: ["sage"]
+              });
+            });
+          })
+          .catch(function () {
+            // Leave the original code blocks visible if SageCell cannot load.
+          });
+      }
+
+      function preprocessDiscourseMath() {
+        document.querySelectorAll("span.math, div.math").forEach(function (node) {
+          var tex = node.textContent || "";
+          if (!tex.trim()) {
+            return;
+          }
+          if (node.tagName === "SPAN") {
+            node.textContent = "\\(" + tex + "\\)";
+          } else {
+            node.textContent = "\\[" + tex + "\\]";
+          }
+          node.classList.remove("math");
+        });
+      }
+
+      window.MathJax = {
+        tex: {
+          inlineMath: [["\\(", "\\)"]],
+          displayMath: [["\\[", "\\]"]]
+        },
+        startup: {
+          pageReady() {
+            preprocessDiscourseMath();
+            return MathJax.startup.defaultPageReady().then(function () {
+              return prepareSageCells();
+            });
+          }
+        }
+      };
+    </script>
+    <script async id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="title-span">
+        <a href="../../../">
+          <img src="../../../images/ad2526334012b2ad0c3421f9b6dd94bae2ede52f.svg" height="40" alt="Site Logo" id="site-logo" />
+        </a>
+      </div>
+    </header>
+
+    <div class="main">
+    <div class="archive-span"><a href='https://meta.discourse.org/'>Discourse Meta</a> archived in May, 2026</div>
+    <h1 class="topic-title">Process Manager :left_right_arrow: - formerly &ldquo;Discourse Workflow&rdquo;</h1>
+            <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/176214_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">merefield</div>
+          <div class="post_content">
+<div class="md-table">
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><img alt=":information_source:" class="emoji only-emoji" height="20" loading="lazy" src="../../../images/information_source.png" title=":information_source:" width="20"/></td>
+<td>Summary</td>
+<td>A process management plugin for Discourse that moves work through configurable steps with actions, list filters,  charts, swim-lane views, and Kanban boards.</td>
+</tr>
+<tr>
+<td><img alt=":hammer_and_wrench:" class="emoji only-emoji" height="20" loading="lazy" src="../../../images/hammer_and_wrench.png" title=":hammer_and_wrench:" width="20"/></td>
+<td><a href="https://github.com/merefield/discourse-process-manager">Repository Link</a></td>
+<td><a href="https://github.com/merefield/discourse-process-manager">https://github.com/merefield/discourse-process-manager</a></td>
+</tr>
+<tr>
+<td><img alt=":open_book:" class="emoji only-emoji" height="20" loading="lazy" src="../../../images/open_book.png" title=":open_book:" width="20"/></td>
+<td>Install Guide</td>
+<td><a href="https://meta.discourse.org/t/install-plugins-in-discourse/19157">How to install plugins in Discourse</a></td>
+</tr>
+</tbody>
+</table>
+</div><p>Enjoying this plugin? Please <img alt=":star:" class="emoji" height="20" loading="lazy" src="../../../images/star.png" title=":star:" width="20"/> it on <a href="https://github.com/merefield/discourse-workflow">GitHub</a>! <img alt=":pray:" class="emoji" height="20" loading="lazy" src="../../../images/pray.png" title=":pray:" width="20"/></p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/8nreQ2HdRdJgPRl786LwYSECN4N.jpeg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/3/a/b/3ab7afb0a3d20d4ee2ffc4ba0b42fd1f2422bf7d.jpeg" title="A person in a business suit is writing on a piece of paper with a pen at a table, pointing at a graph. (Captioned by AI)"><img alt="A person in a business suit is writing on a piece of paper with a pen at a table, pointing at a graph. (Captioned by AI)" data-base62-sha1="8nreQ2HdRdJgPRl786LwYSECN4N" data-dominant-color="697070" height="291" src="../../../images/3ab7afb0a3d20d4ee2ffc4ba0b42fd1f2422bf7d_2_690x291.jpeg" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/3/a/b/3ab7afb0a3d20d4ee2ffc4ba0b42fd1f2422bf7d_2_690x291.jpeg, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/3/a/b/3ab7afb0a3d20d4ee2ffc4ba0b42fd1f2422bf7d_2_1035x436.jpeg 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/3/a/b/3ab7afb0a3d20d4ee2ffc4ba0b42fd1f2422bf7d_2_1380x582.jpeg 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">A person in a business suit is writing on a piece of paper with a pen at a table, pointing at a graph. (Captioned by AI)</span><span class="informations">1440×608 49.2 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<h1><a aria-label="Heading link" class="anchor" href="#p-1687086-summary-1" name="p-1687086-summary-1"></a>Summary</h1>
+<p>Process Manager provides a secure process-management framework for Discourse.  Each process is made of configurable steps and options, and topics move through those steps until completion.</p>
+<p>A process can represent a workflow, approval flow, support queue, review pipeline, or other staged work.</p>
+<p>It supports branching and looping, list and Kanban discovery views, audit trails, charts, and automation-friendly behaviour while staying close to core Discourse permissions and UI patterns.</p>
+<p>That keeps setup and configuration simple, and ensures only the right people can act on a work item at any one time.</p>
+<p>Using topics as work items gives each process a flexible, native Discourse foundation: each item can have a title, detailed description, attachments, discussion, notifications, tags and a full history out of the box.</p>
+<h1><a aria-label="Heading link" class="anchor" href="#p-1687086-features-2" name="p-1687086-features-2"></a>Features</h1>
+<ul>
+<li>
+<p>Process-management workflows using Discourse topics as work items</p>
+</li>
+<li>
+<p>Admin-defined workflows, steps, and step options</p>
+</li>
+<li>
+<p>Visual workflow editor for arranging steps, swim lanes, and transition connectors</p>
+</li>
+<li>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/u3vYsKH1Nn1wtfwZ0P7UTbhrxDw.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/d/2/a/d2a6f550b0980ced971b210b94438cd4d488f7ae.png" title="image"><img alt="image" data-base62-sha1="u3vYsKH1Nn1wtfwZ0P7UTbhrxDw" data-dominant-color="F8F6F6" height="434" src="../../../images/d2a6f550b0980ced971b210b94438cd4d488f7ae_2_690x434.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/d/2/a/d2a6f550b0980ced971b210b94438cd4d488f7ae_2_690x434.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/d/2/a/d2a6f550b0980ced971b210b94438cd4d488f7ae_2_1035x651.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/d/2/a/d2a6f550b0980ced971b210b94438cd4d488f7ae.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1372×863 34.1 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+</li>
+<li>
+<p>Built on core Discourse concepts: categories, groups, tags, notifications, and category-based permissions</p>
+</li>
+<li>
+<p>Action permissions stay close to Discourse behavior: users can only act where they already have the right category<br/>
+permissions</p>
+</li>
+<li>
+<p>Process discovery at <code>/processes</code> with quick filters:</p>
+<ul>
+<li>My categories</li>
+<li>Overdue</li>
+<li>Step = X</li>
+</ul>
+</li>
+<li>
+<p>Discovery view selector:</p>
+<ul>
+<li>
+<p>List</p>
+</li>
+<li>
+<p>Kanban, shown only for a single Kanban-compatible workflow context</p>
+</li>
+<li>
+<p>Chart, shown only for a single-process context and chart-permitted users</p>
+</li>
+<li>
+<p>Chart, shown only for a single-workflow context and chart-permitted users</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/ld2NvGyVByqbEFGgH3KE792bV8A.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/9/4/a/94a72847209f86141ff07620589be69895a52f60.png" title="image"><img alt="image" data-base62-sha1="ld2NvGyVByqbEFGgH3KE792bV8A" data-dominant-color="FCFCFC" height="500" src="../../../images/94a72847209f86141ff07620589be69895a52f60_2_661x500.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/9/4/a/94a72847209f86141ff07620589be69895a52f60_2_661x500.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/9/4/a/94a72847209f86141ff07620589be69895a52f60_2_991x750.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/9/4/a/94a72847209f86141ff07620589be69895a52f60.png 2x" width="661"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1027×776 72 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+</li>
+</ul>
+</li>
+<li>
+<p>Kanban workflow board:</p>
+<ul>
+<li>
+<p>Clickable topic cards</p>
+</li>
+<li>
+<p>Legal drag-and-drop transitions</p>
+</li>
+<li>
+<p>Keyboard transitions with <code>ArrowLeft</code> / <code>ArrowRight</code> where legal</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/pPZ0uuEwfC84ZWrEPS8ucPtlqzL.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/b/5/1/b516ad602f38e48113832ed22dfeb0757ef9a8d9.png" title="image"><img alt="image" data-base62-sha1="pPZ0uuEwfC84ZWrEPS8ucPtlqzL" data-dominant-color="F6F8F7" height="256" src="../../../images/b516ad602f38e48113832ed22dfeb0757ef9a8d9.png" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1095×407 16.8 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+</li>
+</ul>
+</li>
+<li>
+<p>Workflow topic banner:</p>
+<ul>
+<li>Current workflow and step</li>
+<li>Available transition actions</li>
+<li>Visualization link</li>
+</ul>
+</li>
+<li>
+<p>Overdue model with hierarchy:</p>
+<ul>
+<li>Global setting: <code>process_manager_overdue_days_default</code></li>
+<li>Process override</li>
+<li>Step override</li>
+<li><code>0</code> disables overdue at that scope</li>
+<li>Overdue indicators in process list and Kanban cards</li>
+</ul>
+</li>
+<li>
+<p>Workflow burn-down charting:</p>
+<ul>
+<li>Chart endpoint and UI integration</li>
+<li>Week-range selector from 1 to 12 weeks</li>
+<li>Full-week windows and step-colored series</li>
+</ul>
+</li>
+<li>
+<p>Transition audit trail via small action posts</p>
+</li>
+<li>
+<p>Arrival notifications for watched categories using Watch First Post</p>
+</li>
+<li>
+<p>Workflow visualization available from topic and discovery views</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/789sygIjVxX1igU6CzVUC0v6q5r.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/3/1/f/31fb23c7f9bd194874c8503971ccd07a4824cbf9.png" title="The image depicts a purchasing workflow that includes drafting a purchase request, submitting it for approval, and then purchasing approved items. (Captioned by AI)"><img alt="The image depicts a purchasing workflow that includes drafting a purchase request, submitting it for approval, and then purchasing approved items. (Captioned by AI)" data-base62-sha1="789sygIjVxX1igU6CzVUC0v6q5r" data-dominant-color="F3F4F2" height="499" src="../../../images/31fb23c7f9bd194874c8503971ccd07a4824cbf9_2_628x499.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/3/1/f/31fb23c7f9bd194874c8503971ccd07a4824cbf9_2_628x499.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/3/1/f/31fb23c7f9bd194874c8503971ccd07a4824cbf9_2_942x748.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/3/1/f/31fb23c7f9bd194874c8503971ccd07a4824cbf9_2_1256x998.png 2x" width="628"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">The image depicts a purchasing workflow that includes drafting a purchase request, submitting it for approval, and then purchasing approved items. (Captioned by AI)</span><span class="informations">1992×1584 139 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+</li>
+<li>
+<p><a href="https://meta.discourse.org/t/32566?silent=true">Data Explorer</a> integration with default workflow queries:</p>
+<ul>
+<li>burn-down/burn-up stats</li>
+<li>audit log</li>
+</ul>
+</li>
+<li>
+<p>Optional AI-assisted step handling</p>
+</li>
+</ul>
+<h1><a aria-label="Heading link" class="anchor" href="#p-1687086-introductory-concepts-3" name="p-1687086-introductory-concepts-3"></a>Introductory Concepts</h1>
+<h2><a aria-label="Heading link" class="anchor" href="#p-1687086-swim-lanes-4" name="p-1687086-swim-lanes-4"></a>Swim Lanes</h2>
+<p>Each workflow lane is a Category (or preferably a Subcategory, see below).  As a topic progresses, it moves between categories according to configured transitions.</p>
+<h2><a aria-label="Heading link" class="anchor" href="#p-1687086-process-items-5" name="p-1687086-process-items-5"></a>Process Items</h2>
+<ul>
+<li>A single process item (for example, a ticket) is a Topic.</li>
+<li>Tags can be added for metadata such as priority.</li>
+<li>Category movement is controlled by workflow actions (unless staff override).</li>
+</ul>
+<h2><a aria-label="Heading link" class="anchor" href="#p-1687086-actors-6" name="p-1687086-actors-6"></a>Actors</h2>
+<p>Users who can create topics in a step category can act on workflow items in that step.  Users with reply access can still comment as normal.</p>
+<h2><a aria-label="Heading link" class="anchor" href="#p-1687086-actions-via-options-7" name="p-1687086-actions-via-options-7"></a>Actions via Options</h2>
+<p>Step Options define the available actions at each step.  Each option is shown as a topic action button and can move the topic to a target step.</p>
+<h2><a aria-label="Heading link" class="anchor" href="#p-1687086-dashboard-8" name="p-1687086-dashboard-8"></a>Dashboard</h2>
+<p>Use /workflow nav filter to see workflow topics you can access, then filter or switch to Kanban for board-style flow management.</p>
+<h2><a aria-label="Heading link" class="anchor" href="#p-1687086-audit-trail-9" name="p-1687086-audit-trail-9"></a>Audit Trail</h2>
+<p>Transitions are logged as small action posts on the topic.  Bundled <a href="https://meta.discourse.org/t/32566?silent=true">Data Explorer</a> queries support auditing and operational reporting.</p>
+<h2><a aria-label="Heading link" class="anchor" href="#p-1687086-visualisation-10" name="p-1687086-visualisation-10"></a>Visualisation</h2>
+<p>Workflow visualization is available from:</p>
+<ul>
+<li>topic banner links</li>
+<li>workflow fields in discovery list</li>
+</ul>
+<h1><a aria-label="Heading link" class="anchor" href="#p-1687086-major-differences-from-stock-discourse-11" name="p-1687086-major-differences-from-stock-discourse-11"></a>Major Differences from Stock Discourse</h1>
+<ul>
+<li>You cannot create a new topic directly in workflow categories beyond step 1.</li>
+<li>You cannot manually change category for a workflow topic unless you are staff.</li>
+<li>Only users with category create rights can execute workflow transitions.</li>
+</ul>
+<h1><a aria-label="Heading link" class="anchor" href="#p-1687086-getting-started-12" name="p-1687086-getting-started-12"></a>Getting started:</h1>
+<ol>
+<li>Enable the plugin with <code>process_manager_enabled</code>.</li>
+<li>Go to <code>Admin -&gt; Plugins -&gt; Process Manager</code>.</li>
+<li>Create a process, save it, then add steps and step options.</li>
+<li>Configure category permissions so process actors have topic creation permission in the relevant step categories.</li>
+<li>Create a topic in the first step category.</li>
+<li>Transition it using topic action buttons or Kanban interactions.</li>
+<li>Use <code>/processes</code> for operational queue management.</li>
+</ol>
+<h1><a aria-label="Heading link" class="anchor" href="#p-1687086-ai-actions-13" name="p-1687086-ai-actions-13"></a>AI Actions:</h1>
+<p>AI can action a step using Process Manager’s direct OpenAI integration. This does not depend on Discourse AI.</p>
+<p>Requirements:</p>
+<ul>
+<li>valid <code>process_manager_openai_api_key</code></li>
+<li>AI enabled on the step</li>
+<li>prompt includes both <code>{{options}}</code> and <code>{{topic}}</code></li>
+</ul>
+<p>Example prompt:</p>
+<p><code>your options are {{options}}. if the following text states it is delicious, please accept, otherwise reject. {{topic}} answer with one word from those options</code></p>
+<h2><a aria-label="Heading link" class="anchor" href="#p-1687086-known-issues-14" name="p-1687086-known-issues-14"></a>Known Issues</h2>
+<p>This plugin is still evolving.  Please report issues and enhancement ideas on the repository or this Meta topic.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 25">❤️ 25</span><span class="engagement-pill reaction-pill" title="rocket: 1">🚀 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/176214_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">merefield</div>
+          <div class="post_content">
+<p>Gets some love.</p>
+<aside class="onebox githubcommit" data-onebox-src="https://github.com/merefield/discourse-workflow/commit/8883ba20f24d375a1863f83a43c29404662be9d4">
+<header class="source">
+<a href="https://github.com/merefield/discourse-workflow/commit/8883ba20f24d375a1863f83a43c29404662be9d4" rel="noopener nofollow ugc" target="_blank">github.com/merefield/discourse-workflow</a>
+</header>
+<article class="onebox-body">
+<div class="github-row">
+<div class="github-icon-container" title="Commit">
+<svg aria-hidden="true" class="github-icon" height="60" viewbox="0 0 14 16" width="60"><path d="M10.86 7c-.45-1.72-2-3-3.86-3-1.86 0-3.41 1.28-3.86 3H0v2h3.14c.45 1.72 2 3 3.86 3 1.86 0 3.41-1.28 3.86-3H14V7h-3.14zM7 10.2c-1.22 0-2.2-.98-2.2-2.2 0-1.22.98-2.2 2.2-2.2 1.22 0 2.2.98 2.2 2.2 0 1.22-.98 2.2-2.2 2.2z" fill-rule="evenodd"></path></svg>
+</div>
+<div class="github-info-container">
+<h4>
+<a href="https://github.com/merefield/discourse-workflow/commit/8883ba20f24d375a1863f83a43c29404662be9d4" rel="noopener nofollow ugc" target="_blank">IMPROVE: make visualisation responsive and work on mobile</a>
+</h4>
+<div class="github-info">
+<div class="date">
+        committed <span class="discourse-local-date" data-date="2025-01-17" data-format="ll" data-time="13:24:37" data-timezone="UTC">01:24PM - 17 Jan 25 UTC</span>
+</div>
+<div class="user">
+<a href="https://github.com/merefield" rel="noopener nofollow ugc" target="_blank">
+<img alt="" class="onebox-avatar-inline" data-dominant-color="967C8C" height="20" src="../../../images/6d156ddf2ed945112d137d1fc6dd4e27d714c2cd.jpeg" width="20"/>
+          merefield
+        </a>
+</div>
+<div class="lines" title="changed 5 files with 51 additions and 29 deletions">
+<a href="https://github.com/merefield/discourse-workflow/commit/8883ba20f24d375a1863f83a43c29404662be9d4" rel="noopener nofollow ugc" target="_blank">
+<span class="added">+51</span>
+<span class="removed">-29</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 4">❤️ 4</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/176214_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">merefield</div>
+          <div class="post_content">
+<p>Have deployed a couple of fixes:</p>
+<p><a class="onebox" href="https://github.com/merefield/discourse-workflow/commit/ac49503e8ddc579f9aa8411d8459475ce13c77d7" rel="noopener nofollow ugc" target="_blank">https://github.com/merefield/discourse-workflow/commit/ac49503e8ddc579f9aa8411d8459475ce13c77d7</a></p>
+<p><a class="onebox" href="https://github.com/merefield/discourse-workflow/commit/9a5ebea6299df5a8a7c8582caca942fbaf4f3316" rel="noopener nofollow ugc" target="_blank">https://github.com/merefield/discourse-workflow/commit/9a5ebea6299df5a8a7c8582caca942fbaf4f3316</a></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/176214_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">merefield</div>
+          <div class="post_content">
+<aside class="onebox githubpullrequest" data-onebox-src="https://github.com/merefield/discourse-workflow/pull/2?query=2">
+<header class="source">
+<a href="https://github.com/merefield/discourse-workflow/pull/2?query=2" rel="noopener nofollow ugc" target="_blank">github.com/merefield/discourse-workflow</a>
+</header>
+<article class="onebox-body">
+<div class="github-row --gh-status-merged" data-github-private-repo="false">
+<div class="github-icon-container" title="Merged Pull Request">
+<svg aria-hidden="true" class="github-icon" height="60" viewbox="0 0 12 16" width="60"><path d="M11 11.28V5c-.03-.78-.34-1.47-.94-2.06C9.46 2.35 8.78 2.03 8 2H7V0L4 3l3 3V4h1c.27.02.48.11.69.31.21.2.3.42.31.69v6.28A1.993 1.993 0 0 0 10 15a1.993 1.993 0 0 0 1-3.72zm-1 2.92c-.66 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2zM4 3c0-1.11-.89-2-2-2a1.993 1.993 0 0 0-1 3.72v6.56A1.993 1.993 0 0 0 2 15a1.993 1.993 0 0 0 1-3.72V4.72c.59-.34 1-.98 1-1.72zm-.8 10c0 .66-.55 1.2-1.2 1.2-.65 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2zM2 4.2C1.34 4.2.8 3.65.8 3c0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2z" fill-rule="evenodd"></path></svg>
+</div>
+<div class="github-info-container">
+<h4>
+<a href="https://github.com/merefield/discourse-workflow/pull/2?query=2" rel="noopener nofollow ugc" target="_blank">IMPROVE: add workflow topic title link, restrict additional workflow list columns to desktop</a>
+</h4>
+<div class="branches">
+<code>main</code> ← <code>refine_mobile_view</code>
+</div>
+<div class="github-info">
+<div class="date">
+          merged <span class="discourse-local-date" data-date="2025-02-14" data-format="ll" data-time="21:26:11" data-timezone="UTC">09:26PM - 14 Feb 25 UTC</span>
+</div>
+<div class="user">
+<a href="https://github.com/merefield" rel="noopener nofollow ugc" target="_blank">
+<img alt="" class="onebox-avatar-inline" data-dominant-color="967C8C" height="20" src="../../../images/d7656f26de06970e961542f13a4759366c755245.jpeg" width="20"/>
+            merefield
+          </a>
+</div>
+<div class="lines" title="8 commits changed 7 files with 100 additions and 40 deletions">
+<a href="https://github.com/merefield/discourse-workflow/pull/2/files" rel="noopener nofollow ugc" target="_blank">
+<span class="added">+100</span>
+<span class="removed">-40</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+<div class="github-row">
+<p class="github-body-container">* The Workflow Topic List works great on Desktop, but on Mobile it's too wide, s<span class="show-more-container"><a class="show-more" href="https://github.com/merefield/discourse-workflow/pull/2" rel="noopener nofollow ugc" target="_blank">…</a></span><span class="excerpt hidden">o instead of adding all those columns on mobile, add a Workflow badge to the Title and restrict the full set of columns to Desktop.</span></p>
+</div>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+<p>Makes for a more practical view on mobile:</p>
+<ul>
+<li>IMPROVE: The Workflow Topic List works great on Desktop, but on Mobile it’s too wide, so instead of adding all those columns on mobile, add a Workflow badge to the Title and restrict the full set of columns to Desktop.</li>
+</ul>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/176214_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">merefield</div>
+          <div class="post_content">
+<aside class="onebox githubcommit" data-onebox-src="https://github.com/merefield/discourse-workflow/commit/80648c6ecb3761f273b043a463b66efca51a1819">
+<header class="source">
+<a href="https://github.com/merefield/discourse-workflow/commit/80648c6ecb3761f273b043a463b66efca51a1819" rel="noopener nofollow ugc" target="_blank">github.com/merefield/discourse-workflow</a>
+</header>
+<article class="onebox-body">
+<div class="github-row">
+<div class="github-icon-container" title="Commit">
+<svg aria-hidden="true" class="github-icon" height="60" viewbox="0 0 14 16" width="60"><path d="M10.86 7c-.45-1.72-2-3-3.86-3-1.86 0-3.41 1.28-3.86 3H0v2h3.14c.45 1.72 2 3 3.86 3 1.86 0 3.41-1.28 3.86-3H14V7h-3.14zM7 10.2c-1.22 0-2.2-.98-2.2-2.2 0-1.22.98-2.2 2.2-2.2 1.22 0 2.2.98 2.2 2.2 0 1.22-.98 2.2-2.2 2.2z" fill-rule="evenodd"></path></svg>
+</div>
+<div class="github-info-container">
+<h4>
+<a href="https://github.com/merefield/discourse-workflow/commit/80648c6ecb3761f273b043a463b66efca51a1819" rel="noopener nofollow ugc" target="_blank">FIX: mobile display, localisation</a>
+</h4>
+<div class="github-info">
+<div class="date">
+        committed <span class="discourse-local-date" data-date="2025-03-03" data-format="ll" data-time="18:19:47" data-timezone="UTC">06:19PM - 03 Mar 25 UTC</span>
+</div>
+<div class="user">
+<a href="https://github.com/merefield" rel="noopener nofollow ugc" target="_blank">
+<img alt="" class="onebox-avatar-inline" data-dominant-color="967C8C" height="20" src="../../../images/d7656f26de06970e961542f13a4759366c755245.jpeg" width="20"/>
+          merefield
+        </a>
+</div>
+<div class="lines" title="changed 3 files with 2 additions and 2 deletions">
+<a href="https://github.com/merefield/discourse-workflow/commit/80648c6ecb3761f273b043a463b66efca51a1819" rel="noopener nofollow ugc" target="_blank">
+<span class="added">+2</span>
+<span class="removed">-2</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+<p>some minor but important tweaks.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/423597_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Thomas_Rother</div>
+          <div class="post_content">
+<p>Hi Robert,<br/>
+I am playing with the workflow plugin, without AI. This is a simple workflow intended to be used as a support chain for a linux cafe which helps people to migrate from Windows. New topics are created through RFC 6233 mails with subaddressing and come in into the first sub category (level1).</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/uSu0bJex8NwELSVBKmbY73tre7Q.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/d/8/6/d869e3fa6447823b874a68032c35ffff9fea2c76.png" rel="noopener nofollow ugc" title='The image is a flowchart depicting a process starting with "incoming" at level 1, leading into "workinprogress" at level 2, then proceeding to "solved," which has branches to "Finish" or "Close" before moving to the "archiv" or "documentation" phases. (Captioned by AI)'><img alt='The image is a flowchart depicting a process starting with "incoming" at level 1, leading into "workinprogress" at level 2, then proceeding to "solved," which has branches to "Finish" or "Close" before moving to the "archiv" or "documentation" phases. (Captioned by AI)' data-base62-sha1="uSu0bJex8NwELSVBKmbY73tre7Q" data-dominant-color="E4E5E4" height="500" src="../../../images/d869e3fa6447823b874a68032c35ffff9fea2c76_2_675x500.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/d/8/6/d869e3fa6447823b874a68032c35ffff9fea2c76_2_675x500.png, https://d11a6trkgmumsb.cloudfront.net/original/4X/d/8/6/d869e3fa6447823b874a68032c35ffff9fea2c76.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/d/8/6/d869e3fa6447823b874a68032c35ffff9fea2c76.png 2x" width="675"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">The image is a flowchart depicting a process starting with "incoming" at level 1, leading into "workinprogress" at level 2, then proceeding to "solved," which has branches to "Finish" or "Close" before moving to the "archiv" or "documentation" phases. (Captioned by AI)</span><span class="informations">1000×740 20.3 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>Two issues:</p>
+<ol>
+<li>IDs of the workflow steps are not unique. I have three steps with the same ID. ??</li>
+<li>a “start” Action on the incoming topic creates “422 unprocessable content” Maybe thats a result of 1)</li>
+</ol>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/176214_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">merefield</div>
+          <div class="post_content">
+<p>Thanks for your patience and your feedback.  I appreciate your interest in the plugin.</p>
+<p>It is a little experimental and as you can see has not received a lot of feedback yet so there are bound to be teething issues.</p>
+<p>I will try to recreate your workflow and attempt to recreate the issue.</p>
+<p>In the meantime can you screenshot the workflow in the admin screen and share that?</p>
+<aside class="quote no-group" data-post="6" data-topic="347110" data-username="Thomas_Rother">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/423597_2.png" width="24"/> Thomas_Rother:</div>
+<blockquote>
+<p>a “start” Action on the incoming topic creates “422 unprocessable content” Maybe thats a result of 1)</p>
+</blockquote>
+</aside>
+<p><span class="mention">@Thomas_Rother</span> do you have a backtrace on this?</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/423597_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Thomas_Rother</div>
+          <div class="post_content">
+<p>Hi Robert,<br/>
+no worries, I am aware that this is experimental. Therefore its only installed on a self hosted test instance. You can register there and I could give you admin permissions:</p>
+<p><a class="onebox" href="https://forum2.netzwissen.de/login" rel="noopener nofollow ugc" target="_blank">https://forum2.netzwissen.de/login</a></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/176214_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">merefield</div>
+          <div class="post_content">
+<p>OK by way of a walkthrough, here’s how I got on:</p>
+<ul>
+<li>Set up Internet Cafe Tickets Category</li>
+<li>Set up all the steps as Sub-Categories, resulting in this:</li>
+</ul>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/1SpbgnumQJfLIkoQaKqo5BQS7rx.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/0/d/2/0d2898575d9ffbbcc8c6cbfdefa56b8c1b9cddf7.png" title="image"><img alt="image" data-base62-sha1="1SpbgnumQJfLIkoQaKqo5BQS7rx" height="124" src="../../../images/0d2898575d9ffbbcc8c6cbfdefa56b8c1b9cddf7.png" width="503"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">503×124 2.02 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>So far so good.</p>
+<p>Now let’s create the steps:</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/pr8cc4cPiWzYy2PIKqP5qsb7cbT.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/b/2/4/b24782424277b74c4845d5df477f032036b31c09.png" title='A list of project status categories in a software application interface, with "solved," "incoming," and "work in progress" listed under various settings related to AI prompts. (Captioned by AI)'><img alt='A list of project status categories in a software application interface, with "solved," "incoming," and "work in progress" listed under various settings related to AI prompts. (Captioned by AI)' data-base62-sha1="pr8cc4cPiWzYy2PIKqP5qsb7cbT" data-dominant-color="161718" height="208" src="../../../images/b24782424277b74c4845d5df477f032036b31c09.png" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">A list of project status categories in a software application interface, with "solved," "incoming," and "work in progress" listed under various settings related to AI prompts. (Captioned by AI)</span><span class="informations">862×260 6.47 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>OK I can see at least two issues!  (But one of them probably caused by the other)</p>
+<p>That is strange as I was sure that this was working before.  I’m having a look now and if I have time I’ll release a fix shortly.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/176214_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">merefield</div>
+          <div class="post_content">
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/e5wzXQnGoCGIlyemMsGyvp6LaEF.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/6/2/b/62be556a9408417039da7fae32bd162448483589.png" rel="noopener nofollow ugc" title='The image displays a configuration page for an "Existing Workflow" titled "Ticket Flow," which includes enabled/disabled toggle options for an AI feature and steps such as "incoming," "WIP," "solved," "archive," and "documentation" within a ticketing system. (Captioned by AI)'><img alt='The image displays a configuration page for an "Existing Workflow" titled "Ticket Flow," which includes enabled/disabled toggle options for an AI feature and steps such as "incoming," "WIP," "solved," "archive," and "documentation" within a ticketing system. (Captioned by AI)' data-base62-sha1="e5wzXQnGoCGIlyemMsGyvp6LaEF" data-dominant-color="131314" height="500" src="../../../images/62be556a9408417039da7fae32bd162448483589.png" width="599"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">The image displays a configuration page for an "Existing Workflow" titled "Ticket Flow," which includes enabled/disabled toggle options for an AI feature and steps such as "incoming," "WIP," "solved," "archive," and "documentation" within a ticketing system. (Captioned by AI)</span><span class="informations">910×759 20.5 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p><span class="mention">@Thomas_Rother</span> give that a go:</p>
+<aside class="onebox githubpullrequest" data-onebox-src="https://github.com/merefield/discourse-workflow/pull/5">
+<header class="source">
+<a href="https://github.com/merefield/discourse-workflow/pull/5" rel="noopener nofollow ugc" target="_blank">github.com/merefield/discourse-workflow</a>
+</header>
+<article class="onebox-body">
+<div class="github-row --gh-status-merged" data-github-private-repo="false">
+<div class="github-icon-container" title="Merged Pull Request">
+<svg aria-hidden="true" class="github-icon" height="60" viewbox="0 0 12 16" width="60"><path d="M11 11.28V5c-.03-.78-.34-1.47-.94-2.06C9.46 2.35 8.78 2.03 8 2H7V0L4 3l3 3V4h1c.27.02.48.11.69.31.21.2.3.42.31.69v6.28A1.993 1.993 0 0 0 10 15a1.993 1.993 0 0 0 1-3.72zm-1 2.92c-.66 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2zM4 3c0-1.11-.89-2-2-2a1.993 1.993 0 0 0-1 3.72v6.56A1.993 1.993 0 0 0 2 15a1.993 1.993 0 0 0 1-3.72V4.72c.59-.34 1-.98 1-1.72zm-.8 10c0 .66-.55 1.2-1.2 1.2-.65 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2zM2 4.2C1.34 4.2.8 3.65.8 3c0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2z" fill-rule="evenodd"></path></svg>
+</div>
+<div class="github-info-container">
+<h4>
+<a href="https://github.com/merefield/discourse-workflow/pull/5" rel="noopener nofollow ugc" target="_blank">FIX: position was being incorrectly allocated to new step</a>
+</h4>
+<div class="branches">
+<code>main</code> ← <code>fix_step_position_allocation_etc</code>
+</div>
+<div class="github-info">
+<div class="date">
+          merged <span class="discourse-local-date" data-date="2025-05-23" data-format="ll" data-time="18:56:32" data-timezone="UTC">06:56PM - 23 May 25 UTC</span>
+</div>
+<div class="user">
+<a href="https://github.com/merefield" rel="noopener nofollow ugc" target="_blank">
+<img alt="" class="onebox-avatar-inline" data-dominant-color="967C8C" height="20" src="../../../images/d7656f26de06970e961542f13a4759366c755245.jpeg" width="20"/>
+            merefield
+          </a>
+</div>
+<div class="lines" title="1 commits changed 6 files with 20 additions and 12 deletions">
+<a href="https://github.com/merefield/discourse-workflow/pull/5/files" rel="noopener nofollow ugc" target="_blank">
+<span class="added">+20</span>
+<span class="removed">-12</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+<p>(You may have to delete and recreate the affected steps)</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Olle11</div>
+          <div class="post_content">
+<p>Which are the most common use cases for this plugin and is this working with Gemini flash 2.0?</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/176214_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">merefield</div>
+          <div class="post_content">
+<p>Any business process (within reason) with multiple steps and actors.  May require extension for specific integrations.</p>
+<p>It’s currently OpenAI only, but PR welcome (it uses Chat Completions so not a massive amount of work).</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/176214_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">merefield</div>
+          <div class="post_content">
+<p>Big News: you can now get the stats to create burn-up/down charts:</p>
+<aside class="onebox githubpullrequest" data-onebox-src="https://github.com/merefield/discourse-workflow/pull/7">
+<header class="source">
+<a href="https://github.com/merefield/discourse-workflow/pull/7" rel="noopener nofollow ugc" target="_blank">github.com/merefield/discourse-workflow</a>
+</header>
+<article class="onebox-body">
+<div class="github-row --gh-status-merged" data-github-private-repo="false">
+<div class="github-icon-container" title="Merged Pull Request">
+<svg aria-hidden="true" class="github-icon" height="60" viewbox="0 0 12 16" width="60"><path d="M11 11.28V5c-.03-.78-.34-1.47-.94-2.06C9.46 2.35 8.78 2.03 8 2H7V0L4 3l3 3V4h1c.27.02.48.11.69.31.21.2.3.42.31.69v6.28A1.993 1.993 0 0 0 10 15a1.993 1.993 0 0 0 1-3.72zm-1 2.92c-.66 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2zM4 3c0-1.11-.89-2-2-2a1.993 1.993 0 0 0-1 3.72v6.56A1.993 1.993 0 0 0 2 15a1.993 1.993 0 0 0 1-3.72V4.72c.59-.34 1-.98 1-1.72zm-.8 10c0 .66-.55 1.2-1.2 1.2-.65 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2zM2 4.2C1.34 4.2.8 3.65.8 3c0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2z" fill-rule="evenodd"></path></svg>
+</div>
+<div class="github-info-container">
+<h4>
+<a href="https://github.com/merefield/discourse-workflow/pull/7" rel="noopener nofollow ugc" target="_blank">FEATURE: Add daily workflow stats</a>
+</h4>
+<div class="branches">
+<code>main</code> ← <code>add_daily_workflow_stats</code>
+</div>
+<div class="github-info">
+<div class="date">
+          merged <span class="discourse-local-date" data-date="2025-08-01" data-format="ll" data-time="21:22:27" data-timezone="UTC">09:22PM - 01 Aug 25 UTC</span>
+</div>
+<div class="user">
+<a href="https://github.com/merefield" rel="noopener nofollow ugc" target="_blank">
+<img alt="" class="onebox-avatar-inline" data-dominant-color="967C8C" height="20" src="../../../images/d7656f26de06970e961542f13a4759366c755245.jpeg" width="20"/>
+            merefield
+          </a>
+</div>
+<div class="lines" title="9 commits changed 8 files with 165 additions and 26 deletions">
+<a href="https://github.com/merefield/discourse-workflow/pull/7/files" rel="noopener nofollow ugc" target="_blank">
+<span class="added">+165</span>
+<span class="removed">-26</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+<div class="github-row">
+<p class="github-body-container">* Adds a daily job to create state count stats that you can use in burndown/burn<span class="show-more-container"><a class="show-more" href="https://github.com/merefield/discourse-workflow/pull/7" rel="noopener nofollow ugc" target="_blank">…</a></span><span class="excerpt hidden">up charts.
+* Adds a job that check presence of or adds two useful Data Explorer queries
+  * Audit log for all transitions
+  * Daily counts for workflow instances at each step of their workflow, facilitating burndown/up charts (just export the results).
+  * You can give specific groups access to these reports.</span></p>
+</div>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+<ul>
+<li>Adds a daily job to create state count stats that you can use in burndown/burnup charts.</li>
+<li>Adds a job that check presence of or adds two useful <a href="https://meta.discourse.org/t/32566?silent=true">Data Explorer</a> queries
+<ul>
+<li>Audit log for all transitions</li>
+<li>Daily counts for workflow instances at each step of their workflow, facilitating burndown/up charts (just export the results).</li>
+<li>You can give specific groups access to these reports.</li>
+</ul>
+</li>
+</ul>
+<p>NB Discourse Workflow is now only compatible with tests-passed for time being due to changes in the way gem dependencies are handled as part of the major plugin bundling.  This should change once the next stable release is made.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 4">❤️ 4</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/51636_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">hellekin</div>
+          <div class="post_content">
+<p>I’m trying to figure out why my site became sluggish…</p>
+<h2><a aria-label="Heading link" class="anchor" href="#p-1846666-deprecation-warning-1" name="p-1846666-deprecation-warning-1"></a>Deprecation warning</h2>
+<p>[PLUGIN discourse-workflow] Deprecation notice: Accessing <code>site.mobileView</code> or <code>site.desktopView</code> during the site initialization phase is deprecated. In future updates, the mobile mode will be determined by the viewport size and as consequence using these values during initialization can lead to errors and inconsistencies when the browser window is resized. Please move these checks to a component, transformer, or API callback that executes during page rendering. [deprecated since Discourse 3.5.0.beta9-dev] [deprecation id: discourse.static-viewport-initialization] [info: <a class="inline-onebox" href="https://meta.discourse.org/t/367810">Designing for Different Devices (Viewport Size, Touch/Hover, etc.)</a>] deprecated.js:62:13</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/176214_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">merefield</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="14" data-topic="347110" data-username="hellekin">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/51636_2.png" width="24"/> hellekin:</div>
+<blockquote>
+<p>my site became sluggish…</p>
+</blockquote>
+</aside>
+<p>I doubt very much this is causing your site to become sluggish!! <img alt=":laughing:" class="emoji" height="20" loading="lazy" src="../../../images/laughing.png" title=":laughing:" width="20"/> - it’s a deprecation warning.</p>
+<p>looking forward to your PR <img alt=":slight_smile:" class="emoji" height="20" loading="lazy" src="../../../images/slight_smile.png" title=":slight_smile:" width="20"/></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="hugs: 1">🤗 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/176214_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">merefield</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="14" data-topic="347110" data-username="hellekin">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/51636_2.png" width="24"/> hellekin:</div>
+<blockquote>
+<p>my site became sluggish…</p>
+</blockquote>
+</aside>
+<p>Well it shouldn’t be due to Discourse Workflow any longer as I’ve closed <em>several</em> N+1 issues inc. on Topic List and the Visualisation:</p>
+<aside class="onebox githubpullrequest" data-onebox-src="https://github.com/merefield/discourse-workflow/pull/9">
+<header class="source">
+<a href="https://github.com/merefield/discourse-workflow/pull/9" rel="noopener nofollow ugc" target="_blank">github.com/merefield/discourse-workflow</a>
+</header>
+<article class="onebox-body">
+<div class="github-row --gh-status-merged" data-github-private-repo="false">
+<div class="github-icon-container" title="Merged Pull Request">
+<svg aria-hidden="true" class="github-icon" height="60" viewbox="0 0 12 16" width="60"><path d="M11 11.28V5c-.03-.78-.34-1.47-.94-2.06C9.46 2.35 8.78 2.03 8 2H7V0L4 3l3 3V4h1c.27.02.48.11.69.31.21.2.3.42.31.69v6.28A1.993 1.993 0 0 0 10 15a1.993 1.993 0 0 0 1-3.72zm-1 2.92c-.66 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2zM4 3c0-1.11-.89-2-2-2a1.993 1.993 0 0 0-1 3.72v6.56A1.993 1.993 0 0 0 2 15a1.993 1.993 0 0 0 1-3.72V4.72c.59-.34 1-.98 1-1.72zm-.8 10c0 .66-.55 1.2-1.2 1.2-.65 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2zM2 4.2C1.34 4.2.8 3.65.8 3c0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2z" fill-rule="evenodd"></path></svg>
+</div>
+<div class="github-info-container">
+<h4>
+<a href="https://github.com/merefield/discourse-workflow/pull/9" rel="noopener nofollow ugc" target="_blank">IMPROVE: performance</a>
+</h4>
+<div class="branches">
+<code>main</code> ← <code>eliminate_n_plus_1</code>
+</div>
+<div class="github-info">
+<div class="date">
+          merged <span class="discourse-local-date" data-date="2025-11-22" data-format="ll" data-time="16:08:57" data-timezone="UTC">04:08PM - 22 Nov 25 UTC</span>
+</div>
+<div class="user">
+<a href="https://github.com/merefield" rel="noopener nofollow ugc" target="_blank">
+<img alt="" class="onebox-avatar-inline" data-dominant-color="967C8C" height="20" src="../../../images/d7656f26de06970e961542f13a4759366c755245.jpeg" width="20"/>
+            merefield
+          </a>
+</div>
+<div class="lines" title="12 commits changed 8 files with 284 additions and 226 deletions">
+<a href="https://github.com/merefield/discourse-workflow/pull/9/files" rel="noopener nofollow ugc" target="_blank">
+<span class="added">+284</span>
+<span class="removed">-226</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+<div class="github-row">
+<p class="github-body-container">* makes associations more idiomatic
+* adds explicit association with topic to w<span class="show-more-container"><a class="show-more" href="https://github.com/merefield/discourse-workflow/pull/9" rel="noopener nofollow ugc" target="_blank">…</a></span><span class="excerpt hidden">orkflow_state
+* various points leverage associations</span></p>
+</div>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+<p>etc.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span><span class="engagement-pill reaction-pill" title="rocket: 1">🚀 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/176214_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">merefield</div>
+          <div class="post_content">
+<p>Big update with several new features, including</p>
+<ul>
+<li>New workflow-specific topic list filters</li>
+<li>“Overdue” flagging</li>
+<li>Richer Topic workflow meta information</li>
+</ul>
+<aside class="onebox githubpullrequest" data-onebox-src="https://github.com/merefield/discourse-workflow/pull/15">
+<header class="source">
+<a href="https://github.com/merefield/discourse-workflow/pull/15" rel="noopener" target="_blank">github.com/merefield/discourse-workflow</a>
+</header>
+<article class="onebox-body">
+<div class="github-row --gh-status-merged" data-github-private-repo="false">
+<div class="github-icon-container" title="Merged Pull Request">
+<svg aria-hidden="true" class="github-icon" height="60" viewbox="0 0 12 16" width="60"><path d="M11 11.28V5c-.03-.78-.34-1.47-.94-2.06C9.46 2.35 8.78 2.03 8 2H7V0L4 3l3 3V4h1c.27.02.48.11.69.31.21.2.3.42.31.69v6.28A1.993 1.993 0 0 0 10 15a1.993 1.993 0 0 0 1-3.72zm-1 2.92c-.66 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2zM4 3c0-1.11-.89-2-2-2a1.993 1.993 0 0 0-1 3.72v6.56A1.993 1.993 0 0 0 2 15a1.993 1.993 0 0 0 1-3.72V4.72c.59-.34 1-.98 1-1.72zm-.8 10c0 .66-.55 1.2-1.2 1.2-.65 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2zM2 4.2C1.34 4.2.8 3.65.8 3c0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2z" fill-rule="evenodd"></path></svg>
+</div>
+<div class="github-info-container">
+<h4>
+<a href="https://github.com/merefield/discourse-workflow/pull/15" rel="noopener" target="_blank">FEATURE: filters, overdue &amp; indicators, richer UX, admin fixes, more specs (#15)</a>
+</h4>
+<div class="branches">
+<code>main</code> ← <code>major_update</code>
+</div>
+<div class="github-info">
+<div class="date">
+          merged <span class="discourse-local-date" data-date="2026-02-18" data-format="ll" data-time="18:17:49" data-timezone="UTC">06:17PM - 18 Feb 26 UTC</span>
+</div>
+<div class="user">
+<a href="https://github.com/merefield" rel="noopener" target="_blank">
+<img alt="" class="onebox-avatar-inline" data-dominant-color="967C8C" height="20" src="../../../images/d7656f26de06970e961542f13a4759366c755245.jpeg" width="20"/>
+            merefield
+          </a>
+</div>
+<div class="lines" title="8 commits changed 56 files with 2305 additions and 139 deletions">
+<a href="https://github.com/merefield/discourse-workflow/pull/15/files" rel="noopener" target="_blank">
+<span class="added">+2305</span>
+<span class="removed">-139</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+<div class="github-row">
+<p class="github-body-container">## Summary
+
+  This PR is a broad workflow plugin hardening and capability rele<span class="show-more-container"><a class="show-more" href="https://github.com/merefield/discourse-workflow/pull/15" rel="noopener" target="_blank">…</a></span><span class="excerpt hidden">ase that improves discovery UX, overdue handling, topic action clarity, admin editing safety, and test coverage.
+
+  It introduces a configurable overdue model with hierarchy (step -&gt; workflow -&gt; global), converts quick filters to SPA behavior, adds explicit overdue visibility in the workflow list, enriches topic workflow metadata for UI behavior, and fixes several correctness/maintainability issues.
+
+  ## New Features
+
+  ### 1. Overdue threshold hierarchy with disable semantics
+
+  - Added global site setting:
+    - `workflow_overdue_days_default` (`config/settings.yml`)
+  - Added optional workflow-level override:
+    - `workflows.overdue_days`
+  - Added optional step-level override:
+    - `workflow_steps.overdue_days`
+  - Resolution order:
+    - step `overdue_days` -&gt; workflow `overdue_days` -&gt; global setting
+  - `0` disables overdue behavior at that scope.
+
+  ### 2. Overdue quick filter behavior
+
+  - Added dedicated quick-filter mode `overdue=1` that uses the hierarchy above.
+  - Legacy `overdue_days=N` filtering still works for explicit manual param filtering.
+  - Quick filter button now maps to semantic overdue mode rather than fixed 3-day value.
+
+  ### 3. Workflow list overdue indicator column
+
+  - Added workflow topic list column to show overdue state.
+  - Added serialized topic-list attribute:
+    - `workflow_overdue`
+  - Added indicator styling and translations.
+
+  ### 4. SPA quick filters (no full reload)
+
+  - Quick filters now use in-app Ember route query-param transitions.
+  - Added discovery query params for workflow filters.
+  - Preserved filter state in localStorage.
+  - Fixed stale state/UI refresh issues by deriving from reactive route URL.
+  - Added full toggle behavior and active-state highlighting for:
+    - My Categories
+    - Overdue
+    - Step filter (Step = X now toggles off when applied again).
+
+  ### 5. Topic workflow banner/action enhancements
+
+  - Moved topic banner connector to `topic-above-post-stream`.
+  - Added workflow step action metadata with target step details.
+  - Added permission-aware UI state (`workflow_can_act`).
+  - Added step age (`workflow_step_entered_at`) display support.
+  - Added helper text for transition targets and blocked-action messaging.
+
+  ### 6. Admin workflow editing improvements
+
+  - Workflow editor surfaces definition validation warnings:
+    - duplicate step positions
+    - orphan target steps
+    - missing option label translations
+  - Added admin inputs for overdue overrides:
+    - workflow-level overdue days
+    - step-level overdue days
+
+  ### 7. Reliability and correctness fixes
+
+  - Added transition cooldown to prevent immediate duplicate actions.
+  - Transition log message now includes source and destination steps.
+  - Topic-created workflow state initialization now targets enabled workflows only.
+  - Midway-topic validator now checks only enabled workflows.
+  - Notification handler now limits arrival notifications to:
+    - first post only
+    - watchers of the topic’s category
+  - Fixed stats association use (`workflow_states`).
+  - Fixed admin route key/path assumptions in workflow step option routes.
+  - Fixed workflow step option position assignment bug.
+  - Updated seeded option slugs/names (`poor` -&gt; `bad`, `previous` -&gt; `back`).
+
+  ## Technical Changes
+
+  ### Data model / migration
+
+  - Added migration:
+    - `db/migrate/20260218103000_add_overdue_days_to_workflows_and_steps.rb`
+  - Added model validations on new fields (`&gt;= 0`, integer, allow nil).
+
+  ### Backend
+
+  - ListController workflow filtering now supports:
+    - `my_categories`
+    - `workflow_step_position`
+    - overdue via hierarchy (`overdue=1`) and explicit days fallback.
+  - `plugin.rb` adds:
+    - workflow action metadata
+    - overdue threshold resolution
+    - overdue boolean serialization
+    - can-act and step-entered-at serialization.
+
+  ### Frontend
+
+  - Added connector:
+    - `assets/javascripts/discourse/connectors/discovery-list-container-top/workflow-quick-filters.gjs`
+  - Added connector:
+    - `assets/javascripts/discourse/connectors/topic-above-post-stream/workflow-topic-banner.gjs`
+  - Removed old connector:
+    - `assets/javascripts/discourse/connectors/topic-title/topic-title.hbs`
+  - Extended discovery columns via initializer:
+    - overdue column + registration of workflow query params.
+
+  ### Localization and docs
+
+  - Added/updated client and server locale keys for:
+    - overdue setting/help text
+    - overdue indicator
+    - quick filter labels
+    - admin overdue override labels/help
+    - improved transition action descriptions.
+  - README restructured with:
+    - Introduction (+ Wikipedia links)
+    - Features
+    - Quickstart
+    - Setup
+    - Introductory Concepts
+    - Roadmap Themes
+    - Existing content preserved and reorganized.
+  - Plugin version updated:
+    - `plugin.rb`: `0.2.0`
+
+  ## New Tests
+
+  ### Request specs
+
+  - `workflow_overdue_thresholds_spec.rb`
+    - validates overdue hierarchy precedence and `0` disable behavior
+    - validates `workflow_overdue` payload values
+  - `workflow_list_filters_spec.rb`
+  - `workflow_action_controller_spec.rb`
+  - `workflow_topic_view_spec.rb`
+  - `admin/workflow_step_options_controller_spec.rb`
+
+  ### System specs (+ page objects)
+
+  - `workflow_quick_filters_spec.rb`
+    - query-param filtering
+    - control-driven filtering
+    - no full page reload regression
+    - active-state/toggle behavior
+    - overdue column presence/indicator assertions
+  - `workflow_topic_banner_spec.rb`
+  - `page_objects/pages/workflow_discovery.rb`
+  - `page_objects/pages/workflow_topic.rb`
+
+  - serializer/warnings/slug stability/topic lifecycle/post notification/stats/route contract/option seed parity/transition coverage.
+
+  ## Validation Run
+
+  - Full plugin specs pass:
+    - `bin/rspec plugins/discourse-workflow/spec`
+    - result: 36 examples, 0 failures
+  - Lint/format checks passed for touched files:
+    - Rubocop
+    - ESLint
+    - Ember template lint
+    - Stylelint
+    - Prettier checks for updated docs/config/locales
+
+  ## Migration / rollout notes
+
+  - Run plugin migrations in dev/test
+  - Set `workflow_overdue_days_default` as desired (`0` disables global overdue).
+  - Existing explicit `overdue_days` query usage remains supported.</span></p>
+</div>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/176214_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">merefield</div>
+          <div class="post_content">
+<p>Absolutely <em>huge</em> update:</p>
+<h2><a aria-label="Heading link" class="anchor" href="#p-1942136-new-kanban-view-1" name="p-1942136-new-kanban-view-1"></a>New Kanban view:</h2>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/pPZ0uuEwfC84ZWrEPS8ucPtlqzL.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/b/5/1/b516ad602f38e48113832ed22dfeb0757ef9a8d9.png" title="image"><img alt="image" data-base62-sha1="pPZ0uuEwfC84ZWrEPS8ucPtlqzL" data-dominant-color="F6F8F7" height="256" src="../../../images/b516ad602f38e48113832ed22dfeb0757ef9a8d9.png" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1095×407 16.8 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<ul>
+<li>Added a full Kanban mode to /workflow with a List/Kanban toggle, shown only when a single Kanban-compatible workflow is in scope.
+<ul>
+<li>Introduced explicit Kanban compatibility validation (including deterministic one-edge mapping) and surfaced compatibility status in workflow admin.</li>
+</ul>
+</li>
+<li>Made workflow items actionable from Kanban: drag/drop between legal steps, keyboard step moves with arrow keys, and click-through to open topics.</li>
+<li>Improved reliability for concurrent updates: stale transitions now return 409, shows a clear stale-state message, and triggers refresh to re-sync UI state.</li>
+<li>Board usability and clarity: optional workflow-level Kanban tags, overdue indicator support on cards, and lane styling including category-colored column borders.</li>
+</ul>
+<aside class="onebox githubpullrequest" data-onebox-src="https://github.com/merefield/discourse-workflow/pull/16">
+<header class="source">
+<a href="https://github.com/merefield/discourse-workflow/pull/16" rel="noopener" target="_blank">github.com/merefield/discourse-workflow</a>
+</header>
+<article class="onebox-body">
+<div class="github-row --gh-status-merged" data-github-private-repo="false">
+<div class="github-icon-container" title="Merged Pull Request">
+<svg aria-hidden="true" class="github-icon" height="60" viewbox="0 0 12 16" width="60"><path d="M11 11.28V5c-.03-.78-.34-1.47-.94-2.06C9.46 2.35 8.78 2.03 8 2H7V0L4 3l3 3V4h1c.27.02.48.11.69.31.21.2.3.42.31.69v6.28A1.993 1.993 0 0 0 10 15a1.993 1.993 0 0 0 1-3.72zm-1 2.92c-.66 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2zM4 3c0-1.11-.89-2-2-2a1.993 1.993 0 0 0-1 3.72v6.56A1.993 1.993 0 0 0 2 15a1.993 1.993 0 0 0 1-3.72V4.72c.59-.34 1-.98 1-1.72zm-.8 10c0 .66-.55 1.2-1.2 1.2-.65 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2zM2 4.2C1.34 4.2.8 3.65.8 3c0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2z" fill-rule="evenodd"></path></svg>
+</div>
+<div class="github-info-container">
+<h4>
+<a href="https://github.com/merefield/discourse-workflow/pull/16" rel="noopener" target="_blank">FEATURE: Kanban view for compatible workflows (#16)</a>
+</h4>
+<div class="branches">
+<code>main</code> ← <code>kanban</code>
+</div>
+<div class="github-info">
+<div class="date">
+          merged <span class="discourse-local-date" data-date="2026-02-21" data-format="ll" data-time="14:54:23" data-timezone="UTC">02:54PM - 21 Feb 26 UTC</span>
+</div>
+<div class="user">
+<a href="https://github.com/merefield" rel="noopener" target="_blank">
+<img alt="" class="onebox-avatar-inline" data-dominant-color="967C8C" height="20" src="../../../images/d7656f26de06970e961542f13a4759366c755245.jpeg" width="20"/>
+            merefield
+          </a>
+</div>
+<div class="lines" title="16 commits changed 23 files with 1797 additions and 148 deletions">
+<a href="https://github.com/merefield/discourse-workflow/pull/16/files" rel="noopener" target="_blank">
+<span class="added">+1797</span>
+<span class="removed">-148</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+<div class="github-row">
+<p class="github-body-container">## Summary
+
+  This PR adds a Kanban view to /workflow and extends workflow dis<span class="show-more-container"><a class="show-more" href="https://github.com/merefield/discourse-workflow/pull/16" rel="noopener" target="_blank">…</a></span><span class="excerpt hidden">covery with actionable board interactions, compatibility checks, admin visibility, stale-state recovery, and expanded test coverage.
+
+  Compared to main, this is primarily a discovery/list UX expansion plus transition/runtime hardening, while keeping permissioning aligned with core Discourse category behavior.
+
+  ## New Features
+
+  ### 1. List/Kanban toggle in workflow discovery
+
+  - Adds a Kanban / List toggle to the workflow quick-filter row.
+  - Toggle appears only when the current workflow list is scoped to exactly one Kanban-compatible workflow.
+  - Uses SPA query-param transitions (no hard page reload).
+
+  ### 2. Kanban board rendering and actions
+
+  - Renders columns from workflow step positions.
+  - Renders cards from workflow topics grouped by current step.
+  - Cards are clickable and open the topic.
+  - Supports drag/drop transitions for legal target steps.
+  - Supports keyboard transitions on focused cards with ArrowLeft / ArrowRight.
+  - Legal drop targets are highlighted during drag.
+  - Illegal targets are cross-hatched and reject drops.
+
+  ### 3. Kanban compatibility rules and admin visibility
+
+  - Workflow admin now displays whether a workflow is Kanban-compatible.
+  - Compatibility requires:
+  - one start step at position 1
+  - unique step positions
+  - valid step targets
+  - full reachability from the start step
+  - unique directed edge mapping per step pair (from_step -&gt; to_step)
+  - Backward/cyclic paths are supported.
+
+  ### 4. Workflow-level Kanban tag control
+
+  - Adds workflow setting show_kanban_tags (default true).
+  - Exposed in admin workflow editor.
+  - Kanban cards show/hide tags below title using core tag rendering.
+
+  ### 5. Stale-state transition handling
+
+  - Stale/invalid transition attempts now return 409 Conflict.
+  - Error shown to users:
+  - Transition Failed: probably due to stale UI state - please try again after refresh - refreshing!
+  - Frontend refreshes after acknowledgment to re-sync state in both Kanban and topic-banner action flows.
+
+  ### 6. Overdue refinements in this PR
+
+  - The overdue model itself already existed on main; this PR does not introduce a new overdue framework.
+  - Kanban cards now display the existing overdue state (workflow_overdue) with an overdue badge.
+  - After a successful Kanban transition, the in-memory card state clears overdue to avoid stale badge display before refresh.
+  - Existing list overdue behavior remains in place and is exercised alongside Kanban/list toggling specs.
+
+  ### 7. Visual refinements
+
+  - Kanban lane borders use step category color (or parent category fallback).
+  - Lane header border radii updated so lane border colors remain visible.
+  - Column depth grows naturally with content (no capped board height).
+  - Step filter input aligned with button row (margin-bottom: 0).
+
+  ## Technical Changes
+
+  - Added migration: db/migrate/20260221120000_add_show_kanban_tags_to_workflows.rb.
+  - Extended topic list serialization with Kanban metadata:
+  - compatibility
+  - workflow name
+  - show tags flag
+  - steps (including category color)
+  - transition map (from_position, to_position, option_slug)
+  - Added stale-transition 409 response behavior in workflow action controller.
+  - Added category association/preload usage for step color metadata.
+  - Added list-side permission check caching for workflow_can_act.
+
+  ## Tests
+
+  - Added/updated request/model/serializer/system specs for:
+  - Kanban compatibility rules (including cycles and directed-edge uniqueness)
+  - Kanban metadata serialization and admin exposure
+  - drag/drop and keyboard transitions
+  - stale transition error + refresh behavior
+  - Kanban tag toggle
+  - category-colored lane rendering
+  - overdue indicator behavior in list/Kanban contexts
+
+  ## Notes
+
+  - Kanban transitions reuse existing workflow actions (/discourse-workflow/act/:topic_id) for consistent backend behavior.
+  - Permission semantics remain unchanged from core-aligned workflow/category permissioning.</span></p>
+</div>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 5">❤️ 5</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/176214_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">merefield</div>
+          <div class="post_content">
+<p>Another big update - online burn-up/down chart (as a nice alternative to the existing bundled <a href="https://meta.discourse.org/t/32566?silent=true">Data Explorer</a> query)</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/ld2NvGyVByqbEFGgH3KE792bV8A.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/9/4/a/94a72847209f86141ff07620589be69895a52f60.png" title="image"><img alt="image" data-base62-sha1="ld2NvGyVByqbEFGgH3KE792bV8A" data-dominant-color="FCFCFC" height="500" src="../../../images/94a72847209f86141ff07620589be69895a52f60_2_661x500.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/9/4/a/94a72847209f86141ff07620589be69895a52f60_2_661x500.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/9/4/a/94a72847209f86141ff07620589be69895a52f60_2_991x750.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/9/4/a/94a72847209f86141ff07620589be69895a52f60.png 2x" width="661"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1027×776 72 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<ul>
+<li>Added a new workflow Chart view in discovery with a shared view selector (List / Kanban / Chart) and period control (1–12 weeks).
+<ul>
+<li>Implemented burn-down data API at /discourse-workflow/charts.json plus /workflow/charts route integration.</li>
+<li>Chart access is permissioned separately: admins and workflow_charts_allowed_groups; Chart is hidden from unauthorized users.</li>
+<li>Chart payload was tightened to selected workflow context only (selected_workflow_id, selected_workflow_name, series), removing unused workflow catalog surface.</li>
+<li>Added request/system coverage and UX hardening: full-week windows, local-date-safe axis labels, accessible view selector labeling, and chart rendering/state regression checks.</li>
+</ul>
+</li>
+</ul>
+<p>The Charting feature should be compatible with all workflows:</p>
+<ul>
+<li>Chart does not require Kanban compatibility, so it works for workflows that are not Kanban-compatible.
+<ul>
+<li>Chart appears only when the current workflow list is scoped to exactly one workflow.</li>
+<li>User must have chart permission (admin or in workflow_charts_allowed_groups).</li>
+<li>If Kanban is compatible, dropdown shows List/Kanban/Chart.</li>
+<li>If Kanban is not compatible, dropdown can still show List/Chart (when the two conditions above are met).</li>
+</ul>
+</li>
+</ul>
+<aside class="onebox githubpullrequest" data-onebox-src="https://github.com/merefield/discourse-workflow/pull/18">
+<header class="source">
+<a href="https://github.com/merefield/discourse-workflow/pull/18" rel="noopener" target="_blank">github.com/merefield/discourse-workflow</a>
+</header>
+<article class="onebox-body">
+<div class="github-row --gh-status-merged" data-github-private-repo="false">
+<div class="github-icon-container" title="Merged Pull Request">
+<svg aria-hidden="true" class="github-icon" height="60" viewbox="0 0 12 16" width="60"><path d="M11 11.28V5c-.03-.78-.34-1.47-.94-2.06C9.46 2.35 8.78 2.03 8 2H7V0L4 3l3 3V4h1c.27.02.48.11.69.31.21.2.3.42.31.69v6.28A1.993 1.993 0 0 0 10 15a1.993 1.993 0 0 0 1-3.72zm-1 2.92c-.66 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2zM4 3c0-1.11-.89-2-2-2a1.993 1.993 0 0 0-1 3.72v6.56A1.993 1.993 0 0 0 2 15a1.993 1.993 0 0 0 1-3.72V4.72c.59-.34 1-.98 1-1.72zm-.8 10c0 .66-.55 1.2-1.2 1.2-.65 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2zM2 4.2C1.34 4.2.8 3.65.8 3c0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2z" fill-rule="evenodd"></path></svg>
+</div>
+<div class="github-info-container">
+<h4>
+<a href="https://github.com/merefield/discourse-workflow/pull/18" rel="noopener" target="_blank">FEATURE: online workflow burndown/up chart (#18)</a>
+</h4>
+<div class="branches">
+<code>main</code> ← <code>charts</code>
+</div>
+<div class="github-info">
+<div class="date">
+          merged <span class="discourse-local-date" data-date="2026-02-23" data-format="ll" data-time="21:55:10" data-timezone="UTC">09:55PM - 23 Feb 26 UTC</span>
+</div>
+<div class="user">
+<a href="https://github.com/merefield" rel="noopener" target="_blank">
+<img alt="" class="onebox-avatar-inline" data-dominant-color="967C8C" height="20" src="../../../images/d7656f26de06970e961542f13a4759366c755245.jpeg" width="20"/>
+            merefield
+          </a>
+</div>
+<div class="lines" title="8 commits changed 35 files with 1860 additions and 129 deletions">
+<a href="https://github.com/merefield/discourse-workflow/pull/18/files" rel="noopener" target="_blank">
+<span class="added">+1860</span>
+<span class="removed">-129</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+<div class="github-row">
+<p class="github-body-container">## Summary
+
+  This PR delivers a workflow discovery UX and reporting expansion<span class="show-more-container"><a class="show-more" href="https://github.com/merefield/discourse-workflow/pull/18" rel="noopener" target="_blank">…</a></span><span class="excerpt hidden"> with three integrated workflow views (List, Kanban, Chart), stronger runtime hardening, and broader automated coverage.
+
+  It adds charting for workflow step counts over time, improves list/kanban SPA behavior, aligns job loading/naming with Zeitwerk autoloading conventions, and tightens chart mode visibility so only authorized users see
+  Chart in the workflow view selector.
+
+  ## Functional Improvements
+
+  1. Discovery now supports a unified view selector:
+
+  - List (topic table)
+  - Kanban (actionable board)
+  - Chart (burn down trend)
+  - Selector appears contextually based on compatibility/scope.
+
+  2. Workflow charts:
+
+  - New chart endpoint and UI integration (/workflow/charts and chart mode in /workflow).
+  - Period selector from 1 to 12 weeks.
+  - Full-week windows (Sunday to Saturday).
+  - Per-step series with step/category color mapping.
+  - Payload now returns selected workflow metadata only (no full workflow catalog).
+
+  3. Chart permissions and UX:
+
+  - New setting: workflow_charts_allowed_groups.
+  - Access: admins + configured groups.
+  - Chart option is hidden from users without chart permission.
+  - Chart permissioning is intentionally separate from topic-level category permissioning.
+
+  4. Workflow quick-filter/SPA behavior:
+
+  - Query-param driven transitions without full page reload.
+  - Persisted quick filters in local storage.
+  - Better view-state synchronization across route transitions.
+  - Ongoing list/kanban improvements remain intact (toggle behavior, stale-state refresh handling, overdue/list indicators).
+
+  5. Runtime/job reliability:
+
+  - Workflow jobs now follow Zeitwerk autoloading conventions.
+  - Scheduled jobs are visible/reliable without plugin-level manual requires.
+  - Transition enqueue path updated to new namespaced notifier job.
+  - WorkflowStat associations corrected to belongs_to for proper relation semantics.
+
+  ## Technical Changes
+
+  - Added: app/controllers/discourse_workflow/workflow_charts_controller.rb
+  - Added: lib/discourse_workflow/charts_permissions.rb
+  - Added frontend route wiring for charts:
+      - assets/javascripts/discourse/discourse-workflow-route-map.js
+      - assets/javascripts/discourse/routes/discovery/workflow-charts.js
+      - assets/javascripts/discourse/controllers/discovery/workflow-charts.js
+  - Added chart connector:
+      - assets/javascripts/discourse/connectors/discovery-list-container-top/z-workflow-burndown-chart.gjs
+  - Extended quick filters connector for multi-view behavior and chart gating:
+      - assets/javascripts/discourse/connectors/discovery-list-container-top/workflow-quick-filters.gjs
+  - Updated plugin/list serialization and permission flags:
+      - plugin.rb
+      - lib/discourse_workflow/list_controller_extension.rb
+  - Added setting + locale updates:
+      - config/settings.yml
+      - config/locales/client.en.yml
+      - config/locales/server.en.yml
+  - Updated styles for chart and view controls:
+      - assets/stylesheets/common/workflow_common.scss
+  - Updated routes:
+      - config/routes.rb
+  - Zeitwerk alignment for jobs:
+      - moved jobs to namespaced paths:
+          - app/jobs/scheduled/discourse_workflow/*
+          - app/jobs/regular/discourse_workflow/*
+      - renamed classes to Jobs::DiscourseWorkflow::* to match file paths
+      - removed legacy plugin-level require workaround
+      - added scheduled-job eager-load wiring in lib/discourse_workflow/engine.rb
+
+  ## New / Updated Tests
+
+  - Request specs:
+      - spec/requests/workflow_charts_controller_spec.rb
+          - permissions, routing, week windows, selected-workflow payload contract
+  - System specs:
+      - spec/system/workflow_charts_spec.rb
+          - chart rendering, view switching, period selection
+      - spec/system/workflow_quick_filters_spec.rb
+          - chart visibility gating in view selector
+  - Page objects:
+      - spec/system/page_objects/pages/workflow_discovery.rb (chart interactions/assertions)
+  - Job specs:
+      - spec/jobs/scheduled/discourse_workflow/daily_stats_spec.rb
+      - spec/jobs/scheduled/discourse_workflow/ai_transitions_spec.rb
+      - spec/jobs/scheduled/discourse_workflow/data_explorer_queries_completeness_spec.rb
+      - spec/jobs/regular/discourse_workflow/topic_arrival_notifier_spec.rb
+  - Fabricator:
+      - spec/fabricators/workflow_stat_fabricator.rb
+
+  ## Validation
+
+  - Full plugin suite passes:
+      - bin/rspec plugins/discourse-workflow/spec
+      - Result: 76 examples, 0 failures
+  - Targeted request/system/job specs and formatting/rubocop checks pass for touched files.
+
+  ## Notes
+
+  - Chart access model is intentionally broader than topic-level visibility and is controlled by workflow_charts_allowed_groups (plus admin access).
+  - If stricter chart visibility is desired later, it can be introduced as an optional mode without affecting current behavior.</span></p>
+</div>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/176214_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">merefield</div>
+          <div class="post_content">
+<p>I performed a major performance pass:</p>
+<aside class="onebox githubpullrequest" data-onebox-src="https://github.com/merefield/discourse-workflow/pull/19">
+<header class="source">
+<a href="https://github.com/merefield/discourse-workflow/pull/19" rel="noopener" target="_blank">github.com/merefield/discourse-workflow</a>
+</header>
+<article class="onebox-body">
+<div class="github-row --gh-status-merged" data-github-private-repo="false">
+<div class="github-icon-container" title="Merged Pull Request">
+<svg aria-hidden="true" class="github-icon" height="60" viewbox="0 0 12 16" width="60"><path d="M11 11.28V5c-.03-.78-.34-1.47-.94-2.06C9.46 2.35 8.78 2.03 8 2H7V0L4 3l3 3V4h1c.27.02.48.11.69.31.21.2.3.42.31.69v6.28A1.993 1.993 0 0 0 10 15a1.993 1.993 0 0 0 1-3.72zm-1 2.92c-.66 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2zM4 3c0-1.11-.89-2-2-2a1.993 1.993 0 0 0-1 3.72v6.56A1.993 1.993 0 0 0 2 15a1.993 1.993 0 0 0 1-3.72V4.72c.59-.34 1-.98 1-1.72zm-.8 10c0 .66-.55 1.2-1.2 1.2-.65 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2zM2 4.2C1.34 4.2.8 3.65.8 3c0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2z" fill-rule="evenodd"></path></svg>
+</div>
+<div class="github-info-container">
+<h4>
+<a href="https://github.com/merefield/discourse-workflow/pull/19" rel="noopener" target="_blank">IMPROVE: Performance pass (#19)</a>
+</h4>
+<div class="branches">
+<code>main</code> ← <code>performance_pass</code>
+</div>
+<div class="github-info">
+<div class="date">
+          merged <span class="discourse-local-date" data-date="2026-02-24" data-format="ll" data-time="13:59:27" data-timezone="UTC">01:59PM - 24 Feb 26 UTC</span>
+</div>
+<div class="user">
+<a href="https://github.com/merefield" rel="noopener" target="_blank">
+<img alt="" class="onebox-avatar-inline" data-dominant-color="967C8C" height="20" src="../../../images/d7656f26de06970e961542f13a4759366c755245.jpeg" width="20"/>
+            merefield
+          </a>
+</div>
+<div class="lines" title="14 commits changed 29 files with 817 additions and 381 deletions">
+<a href="https://github.com/merefield/discourse-workflow/pull/19/files" rel="noopener" target="_blank">
+<span class="added">+817</span>
+<span class="removed">-381</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+<div class="github-row">
+<p class="github-body-container">## Summary
+
+This PR is a focused performance hardening pass for discourse-work<span class="show-more-container"><a class="show-more" href="https://github.com/merefield/discourse-workflow/pull/19" rel="noopener" target="_blank">…</a></span><span class="excerpt hidden">flow (9 commits, 28 files, +749/-363).
+
+### Key Changes
+
+  - Reworked /workflow quick-filtering to stay SQL-native (no Ruby-side topic_id materialization/intersection).
+  - Scoped charts loading to the selected workflow instead of preloading all enabled workflows.
+  - Reduced transition action round-trips by resolving step-option/target-step from preloaded associations and passing actor objects directly.
+  - Optimized daily stats persistence to set-based writes (group + bulk insert) with a unique daily bucket index on workflow_stats.
+  - Added workflow_states.updated_at index to support overdue/staleness filtering efficiently.
+  - Hardened admin payload paths against N+1 (workflows/steps/options/category preloading) and optimized workflow validation warning query patterns.
+  - Added/updated request+lib specs for these performance paths (including schema/index assertions and SQL-shape guards).
+  - UX: stop chart lines at current day when future stats are unavailable
+  - Updated README roadmap performance status and bumped plugin version to 0.4.1.</span></p>
+</div>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span><span class="engagement-pill reaction-pill" title="exploding head: 1">:exploding_head: 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/176214_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">merefield</div>
+          <div class="post_content">
+<p>Some compatibility updates:</p>
+<aside class="onebox githubpullrequest" data-onebox-src="https://github.com/merefield/discourse-workflow/pull/20">
+<header class="source">
+<a href="https://github.com/merefield/discourse-workflow/pull/20" rel="noopener" target="_blank">github.com/merefield/discourse-workflow</a>
+</header>
+<article class="onebox-body">
+<div class="github-row --gh-status-merged" data-github-private-repo="false">
+<div class="github-icon-container" title="Merged Pull Request">
+<svg aria-hidden="true" class="github-icon" height="60" viewbox="0 0 12 16" width="60"><path d="M11 11.28V5c-.03-.78-.34-1.47-.94-2.06C9.46 2.35 8.78 2.03 8 2H7V0L4 3l3 3V4h1c.27.02.48.11.69.31.21.2.3.42.31.69v6.28A1.993 1.993 0 0 0 10 15a1.993 1.993 0 0 0 1-3.72zm-1 2.92c-.66 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2zM4 3c0-1.11-.89-2-2-2a1.993 1.993 0 0 0-1 3.72v6.56A1.993 1.993 0 0 0 2 15a1.993 1.993 0 0 0 1-3.72V4.72c.59-.34 1-.98 1-1.72zm-.8 10c0 .66-.55 1.2-1.2 1.2-.65 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2zM2 4.2C1.34 4.2.8 3.65.8 3c0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2z" fill-rule="evenodd"></path></svg>
+</div>
+<div class="github-info-container">
+<h4>
+<a href="https://github.com/merefield/discourse-workflow/pull/20" rel="noopener" target="_blank">FIX: restore workflow frontend loading (#20)</a>
+</h4>
+<div class="branches">
+<code>main</code> ← <code>fixes</code>
+</div>
+<div class="github-info">
+<div class="date">
+          merged <span class="discourse-local-date" data-date="2026-05-13" data-format="ll" data-time="11:11:58" data-timezone="UTC">11:11AM - 13 May 26 UTC</span>
+</div>
+<div class="user">
+<a href="https://github.com/merefield" rel="noopener" target="_blank">
+<img alt="" class="onebox-avatar-inline" data-dominant-color="967C8C" height="20" src="../../../images/506cd96856e6289ac6487867680f700c7cf7432f.jpeg" width="20"/>
+            merefield
+          </a>
+</div>
+<div class="lines" title="2 commits changed 17 files with 1714 additions and 1712 deletions">
+<a href="https://github.com/merefield/discourse-workflow/pull/20/files" rel="noopener" target="_blank">
+<span class="added">+1714</span>
+<span class="removed">-1712</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/176214_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">merefield</div>
+          <div class="post_content">
+<p>Step editing was always a bit opaque and clunky, so now I’ve built a new visual editor to help you visualise and manipulate workflows from the get-go! <img alt=":rocket:" class="emoji" height="20" loading="lazy" src="../../../images/rocket.png" title=":rocket:" width="20"/></p>
+<aside class="onebox githubpullrequest" data-onebox-src="https://github.com/merefield/discourse-workflow/pull/21">
+<header class="source">
+<a href="https://github.com/merefield/discourse-workflow/pull/21" rel="noopener" target="_blank">github.com/merefield/discourse-workflow</a>
+</header>
+<article class="onebox-body">
+<div class="github-row --gh-status-merged" data-github-private-repo="false">
+<div class="github-icon-container" title="Merged Pull Request">
+<svg aria-hidden="true" class="github-icon" height="60" viewbox="0 0 12 16" width="60"><path d="M11 11.28V5c-.03-.78-.34-1.47-.94-2.06C9.46 2.35 8.78 2.03 8 2H7V0L4 3l3 3V4h1c.27.02.48.11.69.31.21.2.3.42.31.69v6.28A1.993 1.993 0 0 0 10 15a1.993 1.993 0 0 0 1-3.72zm-1 2.92c-.66 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2zM4 3c0-1.11-.89-2-2-2a1.993 1.993 0 0 0-1 3.72v6.56A1.993 1.993 0 0 0 2 15a1.993 1.993 0 0 0 1-3.72V4.72c.59-.34 1-.98 1-1.72zm-.8 10c0 .66-.55 1.2-1.2 1.2-.65 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2zM2 4.2C1.34 4.2.8 3.65.8 3c0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2z" fill-rule="evenodd"></path></svg>
+</div>
+<div class="github-info-container">
+<h4>
+<a href="https://github.com/merefield/discourse-workflow/pull/21" rel="noopener" target="_blank">FEATURE: Visual workflow editing (#21)</a>
+</h4>
+<div class="branches">
+<code>main</code> ← <code>graphical_edit</code>
+</div>
+<div class="github-info">
+<div class="date">
+          merged <span class="discourse-local-date" data-date="2026-05-14" data-format="ll" data-time="19:05:50" data-timezone="UTC">07:05PM - 14 May 26 UTC</span>
+</div>
+<div class="user">
+<a href="https://github.com/merefield" rel="noopener" target="_blank">
+<img alt="" class="onebox-avatar-inline" data-dominant-color="967C8C" height="20" src="../../../images/506cd96856e6289ac6487867680f700c7cf7432f.jpeg" width="20"/>
+            merefield
+          </a>
+</div>
+<div class="lines" title="22 commits changed 51 files with 4369 additions and 138 deletions">
+<a href="https://github.com/merefield/discourse-workflow/pull/21/files" rel="noopener" target="_blank">
+<span class="added">+4369</span>
+<span class="removed">-138</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+<div class="github-row">
+<p class="github-body-container">* Add, remove, customise workflows steps with a new easy-to-use visual editor</p>
+</div>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/u3vYsKH1Nn1wtfwZ0P7UTbhrxDw.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/d/2/a/d2a6f550b0980ced971b210b94438cd4d488f7ae.png" title="image"><img alt="image" data-base62-sha1="u3vYsKH1Nn1wtfwZ0P7UTbhrxDw" data-dominant-color="F8F6F6" height="434" src="../../../images/d2a6f550b0980ced971b210b94438cd4d488f7ae_2_690x434.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/d/2/a/d2a6f550b0980ced971b210b94438cd4d488f7ae_2_690x434.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/d/2/a/d2a6f550b0980ced971b210b94438cd4d488f7ae_2_1035x651.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/d/2/a/d2a6f550b0980ced971b210b94438cd4d488f7ae.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1372×863 34.1 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>This will get your new workflow process up in no time!</p>
+<p>This also addresses a few deprecations.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/176214_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">merefield</div>
+          <div class="post_content">
+<p>Due to an up-and-coming naming conflict with core, this plugin has been rebranded “Process Manager”</p>
+<aside class="onebox githubpullrequest" data-onebox-src="https://github.com/merefield/discourse-process-manager/pull/22">
+<header class="source">
+<a href="https://github.com/merefield/discourse-process-manager/pull/22" rel="noopener" target="_blank">github.com/merefield/discourse-process-manager</a>
+</header>
+<article class="onebox-body">
+<div class="github-row --gh-status-merged" data-github-private-repo="false">
+<div class="github-icon-container" title="Merged Pull Request">
+<svg aria-hidden="true" class="github-icon" height="60" viewbox="0 0 12 16" width="60"><path d="M11 11.28V5c-.03-.78-.34-1.47-.94-2.06C9.46 2.35 8.78 2.03 8 2H7V0L4 3l3 3V4h1c.27.02.48.11.69.31.21.2.3.42.31.69v6.28A1.993 1.993 0 0 0 10 15a1.993 1.993 0 0 0 1-3.72zm-1 2.92c-.66 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2zM4 3c0-1.11-.89-2-2-2a1.993 1.993 0 0 0-1 3.72v6.56A1.993 1.993 0 0 0 2 15a1.993 1.993 0 0 0 1-3.72V4.72c.59-.34 1-.98 1-1.72zm-.8 10c0 .66-.55 1.2-1.2 1.2-.65 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2zM2 4.2C1.34 4.2.8 3.65.8 3c0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2z" fill-rule="evenodd"></path></svg>
+</div>
+<div class="github-info-container">
+<h4>
+<a href="https://github.com/merefield/discourse-process-manager/pull/22" rel="noopener" target="_blank">DEV: Rename plugin to "Process Manager" (#22)</a>
+</h4>
+<div class="branches">
+<code>main</code> ← <code>rename</code>
+</div>
+<div class="github-info">
+<div class="date">
+          merged <span class="discourse-local-date" data-date="2026-05-20" data-format="ll" data-time="10:59:31" data-timezone="UTC">10:59AM - 20 May 26 UTC</span>
+</div>
+<div class="user">
+<a href="https://github.com/merefield" rel="noopener" target="_blank">
+<img alt="" class="onebox-avatar-inline" data-dominant-color="967C8C" height="20" src="../../../images/506cd96856e6289ac6487867680f700c7cf7432f.jpeg" width="20"/>
+            merefield
+          </a>
+</div>
+<div class="lines" title="34 commits changed 211 files with 5933 additions and 5867 deletions">
+<a href="https://github.com/merefield/discourse-process-manager/pull/22/files" rel="noopener" target="_blank">
+<span class="added">+5933</span>
+<span class="removed">-5867</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+<div class="github-row">
+<p class="github-body-container">## Summary
+
+This PR completes the rebrand from Workflow to Process Manager acr<span class="show-more-container"><a class="show-more" href="https://github.com/merefield/discourse-process-manager/pull/22" rel="noopener" target="_blank">…</a></span><span class="excerpt hidden">oss the plugin.
+
+This was necessary to avoid a major imminent naming clash with a new core plugin.
+
+It renames the plugin identity, routes, settings, locale namespace, frontend/admin assets, Ruby namespace, models, serializers, specs, fixtures, and runtime payloads to use Process Manager / Process terminology. It also adds a post-migration to rename the underlying workflow tables and columns to process_manager_* equivalents, with AR associations
+and SQL paths updated accordingly.
+
+## Key Changes
+
+  - Renamed plugin-facing copy, admin navigation, discovery route, settings, assets, CSS selectors, DOM attributes, and
+    frontend internals from Workflow to Process Manager / Process.
+  - Renamed Ruby namespace and helper/model/serializer/controller usage to ProcessManager.
+  - Added schema migration from legacy workflow_* tables/columns to process_manager_* tables/columns.
+  - Updated Data Explorer default query names and SQL to use Process Manager naming while leaving legacy query names
+    untouched.
+  - Updated README and admin help copy, including direct OpenAI AI-step wording and current visual/Kanban/chart
+    capabilities.
+
+## Validation
+
+  - Full plugin spec suite passed.
+  - Lint passed for touched files.
+  - Test DB migration completed successfully.</span></p>
+</div>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+<p>Note the new repo name.</p>
+<p>If you have existing “workflows” all data should carry across - tables and indexes have been renamed only, but all the settings have been replaced and not migrated, so do check through in Admin → Plugins → Process Manager, if this plugin is important to your site.   There aren’t many settings so I decided not to create a migration script.</p>
+<p>You may need to delete the old <a href="https://meta.discourse.org/t/32566?silent=true">Data Explorer</a> queries.</p>
+<p>This was a significant amount of work (!) and I did not take this decision lightly.</p>
+<p>However, one nice outcome is I believe the purpose of the plugin is now far more clear.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+
+    </div>
+  </body>
+</html>

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width">
+    <title>Help with updating component, getting error message when trying to upload new version</title>
+    <link rel="stylesheet" href="../../../archived.css" />
+    <script>
+      function findSageCodeBlocks() {
+        return Array.prototype.slice.call(
+          document.querySelectorAll(
+            "pre[data-code-wrap='sage'] > code, pre > code.lang-sage, pre > code.language-sage, pre > code.sage"
+          )
+        );
+      }
+
+      function loadScript(src) {
+        return new Promise(function (resolve, reject) {
+          var existing = document.querySelector("script[src='" + src + "']");
+          if (existing) {
+            if (existing.dataset.loaded === "true") {
+              resolve();
+              return;
+            }
+            existing.addEventListener("load", resolve, { once: true });
+            existing.addEventListener("error", reject, { once: true });
+            return;
+          }
+
+          var script = document.createElement("script");
+          script.src = src;
+          script.async = true;
+          script.addEventListener("load", function () {
+            script.dataset.loaded = "true";
+            resolve();
+          }, { once: true });
+          script.addEventListener("error", reject, { once: true });
+          document.head.appendChild(script);
+        });
+      }
+
+      function prepareSageCells() {
+        var sageBlocks = findSageCodeBlocks();
+        if (!sageBlocks.length) {
+          return Promise.resolve();
+        }
+
+        return loadScript("https://sagecell.sagemath.org/static/embedded_sagecell.js")
+          .then(function () {
+            if (!window.sagecell || !window.sagecell.makeSagecell) {
+              return;
+            }
+
+            sageBlocks.forEach(function (codeTag, index) {
+              var preTag = codeTag.parentElement;
+              if (!preTag || preTag.dataset.sageMounted === "true") {
+                return;
+              }
+
+              var host = document.createElement("div");
+              host.className = "sagecell-archive";
+
+              var source = document.createElement("script");
+              source.type = "text/x-sage";
+              source.text = codeTag.textContent || "";
+              host.appendChild(source);
+
+              preTag.insertAdjacentElement("afterend", host);
+              preTag.classList.add("sage-source-hidden");
+              preTag.dataset.sageMounted = "true";
+
+              window.sagecell.makeSagecell({
+                inputLocation: host,
+                autoeval: false,
+                evalButtonText: "Run",
+                languages: ["sage"]
+              });
+            });
+          })
+          .catch(function () {
+            // Leave the original code blocks visible if SageCell cannot load.
+          });
+      }
+
+      function preprocessDiscourseMath() {
+        document.querySelectorAll("span.math, div.math").forEach(function (node) {
+          var tex = node.textContent || "";
+          if (!tex.trim()) {
+            return;
+          }
+          if (node.tagName === "SPAN") {
+            node.textContent = "\\(" + tex + "\\)";
+          } else {
+            node.textContent = "\\[" + tex + "\\]";
+          }
+          node.classList.remove("math");
+        });
+      }
+
+      window.MathJax = {
+        tex: {
+          inlineMath: [["\\(", "\\)"]],
+          displayMath: [["\\[", "\\]"]]
+        },
+        startup: {
+          pageReady() {
+            preprocessDiscourseMath();
+            return MathJax.startup.defaultPageReady().then(function () {
+              return prepareSageCells();
+            });
+          }
+        }
+      };
+    </script>
+    <script async id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="title-span">
+        <a href="../../../">
+          <img src="../../../images/ad2526334012b2ad0c3421f9b6dd94bae2ede52f.svg" height="40" alt="Site Logo" id="site-logo" />
+        </a>
+      </div>
+    </header>
+
+    <div class="main">
+    <div class="archive-span"><a href='https://meta.discourse.org/'>Discourse Meta</a> archived in May, 2026</div>
+    <h1 class="topic-title">Help with updating component, getting error message when trying to upload new version</h1>
+            <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">baseline-mobile</div>
+          <div class="post_content">
+<p>We have a hosted Discourse website.</p>
+<p>I’m trying to fix the JavaScript in a component since we were told it “<strong>is using an older approach that is no longer compatible with the current version of Discourse</strong>”.</p>
+<p>The recommendation is to “<strong>create a new file</strong>” and “<strong>go to Admin → Customize → Themes → your theme → Edit Files, then use the file tree to add a new file at that path</strong>”, but we don’t have that option, so I attempted to make a new component and install it.</p>
+<p>When I go to install the new component, I get this message: "<strong>An error occurred: Import Error: about.json does not exist, or is invalid. Are you sure this is a Discourse Theme?"</strong>. There is no specific data as to what the error is, and I have tried many things, but I continue to get this same error.</p>
+<p>Can you help either way:</p>
+<ol>
+<li>
+<p>Show where I can go to see the file tree to edit files?</p>
+</li>
+<li>
+<p>Let me know how I can find out the specific error in the component I’m uploading?</p>
+</li>
+</ol>
+<p>Here is a link to download the component I tried to upload if it’s helpful: <a href="https://drive.google.com/file/d/1sg-F3E_YB2BuExuTdcQ8sfbTqUInkgKl/view?usp=sharing" rel="noopener nofollow ugc" title="https://drive.google.com/file/d/1sg-F3E_YB2BuExuTdcQ8sfbTqUInkgKl/view?usp=sharing">https://drive.google.com/file/d/1sg-F3E_YB2BuExuTdcQ8sfbTqUInkgKl/view?usp=sharing</a></p>
+<p>Thanks!</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554653_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Moin</div>
+          <div class="post_content">
+<p>I think something is not right with the structure of your zip. I see the same error, but after I unpacked it and created a new zip, I was able to install it on my forum. This is the zip I created: <a href="https://drive.google.com/file/d/1nc6Q5GRvIscVz9FJVqJq-Knzoz091TXB/view">https://drive.google.com/file/d/1nc6Q5GRvIscVz9FJVqJq-Knzoz091TXB/view</a></p>
+<p>I think the way Macs zip multiple folders might be your problem. The parent directory results in <code>about.json</code> being in a subfolder.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554803_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Lilly</div>
+          <div class="post_content">
+<p>hmm might be how windows extracts it <img alt=":wink:" class="emoji" height="20" loading="lazy" src="../../../images/wink.png" title=":wink:" width="20"/> because about.json is where it should be for me on my mac:</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/6fxtxVPgmt5HV5f6EU3UGxf6nNT.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/2/b/c/2bcebe44b53299ac11a2461431e9bce8ff4e7191.png" title="Screenshot 2026-05-20 at 11.02.33 AM"><img alt="Screenshot 2026-05-20 at 11.02.33 AM" data-base62-sha1="6fxtxVPgmt5HV5f6EU3UGxf6nNT" data-dominant-color="E2D8E4" height="201" src="../../../images/2bcebe44b53299ac11a2461431e9bce8ff4e7191_2_517x201.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/2/b/c/2bcebe44b53299ac11a2461431e9bce8ff4e7191_2_517x201.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/2/b/c/2bcebe44b53299ac11a2461431e9bce8ff4e7191_2_775x301.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/2/b/c/2bcebe44b53299ac11a2461431e9bce8ff4e7191.png 2x" width="517"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2026-05-20 at 11.02.33 AM</span><span class="informations">820×320 31.2 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>component installed with no problem from github</p>
+<aside class="onebox githubrepo" data-onebox-src="https://github.com/Lillinator/hide-suspension-reason">
+<header class="source">
+<a href="https://github.com/Lillinator/hide-suspension-reason" rel="noopener" target="_blank">github.com</a>
+</header>
+<article class="onebox-body">
+<div class="github-row" data-github-private-repo="false">
+<span class="broken-image" title="This image is broken"><svg aria-hidden="true" class="fa d-icon d-icon-link-slash svg-icon"><use href="#link-slash"></use></svg></span>
+<h3><a href="https://github.com/Lillinator/hide-suspension-reason" rel="noopener" target="_blank">GitHub - Lillinator/hide-suspension-reason</a></h3>
+<p><span class="github-repo-description">Contribute to Lillinator/hide-suspension-reason development by creating an account on GitHub.</span></p>
+</div>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/hz11dJgf6kf5JlkS0YyGSmxxG0W.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/7/b/1/7b1a4607cfc04c311c481adfcb84cf9744943aaa.png" title="Screenshot 2026-05-20 at 11.10.10 AM"><img alt="Screenshot 2026-05-20 at 11.10.10 AM" data-base62-sha1="hz11dJgf6kf5JlkS0YyGSmxxG0W" data-dominant-color="EFEDF1" height="375" src="../../../images/7b1a4607cfc04c311c481adfcb84cf9744943aaa_2_372x375.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/7/b/1/7b1a4607cfc04c311c481adfcb84cf9744943aaa_2_372x375.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/7/b/1/7b1a4607cfc04c311c481adfcb84cf9744943aaa_2_558x562.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/7/b/1/7b1a4607cfc04c311c481adfcb84cf9744943aaa_2_744x750.png 2x" width="372"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2026-05-20 at 11.10.10 AM</span><span class="informations">936×940 55.5 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>i don’t think it is working as intended because suspended reason shows on user card</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/siqxDdLTcGC1a7SA3PJv0UovHZ5.jpeg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/c/6/5/c65226218e37b5bc5b876ff9eabf605aa0065e7f.jpeg" title="IMG5308"><img alt="IMG5308" data-base62-sha1="siqxDdLTcGC1a7SA3PJv0UovHZ5" data-dominant-color="D2CCCC" height="352" src="../../../images/c65226218e37b5bc5b876ff9eabf605aa0065e7f_2_516x352.jpeg" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/c/6/5/c65226218e37b5bc5b876ff9eabf605aa0065e7f_2_516x352.jpeg, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/c/6/5/c65226218e37b5bc5b876ff9eabf605aa0065e7f_2_774x528.jpeg 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/c/6/5/c65226218e37b5bc5b876ff9eabf605aa0065e7f_2_1032x704.jpeg 2x" width="516"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">IMG5308</span><span class="informations">1290×880 161 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+  </body>
+</html>

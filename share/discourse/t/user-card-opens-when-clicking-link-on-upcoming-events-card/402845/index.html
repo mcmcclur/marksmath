@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width">
+    <title>User card opens when clicking link on upcoming events card</title>
+    <link rel="stylesheet" href="../../../archived.css" />
+    <script>
+      function findSageCodeBlocks() {
+        return Array.prototype.slice.call(
+          document.querySelectorAll(
+            "pre[data-code-wrap='sage'] > code, pre > code.lang-sage, pre > code.language-sage, pre > code.sage"
+          )
+        );
+      }
+
+      function loadScript(src) {
+        return new Promise(function (resolve, reject) {
+          var existing = document.querySelector("script[src='" + src + "']");
+          if (existing) {
+            if (existing.dataset.loaded === "true") {
+              resolve();
+              return;
+            }
+            existing.addEventListener("load", resolve, { once: true });
+            existing.addEventListener("error", reject, { once: true });
+            return;
+          }
+
+          var script = document.createElement("script");
+          script.src = src;
+          script.async = true;
+          script.addEventListener("load", function () {
+            script.dataset.loaded = "true";
+            resolve();
+          }, { once: true });
+          script.addEventListener("error", reject, { once: true });
+          document.head.appendChild(script);
+        });
+      }
+
+      function prepareSageCells() {
+        var sageBlocks = findSageCodeBlocks();
+        if (!sageBlocks.length) {
+          return Promise.resolve();
+        }
+
+        return loadScript("https://sagecell.sagemath.org/static/embedded_sagecell.js")
+          .then(function () {
+            if (!window.sagecell || !window.sagecell.makeSagecell) {
+              return;
+            }
+
+            sageBlocks.forEach(function (codeTag, index) {
+              var preTag = codeTag.parentElement;
+              if (!preTag || preTag.dataset.sageMounted === "true") {
+                return;
+              }
+
+              var host = document.createElement("div");
+              host.className = "sagecell-archive";
+
+              var source = document.createElement("script");
+              source.type = "text/x-sage";
+              source.text = codeTag.textContent || "";
+              host.appendChild(source);
+
+              preTag.insertAdjacentElement("afterend", host);
+              preTag.classList.add("sage-source-hidden");
+              preTag.dataset.sageMounted = "true";
+
+              window.sagecell.makeSagecell({
+                inputLocation: host,
+                autoeval: false,
+                evalButtonText: "Run",
+                languages: ["sage"]
+              });
+            });
+          })
+          .catch(function () {
+            // Leave the original code blocks visible if SageCell cannot load.
+          });
+      }
+
+      function preprocessDiscourseMath() {
+        document.querySelectorAll("span.math, div.math").forEach(function (node) {
+          var tex = node.textContent || "";
+          if (!tex.trim()) {
+            return;
+          }
+          if (node.tagName === "SPAN") {
+            node.textContent = "\\(" + tex + "\\)";
+          } else {
+            node.textContent = "\\[" + tex + "\\]";
+          }
+          node.classList.remove("math");
+        });
+      }
+
+      window.MathJax = {
+        tex: {
+          inlineMath: [["\\(", "\\)"]],
+          displayMath: [["\\[", "\\]"]]
+        },
+        startup: {
+          pageReady() {
+            preprocessDiscourseMath();
+            return MathJax.startup.defaultPageReady().then(function () {
+              return prepareSageCells();
+            });
+          }
+        }
+      };
+    </script>
+    <script async id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="title-span">
+        <a href="../../../">
+          <img src="../../../images/ad2526334012b2ad0c3421f9b6dd94bae2ede52f.svg" height="40" alt="Site Logo" id="site-logo" />
+        </a>
+      </div>
+    </header>
+
+    <div class="main">
+    <div class="archive-span"><a href='https://meta.discourse.org/'>Discourse Meta</a> archived in May, 2026</div>
+    <h1 class="topic-title">User card opens when clicking link on upcoming events card</h1>
+            <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/522255_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Ethsim2</div>
+          <div class="post_content">
+<p>I’m still checking whether this is theme-related, but wanted to ask whether anyone else can reproduce it.</p>
+<p>On <code>/upcoming-events</code>, clicking a link inside an event card appears to open the user card instead of following the link. This may be a click-target or z-index issue.</p>
+<h3><a aria-label="Heading link" class="anchor" href="#p-1980332-version-1" name="p-1980332-version-1"></a>Version</h3>
+<p>Discourse version: 2026.5.0-latest</p>
+<p>Commit: 645cb014c0</p>
+<h3><a aria-label="Heading link" class="anchor" href="#p-1980332-steps-to-reproduce-2" name="p-1980332-steps-to-reproduce-2"></a>Steps to reproduce</h3>
+<ol>
+<li>Go to <code>/upcoming-events</code>.</li>
+<li>Find an event card which contains a link.</li>
+<li>Click the link on the event card.</li>
+</ol>
+<h3><a aria-label="Heading link" class="anchor" href="#p-1980332-expected-result-3" name="p-1980332-expected-result-3"></a>Expected result</h3>
+<p>The link should open/follow normally.</p>
+<h3><a aria-label="Heading link" class="anchor" href="#p-1980332-actual-result-4" name="p-1980332-actual-result-4"></a>Actual result</h3>
+<p>A user card opens instead.</p>
+<h3><a aria-label="Heading link" class="anchor" href="#p-1980332-notes-5" name="p-1980332-notes-5"></a>Notes</h3>
+<p>I am not yet sure whether this is caused by core, the calendar/event plugin, or a theme/component on my site. I’ll update this topic once I’ve tested <a href="https://meta.discourse.org/t/53504?silent=true">safe mode</a>.</p>
+<p>I can provide a screenshot or screen recording if useful.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/522255_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Ethsim2</div>
+          <div class="post_content">
+<p>The calendar event click appears to be handled by <code>FullCalendar</code> ’s <code>eventClick</code> , which opens the menu:</p>
+<pre data-code-wrap="gjs"><code class="lang-gjs">eventClick: async ({ el, event, jsEvent }) =&gt; {
+  const { postNumber, postUrl, postEvent } = event.extendedProps;
+
+  if (postEvent?.id) {
+    jsEvent.preventDefault();
+
+    this.activeMenu = await this.menu.show(
+      ...
+      {
+        identifier: "post-event-menu",
+        component: PostEventMenu,
+        ...
+      }
+    );
+  }
+}
+</code></pre>
+<p>The menu then renders:</p>
+<pre data-code-wrap="gjs"><code class="lang-gjs">const PostEventMenu = &lt;template&gt;
+  &lt;DiscoursePostEvent
+    @linkToPost={{true}}
+    @event={{@data.event}}
+    @onClose={{@data.onClose}}
+    @withDescription={{true}}
+    @clampDescription={{true}}
+  /&gt;
+&lt;/template&gt;;
+</code></pre>
+<p>So the path seems to be:</p>
+<pre><code class="lang-plaintext">FullCalendar eventClick
+→ post-event-menu
+→ DiscoursePostEvent
+→ user-card behaviour inside the menu/popover
+</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/522255_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Ethsim2</div>
+          <div class="post_content">
+<p>I may be mixing two related surfaces: the full <code>/upcoming-events</code> calendar and the <code>UpcomingEventsList</code> component. The list component appears to render each event as a plain anchor to <code>event.post.url</code>, so I would not expect user-card behaviour there.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/549022_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">gilles</div>
+          <div class="post_content">
+<p>I’m not experiencing this issue!</p>
+<p>When I go to upcoming events and click on an event, I see the event preview, and if I click the link, I land on the relevant topic.</p>
+<p>I may have misunderstood your issue <img alt=":sweat_smile:" class="emoji" height="20" loading="lazy" src="../../../images/sweat_smile.png" title=":sweat_smile:" width="20"/></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/522255_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Ethsim2</div>
+          <div class="post_content">
+<p>I can’t re-produce, but i’m going to <code>rebuild</code> to gather those 188 new commits. I think it’s definitely a Safari Progressive Web Application issue, and more likely under high-jitter network conditions</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/522255_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Ethsim2</div>
+          <div class="post_content">
+<p>This morning i rebuilt again to 2026.5.0-latest.1 (<a href="https://github.com/discourse/discourse/commits/fbcbdc46d816861425738b4c8bd39cca4605188d" rel="noopener nofollow ugc">fbcbdc46d8</a>)</p>
+<p>a few hours later, on domestic Wi-Fi, this problem was quite reproducible in a particular PWA session</p>
+<p></p><div class="video-placeholder-container" data-thumbnail-src="https://d11a6trkgmumsb.cloudfront.net/original/4X/2/b/4/2b4ea72b34d4f885918abd7962f5d8a7934e5c74.jpeg" data-video-base62-sha1="jNPhlKDmljVZi2M9yyxgDANl1t2.mov" data-video-src="https://d11a6trkgmumsb.cloudfront.net/original/4X/8/a/c/8acb375fe9a1cfd5be01d5d2fc80dcfd8e4849b4.mov">
+</div><p></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/522255_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Ethsim2</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="6" data-topic="402845" data-username="Ethsim2">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/522255_2.png" width="24"/> Ethsim2:</div>
+<blockquote>
+<p>domestic Wi-Fi</p>
+</blockquote>
+</aside>
+<p>jitter is about 10 milliseconds higher than i’m comfortable with</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/aFJrleEFtej5e83R1K6Zi0Yf8cX.jpeg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/4/a/c/4acd6b441e2b20323d50ed116499c767786f178b.jpeg" rel="noopener nofollow ugc" title="IMG7633"><img alt="IMG7633" data-base62-sha1="aFJrleEFtej5e83R1K6Zi0Yf8cX" data-dominant-color="F2EDEE" height="500" src="../../../images/4acd6b441e2b20323d50ed116499c767786f178b_2_280x500.jpeg" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/4/a/c/4acd6b441e2b20323d50ed116499c767786f178b_2_280x500.jpeg, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/4/a/c/4acd6b441e2b20323d50ed116499c767786f178b_2_420x750.jpeg 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/4/a/c/4acd6b441e2b20323d50ed116499c767786f178b_2_560x1000.jpeg 2x" width="280"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">IMG7633</span><span class="informations">1206×2147 174 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+  </body>
+</html>

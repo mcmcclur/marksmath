@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width">
+    <title>Is Docker image discourse/discourse considered safe and production-ready?</title>
+    <link rel="stylesheet" href="../../../archived.css" />
+    <script>
+      function findSageCodeBlocks() {
+        return Array.prototype.slice.call(
+          document.querySelectorAll(
+            "pre[data-code-wrap='sage'] > code, pre > code.lang-sage, pre > code.language-sage, pre > code.sage"
+          )
+        );
+      }
+
+      function loadScript(src) {
+        return new Promise(function (resolve, reject) {
+          var existing = document.querySelector("script[src='" + src + "']");
+          if (existing) {
+            if (existing.dataset.loaded === "true") {
+              resolve();
+              return;
+            }
+            existing.addEventListener("load", resolve, { once: true });
+            existing.addEventListener("error", reject, { once: true });
+            return;
+          }
+
+          var script = document.createElement("script");
+          script.src = src;
+          script.async = true;
+          script.addEventListener("load", function () {
+            script.dataset.loaded = "true";
+            resolve();
+          }, { once: true });
+          script.addEventListener("error", reject, { once: true });
+          document.head.appendChild(script);
+        });
+      }
+
+      function prepareSageCells() {
+        var sageBlocks = findSageCodeBlocks();
+        if (!sageBlocks.length) {
+          return Promise.resolve();
+        }
+
+        return loadScript("https://sagecell.sagemath.org/static/embedded_sagecell.js")
+          .then(function () {
+            if (!window.sagecell || !window.sagecell.makeSagecell) {
+              return;
+            }
+
+            sageBlocks.forEach(function (codeTag, index) {
+              var preTag = codeTag.parentElement;
+              if (!preTag || preTag.dataset.sageMounted === "true") {
+                return;
+              }
+
+              var host = document.createElement("div");
+              host.className = "sagecell-archive";
+
+              var source = document.createElement("script");
+              source.type = "text/x-sage";
+              source.text = codeTag.textContent || "";
+              host.appendChild(source);
+
+              preTag.insertAdjacentElement("afterend", host);
+              preTag.classList.add("sage-source-hidden");
+              preTag.dataset.sageMounted = "true";
+
+              window.sagecell.makeSagecell({
+                inputLocation: host,
+                autoeval: false,
+                evalButtonText: "Run",
+                languages: ["sage"]
+              });
+            });
+          })
+          .catch(function () {
+            // Leave the original code blocks visible if SageCell cannot load.
+          });
+      }
+
+      function preprocessDiscourseMath() {
+        document.querySelectorAll("span.math, div.math").forEach(function (node) {
+          var tex = node.textContent || "";
+          if (!tex.trim()) {
+            return;
+          }
+          if (node.tagName === "SPAN") {
+            node.textContent = "\\(" + tex + "\\)";
+          } else {
+            node.textContent = "\\[" + tex + "\\]";
+          }
+          node.classList.remove("math");
+        });
+      }
+
+      window.MathJax = {
+        tex: {
+          inlineMath: [["\\(", "\\)"]],
+          displayMath: [["\\[", "\\]"]]
+        },
+        startup: {
+          pageReady() {
+            preprocessDiscourseMath();
+            return MathJax.startup.defaultPageReady().then(function () {
+              return prepareSageCells();
+            });
+          }
+        }
+      };
+    </script>
+    <script async id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="title-span">
+        <a href="../../../">
+          <img src="../../../images/ad2526334012b2ad0c3421f9b6dd94bae2ede52f.svg" height="40" alt="Site Logo" id="site-logo" />
+        </a>
+      </div>
+    </header>
+
+    <div class="main">
+    <div class="archive-span"><a href='https://meta.discourse.org/'>Discourse Meta</a> archived in May, 2026</div>
+    <h1 class="topic-title">Is Docker image discourse/discourse considered safe and production-ready?</h1>
+            <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">caue-pareto</div>
+          <div class="post_content">
+<p>Hi Discourse team,</p>
+<p>We’re currently evaluating the Docker image available here: <a class="inline-onebox" href="https://hub.docker.com/r/discourse/discourse" rel="noopener nofollow ugc">discourse/discourse - Docker Image</a></p>
+<p>This image was published very recently (less than 24h ago at the time of writing), and I couldn’t find references to it in the official documentation.</p>
+<p>My question is:</p>
+<ul>
+<li>Is this Docker image officially maintained and supported by the Discourse team for production use?</li>
+<li>Or is it an experimental image that might be removed or changed unexpectedly?</li>
+</ul>
+<p>We want to confirm whether it’s safe to rely on this image in our production environments.</p>
+<p>Thanks</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/313494_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">NateDhaliwal</div>
+          <div class="post_content">
+<p>I believe the Docker image is <a class="inline-onebox" href="https://hub.docker.com/r/discourse/base">discourse/base - Docker Image</a>. (5M+ downloads vs 800+) See:</p>
+<aside class="onebox githubrepo" data-onebox-src="https://github.com/discourse/discourse_docker">
+<header class="source">
+<a href="https://github.com/discourse/discourse_docker" rel="noopener" target="_blank">github.com</a>
+</header>
+<article class="onebox-body">
+<div class="github-row" data-github-private-repo="false">
+<img class="thumbnail" data-dominant-color="EFF1ED" height="344" src="../../../images/7e17ef008d42cb54c3494daa51478e4cec49a0a3_2_690x344.png" width="690"/>
+<h3><a href="https://github.com/discourse/discourse_docker" rel="noopener" target="_blank">GitHub - discourse/discourse_docker: A Docker image for Discourse</a></h3>
+<p><span class="github-repo-description">A Docker image for Discourse</span></p>
+</div>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+<blockquote>
+<p>The Docker repository will always contain the latest built version at: <a class="inline-onebox" href="https://hub.docker.com/r/discourse/base/">discourse/base - Docker Image</a>, you should not need to build the base image.</p>
+</blockquote>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 2">👍 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">caue-pareto</div>
+          <div class="post_content">
+<p>Thanks for your reply, I know that. But I couldn’t get that discourse/base image to run easily with Docker Compose. This new discourse/discourse image makes setup much simpler and just works fine, but I want to understand its purpose and whether I can use it in production.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/176214_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">merefield</div>
+          <div class="post_content">
+<p>Take a read of:</p>
+<aside class="quote quote-modified" data-post="1" data-topic="33205">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/102149_2.png" width="24"/>
+<div class="quote-title__text-content">
+<a href="https://meta.discourse.org/t/can-discourse-ship-frequent-docker-images-that-do-not-need-to-be-bootstrapped/33205">Can Discourse ship frequent Docker images that do not need to be bootstrapped?</a> <a class="badge-category__wrapper" href="/c/dev/7"><span class="badge-category --style-square" data-category-id="7" data-drop-close="true" style="--category-badge-color: #292929; --category-badge-text-color: #f2f2f2;" title="The category for all things Discourse Development. Building a customization for yourself or the community? Then this is the category for you!"><span class="badge-category__name">Dev</span></span></a>
+</div>
+</div>
+<blockquote>
+    There is this <a href="https://github.com/discourse/discourse_docker/issues/186" rel="noopener nofollow ugc">open issue</a> (which I just closed) on Discourse Docker repo asking 
+
+Discourse should behave like a standard docker image 
+a docker user excepts to be able to run discourse without a special launcher. 
+to define multiple containers (redis, postgres, discourse,…), links and volumes, docker-compose should be used instead. 
+<a class="inline-onebox" href="https://docs.docker.com/compose/" rel="noopener nofollow ugc">Docker Compose overview | Docker Docs</a> 
+
+The question is somewhat misguided, but I would like to address a broader one of 
+
+Can Discourse ship frequent Docker images …
+  </blockquote>
+</aside>
+
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/157490_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">david</div>
+          <div class="post_content">
+<p><code>discourse/discourse</code> is new, but still experimental, so I wouldn’t recommend using it in production. We’ll certainly publish more info if/when that changes, and it’s ready for use.</p>
+<p>As of right now, the only method we can support is the <a href="https://meta.discourse.org/t/142537?silent=true">standard install</a>.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 11">❤️ 11</span><span class="engagement-pill reaction-pill" title="discourse: 1">:discourse: 1</span><span class="engagement-pill reaction-pill" title="star struck: 1">:star_struck: 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/120154_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">pfaffman</div>
+          <div class="post_content">
+<p>As described, the Supported way to self-host is to follow the <a href="https://meta.discourse.org/t/142537?silent=true">standard install</a>. If you don’t want to do that then you’re sort-of on your own. If you want to launch with docker-compose, what I recommend is to use launcher to build your image, push it to a repo of your own and then use `./launcher start-cmd web_only’ to get the necessary ENV variables and such to launch it.  And you’ll still need to do something to see that the database is migrated, assets precompiled, and so on.</p>
+<p>You can also contrive to get github to build images for you and have them migrate and so on when launched (as will one day be provided by CDCK, it seems). I’ve done this for clients in the past. (Happy to help if you have a budget.)</p>
+<p>If you like to live on the edge, you’re probably <em>pretty</em> safe using the “experimental” version with the caveat that you’ll need to have a staging site where you test each new deployment before pushing it to production and being prepared to either need to wait a while and/or do something that requires deep knowledge of discourse to move forward. A  worst case (probably) is that you’d need to be prepared to make a backup and restore to a <a href="https://meta.discourse.org/t/142537?silent=true">standard install</a> until the experimental thing is ready for prime time.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/519673_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">JulianC</div>
+          <div class="post_content">
+<aside class="quote group-team" data-post="5" data-topic="380646" data-username="david">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/157490_2.png" width="24"/> david:</div>
+<blockquote>
+<p><code>discourse/discourse</code> is new, but still experimental, so I wouldn’t recommend using it in production. We’ll certainly publish more info if/when that changes, and it’s ready for use.</p>
+<p>As of right now, the only method we can support is the <a href="https://meta.discourse.org/t/142537?silent=true">standard install</a>.</p>
+</blockquote>
+</aside>
+<p>Do you have an estimated release date or timeline for when <code>discourse/discourse</code> might be considered stable/production-ready?</p>
+<p>Additionally, I would like to confirm: Is the <code>discourse/discourse</code> Docker image open source, and if so, could you provide the GitHub repository link?</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 4">❤️ 4</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/157490_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">david</div>
+          <div class="post_content">
+<p>I don’t have any timeline/guarantees right now. But hopefully we’ll have more info to share in the next few weeks.</p>
+<aside class="quote no-group" data-post="7" data-topic="380646" data-username="JulianC">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/519673_2.png" width="24"/> JulianC:</div>
+<blockquote>
+<p>Is the <code>discourse/discourse</code> Docker image open source, and if so, could you provide the GitHub repository link?</p>
+</blockquote>
+</aside>
+<p>Yes it’s all open source. It’s built &amp; published regularly by this github actions workflow: <a class="inline-onebox" href="https://github.com/discourse/discourse_docker/blob/main/.github/workflows/push-web-only.yml">discourse_docker/.github/workflows/push-web-only.yml at main · discourse/discourse_docker · GitHub</a></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 8">❤️ 8</span><span class="engagement-pill reaction-pill" title="eyes: 1">👀 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/519673_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">JulianC</div>
+          <div class="post_content">
+<p>Thanks for the info and for sharing the GitHub link, much appreciated!</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/116994_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">featheredtoast</div>
+          <div class="post_content">
+<p>Yeah, it’s becoming an open secret of what’s in the oven <img alt=":slight_smile:" class="emoji" height="20" loading="lazy" src="../../../images/slight_smile.png" title=":slight_smile:" width="20"/></p>
+<p>You can get a technical preview of what’s upcoming, but like David said we can’t support it officially yet. There are tons of docs to plan, edge cases to test, etc… so we can’t recommend it for production until we smooth those things out.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 9">❤️ 9</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/116696_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">gadicc</div>
+          <div class="post_content">
+<p><span class="mention">@david</span> / <span class="mention">@featheredtoast</span>, you guys and the rest of the team have done a great job here.</p>
+<p>I just switched to <code>discourse/discourse</code> from <code>bitnami/discourse</code> for automated testing and it’s working great.  Obviously my use case is perfect - spin up a new forum, run tests, delete.</p>
+<p>So, just wanted to give a big thanks.  I’m sure a lot of others will benefit from this too especially once it becomes stable / official / supported.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 6">❤️ 6</span><span class="engagement-pill reaction-pill" title="100: 2">:100: 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/525193_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">JackNZ</div>
+          <div class="post_content">
+<p>Similar situation, was looking for a quick way to spin up Discourse in a Docker Compose setup to make it easier for developers to build an SSO integration. This appears to work a treat (setup below for those who are interested):</p>
+<details open="">
+<summary>
+docker-compose.yml</summary>
+<pre data-code-wrap="yaml"><code class="lang-yaml">volumes:
+  redis_data: {}
+  discourse_data: {}
+  discourse_postgres: {}
+  discourse_postgres_data: {}
+
+services:
+  mailpit:
+    image: docker.io/axllent/mailpit:latest
+    container_name: mailpit
+    ports:
+      - '8025:8025'
+
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    volumes:
+      - redis_data:/data
+    ports:
+      - '6379:6379'
+    command: redis-server --appendonly yes
+
+  discourse_db:
+    image: discourse/postgres
+    container_name: discourse_db
+    volumes:
+      - discourse_postgres:/var/lib/postgresql
+      - discourse_postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB: discourse
+      - POSTGRES_USER: admin
+      - POSTGRES_PASSWORD: admin_password
+      - DB_USER: discourse_user
+      - DB_PASSWORD: discourse_user_password
+
+  discourse:
+    image: discourse/discourse:3.5.1
+    container_name: discourse
+    depends_on:
+      - discourse_db
+      - redis
+      - mailpit
+    ports:
+      - '80:80'
+    volumes:
+      - discourse_data:/shared
+    environment:
+      - DISCOURSE_HOSTNAME: localhost
+      - DISCOURSE_DEVELOPER_EMAILS: admin@example.com
+      - DISCOURSE_DB_HOST: discourse_db
+      - DISCOURSE_DB_PORT: 5432
+      - DISCOURSE_DB_NAME: discourse
+      - DISCOURSE_DB_USERNAME: discourse_user
+      - DISCOURSE_DB_PASSWORD: discourse_user_password
+      - DISCOURSE_REDIS_HOST: redis
+      - DISCOURSE_REDIS_PORT: 6379
+      - DISCOURSE_SMTP_ADDRESS: mailpit
+      - DISCOURSE_SMTP_PORT: 1025
+      - DISCOURSE_SMTP_ENABLE_START_TLS: false
+      - DISCOURSE_SMTP_AUTHENTICATION: none
+      - LANG: en_US.UTF-8
+</code></pre>
+</details>
+<p>Looking forward to hearing about future plans or timelines, would love to be able to run this in something like Digital Ocean App Platform (something that clients could manage with less technical know-how).</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 4">❤️ 4</span><span class="engagement-pill reaction-pill" title="eyes: 1">👀 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/116696_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">gadicc</div>
+          <div class="post_content">
+<p>Ah thanks for sharing, <span class="mention">@JackNZ</span> .  I didn’t even notice the <code>discourse/postgres</code> image <img alt=":sweat_smile:" class="emoji" height="20" loading="lazy" src="../../../images/sweat_smile.png" title=":sweat_smile:" width="20"/>  I’ll have to fix that.  Nevertheless, I’ll share where I’m at too.  Maybe more interesting is the <code>start.sh</code> script here that, while in need of some cleanup, will create an admin user, API key, and disable rate limiters.</p>
+<aside class="onebox githubfolder" data-onebox-src="https://github.com/gadicc/discourse2/tree/dev/tests/docker">
+<header class="source">
+<img alt="" class="site-icon" data-dominant-color="" height="32" src="../../../images/bad3e5f9ad67c1ddf145107ce7032ac1d7b22563.svg" width="32"/>
+<a href="https://github.com/gadicc/discourse2/tree/dev/tests/docker" rel="noopener nofollow ugc" target="_blank">github.com</a>
+</header>
+<article class="onebox-body">
+<h3><a href="https://github.com/gadicc/discourse2/tree/dev/tests/docker" rel="noopener nofollow ugc" target="_blank">discourse2/tests/docker at dev · gadicc/discourse2</a></h3>
+<p><span class="label1">Complete Discourse API, strongly typed. Contribute to gadicc/discourse2 development by creating an account on GitHub.</span></p>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/538944_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">ice6</div>
+          <div class="post_content">
+<p>really thanks for the `<code>bitnami/discourse</code>` information, I use the official way to install on a restricted network, it is quite painful. I will try the <code>bitnami/discourse</code> one. thank you!</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554653_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Moin</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="16" data-topic="380646" data-username="ice6">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/538944_2.png" width="24"/> ice6:</div>
+<blockquote>
+<p>I will try the <code>bitnami/discourse</code> one</p>
+</blockquote>
+</aside>
+<p>A hint in case you need help</p><aside class="quote quote-modified" data-post="1" data-topic="142538">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/148734_2.png" width="24"/>
+<div class="quote-title__text-content">
+<a href="https://meta.discourse.org/t/bitnami-installations-are-unsupported/142538">Bitnami installations are unsupported</a> <a class="badge-category__wrapper" href="/c/documentation/self-hosting/55"><span class="badge-category --style-square --has-parent" data-category-id="55" data-drop-close="true" data-parent-category-id="10" style="--category-badge-color: #ffd200; --category-badge-text-color: #000000; --parent-category-badge-color: #00A94F;" title="Documentation and guides for people who self-host their Discourse sites. (Index)"><span class="badge-category__name">Self-Hosting</span></span></a>
+</div>
+</div>
+<blockquote>
+    Community support is only provided for installs that use the official instructions: <a class="inline-onebox" href="https://github.com/discourse/discourse/blob/master/docs/INSTALL-cloud.md">discourse/docs/INSTALL-cloud.md at main · discourse/discourse · GitHub</a> 
+If you have installed with Bitnami and are having trouble, then you need to either follow the instructions or get help somewhere else. 
+Last edited by <span class="mention">@JammyDodger</span> 2024-05-25T11:32:59Z (UTC) 
+<img alt="play_button" class="emoji" height="20" src="../../../images/play_button.png" title="play_button" width="20"/> Check document
+  </blockquote>
+</aside>
+
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/120154_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">pfaffman</div>
+          <div class="post_content">
+<p>Bitnami is no longer supporting those. <a class="inline-onebox" href="https://github.com/bitnami/charts/issues/35164">Upcoming changes to the Bitnami catalog (effective August 28th, 2025) · Issue #35164 · bitnami/charts · GitHub</a></p>
+<p>I would try the not-yet-supported stand alone discourse images. I’ve seen reports of them working well.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/538944_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">ice6</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="18" data-topic="380646" data-username="pfaffman">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/120154_2.png" width="24"/> pfaffman:</div>
+<blockquote>
+<p>Upcoming changes to the Bitnami catalog (effective August 28th, 2025) · Issue <span class="hashtag-raw">#35164</span> · bitnami/charts · GitHub</p>
+</blockquote>
+</aside>
+<p>will try the <code>discourse/discourse</code>, thanks for your kind reminder.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/292622_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">stevejr</div>
+          <div class="post_content">
+<p>Is this close to being production ready now? If not, is there a roadmap/indicative dates of when it will be?</p>
+<p>Great work BTW - will make managing new releases a lot easier with a simple image tag update <img alt=":+1:" class="emoji" height="20" loading="lazy" src="../../../images/+1.png" title=":+1:" width="20"/></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/116994_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">featheredtoast</div>
+          <div class="post_content">
+<p>There’s some internal updates going on in our hosting that turned out to be unforseen dependencies. Those need to be resolved before I’ll be able to push to have it marked for official support, but I suspect the last blockers here are planned to be resolved this quarter. It’s been a long road.</p>
+<p>In the meantime, all of my sites I’m hosting are done through the discourse/discourse docker image and it’s been working out here.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 5">❤️ 5</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/548936_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">sebhoss</div>
+          <div class="post_content">
+<p>thanks for the work here <span class="mention">@featheredtoast</span>! Is it possible to install additional plugins into the discourse/discourse image? How does the process look like for that?</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/549054_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Yannovitch</div>
+          <div class="post_content">
+<p>Hello !<br/>
+I registered just to say thanks a lot to all for your help, particularly  <span class="mention">@featheredtoast</span><br/>
+I almost got it to work, but the mail sending wasn’t working.<br/>
+I suppose it was because I have caddy as a reverse proxy.</p>
+<p>So now I’m back to using discourse separately from all the other services on my docker compose setup.</p>
+<p>Do you know how I could make it work with Caddy ? I suppose I have to make it use a socketed example, but I don’t know how to modify the app.yml inside the docker-compose discourse config.</p>
+<p>All the best to you - Y</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/120154_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">pfaffman</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="23" data-topic="380646" data-username="Yannovitch">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/549054_2.png" width="24"/> Yannovitch:</div>
+<blockquote>
+<p>I almost got it to work, but the mail sending wasn’t working.<br/>
+I suppose it was because I have caddy as a reverse proxy.</p>
+</blockquote>
+</aside>
+<p>Unless you’re somehow having Caddy proxy your outgoing email, I don’t think it’s related.</p>
+<aside class="quote no-group" data-post="23" data-topic="380646" data-username="Yannovitch">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/549054_2.png" width="24"/> Yannovitch:</div>
+<blockquote>
+<p>I suppose I have to make it use a socketed example, but I don’t know how to modify the app.yml inside the docker-compose discourse config.</p>
+</blockquote>
+</aside>
+<p>You don’t have to make it socketed, you can just refer to the docker name and/or IP. <a class="inline-onebox" href="https://meta.discourse.org/t/discourse-working-with-jwilder-nginx-proxy-acme-companion/217059/7">Discourse working with jwilder /nginx proxy &amp; acme-companion - #7 by Steve_Emerson</a> talks about using the socketed template and a bunch of other stuff.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/116994_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">featheredtoast</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="22" data-topic="380646" data-username="sebhoss">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/548936_2.png" width="24"/> sebhoss:</div>
+<blockquote>
+<p>Is it possible to install additional plugins into the discourse/discourse image</p>
+</blockquote>
+</aside>
+<p>So, short answer, no, not through docker-compose on its own – it’s something I’d like to see, but the plan here is to allow anyone to create a customized base image that can be shared publicly to push the ball forward. Building a plugin involves cloning the plugin, bundle install, npm, and recompiling ember… This should not be done on boot.</p>
+<p>So part of the idea here is to allow images to build just as discourse/discourse is – with the same app.yml as the supported Discourse versions are running.</p>
+<p>As a sample, I’m building my personal image with <a href="https://meta.discourse.org/t/resenha-add-discord-style-voice-rooms-to-your-community/389056">resenha</a> by updating the core app.yml to include the plugin <a href="https://github.com/featheredtoast/discourse-docker-compose/blob/main/.github/workflows/push-web-only.yml#L92">here</a> and then pushing it up to an external (public!) docker registry.</p>
+<aside class="quote no-group" data-post="23" data-topic="380646" data-username="Yannovitch">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/549054_2.png" width="24"/> Yannovitch:</div>
+<blockquote>
+<p>mail sending wasn’t working</p>
+</blockquote>
+</aside>
+<p>If you’re using an external mail service, I don’t think your caddy reverse proxy probably isn’t the problem. Unlike the current launcher builds, discourse/discourse will not nag you about setting up your email env vars (but it’s still necessary to do) – I’d check those first.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">DaanMeijer</div>
+          <div class="post_content">
+<p>I have managed to change the upload size limit:</p>
+<p><code>cat fix-upload-size.sh</code> (which needs to be <code>chmod +x</code>):</p>
+<pre data-code-wrap="bash"><code class="lang-bash">#!/bin/sh
+sed -i 's/client_max_body_size .*;/client_max_body_size 500m;/' /etc/nginx/conf.d/discourse.conf
+
+</code></pre>
+<p>in docker-compose.yml:</p>
+<pre data-code-wrap="yaml"><code class="lang-yaml">    volumes:
+     - ./fix-upload-size.sh:/etc/runit/1.d/fix-upload-size
+</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/548936_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">sebhoss</div>
+          <div class="post_content">
+<p>I’ve been able to build an image but “only” using the ESR version. When I use something newer than that, the build process does require a database and a redis instance. Is that intentional?</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">threemozis</div>
+          <div class="post_content">
+<p>Is there any way to upgrade Discourse to the latest version when using this image?</p>
+<p>I’m using it for my faculty’s research group forum and would like to update to the latest Discourse release, but the image hasn’t been updated since March. What would be the recommended way to upgrade?</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/116994_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">featheredtoast</div>
+          <div class="post_content">
+<p>That was an unintentional side effect of adding a call to clearing stuck web upgrades; I’m looking to resolve this soon via <a class="inline-onebox --gh-status-merged" href="https://github.com/discourse/discourse_docker/pull/1055">FIX: run clear_stuck_web_upgrades during precompile stage · Pull Request #1055 · discourse/discourse_docker</a></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">threemozis</div>
+          <div class="post_content">
+<p>Awesome, thank you!</p>
+<p>But I have another question, I’m using Azure for students and I am using Container Apps. If I somehow upgrade inside the app, I’m afraid that if the instance Discourse is running fails for some reason, it may render our forum in disarray, because when it restart it will probably be in a previous version.</p>
+<p>Once again Thank You!</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/116994_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">featheredtoast</div>
+          <div class="post_content">
+<p>That is a risk - there’s unfortunately no good way around that other than making sure the image is up to date if you’re upgrading both in the app <em>and</em> updating by pulling images from the docker repo. I really wouldn’t recommend doing so.</p>
+<p>Meantime, I’m still getting the docker repo sorted (there’s another issue to tackle here).</p>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+  </body>
+</html>

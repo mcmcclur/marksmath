@@ -1,0 +1,159 @@
+<?xml version="1.0"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="100%" height="100%">
+  <style>
+    .earth-group {
+      transform-origin: 60px 60px;
+      animation: earth-sway 4s infinite ease-in-out;
+    }
+
+    .orbit-group {
+      transform-origin: 60px 60px;
+      animation: spin-clockwise 9s linear infinite;
+    }
+
+    .bubble-content-1 {
+      transform-origin: 104px 60px;
+      animation: spin-counter-clockwise 9s linear infinite;
+    }
+    .bubble-content-2 {
+      transform-origin: 38px 98px;
+      animation: spin-counter-clockwise 9s linear infinite;
+    }
+    .bubble-content-3 {
+      transform-origin: 38px 22px;
+      animation: spin-counter-clockwise 9s linear infinite;
+    }
+
+    .sparkle {
+      fill: #ffd32a;
+      animation: twinkle 1.5s infinite ease-in-out;
+    }
+    .sparkle-1 { animation-delay: 0s; }
+    .sparkle-2 { animation-delay: 0.5s; }
+    .sparkle-3 { animation-delay: 1s; }
+
+    .char-text {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      font-size: 9px;
+      font-weight: 800;
+      fill: #ffffff;
+      text-anchor: middle;
+      opacity: 0;
+    }
+
+    .cycle-a { animation: trans-1 9s infinite ease-in-out; }
+    .cycle-b { animation: trans-2 9s infinite ease-in-out; }
+    .cycle-c { animation: trans-3 9s infinite ease-in-out; }
+
+    .cycle-offset-a { animation: trans-3 9s infinite ease-in-out; }
+    .cycle-offset-b { animation: trans-1 9s infinite ease-in-out; }
+    .cycle-offset-c { animation: trans-2 9s infinite ease-in-out; }
+
+    .cycle-double-offset-a { animation: trans-2 9s infinite ease-in-out; }
+    .cycle-double-offset-b { animation: trans-3 9s infinite ease-in-out; }
+    .cycle-double-offset-c { animation: trans-1 9s infinite ease-in-out; }
+
+
+
+    @keyframes spin-clockwise {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    @keyframes spin-counter-clockwise {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(-360deg); }
+    }
+
+    @keyframes earth-sway {
+      0%, 100% { transform: rotate(-4deg) translateY(0); }
+      50% { transform: rotate(4deg) translateY(-2px); }
+    }
+
+    @keyframes twinkle {
+      0%, 100% { transform: scale(0.8); opacity: 0.3; }
+      50% { transform: scale(1.2); opacity: 1; }
+    }
+
+    @keyframes trans-1 {
+      0%, 30%, 100% { opacity: 1; }
+      33.3%, 96.6% { opacity: 0; }
+    }
+    @keyframes trans-2 {
+      0%, 30%, 63.3%, 100% { opacity: 0; }
+      33.3%, 63.3% { opacity: 1; }
+    }
+    @keyframes trans-3 {
+      0%, 63.3%, 96.6% { opacity: 0; }
+      66.6%, 96.6% { opacity: 1; }
+    }
+  </style>
+
+  <!-- Orbit Track -->
+  <circle cx="60" cy="60" r="44" fill="none" stroke="#cbd5e1" stroke-width="1.5" stroke-dasharray="5 5"/>
+
+  <!-- Twinkling Sparkles along Orbit -->
+  <path class="sparkle sparkle-1" d="M 80,35 L 80.8,37.2 L 83,38 L 80.8,38.8 L 80,41 L 79.2,38.8 L 77,38 L 79.2,37.2 Z"/>
+  <path class="sparkle sparkle-2" d="M 45,85 L 45.8,87.2 L 48,88 L 45.8,88.8 L 45,91 L 44.2,88.8 L 42,88 L 44.2,87.2 Z"/>
+  <path class="sparkle sparkle-3" d="M 85,80 L 85.8,82.2 L 88,83 L 85.8,83.8 L 85,86 L 84.2,83.8 L 82,83 L 84.2,82.2 Z"/>
+
+  <!-- Cute Earth & Headset Group -->
+  <g class="earth-group">
+    <!-- Earth Base Circle -->
+    <circle cx="60" cy="60" r="24" fill="#a5f3fc"/>
+
+    <!-- Stylized Continents -->
+    <path d="M48 45 Q52 40 56 46 Q62 48 58 55 Q50 56 46 50 Z" fill="#4ade80"/>
+    <path d="M64 62 Q72 58 74 66 Q68 74 60 70 Z" fill="#4ade80"/>
+    <path d="M68 42 Q72 40 70 46 Z" fill="#4ade80"/>
+
+    <!-- Cute Smiling Emoticon Face -->
+    <circle cx="53" cy="58" r="1.5" fill="#1e293b"/>
+    <circle cx="67" cy="58" r="1.5" fill="#1e293b"/>
+    <!-- Happy Cheeks -->
+    <circle cx="49" cy="61" r="2.5" fill="#fda4af" opacity="0.6"/>
+    <circle cx="71" cy="61" r="2.5" fill="#fda4af" opacity="0.6"/>
+    <path d="M57 63 Q60 66 63 63" fill="none" stroke="#1e293b" stroke-width="1.5" stroke-linecap="round"/>
+
+    <!-- Translation Headset -->
+    <path d="M38 56 A24 24 0 0 1 82 56" fill="none" stroke="#0088cc" stroke-width="2.5" stroke-linecap="round"/>
+    <rect x="34" y="52" width="4" height="8" rx="2" fill="#0088cc"/>
+    <rect x="82" y="52" width="4" height="8" rx="2" fill="#0088cc"/>
+    <!-- Headset Microphone -->
+    <path d="M36 60 Q34 68 40 72" fill="none" stroke="#0088cc" stroke-width="1.5" stroke-linecap="round"/>
+    <circle cx="40" cy="72" r="1.5" fill="#ffd32a"/>
+  </g>
+
+  <!-- ORBITING BUBBLE 1 (Blue / Starts at Right) -->
+  <g class="orbit-group">
+    <g class="bubble-content-1">
+      <path d="M 104 50 c -5.5 0 -10 4.5 -10 10 c 0 2.2 0.7 4.2 1.9 5.8 l -1.9 4.2 l 4.2 -1.9 c 1.6 1.2 3.6 1.9 5.8 1.9 c 5.5 0 10 -4.5 10 -10 c 0 -5.5 -4.5 -10 -10 -10 z" fill="#0088cc"/>
+      <!-- Real-Time Translating Letters -->
+      <text class="char-text cycle-a" x="104" y="63">A</text>
+      <text class="char-text cycle-b" x="104" y="63">&#x6587;</text>
+      <text class="char-text cycle-c" x="103.5" y="62.5">&#x639;</text>
+    </g>
+  </g>
+
+  <!-- ORBITING BUBBLE 2 (Green / Starts at Bottom-Left) -->
+  <g class="orbit-group">
+    <g class="bubble-content-2">
+      <path d="M 38 88 c -5.5 0 -10 4.5 -10 10 c 0 2.2 0.7 4.2 1.9 5.8 l -1.9 4.2 l 4.2 -1.9 c 1.6 1.2 3.6 1.9 5.8 1.9 c 5.5 0 10 -4.5 10 -10 c 0 -5.5 -4.5 -10 -10 -10 z" fill="#10b981"/>
+      <!-- Real-Time Translating Letters (Offset 1) -->
+      <text class="char-text cycle-offset-a" x="38" y="101">A</text>
+      <text class="char-text cycle-offset-b" x="38" y="101">&#x6587;</text>
+      <text class="char-text cycle-offset-c" x="37.5" y="100.5">&#x639;</text>
+    </g>
+  </g>
+
+  <!-- ORBITING BUBBLE 3 (Rose / Starts at Top-Left) -->
+  <g class="orbit-group">
+    <g class="bubble-content-3">
+      <path d="M 38 12 c -5.5 0 -10 4.5 -10 10 c 0 2.2 0.7 4.2 1.9 5.8 l -1.9 4.2 l 4.2 -1.9 c 1.6 1.2 3.6 1.9 5.8 1.9 c 5.5 0 10 -4.5 10 -10 c 0 -5.5 -4.5 -10 -10 -10 z" fill="#f43f5e"/>
+      <!-- Real-Time Translating Letters (Offset 2) -->
+      <text class="char-text cycle-double-offset-a" x="38" y="25">A</text>
+      <text class="char-text cycle-double-offset-b" x="38" y="25">&#x6587;</text>
+      <text class="char-text cycle-double-offset-c" x="37.5" y="24.5">&#x639;</text>
+    </g>
+  </g>
+</svg>

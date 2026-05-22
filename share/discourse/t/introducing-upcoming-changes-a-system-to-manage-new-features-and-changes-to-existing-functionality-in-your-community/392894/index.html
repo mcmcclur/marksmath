@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width">
+    <title>Introducing Upcoming Changes, a system to manage new features and changes to existing functionality in your community</title>
+    <link rel="stylesheet" href="../../../archived.css" />
+    <script>
+      function findSageCodeBlocks() {
+        return Array.prototype.slice.call(
+          document.querySelectorAll(
+            "pre[data-code-wrap='sage'] > code, pre > code.lang-sage, pre > code.language-sage, pre > code.sage"
+          )
+        );
+      }
+
+      function loadScript(src) {
+        return new Promise(function (resolve, reject) {
+          var existing = document.querySelector("script[src='" + src + "']");
+          if (existing) {
+            if (existing.dataset.loaded === "true") {
+              resolve();
+              return;
+            }
+            existing.addEventListener("load", resolve, { once: true });
+            existing.addEventListener("error", reject, { once: true });
+            return;
+          }
+
+          var script = document.createElement("script");
+          script.src = src;
+          script.async = true;
+          script.addEventListener("load", function () {
+            script.dataset.loaded = "true";
+            resolve();
+          }, { once: true });
+          script.addEventListener("error", reject, { once: true });
+          document.head.appendChild(script);
+        });
+      }
+
+      function prepareSageCells() {
+        var sageBlocks = findSageCodeBlocks();
+        if (!sageBlocks.length) {
+          return Promise.resolve();
+        }
+
+        return loadScript("https://sagecell.sagemath.org/static/embedded_sagecell.js")
+          .then(function () {
+            if (!window.sagecell || !window.sagecell.makeSagecell) {
+              return;
+            }
+
+            sageBlocks.forEach(function (codeTag, index) {
+              var preTag = codeTag.parentElement;
+              if (!preTag || preTag.dataset.sageMounted === "true") {
+                return;
+              }
+
+              var host = document.createElement("div");
+              host.className = "sagecell-archive";
+
+              var source = document.createElement("script");
+              source.type = "text/x-sage";
+              source.text = codeTag.textContent || "";
+              host.appendChild(source);
+
+              preTag.insertAdjacentElement("afterend", host);
+              preTag.classList.add("sage-source-hidden");
+              preTag.dataset.sageMounted = "true";
+
+              window.sagecell.makeSagecell({
+                inputLocation: host,
+                autoeval: false,
+                evalButtonText: "Run",
+                languages: ["sage"]
+              });
+            });
+          })
+          .catch(function () {
+            // Leave the original code blocks visible if SageCell cannot load.
+          });
+      }
+
+      function preprocessDiscourseMath() {
+        document.querySelectorAll("span.math, div.math").forEach(function (node) {
+          var tex = node.textContent || "";
+          if (!tex.trim()) {
+            return;
+          }
+          if (node.tagName === "SPAN") {
+            node.textContent = "\\(" + tex + "\\)";
+          } else {
+            node.textContent = "\\[" + tex + "\\]";
+          }
+          node.classList.remove("math");
+        });
+      }
+
+      window.MathJax = {
+        tex: {
+          inlineMath: [["\\(", "\\)"]],
+          displayMath: [["\\[", "\\]"]]
+        },
+        startup: {
+          pageReady() {
+            preprocessDiscourseMath();
+            return MathJax.startup.defaultPageReady().then(function () {
+              return prepareSageCells();
+            });
+          }
+        }
+      };
+    </script>
+    <script async id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="title-span">
+        <a href="../../../">
+          <img src="../../../images/ad2526334012b2ad0c3421f9b6dd94bae2ede52f.svg" height="40" alt="Site Logo" id="site-logo" />
+        </a>
+      </div>
+    </header>
+
+    <div class="main">
+    <div class="archive-span"><a href='https://meta.discourse.org/'>Discourse Meta</a> archived in May, 2026</div>
+    <h1 class="topic-title">Introducing Upcoming Changes, a system to manage new features and changes to existing functionality in your community</h1>
+            <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/318210_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">lindsey</div>
+          <div class="post_content">
+<p>As we continue to improve Discourse, we’ve created a new Upcoming Changes config page to help admins understand what changes are coming to Discourse and let them manage how those changes are implemented in their community. We believe this system will help us keep improving Discourse in a safe, transparent way.</p>
+<p>In this topic, we’ll explain how this new system works and how to use it to safely introduce new features and other changes in your community.</p>
+<h2><a aria-label="Heading link" class="anchor" href="#p-1916347-overview-of-how-upcoming-changes-works-1" name="p-1916347-overview-of-how-upcoming-changes-works-1"></a>Overview of how Upcoming Changes works</h2>
+<p>As we work on new features or other changes, we will add them to the Upcoming Changes config page at <code>/admin/config/upcoming-changes</code>. Each change will include a description, status, indicator of which users are impacted by it, and which users (if any) it is enabled for in your community.</p>
+<p>Depending on the change’s status, you can decide whether to turn it on or off for your community — at least temporarily, since some changes will eventually be turned on permanently.</p>
+<p>Temporarily disabling a change gives you time to address any impacted site customizations, processes, and so on, inform your member base about the change, or deputize certain member groups for testing.</p>
+<h2><a aria-label="Heading link" class="anchor" href="#p-1916347-dissecting-an-upcoming-change-2" name="p-1916347-dissecting-an-upcoming-change-2"></a>Dissecting an Upcoming Change</h2>
+<p>Let’s dissect an Upcoming Change and define the information you’ll see in each section.</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/vB62kFZXBXYe52jDz988lPuufKX.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/d/d/7/dd74ed84a9aa623e8b6f0dce20b6aa5585e0586b.png" title="CleanShot 2026-01-07 at 10.55.23"><img alt="CleanShot 2026-01-07 at 10.55.23" data-base62-sha1="vB62kFZXBXYe52jDz988lPuufKX" data-dominant-color="F6F5F6" height="126" src="../../../images/dd74ed84a9aa623e8b6f0dce20b6aa5585e0586b_2_690x126.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/d/d/7/dd74ed84a9aa623e8b6f0dce20b6aa5585e0586b_2_690x126.png, https://d11a6trkgmumsb.cloudfront.net/original/4X/d/d/7/dd74ed84a9aa623e8b6f0dce20b6aa5585e0586b.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/d/d/7/dd74ed84a9aa623e8b6f0dce20b6aa5585e0586b.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">CleanShot 2026-01-07 at 10.55.23</span><span class="informations">981×180 20.2 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<h3><a aria-label="Heading link" class="anchor" href="#p-1916347-h-1-name-and-description-3" name="p-1916347-h-1-name-and-description-3"></a>1 - Name and description</h3>
+<p>The name and description give you a brief explanation of the change and will often link to related content (like a Meta topic) for further details.</p>
+<h3><a aria-label="Heading link" class="anchor" href="#p-1916347-h-2-status-4" name="p-1916347-h-2-status-4"></a>2 - Status</h3>
+<p>The status communicates its position in the development lifecycle. Status directly impacts whether the change is opt-in (i.e. off by default, but you can turn it on), opt-out (i.e. on by default, but you can turn it off), or forced on (i.e. on, and you can’t turn it off).</p>
+<p>We use the following statuses in Upcoming Changes:</p>
+<ul>
+<li><code>Experimental</code>: A potential change that is in early development / testing and is expected to evolve rapidly, or may be removed altogether if we end the experiment (at which point it will move to <code>Inactive</code> status; see below). You may <strong>opt-in</strong> to <code>Experimental</code> changes to test them out.</li>
+<li><code>Alpha</code>: A tested change that is safe to use, though there may be some minor updates to its design or functionality. You may <strong>opt-in</strong> to <code>Alpha</code> changes to use them early.</li>
+<li><code>Beta</code>: A tested change that is safe to use, and is unlikely to change much before moving to <code>Stable</code> or possibly <code>Permanent</code> status. For most sites, <code>Beta</code> changes are <strong>automatically turned on</strong> for everyone (if you haven’t previously enabled it), but you may still <strong>opt-out</strong>.</li>
+<li><code>Stable</code>: A completed change<sup class="footnote-ref"><a href="#footnote-1916347-1" id="footnote-ref-1916347-1">[1]</a></sup> , but is still <strong>opt-out</strong> (i.e. admins can disable it). Admins will be warned on their dashboard when they have opted-out of a <code>Stable</code> change.</li>
+<li><code>Permanent</code>: A change that has completed testing, and is <strong>forced on</strong> (i.e. admins cannot disable it).</li>
+<li><code>Inactive</code>: An abandoned experiment. You <strong>cannot opt-in</strong>.</li>
+</ul>
+<p>Sometimes, changes will move linearly through these statuses (i.e. start in <code>Experimental</code> and end in <code>Permanent</code>), but not always. Some changes may be introduced in <code>Alpha</code> or <code>Beta</code> status, and some will end in <code>Stable</code> status (if they will not be forced on).</p>
+<p>There is no set time for how long it will take a particular change to progress from one status to another, but admins will be notified when:</p>
+<ul>
+<li>A new change is available to try out</li>
+<li>A change has been enabled automatically</li>
+<li>When you have disabled a change that will soon be forced on</li>
+</ul>
+<h3><a aria-label="Heading link" class="anchor" href="#p-1916347-h-3-impacted-users-5" name="p-1916347-h-3-impacted-users-5"></a>3 - Impacted users</h3>
+<p>The impacted users tag describes which users in your community can see or interact with the change in some way. To put it simply — who might notice this change? There are several types of impacted users:</p>
+<ul>
+<li><code>Admins</code>: The change is only visible to admins.</li>
+<li><code>Staff</code>: The change is only visible to admins <em>and</em> moderators.</li>
+<li><code>All members</code>: The change is visible to all members on your site.</li>
+<li><code>Developers</code>: In rare cases, a change will only be noticeable to those who are interacting with code in core, themes, or plugins.</li>
+</ul>
+<h3><a aria-label="Heading link" class="anchor" href="#p-1916347-h-4-enabled-for-6" name="p-1916347-h-4-enabled-for-6"></a>4 - Enabled for…</h3>
+<p>This drop-down is where you, as the site admin, can control whether and how to introduce this change to your community by enabling it for:</p>
+<ul>
+<li><code>No one</code>: Disables the change for everyone on the site.</li>
+<li><code>Everyone</code>: Enables the change for everyone on the site, including anonymous users. When the change is automatically turned on (typically at <code>Beta</code> status), it will be for <code>Everyone</code>.</li>
+<li><code>Staff only</code>: Enables the change for site staff (i.e. admins and moderators).</li>
+<li><code>Specific groups</code>: Enables the change for the selected group(s).</li>
+</ul>
+<hr/>
+<p>For now, we have moved most <code>Experimental</code> changes from <code>/admin/config/experimental</code> into Upcoming Changes, and you’ll start seeing new updates land here soon. We’re looking forward to hearing about the impact this makes in your community, and welcome any questions or feedback!</p>
+<hr class="footnotes-sep"/>
+<ol class="footnotes-list">
+<li class="footnote-item" id="footnote-1916347-1"><p>Insofar as any software is complete! <a class="footnote-backref" href="#footnote-ref-1916347-1">↩︎</a></p>
+</li>
+</ol>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 33">❤️ 33</span><span class="engagement-pill reaction-pill" title="rocket: 5">🚀 5</span><span class="engagement-pill reaction-pill" title="clap: 2">👏 2</span><span class="engagement-pill reaction-pill" title="chefs kiss: 1">:chefs_kiss: 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/313494_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">NateDhaliwal</div>
+          <div class="post_content">
+<p>I’m curious - how does it control how the change is rolled out? Can it be changed after the feature is introduced? Thanks.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/176214_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">merefield</div>
+          <div class="post_content">
+<p>Native Feature Flags!  Very good <img alt=":clap:" class="emoji" height="20" loading="lazy" src="../../../images/clap.png" title=":clap:" width="20"/></p>
+<p>Be great to have an API for plugins.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 5">❤️ 5</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/119591_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Canapin</div>
+          <div class="post_content">
+<p>That’s a long-awaited feature! Thanks!</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/549896_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">darkpixlz</div>
+          <div class="post_content">
+<p>This is great, having the ability to change flags like this is amazing for people on the bleeding edge like myself especially when developing a theme</p>
+<p>Is “upcoming changes” really the best name for it though? For example HomeAssistant uses “labs” and a lot of other people just use stuff like “experiments” which feel better than upcoming changes.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 4">❤️ 4</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/318210_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">lindsey</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="2" data-topic="392894" data-username="NateDhaliwal">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/313494_2.png" width="24"/> NateDhaliwal:</div>
+<blockquote>
+<p>I’m curious - how does it control how the change is rolled out?</p>
+</blockquote>
+</aside>
+<p>You’ll be notified of new features while they are still in a state where you can try it out early (opt-in) and turn it off temporarily to fix any issues caused by the change (opt-out). If a change is going to become <code>permanent</code> (which means you <em>can’t</em> opt-out) and you’ve currently turned it off, we’ll let you know.</p>
+<p>This section describes that in a little more detail:</p>
+<aside class="quote no-group" data-post="1" data-topic="392894" data-username="lindsey">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/318210_2.png" width="24"/> lindsey:</div>
+<blockquote>
+<p>Sometimes, changes will move linearly through these statuses (i.e. start in <code>Experimental</code> and end in <code>Permanent</code>), but not always. Some changes may be introduced in <code>Alpha</code> or <code>Beta</code> status, and some will end in <code>Stable</code> status (if they will not be forced on).</p>
+<p>There is no set time for how long it will take a particular change to progress from one status to another, but admins will be notified when:</p>
+<ul>
+<li>A new change is available to try out</li>
+<li>A change has been enabled automatically</li>
+<li>When you have disabled a change that will soon be forced on</li>
+</ul>
+</blockquote>
+</aside>
+<aside class="quote no-group" data-post="5" data-topic="392894" data-username="darkpixlz">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/549896_2.png" width="24"/> darkpixlz:</div>
+<blockquote>
+<p>Is “upcoming changes” really the best name for it though?</p>
+</blockquote>
+</aside>
+<p>Right now, you’re seeing only experimental changes because we migrated those over from the settings area to Upcoming Changes, but in the future there will be non-experimental updates here, too. So “labs” doesn’t feel accurate for how we are using this system.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/491371_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">martin</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="3" data-topic="392894" data-username="merefield">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/176214_2.png" width="24"/> merefield:</div>
+<blockquote>
+<p>Be great to have an API for plugins.</p>
+</blockquote>
+</aside>
+<p>Plugins can already use this system. The OP doesn’t go into the technical ins-and-outs, but there is not much needed to add an upcoming change.</p>
+<p>The quick summary is:</p>
+<ul>
+<li>
+<p>Add a site setting which is <code>hidden: true</code> and <code>client: true</code></p>
+</li>
+<li>
+<p>Add a description for the setting in <code>server.en.yml</code></p>
+</li>
+<li>
+<p>Optionally add a screenshot to <code>public/images/upcoming_changes/SETTING_NAME.png</code></p>
+</li>
+<li>
+<p>Add <code>upcoming_change</code> metadata to the setting, which looks like this:</p>
+</li>
+</ul>
+<pre><code class="lang-plaintext"># upcoming_change       - Additional metadata with the following options to show in the /admin/config/upcoming-changes page:
+#                          - status: experimental | alpha | beta | stable
+#                          - impact: two parts separated by comma - feature|other , staff|admins|moderators|all_members|developers
+#                          - learn_more_url: a url for more information
+</code></pre>
+<p>However the caveat here is that we haven’t really intended to have third party plugin developers use this system, it was mostly for our own purposes. Maybe over time we can think more about this use case.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 6">❤️ 6</span><span class="engagement-pill reaction-pill" title="rocket: 1">🚀 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/552343_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">noahl</div>
+          <div class="post_content">
+<p>Love this! Thank you <img alt=":raising_hands:" class="emoji" height="20" loading="lazy" src="../../../images/raising_hands.png" title=":raising_hands:" width="20"/></p>
+<p>Is it possible to have a link/shortcut to the applicable setting if relevant? e.g. the custom splash screen has additional settings that need setting up for it to work (uploading the SVG) - but you have to actively go and find them. Would be helpful to have them alongside where it’s being enabled</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/xO6OoOPujXgP8mgOgz04eUDXzss.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/e/c/f/ecf1d5da8e890e1b09ed49406ec1f5ff291f5288.png" rel="noopener nofollow ugc" title="Screenshot 2026-02-04 at 11.53.21"><img alt="Screenshot 2026-02-04 at 11.53.21" data-base62-sha1="xO6OoOPujXgP8mgOgz04eUDXzss" data-dominant-color="F4F4F6" height="76" src="../../../images/ecf1d5da8e890e1b09ed49406ec1f5ff291f5288_2_690x76.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/e/c/f/ecf1d5da8e890e1b09ed49406ec1f5ff291f5288_2_690x76.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/e/c/f/ecf1d5da8e890e1b09ed49406ec1f5ff291f5288_2_1035x114.png 1.5x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2026-02-04 at 11.53.21</span><span class="informations">2774×308 49 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 8">❤️ 8</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/491371_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">martin</div>
+          <div class="post_content">
+<p>Yes indeed! I’m working on that change now, should be available in the next day or two, I will make a note to deploy your hosted site so you get the update <img alt=":slight_smile:" class="emoji" height="20" loading="lazy" src="../../../images/slight_smile.png" title=":slight_smile:" width="20"/></p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/mDI4nZXgGXDlhnk6YMZxGSJxuVx.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/9/e/a/9eacfd91266e50d3d685917e07b2b7f5ce87656f.png" title="image"><img alt="image" data-base62-sha1="mDI4nZXgGXDlhnk6YMZxGSJxuVx" data-dominant-color="F2F3F4" height="99" src="../../../images/9eacfd91266e50d3d685917e07b2b7f5ce87656f_2_690x99.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/9/e/a/9eacfd91266e50d3d685917e07b2b7f5ce87656f_2_690x99.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/9/e/a/9eacfd91266e50d3d685917e07b2b7f5ce87656f_2_1035x148.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/9/e/a/9eacfd91266e50d3d685917e07b2b7f5ce87656f.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1175×169 22.2 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>Edit: Done! <img alt=":rocket:" class="emoji" height="20" loading="lazy" src="../../../images/rocket.png" title=":rocket:" width="20"/></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 5">❤️ 5</span><span class="engagement-pill reaction-pill" title="rocket: 1">🚀 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/545002_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">sniper756</div>
+          <div class="post_content">
+<p>I have a question, for a self-hosted Discourse instance, how do I display these “Upcoming Changes” in the admin panel?</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/ifixXS0KHRwkJsJqL477Y9aJhaY.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/7/f/e/7fe1dce8b09b0a78bbebae8c98ec1154176c6184.png" title="WeCom_Screenshot_20260213095544"><img alt="WeCom_Screenshot_20260213095544" data-base62-sha1="ifixXS0KHRwkJsJqL477Y9aJhaY" height="461" src="../../../images/7fe1dce8b09b0a78bbebae8c98ec1154176c6184.png" width="284"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">WeCom_Screenshot_20260213095544</span><span class="informations">284×461 14.2 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p><span class="mention">@lindsey</span></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/491371_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">martin</div>
+          <div class="post_content">
+<p>We still have this hidden behind a global <code>enable_upcoming_changes</code> site setting which is hidden, so you can enable this in your site’s rails console with <code>rails c</code>. Eventually we will remove this and you won’t have to anymore.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/545002_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">sniper756</div>
+          <div class="post_content">
+<p>Okay, thank you, I’ll wait then~</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/328350_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">ToddZ</div>
+          <div class="post_content">
+<p>I’m not sure if this was clear: <s>the menu item for Upcoming Changes isn’t live yet, but</s> …</p>
+<p><em>rephrasing:</em><br/>
+If you don’t have the menu item yet, you can still see the Upcoming Changes section by going to <code>[your_forum]/admin/config/upcoming-changes</code></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/491371_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">martin</div>
+          <div class="post_content">
+<p>It should be, you don’t see it here?</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/kqRF8yKbuGKP5MGQZlKNzwDSs0E.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/8/f/3/8f34ec13d888dfb8789d8cd73b1a5ec0295d9398.png" title="image"><img alt="image" data-base62-sha1="kqRF8yKbuGKP5MGQZlKNzwDSs0E" height="240" src="../../../images/8f34ec13d888dfb8789d8cd73b1a5ec0295d9398.png" width="142"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">285×480 53.3 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>Are you self-hosting? If so you will also need to set <code>enable_upcoming_changes</code> (which is a hidden setting) to <code>true</code>. We plan to remove this in the not-too-distant future once we are completely sure the system is stable.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554653_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Moin</div>
+          <div class="post_content">
+<p>Is there a reason why most site settings for upcoming changes are hidden, but <code>enable_auto_grid_images</code> is not?</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/491371_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">martin</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="15" data-topic="392894" data-username="Moin">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/554653_2.png" width="24"/> Moin:</div>
+<blockquote>
+<p>enable_auto_grid_images</p>
+</blockquote>
+</aside>
+<p>Nope, just an oversight, fixed here:</p>
+<aside class="onebox githubpullrequest" data-onebox-src="https://github.com/discourse/discourse/pull/38046">
+<header class="source">
+<a href="https://github.com/discourse/discourse/pull/38046" rel="noopener" target="_blank">github.com/discourse/discourse</a>
+</header>
+<article class="onebox-body">
+<div class="github-row --gh-status-merged" data-github-private-repo="false">
+<div class="github-icon-container" title="Merged Pull Request">
+<svg aria-hidden="true" class="github-icon" height="60" viewbox="0 0 12 16" width="60"><path d="M11 11.28V5c-.03-.78-.34-1.47-.94-2.06C9.46 2.35 8.78 2.03 8 2H7V0L4 3l3 3V4h1c.27.02.48.11.69.31.21.2.3.42.31.69v6.28A1.993 1.993 0 0 0 10 15a1.993 1.993 0 0 0 1-3.72zm-1 2.92c-.66 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2zM4 3c0-1.11-.89-2-2-2a1.993 1.993 0 0 0-1 3.72v6.56A1.993 1.993 0 0 0 2 15a1.993 1.993 0 0 0 1-3.72V4.72c.59-.34 1-.98 1-1.72zm-.8 10c0 .66-.55 1.2-1.2 1.2-.65 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2zM2 4.2C1.34 4.2.8 3.65.8 3c0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2z" fill-rule="evenodd"></path></svg>
+</div>
+<div class="github-info-container">
+<h4>
+<a href="https://github.com/discourse/discourse/pull/38046" rel="noopener" target="_blank">FIX: Hide enable_auto_grid_images site setting (#38046)</a>
+</h4>
+<div class="branches">
+<code>main</code> ← <code>enable_auto_grid_images-hide</code>
+</div>
+<div class="github-info">
+<div class="date">
+          merged <span class="discourse-local-date" data-date="2026-02-25" data-format="ll" data-time="00:36:48" data-timezone="UTC">12:36AM - 25 Feb 26 UTC</span>
+</div>
+<div class="user">
+<a href="https://github.com/martin-brennan" rel="noopener" target="_blank">
+<img alt="" class="onebox-avatar-inline" data-dominant-color="54574F" height="20" src="../../../images/ada8adc187fb02292ac2b97f46a24efd15bb7e09.jpeg" width="20"/>
+            martin-brennan
+          </a>
+</div>
+<div class="lines" title="1 commits changed 1 files with 1 additions and 0 deletions">
+<a href="https://github.com/discourse/discourse/pull/38046/files" rel="noopener" target="_blank">
+<span class="added">+1</span>
+<span class="removed">-0</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+<div class="github-row">
+<p class="github-body-container">This is in the upcoming changes list and should not show in site settings at the<span class="show-more-container"><a class="show-more" href="https://github.com/discourse/discourse/pull/38046" rel="noopener" target="_blank">…</a></span><span class="excerpt hidden"> same time.</span></p>
+</div>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/328350_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">ToddZ</div>
+          <div class="post_content">
+<p>Yes, I’m self-hosting, like sniper756.<br/>
+“isn’t live yet” was maybe not the best phrasing; I’ll edit.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554653_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Moin</div>
+          <div class="post_content">
+<p>Today, I was thinking it would be handy if I could sort the changes by status - first beta, then alpha, and finally experimental. I know I can filter by that, but I like to see the whole list; I just find changes more or less interesting depending on their status.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 4">❤️ 4</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/491371_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">martin</div>
+          <div class="post_content">
+<p>Yep makes sense, I have also thought about adding a sort option based on when the change appeared on your site…will add both <img alt=":smiley:" class="emoji" height="20" loading="lazy" src="../../../images/smiley.png" title=":smiley:" width="20"/></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/108976_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">khenmu</div>
+          <div class="post_content">
+<p>Fantastic addition!</p>
+<p>Thank you for this.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554803_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Lilly</div>
+          <div class="post_content">
+<p>is there a way to disable these notifications without resorting to a CSS hack? i would prefer not to have the excess visual noise.</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/6hFDDKAseYi5vcfZFw2aa5n1fjk.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/2/c/0/2c0c6e05d7bd631100ce0b260b4b08c516076132.png" title="image"><img alt="image" data-base62-sha1="6hFDDKAseYi5vcfZFw2aa5n1fjk" height="335" src="../../../images/2c0c6e05d7bd631100ce0b260b4b08c516076132.png" width="395"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">395×335 20.5 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<details>
+<summary>
+hackity hack upcoming changes alerts don't come back</summary>
+<pre data-code-wrap="css"><code class="lang-css">.notification.read.upcoming-change-available,
+.notification.unread.upcoming-change-available {
+    display: none;
+}
+</code></pre>
+</details>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 5">❤️ 5</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/313494_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">NateDhaliwal</div>
+          <div class="post_content">
+<p>But wouldn’t that still show a notification count/indicator? But I guess that can’t be helped.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554803_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Lilly</div>
+          <div class="post_content">
+<aside class="quote no-group" data-full="true" data-post="24" data-topic="392894" data-username="NateDhaliwal">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/313494_2.png" width="24"/> NateDhaliwal:</div>
+<blockquote>
+<p>But wouldn’t that still show a notification count/indicator? But I guess that can’t be helped.</p>
+</blockquote>
+</aside>
+<p>not any more  <img alt=":smiley:" class="emoji" height="20" loading="lazy" src="../../../images/smiley.png" title=":smiley:" width="20"/></p>
+<aside class="onebox githubrepo" data-onebox-src="https://github.com/Lillinator/dismiss-admin-noise">
+<header class="source">
+<a href="https://github.com/Lillinator/dismiss-admin-noise" rel="noopener" target="_blank">github.com</a>
+</header>
+<article class="onebox-body">
+<div class="github-row" data-github-private-repo="false">
+<img class="thumbnail" data-dominant-color="EFF0ED" height="344" src="../../../images/714d5d6df62442aee0c8628dfd4f80b20ff897d9_2_690x344.png" width="690"/>
+<h3><a href="https://github.com/Lillinator/dismiss-admin-noise" rel="noopener" target="_blank">GitHub - Lillinator/dismiss-admin-noise: Automatically dismisses the Discourse admin...</a></h3>
+<p><span class="github-repo-description">Automatically dismisses the Discourse admin notifications for new features and upcoming changes</span></p>
+</div>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+<p>note: can select to dismiss notifications for either new features or upcoming changes, or both.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span><span class="engagement-pill reaction-pill" title="100: 1">:100: 1</span><span class="engagement-pill reaction-pill" title="eyes: 1">👀 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">EricGT</div>
+          <div class="post_content">
+<p>This has tripped me up a few times, and I do not see it mentioned above as a concern/problem.</p>
+<p>I am not in the habit of checking <strong>Upcoming changes</strong> by clicking the menu option on the left:</p>
+<p><code>https://xyz.discourse.group/admin/config/upcoming-changes</code></p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/e7HlAPnQaM5qQBK6NXjH6omadtS.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/6/2/f/62fd3c7b967403cef814e4dd28a5d9ed507b2380.png" rel="noopener nofollow ugc" title="image"><img alt="image" data-base62-sha1="e7HlAPnQaM5qQBK6NXjH6omadtS" data-dominant-color="191A1C" height="210" src="../../../images/62fd3c7b967403cef814e4dd28a5d9ed507b2380.png" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1383×421 16.9 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>That page includes a <strong>Preview</strong> link for each change.</p>
+<p>Normally, as part of my daily routine, I check the Discourse inbox and sometimes find a notification about upcoming changes, for example:</p>
+<p><code>https://xyz.discourse.group/admin/config/upcoming-changes?changeNamesFilter=enable_ai_bot_starred_conversations</code></p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/g03NokNryC8ZGLBfVhrinbleyAR.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/7/0/2/70248e3a4f80f376f12c59ace7e3d458a28246b5.png" rel="noopener nofollow ugc" title="image"><img alt="image" data-base62-sha1="g03NokNryC8ZGLBfVhrinbleyAR" data-dominant-color="1A1A1C" height="211" src="../../../images/70248e3a4f80f376f12c59ace7e3d458a28246b5.png" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1386×424 17.1 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>Notice the change in the URL, and also that the <strong>Preview</strong> link is missing.</p>
+<p>That missing <strong>Preview</strong> link is what has been tripping me up for a few days. I knew the link existed, but thought it had disappeared.</p>
+<p>Hopefully this provides enough detail to understand the concern and possibly fix it.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/491371_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">martin</div>
+          <div class="post_content">
+<p>Both the “Feedback…” and “Preview” links are optional for the upcoming change items:</p>
+<ul>
+<li>Feedback will point to a topic here on Meta for discussing the change</li>
+<li>Preview will open a screenshot of the change in a lightbox on the page</li>
+</ul>
+<p>It’s up to whichever developer who adds the upcoming change to specify these…I’ll ping some people internally and see if I can get them to add them.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">EricGT</div>
+          <div class="post_content">
+<p>Today the Preview button appears with the noted URL.</p>
+<p><code>https://xyz.discourse.group/admin/config/upcoming-changes?changeNamesFilter=enable_new_checkbox_style</code></p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/lK0LbKUJkRQVmrBiqDmAPWeNwo4.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/9/8/6/98612b8086fbc9ee9041f22c9934a933c799a42c.png" rel="noopener nofollow ugc" title="image"><img alt="image" data-base62-sha1="lK0LbKUJkRQVmrBiqDmAPWeNwo4" data-dominant-color="141415" height="243" src="../../../images/98612b8086fbc9ee9041f22c9934a933c799a42c.png" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1086×384 7.56 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>Thanks!</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+
+    </div>
+  </body>
+</html>

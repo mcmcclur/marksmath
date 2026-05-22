@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Discourse Meta</title>
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="https://use.fontawesome.com/2374bdec1c.css">
+    <link rel="stylesheet" href="./archived.css" />
+    <script>
+      function applyCategoryFilter() {
+        var hash = window.location.hash || "";
+        var selected = "all";
+        if (hash.indexOf("#category=") === 0) {
+          selected = decodeURIComponent(hash.slice("#category=".length));
+        }
+
+        document.querySelectorAll(".category-nav a").forEach(function (link) {
+          var isActive = link.dataset.category === selected;
+          link.setAttribute("aria-current", isActive ? "page" : "false");
+        });
+
+        document.querySelectorAll(".topic-row").forEach(function (row) {
+          var matches = selected === "all" || row.dataset.category === selected;
+          row.hidden = !matches;
+        });
+
+        document.querySelectorAll(".pagination-link[href]").forEach(function (link) {
+          var baseHref = link.getAttribute("href").split("#")[0];
+          link.setAttribute("href", selected === "all" ? baseHref : baseHref + hash);
+        });
+      }
+
+      function preprocessDiscourseMath() {
+        document.querySelectorAll("span.math, div.math").forEach(function (node) {
+          var tex = node.textContent || "";
+          if (!tex.trim()) {
+            return;
+          }
+          if (node.tagName === "SPAN") {
+            node.textContent = "\\(" + tex + "\\)";
+          } else {
+            node.textContent = "\\[" + tex + "\\]";
+          }
+          node.classList.remove("math");
+        });
+      }
+
+      window.MathJax = {
+        tex: {
+          inlineMath: [["\\(", "\\)"]],
+          displayMath: [["\\[", "\\]"]]
+        },
+        startup: {
+          pageReady() {
+            preprocessDiscourseMath();
+            applyCategoryFilter();
+            return MathJax.startup.defaultPageReady();
+          }
+        }
+      };
+
+      window.addEventListener("hashchange", applyCategoryFilter);
+      window.addEventListener("DOMContentLoaded", applyCategoryFilter);
+    </script>
+    <script async id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
+  </head>
+
+  <body>
+
+    <header class="header">
+      <div class="title-span">
+        <h1 class="site-title">
+          <img src="images/ad2526334012b2ad0c3421f9b6dd94bae2ede52f.svg" height="40" alt="Site Logo" id="site-logo" />
+        </h1>
+      </div>
+    </header>
+
+    <div class="main">
+      <h1 class="archive-title">Discourse Meta</h1>
+      <div class="archive-span"><a href='https://meta.discourse.org/'>Discourse Meta</a> archived in May, 2026</div>
+      <div class="category-nav">Categories: <a href="#" data-category="all">All</a> - <a href="#category=community-building" data-category="community-building">Community Building</a> - <a href="#category=development" data-category="development">Development</a> - <a href="#category=general" data-category="general">General</a> - <a href="#category=support" data-category="support">Support</a></div>
+      <nav class="pagination-nav" aria-label="Topic pages"><a class="pagination-link" href="index.html">1</a><a class="pagination-link" href="page-2.html">2</a><a class="pagination-link" href="page-3.html">3</a><span class="pagination-link current" aria-current="page">4</span></nav>
+      <div class="topics">
+        <div class="header-row">
+          <span class="topic-head">Topics</span>
+          <span class="category-head">Category</span>
+          <span class="post-count-head">Posts</span>
+        </div>
+              <div class="topic-row" data-category="uncategorized">
+        <span class="topic"><a href="t/discourse/402623">Failed to restore data after migrating Discourse</a></span>
+        <span class="category"></span>
+        <span class="post-count">11</span>
+      </div>
+
+      <div class="topic-row" data-category="support">
+        <span class="topic"><a href="t/populating-both-email-and-username-from-url-parameters/402890">Populating both email and username from URL parameters?</a></span>
+        <span class="category">Support</span>
+        <span class="post-count">5</span>
+      </div>
+
+      <div class="topic-row" data-category="uncategorized">
+        <span class="topic"><a href="t/backup-discourse-from-the-command-line/64364">Backup discourse from the command line</a></span>
+        <span class="category"></span>
+        <span class="post-count">9</span>
+      </div>
+
+      <div class="topic-row" data-category="support">
+        <span class="topic"><a href="t/reverse-proxy-x-forwarded-for/403181">Reverse proxy X-Forwarded-For</a></span>
+        <span class="category">Support</span>
+        <span class="post-count">6</span>
+      </div>
+
+      <div class="topic-row" data-category="uncategorized">
+        <span class="topic"><a href="t/thanks-for-contributing-popup-in-posts-appearing-even-after-limit-passed/373048">&ldquo;Thanks for Contributing&rdquo; Popup in Posts Appearing Even After Limit Passed?</a></span>
+        <span class="category"></span>
+        <span class="post-count">16</span>
+      </div>
+
+      <div class="topic-row" data-category="support">
+        <span class="topic"><a href="t/clarification-around-about-page-hidden-groups-and-overlapping-visible-groups/403162">Clarification around about page hidden groups and overlapping visible groups</a></span>
+        <span class="category">Support</span>
+        <span class="post-count">6</span>
+      </div>
+
+      <div class="topic-row" data-category="uncategorized">
+        <span class="topic"><a href="t/topic/403180">Mobile browser shows display glitches when opening the Manage Tab Groups page</a></span>
+        <span class="category"></span>
+        <span class="post-count">1</span>
+      </div>
+
+      <div class="topic-row" data-category="support">
+        <span class="topic"><a href="t/error-encountered-while-inspecting-live-url/402595">Error encountered while inspecting Live URL</a></span>
+        <span class="category">Support</span>
+        <span class="post-count">3</span>
+      </div>
+
+      <div class="topic-row" data-category="support">
+        <span class="topic"><a href="t/no-starter-upgrade-option/403167">No starter upgrade option</a></span>
+        <span class="category">Support</span>
+        <span class="post-count">15</span>
+      </div>
+
+      <div class="topic-row" data-category="uncategorized">
+        <span class="topic"><a href="t/no-bump-first-post-plugin/385290">No Bump First Post Plugin</a></span>
+        <span class="category"></span>
+        <span class="post-count">7</span>
+      </div>
+
+
+      </div>
+      <nav class="pagination-nav" aria-label="Topic pages"><a class="pagination-link" href="index.html">1</a><a class="pagination-link" href="page-2.html">2</a><a class="pagination-link" href="page-3.html">3</a><span class="pagination-link current" aria-current="page">4</span></nav>
+      <footer class="archive-footer">
+        <a href="https://discourse.org">Discourse</a> forum -- Archived by <a href="https://github.com/mcmcclur/ArchiveDiscourse">Archive Discourse</a>
+      </footer>
+    </div>
+  </body>
+</html>

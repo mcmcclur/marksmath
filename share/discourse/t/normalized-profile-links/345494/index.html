@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width">
+    <title>Normalized Profile Links</title>
+    <link rel="stylesheet" href="../../../archived.css" />
+    <script>
+      function findSageCodeBlocks() {
+        return Array.prototype.slice.call(
+          document.querySelectorAll(
+            "pre[data-code-wrap='sage'] > code, pre > code.lang-sage, pre > code.language-sage, pre > code.sage"
+          )
+        );
+      }
+
+      function loadScript(src) {
+        return new Promise(function (resolve, reject) {
+          var existing = document.querySelector("script[src='" + src + "']");
+          if (existing) {
+            if (existing.dataset.loaded === "true") {
+              resolve();
+              return;
+            }
+            existing.addEventListener("load", resolve, { once: true });
+            existing.addEventListener("error", reject, { once: true });
+            return;
+          }
+
+          var script = document.createElement("script");
+          script.src = src;
+          script.async = true;
+          script.addEventListener("load", function () {
+            script.dataset.loaded = "true";
+            resolve();
+          }, { once: true });
+          script.addEventListener("error", reject, { once: true });
+          document.head.appendChild(script);
+        });
+      }
+
+      function prepareSageCells() {
+        var sageBlocks = findSageCodeBlocks();
+        if (!sageBlocks.length) {
+          return Promise.resolve();
+        }
+
+        return loadScript("https://sagecell.sagemath.org/static/embedded_sagecell.js")
+          .then(function () {
+            if (!window.sagecell || !window.sagecell.makeSagecell) {
+              return;
+            }
+
+            sageBlocks.forEach(function (codeTag, index) {
+              var preTag = codeTag.parentElement;
+              if (!preTag || preTag.dataset.sageMounted === "true") {
+                return;
+              }
+
+              var host = document.createElement("div");
+              host.className = "sagecell-archive";
+
+              var source = document.createElement("script");
+              source.type = "text/x-sage";
+              source.text = codeTag.textContent || "";
+              host.appendChild(source);
+
+              preTag.insertAdjacentElement("afterend", host);
+              preTag.classList.add("sage-source-hidden");
+              preTag.dataset.sageMounted = "true";
+
+              window.sagecell.makeSagecell({
+                inputLocation: host,
+                autoeval: false,
+                evalButtonText: "Run",
+                languages: ["sage"]
+              });
+            });
+          })
+          .catch(function () {
+            // Leave the original code blocks visible if SageCell cannot load.
+          });
+      }
+
+      function preprocessDiscourseMath() {
+        document.querySelectorAll("span.math, div.math").forEach(function (node) {
+          var tex = node.textContent || "";
+          if (!tex.trim()) {
+            return;
+          }
+          if (node.tagName === "SPAN") {
+            node.textContent = "\\(" + tex + "\\)";
+          } else {
+            node.textContent = "\\[" + tex + "\\]";
+          }
+          node.classList.remove("math");
+        });
+      }
+
+      window.MathJax = {
+        tex: {
+          inlineMath: [["\\(", "\\)"]],
+          displayMath: [["\\[", "\\]"]]
+        },
+        startup: {
+          pageReady() {
+            preprocessDiscourseMath();
+            return MathJax.startup.defaultPageReady().then(function () {
+              return prepareSageCells();
+            });
+          }
+        }
+      };
+    </script>
+    <script async id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="title-span">
+        <a href="../../../">
+          <img src="../../../images/ad2526334012b2ad0c3421f9b6dd94bae2ede52f.svg" height="40" alt="Site Logo" id="site-logo" />
+        </a>
+      </div>
+    </header>
+
+    <div class="main">
+    <div class="archive-span"><a href='https://meta.discourse.org/'>Discourse Meta</a> archived in May, 2026</div>
+    <h1 class="topic-title">Normalized Profile Links</h1>
+            <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/120154_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">pfaffman</div>
+          <div class="post_content">
+<div class="md-table">
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><img alt=":information_source:" class="emoji only-emoji" height="20" loading="lazy" src="../../../images/information_source.png" title=":information_source:" width="20"/></td>
+<td><strong>Summary</strong></td>
+<td>Add links to user card and profile</td>
+</tr>
+<tr>
+<td><img alt=":hammer_and_wrench:" class="emoji only-emoji" height="20" loading="lazy" src="../../../images/hammer_and_wrench.png" title=":hammer_and_wrench:" width="20"/></td>
+<td><strong>Repository</strong></td>
+<td><a class="inline-onebox" href="https://github.com/literatecomputing/normalized-profile-links">GitHub - literatecomputing/normalized-profile-links: Add profile links and normalize the user part (e.g., make https://twitter.com/user or @user both be user)</a></td>
+</tr>
+<tr>
+<td><img alt=":question:" class="emoji only-emoji" height="20" loading="lazy" src="../../../images/question.png" title=":question:" width="20"/></td>
+<td><strong>Install Guide</strong></td>
+<td><a href="https://meta.discourse.org/t/how-do-i-install-a-theme-or-theme-component/63682">How to install a theme or theme component</a></td>
+</tr>
+<tr>
+<td><img alt=":open_book:" class="emoji only-emoji" height="20" loading="lazy" src="../../../images/open_book.png" title=":open_book:" width="20"/></td>
+<td><strong>New to Discourse Themes?</strong></td>
+<td><a href="https://meta.discourse.org/t/beginners-guide-to-using-discourse-themes/91966">Beginner’s guide to using Discourse Themes</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="d-wrap" data-repo-name="Normalized Profile Links" data-repo-url="https://github.com/literatecomputing/normalized-profile-links" data-wrap="theme-install-button">
+<p>Install this theme component</p>
+</div>
+<p>Add <code>user_custom_field</code> links to user card and profile and attempt to deal with bad user entries. Allow adding links to arbitrary sites.</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/eZqrlPXvcEvUjety6j3dD5hFGFi.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/6/9/1/69100337a0d5d9594effb33f82badc1a185bcf10.png" title="image"><img alt="image" data-base62-sha1="eZqrlPXvcEvUjety6j3dD5hFGFi" height="120" src="../../../images/69100337a0d5d9594effb33f82badc1a185bcf10.png" width="354"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">354×120 10.8 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/1HOP9vdW4IaOLJHekNkpaYXE9Yx.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/0/b/f/0bf63e2b926ec8e3b1c7d8b147e44ffe38d408bd.png" title="Profile settings page for normalization with selected profile data fields, icon, and processing options. (Captioned by AI)"><img alt="Profile settings page for normalization with selected profile data fields, icon, and processing options. (Captioned by AI)" data-base62-sha1="1HOP9vdW4IaOLJHekNkpaYXE9Yx" data-dominant-color="F7FAFB" height="235" src="../../../images/0bf63e2b926ec8e3b1c7d8b147e44ffe38d408bd_2_690x235.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/0/b/f/0bf63e2b926ec8e3b1c7d8b147e44ffe38d408bd_2_690x235.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/0/b/f/0bf63e2b926ec8e3b1c7d8b147e44ffe38d408bd_2_1035x352.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/0/b/f/0bf63e2b926ec8e3b1c7d8b147e44ffe38d408bd.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Profile settings page for normalization with selected profile data fields, icon, and processing options. (Captioned by AI)</span><span class="informations">1111×379 19.5 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>For example, a user might enter any of these for Twitter (X):</p>
+<ul>
+<li><code>https://x.com/MyHandle</code></li>
+<li><code>https://twitter.com/MyHandle</code></li>
+<li><code>https://www.twitter.com/MyHandle</code></li>
+<li><code>x.com/MyHandle</code></li>
+<li><code>twitter.com/MyHandle</code></li>
+<li><code>/MyHandle</code></li>
+<li><code>@MyHandle</code></li>
+<li><code>MyHandle</code></li>
+</ul>
+<p>This theme component will make all of those become “MyHandle”, so if a user enters any of those in the twitter field, the link will become <code>https://x.com/MyHandle</code>. For a site like YouTube where an @ is needed in the URL for the profile link, you need to make the link URL be <code>https://youtube.com/@', so that the link will become </code><a href="https://youtube.com/@MyHandle%60">https://youtube.com/@MyHandle`</a>. I considered making the <code>@</code> be part of the handle, but that makes breaks things if a user enters <code>@literatecomputing.com</code> as their BlueSky handle since BlueSky wants the profile URL to be <code>https://bsky.app/profile/literatecomputing.com</code> with <strong>no</strong> <code>@</code>.</p>
+<p>Settings allow adding any site you wish that has some kind of handle that can be appended to some URL.</p>
+<p>Note that the <code>custom_field_name</code> and link name are <strong>case sensitive</strong>. I considered trying to fix this but it was a pain and I decided that admins can deal with making the case match. (Thanks to <span class="mention">@NateDhaliwal</span> for trying the theme component and to <span class="mention">@Moin</span> and <span class="mention">@Richie</span> for pointing out that case sensitivity was an issue.)</p>
+<p>If you require additional <a href="https://fontawesome.com/v6/search?o=r&amp;m=free">Font Awesome Icons</a> you can add them to the Additional Icons setting.</p>
+<p>A bunch of the sample settings (and associated icons) are provided by AI completion and not tested. You can make changes to the settings yourself, but if you let me know about a broken one (via email or PR) I will be happy to fix it.</p>
+<p>Another feature I have considered is making it possible to have entries appear on only the User Card or User Profile, rather than both. If that’s of interest, please let me know, especially if you have a budget.</p>
+<h3><a aria-label="Heading link" class="anchor" href="#p-1680184-why-yet-another-custom-field-theme-component-1" name="p-1680184-why-yet-another-custom-field-theme-component-1"></a>Why Yet <em>Another</em> Custom Field Theme Component?</h3>
+<p>The Official <a href="https://meta.discourse.org/t/custom-profile-link/295470">Custom Profile Link</a> adds a link for only one custom field. (<img alt=":person_shrugging:" class="emoji" height="20" loading="lazy" src="../../../images/person_shrugging.png" title=":person_shrugging:" width="20"/>)</p>
+<p><a href="https://meta.discourse.org/t/multiple-custom-profile-links/295547">Multiple Custom Profile Links</a> is similar to this, but this component adds</p>
+<ul>
+<li>a simpler customization interface,</li>
+<li>some error checking/fixing of users adding semi-bogus entries,</li>
+<li>and the ability to add links to custom services/sites.</li>
+</ul>
+<p>Thanks to <a href="https://greyarro.ws/">Grey Arrows Drone Club</a> for funding initial development!</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 14">❤️ 14</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/313494_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">NateDhaliwal</div>
+          <div class="post_content">
+<p>I’m not sure how to get the icons to show? I tried creating a custom user field, but I don’t think that’s how it’s done?</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/115110_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Richie</div>
+          <div class="post_content">
+<p><span class="mention">@NateDhaliwal</span>  if it helps, here’s the custom user field settings we have for YouTube, also make sure the two <code>Show on...</code> settings are <em>not</em> checked:</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/5dq3zYA6JUtkqVzu2M5mCTbRCMQ.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/2/4/8/248f3adfc3fde11fe1f14bd0aee59fe2ee6f3d14.png" rel="noopener nofollow ugc" title="Screenshot 2025-01-04 at 08.28.10"><img alt="Screenshot 2025-01-04 at 08.28.10" data-base62-sha1="5dq3zYA6JUtkqVzu2M5mCTbRCMQ" data-dominant-color="262626" height="500" src="../../../images/248f3adfc3fde11fe1f14bd0aee59fe2ee6f3d14_2_534x500.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/2/4/8/248f3adfc3fde11fe1f14bd0aee59fe2ee6f3d14_2_534x500.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/2/4/8/248f3adfc3fde11fe1f14bd0aee59fe2ee6f3d14_2_801x750.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/2/4/8/248f3adfc3fde11fe1f14bd0aee59fe2ee6f3d14_2_1068x1000.png 2x" width="534"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2025-01-04 at 08.28.10</span><span class="informations">1778×1664 218 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>Here are the settings used on this theme component for YouTube:</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/5fO4EZlGzKiHGzmt57vtUTpW3NV.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/2/4/d/24d4510d7b3677aaaf4b5f93dd5d94b463f75083.png" rel="noopener nofollow ugc" title="Screenshot 2025-01-04 at 08.29.09"><img alt="Screenshot 2025-01-04 at 08.29.09" data-base62-sha1="5fO4EZlGzKiHGzmt57vtUTpW3NV" data-dominant-color="272829" height="368" src="../../../images/24d4510d7b3677aaaf4b5f93dd5d94b463f75083_2_690x368.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/2/4/d/24d4510d7b3677aaaf4b5f93dd5d94b463f75083_2_690x368.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/2/4/d/24d4510d7b3677aaaf4b5f93dd5d94b463f75083_2_1035x552.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/2/4/d/24d4510d7b3677aaaf4b5f93dd5d94b463f75083_2_1380x736.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2025-01-04 at 08.29.09</span><span class="informations">2360×1260 185 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>The end result when viewing a user profile:</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/bPqBrK0D153Mhh7GvmQFC1us0vh.jpeg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/5/2/e/52e82f0afafae2950d597a7053ca9d744aa30973.jpeg" rel="noopener nofollow ugc" title="Screenshot 2025-01-04 at 08.29.54"><img alt="Screenshot 2025-01-04 at 08.29.54" data-base62-sha1="bPqBrK0D153Mhh7GvmQFC1us0vh" data-dominant-color="445859" height="425" src="../../../images/52e82f0afafae2950d597a7053ca9d744aa30973_2_690x425.jpeg" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/5/2/e/52e82f0afafae2950d597a7053ca9d744aa30973_2_690x425.jpeg, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/5/2/e/52e82f0afafae2950d597a7053ca9d744aa30973_2_1035x637.jpeg 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/5/2/e/52e82f0afafae2950d597a7053ca9d744aa30973_2_1380x850.jpeg 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2025-01-04 at 08.29.54</span><span class="informations">1920×1184 166 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/313494_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">NateDhaliwal</div>
+          <div class="post_content">
+<p>I see, I had it checked.<br/>
+I did exactly what you did, but my Github icon isn’t showing.<br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/7uQtMbewyT57WckAUx29DCocCZ2.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/3/4/8/348bdc8926d592d7702b091446a4a81cd6874700.png" title="A form field for entering a Github username is displayed. (Captioned by AI)"><img alt="A form field for entering a Github username is displayed. (Captioned by AI)" data-base62-sha1="7uQtMbewyT57WckAUx29DCocCZ2" data-dominant-color="FAFAFA" height="499" src="../../../images/348bdc8926d592d7702b091446a4a81cd6874700_2_578x499.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/3/4/8/348bdc8926d592d7702b091446a4a81cd6874700_2_578x499.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/3/4/8/348bdc8926d592d7702b091446a4a81cd6874700_2_867x748.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/3/4/8/348bdc8926d592d7702b091446a4a81cd6874700.png 2x" width="578"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">A form field for entering a Github username is displayed. (Captioned by AI)</span><span class="informations">969×838 45.6 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div><br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/dSxsCIXXfzZfThRt5m3GBLbfIbB.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/6/1/4/61468c20c248d95f2c123c72d41f69c688164a17.png" title="An interface for editing GitHub profile links, displaying fields for custom_field_name, icon, url, and title, with specific values provided. (Captioned by AI)"><img alt="An interface for editing GitHub profile links, displaying fields for custom_field_name, icon, url, and title, with specific values provided. (Captioned by AI)" data-base62-sha1="dSxsCIXXfzZfThRt5m3GBLbfIbB" data-dominant-color="F5F8FA" height="255" src="../../../images/61468c20c248d95f2c123c72d41f69c688164a17_2_690x255.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/6/1/4/61468c20c248d95f2c123c72d41f69c688164a17_2_690x255.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/6/1/4/61468c20c248d95f2c123c72d41f69c688164a17_2_1035x382.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/6/1/4/61468c20c248d95f2c123c72d41f69c688164a17_2_1380x510.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">An interface for editing GitHub profile links, displaying fields for custom_field_name, icon, url, and title, with specific values provided. (Captioned by AI)</span><span class="informations">1450×537 26.6 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div><br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/6OiRxgQoQcBVige8mAUbBJEtDzQ.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/2/f/b/2fbcc3454f1a06c71db1bf286d4ba980286ad502.png" title="This image appears to be a screenshot of a forum or message board, showing the profile details of the user called &quot;Spam,&quot; who is redacted, along with various buttons and options related to the forum's administration and management. (Captioned by AI)"><img alt="This image appears to be a screenshot of a forum or message board, showing the profile details of the user called &quot;Spam,&quot; who is redacted, along with various buttons and options related to the forum's administration and management. (Captioned by AI)" data-base62-sha1="6OiRxgQoQcBVige8mAUbBJEtDzQ" data-dominant-color="CDCDC9" height="213" src="../../../images/2fbcc3454f1a06c71db1bf286d4ba980286ad502_2_690x213.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/2/f/b/2fbcc3454f1a06c71db1bf286d4ba980286ad502_2_690x213.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/2/f/b/2fbcc3454f1a06c71db1bf286d4ba980286ad502_2_1035x319.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/2/f/b/2fbcc3454f1a06c71db1bf286d4ba980286ad502_2_1380x426.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">This image appears to be a screenshot of a forum or message board, showing the profile details of the user called "Spam," who is redacted, along with various buttons and options related to the forum's administration and management. (Captioned by AI)</span><span class="informations">1459×451 47.7 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554653_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Moin</div>
+          <div class="post_content">
+<p>In the component settings, your input for the field name is “Git<strong>H</strong>ub”, but above the name of the field is “Git<strong>h</strong>ub”. Maybe it will work if they are the same.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span><span class="engagement-pill reaction-pill" title="laughing: 1">😆 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/313494_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">NateDhaliwal</div>
+          <div class="post_content">
+<p>It now works. Thanks a bunch!</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span><span class="engagement-pill reaction-pill" title="clap: 1">👏 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/520162_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">patrickemin</div>
+          <div class="post_content">
+<p>Hi, I have this warning in my console regarding this component, is there an update available ?</p>
+<p>Thanks.</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/cviNI0ukB8LTMb5HM8OwPoeFV4i.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/5/7/a/57a3f34527a1f99225e0a6d0e5bdc322b9f74746.png" rel="noopener nofollow ugc" title="image"><img alt="image" data-base62-sha1="cviNI0ukB8LTMb5HM8OwPoeFV4i" height="114" src="../../../images/57a3f34527a1f99225e0a6d0e5bdc322b9f74746.png" width="517"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">517×114 21.9 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554803_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Lilly</div>
+          <div class="post_content">
+<p>i have a PR with fixes for the array deprecations</p>
+<aside class="onebox githubpullrequest" data-onebox-src="https://github.com/literatecomputing/normalized-profile-links/pull/1">
+<header class="source">
+<a href="https://github.com/literatecomputing/normalized-profile-links/pull/1" rel="noopener" target="_blank">github.com/literatecomputing/normalized-profile-links</a>
+</header>
+<article class="onebox-body">
+<div class="github-row --gh-status-open" data-github-private-repo="false">
+<div class="github-icon-container" title="Open Pull Request">
+<svg aria-hidden="true" class="github-icon" height="60" viewbox="0 0 12 16" width="60"><path d="M11 11.28V5c-.03-.78-.34-1.47-.94-2.06C9.46 2.35 8.78 2.03 8 2H7V0L4 3l3 3V4h1c.27.02.48.11.69.31.21.2.3.42.31.69v6.28A1.993 1.993 0 0 0 10 15a1.993 1.993 0 0 0 1-3.72zm-1 2.92c-.66 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2zM4 3c0-1.11-.89-2-2-2a1.993 1.993 0 0 0-1 3.72v6.56A1.993 1.993 0 0 0 2 15a1.993 1.993 0 0 0 1-3.72V4.72c.59-.34 1-.98 1-1.72zm-.8 10c0 .66-.55 1.2-1.2 1.2-.65 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2zM2 4.2C1.34 4.2.8 3.65.8 3c0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2z" fill-rule="evenodd"></path></svg>
+</div>
+<div class="github-info-container">
+<h4>
+<a href="https://github.com/literatecomputing/normalized-profile-links/pull/1" rel="noopener" target="_blank">Fixes for array handling deprecations (#1)</a>
+</h4>
+<div class="branches">
+<code>main</code> ← <code>Lillinator:fix</code>
+</div>
+<div class="github-info">
+<div class="date">
+          opened <span class="discourse-local-date" data-date="2026-05-18" data-format="ll" data-time="17:55:47" data-timezone="UTC">05:55PM - 18 May 26 UTC</span>
+</div>
+<div class="user">
+<a href="https://github.com/Lillinator" rel="noopener" target="_blank">
+<img alt="" class="onebox-avatar-inline" data-dominant-color="74918A" height="20" src="../../../images/29eef1d16327b8db88058465f44a5ec6b3954c8e.jpeg" width="20"/>
+            Lillinator
+          </a>
+</div>
+<div class="lines" title="6 commits changed 3 files with 5 additions and 3 deletions">
+<a href="https://github.com/literatecomputing/normalized-profile-links/pull/1/files" rel="noopener" target="_blank">
+<span class="added">+5</span>
+<span class="removed">-3</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+<div class="github-row">
+<p class="github-body-container">fix array handling deprecations:
+
+* updated legacy `filterBy()` to `find()` 
+<span class="show-more-container"><a class="show-more" href="https://github.com/literatecomputing/normalized-profile-links/pull/1" rel="noopener" target="_blank">…</a></span><span class="excerpt hidden">* updated legacy `compact()` to `filter(boolean)`
+
+also cleaned up the unnecessary `mobile` and `desktop` folders</span></p>
+</div>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 2">👍 2</span><span class="engagement-pill reaction-pill" title="chefs kiss: 1">:chefs_kiss: 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/120154_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">pfaffman</div>
+          <div class="post_content">
+<p>Thanks, Lilly!  I just merged it!</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="100: 1">:100: 1</span><span class="engagement-pill reaction-pill" title="chefs kiss: 1">:chefs_kiss: 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/115110_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Richie</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="8" data-topic="345494" data-username="Lilly">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/554803_2.png" width="24"/> Lilly:</div>
+<blockquote>
+<p>i have a PR with fixes for the array deprecations</p>
+</blockquote>
+</aside>
+<p>Amazing, thank you <img alt=":person_bowing:" class="emoji" height="20" loading="lazy" src="../../../images/person_bowing.png" title=":person_bowing:" width="20"/></p>
+<aside class="quote no-group" data-post="9" data-topic="345494" data-username="pfaffman">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/120154_2.png" width="24"/> pfaffman:</div>
+<blockquote>
+<p>I just merged it!</p>
+</blockquote>
+</aside>
+<p>And I’ve just updated on my Discourse - all good <img alt=":partying_face:" class="emoji" height="20" loading="lazy" src="../../../images/partying_face.png" title=":partying_face:" width="20"/></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/115110_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Richie</div>
+          <div class="post_content">
+<p>And one  day we’ll get it to <code>v0.0.2</code> <img alt=":grin:" class="emoji" height="20" loading="lazy" src="../../../images/grin.png" title=":grin:" width="20"/></p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/abWjWs91yVCjRow75RhVu36WL5b.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/4/7/6/476f4845ac37bf1de6e2bcd9d30fab9a1b8b792d.png" rel="noopener nofollow ugc" title="Screenshot 2026-05-18 at 19.40.12"><img alt="Screenshot 2026-05-18 at 19.40.12" data-base62-sha1="abWjWs91yVCjRow75RhVu36WL5b" height="118" src="../../../images/476f4845ac37bf1de6e2bcd9d30fab9a1b8b792d.png" width="329"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2026-05-18 at 19.40.12</span><span class="informations">658×236 18.3 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="laughing: 2">😆 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/120154_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">pfaffman</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="11" data-topic="345494" data-username="Richie">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/115110_2.png" width="24"/> Richie:</div>
+<blockquote>
+<p>And one day we’ll get it to <code>v0.0.2</code> <img alt=":grin:" class="emoji" height="20" loading="lazy" src="../../../images/grin.png" title=":grin:" width="20"/></p>
+</blockquote>
+</aside>
+<p>It’s something to look forward to!</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="laughing: 1">😆 1</span><span class="engagement-pill reaction-pill" title="star struck: 1">:star_struck: 1</span></div>
+        </div>
+      </div>
+
+
+    </div>
+  </body>
+</html>

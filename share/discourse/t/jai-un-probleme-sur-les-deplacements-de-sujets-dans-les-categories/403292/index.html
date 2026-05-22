@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width">
+    <title>I have an issue with moving topics between categories</title>
+    <link rel="stylesheet" href="../../../archived.css" />
+    <script>
+      function findSageCodeBlocks() {
+        return Array.prototype.slice.call(
+          document.querySelectorAll(
+            "pre[data-code-wrap='sage'] > code, pre > code.lang-sage, pre > code.language-sage, pre > code.sage"
+          )
+        );
+      }
+
+      function loadScript(src) {
+        return new Promise(function (resolve, reject) {
+          var existing = document.querySelector("script[src='" + src + "']");
+          if (existing) {
+            if (existing.dataset.loaded === "true") {
+              resolve();
+              return;
+            }
+            existing.addEventListener("load", resolve, { once: true });
+            existing.addEventListener("error", reject, { once: true });
+            return;
+          }
+
+          var script = document.createElement("script");
+          script.src = src;
+          script.async = true;
+          script.addEventListener("load", function () {
+            script.dataset.loaded = "true";
+            resolve();
+          }, { once: true });
+          script.addEventListener("error", reject, { once: true });
+          document.head.appendChild(script);
+        });
+      }
+
+      function prepareSageCells() {
+        var sageBlocks = findSageCodeBlocks();
+        if (!sageBlocks.length) {
+          return Promise.resolve();
+        }
+
+        return loadScript("https://sagecell.sagemath.org/static/embedded_sagecell.js")
+          .then(function () {
+            if (!window.sagecell || !window.sagecell.makeSagecell) {
+              return;
+            }
+
+            sageBlocks.forEach(function (codeTag, index) {
+              var preTag = codeTag.parentElement;
+              if (!preTag || preTag.dataset.sageMounted === "true") {
+                return;
+              }
+
+              var host = document.createElement("div");
+              host.className = "sagecell-archive";
+
+              var source = document.createElement("script");
+              source.type = "text/x-sage";
+              source.text = codeTag.textContent || "";
+              host.appendChild(source);
+
+              preTag.insertAdjacentElement("afterend", host);
+              preTag.classList.add("sage-source-hidden");
+              preTag.dataset.sageMounted = "true";
+
+              window.sagecell.makeSagecell({
+                inputLocation: host,
+                autoeval: false,
+                evalButtonText: "Run",
+                languages: ["sage"]
+              });
+            });
+          })
+          .catch(function () {
+            // Leave the original code blocks visible if SageCell cannot load.
+          });
+      }
+
+      function preprocessDiscourseMath() {
+        document.querySelectorAll("span.math, div.math").forEach(function (node) {
+          var tex = node.textContent || "";
+          if (!tex.trim()) {
+            return;
+          }
+          if (node.tagName === "SPAN") {
+            node.textContent = "\\(" + tex + "\\)";
+          } else {
+            node.textContent = "\\[" + tex + "\\]";
+          }
+          node.classList.remove("math");
+        });
+      }
+
+      window.MathJax = {
+        tex: {
+          inlineMath: [["\\(", "\\)"]],
+          displayMath: [["\\[", "\\]"]]
+        },
+        startup: {
+          pageReady() {
+            preprocessDiscourseMath();
+            return MathJax.startup.defaultPageReady().then(function () {
+              return prepareSageCells();
+            });
+          }
+        }
+      };
+    </script>
+    <script async id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="title-span">
+        <a href="../../../">
+          <img src="../../../images/ad2526334012b2ad0c3421f9b6dd94bae2ede52f.svg" height="40" alt="Site Logo" id="site-logo" />
+        </a>
+      </div>
+    </header>
+
+    <div class="main">
+    <div class="archive-span"><a href='https://meta.discourse.org/'>Discourse Meta</a> archived in May, 2026</div>
+    <h1 class="topic-title">I have an issue with moving topics between categories</h1>
+            <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/549022_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">gilles</div>
+          <div class="post_content">
+<p>Hello,</p>
+<p>I am on version <strong>2026.5.0-latest.1</strong> (<a href="https://github.com/discourse/discourse/commits/4f17eef310094fb07f70c0c9b3024d0374aa5fcf" rel="noopener nofollow ugc">4f17eef310</a>) and I wanted to move topics to another category using the function</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/bel0ietUf7z7vKYJ9fAoPg2NJDh.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/4/e/b/4eb6da860ddf6bf790031ccf234a08e2e6e0bf8f.png" title="image"><img alt="image" data-base62-sha1="bel0ietUf7z7vKYJ9fAoPg2NJDh" height="472" src="../../../images/4eb6da860ddf6bf790031ccf234a08e2e6e0bf8f.png" width="314"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">314×472 10.5 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>The selected topics were copied to the new category instead of being moved. I’m not sure if this is normal? Afterwards, I deleted my old topics that were in the wrong category. When I returned to my forum, all the topics I had moved to the new category had disappeared. I repeated the test with a single topic by editing it and changing its category; same result: it creates a copy of the topic in the new category, so I deleted the original topic which wasn’t in the correct category. I think there is a major problem!!! For your information, I moved topics into subcategories.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/522255_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Ethsim2</div>
+          <div class="post_content">
+<p>I wonder if the topics may not have actually been copied, but were still showing in the old category list because of stale state / not refreshing after the bulk category update.</p>
+<p>One quick check would be to compare the topic ID in the URL. For example:</p>
+<pre><code class="lang-plaintext">/t/example-topic-title/12345 
+</code></pre>
+<p>If the apparent “old” and “new” topics had the same numeric ID, then they were the same topic record, not copies. In that case, deleting the one still shown in the old category would also delete it from the new category.</p>
+<p>If the IDs were different, then that would suggest a real duplicate/copy happened, which would be a different issue.</p>
+<p>I also wondered about the recent <a href="https://github.com/discourse/discourse/commit/6d8401d4a1617975f09e057b376b0c58f6854088" rel="noopener nofollow ugc">nested-post keyboard navigation change</a>, but that seems to affect selected posts inside a topic rather than selected topics in the bulk topic list, so it may be unrelated.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/549022_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">gilles</div>
+          <div class="post_content">
+<p>Thanks for your feedback. I think you’re right. So the issue is that if I try to move a topic, it creates a copy with the same ID, resulting in a duplicate topic. Normally, it should move the topic, not copy it. I thought this used to work <img alt=":thinking:" class="emoji" height="20" loading="lazy" src="../../../images/thinking.png" title=":thinking:" width="20"/></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/549022_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">gilles</div>
+          <div class="post_content">
+<p>Finally, I understand. It was the first time I was using subcategories. I had moved topics from the parent category into the subcategory, and I assumed the parent category would only display its own topics, not those of the subcategories. That’s why there were duplicate topics between the subcategory and the parent category.</p>
+<p>So, in the end, I don’t quite see the point of subcategories, since you could simply add a tag (representing a subcategory) to the relevant topics and then filter later to find them. I thought the parent category would only show its own topics and not those of the subcategories.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/522255_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Ethsim2</div>
+          <div class="post_content">
+<p>Ah, that makes sense - thanks for checking.</p>
+<p>So it was not really a copied topic or duplicate topic after all, but the same topic being visible from both the parent category view and the subcategory view.</p>
+<p>That also explains why deleting the “old” one deleted it everywhere: it was the same topic ID / same topic record.</p>
+<p>I can see why that would be confusing the first time using subcategories though. Tags may work better if you want a lighter way to group topics without changing the category structure.</p>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+  </body>
+</html>

@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width">
+    <title>How to Grow a Discourse Forum without product or service behind it?</title>
+    <link rel="stylesheet" href="../../../archived.css" />
+    <script>
+      function findSageCodeBlocks() {
+        return Array.prototype.slice.call(
+          document.querySelectorAll(
+            "pre[data-code-wrap='sage'] > code, pre > code.lang-sage, pre > code.language-sage, pre > code.sage"
+          )
+        );
+      }
+
+      function loadScript(src) {
+        return new Promise(function (resolve, reject) {
+          var existing = document.querySelector("script[src='" + src + "']");
+          if (existing) {
+            if (existing.dataset.loaded === "true") {
+              resolve();
+              return;
+            }
+            existing.addEventListener("load", resolve, { once: true });
+            existing.addEventListener("error", reject, { once: true });
+            return;
+          }
+
+          var script = document.createElement("script");
+          script.src = src;
+          script.async = true;
+          script.addEventListener("load", function () {
+            script.dataset.loaded = "true";
+            resolve();
+          }, { once: true });
+          script.addEventListener("error", reject, { once: true });
+          document.head.appendChild(script);
+        });
+      }
+
+      function prepareSageCells() {
+        var sageBlocks = findSageCodeBlocks();
+        if (!sageBlocks.length) {
+          return Promise.resolve();
+        }
+
+        return loadScript("https://sagecell.sagemath.org/static/embedded_sagecell.js")
+          .then(function () {
+            if (!window.sagecell || !window.sagecell.makeSagecell) {
+              return;
+            }
+
+            sageBlocks.forEach(function (codeTag, index) {
+              var preTag = codeTag.parentElement;
+              if (!preTag || preTag.dataset.sageMounted === "true") {
+                return;
+              }
+
+              var host = document.createElement("div");
+              host.className = "sagecell-archive";
+
+              var source = document.createElement("script");
+              source.type = "text/x-sage";
+              source.text = codeTag.textContent || "";
+              host.appendChild(source);
+
+              preTag.insertAdjacentElement("afterend", host);
+              preTag.classList.add("sage-source-hidden");
+              preTag.dataset.sageMounted = "true";
+
+              window.sagecell.makeSagecell({
+                inputLocation: host,
+                autoeval: false,
+                evalButtonText: "Run",
+                languages: ["sage"]
+              });
+            });
+          })
+          .catch(function () {
+            // Leave the original code blocks visible if SageCell cannot load.
+          });
+      }
+
+      function preprocessDiscourseMath() {
+        document.querySelectorAll("span.math, div.math").forEach(function (node) {
+          var tex = node.textContent || "";
+          if (!tex.trim()) {
+            return;
+          }
+          if (node.tagName === "SPAN") {
+            node.textContent = "\\(" + tex + "\\)";
+          } else {
+            node.textContent = "\\[" + tex + "\\]";
+          }
+          node.classList.remove("math");
+        });
+      }
+
+      window.MathJax = {
+        tex: {
+          inlineMath: [["\\(", "\\)"]],
+          displayMath: [["\\[", "\\]"]]
+        },
+        startup: {
+          pageReady() {
+            preprocessDiscourseMath();
+            return MathJax.startup.defaultPageReady().then(function () {
+              return prepareSageCells();
+            });
+          }
+        }
+      };
+    </script>
+    <script async id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="title-span">
+        <a href="../../../">
+          <img src="../../../images/ad2526334012b2ad0c3421f9b6dd94bae2ede52f.svg" height="40" alt="Site Logo" id="site-logo" />
+        </a>
+      </div>
+    </header>
+
+    <div class="main">
+    <div class="archive-span"><a href='https://meta.discourse.org/'>Discourse Meta</a> archived in May, 2026</div>
+    <h1 class="topic-title">How to Grow a Discourse Forum without product or service behind it?</h1>
+            <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/255678_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">haydenjames</div>
+          <div class="post_content">
+<p>Four years in, around 4,000 registered users, and I’m still the primary driver of forum activity. The forum averages somewhere between 5 and 15 new topics a week and around 65 active users (including my activity which varies ~ 20 to 30 percent.</p>
+<p>The core challenge is that most active members have to be there because they genuinely want to be. There’s no external pull, no support requests tied to a product or service bringing people through the door to solve issues, no built-in reason to return.</p>
+<p>Finding and retaining people who show up purely to participate with peers of a niche interest is a different problem from running a product-backed community, and it’s one I haven’t fully cracked yet. <img alt=":slight_smile:" class="emoji" height="20" loading="lazy" src="../../../images/slight_smile.png" title=":slight_smile:" width="20"/></p>
+<p>I’ve tried things like daily discussion topics to keep things moving, which helps at the margins, but the community still hasn’t reached the point where it sustains itself without my large involvement.</p>
+<p>I’m curious whether others here are running general interest communities in a similar position and what’s actually moved the needle in terms of getting members to show up and engage on their own. To the point where activity is healthy and trending upwards even without babysitting it, as it were.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 8">❤️ 8</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/528804_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">eisammy</div>
+          <div class="post_content">
+<p>I’ve trying be consistent with my community so I do many cases studies to understand how keep this actives users engajed in a organic way not forcing anything or moderating crushing the limits</p>
+<p>Others communities that was looks like mine was closed I remove all ads and i simply keep posting and improving my instance and SEO do the rest of my work.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/134015_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Ed_S</div>
+          <div class="post_content">
+<p>You mention niche interest and you mention general interest - I’m not sure what kind of forum you’re talking about.</p>
+<p>Forums about a hobby or a craft seem to be viable, but there’s always a 99-9-1 rule, which says most content will be initiated by 1% of your members, or by 10% of your active members.  So you do need a fair number to make those numbers work out.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="100: 3">:100: 3</span><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/255678_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">haydenjames</div>
+          <div class="post_content">
+<p>Agreed. More recently I’ve been focusing on the content and pages on the parent website and forum, and less on chasing the waves of activity.</p>
+<p>Smaller forums are more volatile; sometimes you have weeks of good activity and then weeks of very little, even when traffic is up.</p>
+<p>The focus has to stay on what improves that long-term, and that really just comes down to growing the member base, keeping those who sign up active as much as possible without bombarding members. But yeah, 40k members instead of 4k would be much better.</p>
+<p>So many in another 10 years <img alt=":joy:" class="emoji" height="20" loading="lazy" src="../../../images/joy.png" title=":joy:" width="20"/></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/290039_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">nathank</div>
+          <div class="post_content">
+<p>Yeah, this is a really common dynamic. I have not yet been involved with a community which I’ve been able to make myself obsolete from, unless I was obsolete to begin with!!</p>
+<p>Basically, I ensure that I don’t put too much time into it. If the founder, I aim to be no more than the 3rd most active member, but if I’m honest I rarely achieve this. I do allow myself to tinker around the edges fixing stuff though. Just try not to post too much.</p>
+<p>One of the things I like about <a href="http://meta.discourse.org">meta.discourse.org</a> is that I’m way down the list!</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 5">❤️ 5</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/86627_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">HAWK</div>
+          <div class="post_content">
+<p>The key to successful Communities of Practice is understanding what intrinsically motivates your members and strengthening those signals.</p>
+<p>There is lots of useful info at FeverBee.</p>
+<p><a href="https://www.feverbee.com/what-motivates-members/">What motivates members?</a><br/>
+<a href="https://www.feverbee.com/aligning-the-process/">Motivation to Participation</a><br/>
+<a href="https://www.feverbee.com/what-motivates-members/">Mastering Motivation</a></p>
+<p>But if you really want to science it, read up about persuasion theory.</p>
+<p><a href="https://www.feverbee.com/persuasion-problem/">The Persuasion Problem</a></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/255678_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">haydenjames</div>
+          <div class="post_content">
+<p>Thanks! I made several changes a few weeks ago and it’s been having some positive effects:</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/kdTkyCV5f0ocPtnEjNw4pFVANR.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/0/2/4/02494003258f124e8174f31557fe249a689ef14b.png" rel="noopener nofollow ugc" title="image"><img alt="image" data-base62-sha1="kdTkyCV5f0ocPtnEjNw4pFVANR" data-dominant-color="F3F4F6" height="319" src="../../../images/02494003258f124e8174f31557fe249a689ef14b_2_690x319.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/0/2/4/02494003258f124e8174f31557fe249a689ef14b_2_690x319.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/0/2/4/02494003258f124e8174f31557fe249a689ef14b_2_1035x478.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/0/2/4/02494003258f124e8174f31557fe249a689ef14b.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1214×563 83 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>I think, for sure, converting lurkers into signups is significant. The next stage is trying to build more engagement beyond the initial phase of users’ first visit or two.</p>
+<p>We can increase the odds in our favor for sure but, as with almost anything in life, also needed is a bit of <img alt=":four_leaf_clover:" class="emoji" height="20" loading="lazy" src="../../../images/four_leaf_clover.png" title=":four_leaf_clover:" width="20"/> <img alt=":slot_machine:" class="emoji" height="20" loading="lazy" src="../../../images/slot_machine.png" title=":slot_machine:" width="20"/>.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="confetti ball: 1">:confetti_ball: 1</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/542679_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Orioni</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="7" data-topic="399943" data-username="haydenjames">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/255678_2.png" width="24"/> haydenjames:</div>
+<blockquote>
+<p>I made several changes a few weeks ago and it’s been having some positive effects</p>
+</blockquote>
+</aside>
+<p>Are you able to attribute these results to specific modifications you made?</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/255678_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">haydenjames</div>
+          <div class="post_content">
+<p>Good question. I’d need to observe a longer period to know for sure, and several changes landing around the same time make attribution harder. Of course, in hindsight after seeing results, its easy to say that. Overall, it’s about aiming to understanding userbase, what gives the best chance of signup conversions plus engagement, short and long term.</p>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+  </body>
+</html>

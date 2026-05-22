@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width">
+    <title>Notifying members when a Tracked or Watched topic is solved</title>
+    <link rel="stylesheet" href="../../../archived.css" />
+    <script>
+      function findSageCodeBlocks() {
+        return Array.prototype.slice.call(
+          document.querySelectorAll(
+            "pre[data-code-wrap='sage'] > code, pre > code.lang-sage, pre > code.language-sage, pre > code.sage"
+          )
+        );
+      }
+
+      function loadScript(src) {
+        return new Promise(function (resolve, reject) {
+          var existing = document.querySelector("script[src='" + src + "']");
+          if (existing) {
+            if (existing.dataset.loaded === "true") {
+              resolve();
+              return;
+            }
+            existing.addEventListener("load", resolve, { once: true });
+            existing.addEventListener("error", reject, { once: true });
+            return;
+          }
+
+          var script = document.createElement("script");
+          script.src = src;
+          script.async = true;
+          script.addEventListener("load", function () {
+            script.dataset.loaded = "true";
+            resolve();
+          }, { once: true });
+          script.addEventListener("error", reject, { once: true });
+          document.head.appendChild(script);
+        });
+      }
+
+      function prepareSageCells() {
+        var sageBlocks = findSageCodeBlocks();
+        if (!sageBlocks.length) {
+          return Promise.resolve();
+        }
+
+        return loadScript("https://sagecell.sagemath.org/static/embedded_sagecell.js")
+          .then(function () {
+            if (!window.sagecell || !window.sagecell.makeSagecell) {
+              return;
+            }
+
+            sageBlocks.forEach(function (codeTag, index) {
+              var preTag = codeTag.parentElement;
+              if (!preTag || preTag.dataset.sageMounted === "true") {
+                return;
+              }
+
+              var host = document.createElement("div");
+              host.className = "sagecell-archive";
+
+              var source = document.createElement("script");
+              source.type = "text/x-sage";
+              source.text = codeTag.textContent || "";
+              host.appendChild(source);
+
+              preTag.insertAdjacentElement("afterend", host);
+              preTag.classList.add("sage-source-hidden");
+              preTag.dataset.sageMounted = "true";
+
+              window.sagecell.makeSagecell({
+                inputLocation: host,
+                autoeval: false,
+                evalButtonText: "Run",
+                languages: ["sage"]
+              });
+            });
+          })
+          .catch(function () {
+            // Leave the original code blocks visible if SageCell cannot load.
+          });
+      }
+
+      function preprocessDiscourseMath() {
+        document.querySelectorAll("span.math, div.math").forEach(function (node) {
+          var tex = node.textContent || "";
+          if (!tex.trim()) {
+            return;
+          }
+          if (node.tagName === "SPAN") {
+            node.textContent = "\\(" + tex + "\\)";
+          } else {
+            node.textContent = "\\[" + tex + "\\]";
+          }
+          node.classList.remove("math");
+        });
+      }
+
+      window.MathJax = {
+        tex: {
+          inlineMath: [["\\(", "\\)"]],
+          displayMath: [["\\[", "\\]"]]
+        },
+        startup: {
+          pageReady() {
+            preprocessDiscourseMath();
+            return MathJax.startup.defaultPageReady().then(function () {
+              return prepareSageCells();
+            });
+          }
+        }
+      };
+    </script>
+    <script async id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="title-span">
+        <a href="../../../">
+          <img src="../../../images/ad2526334012b2ad0c3421f9b6dd94bae2ede52f.svg" height="40" alt="Site Logo" id="site-logo" />
+        </a>
+      </div>
+    </header>
+
+    <div class="main">
+    <div class="archive-span"><a href='https://meta.discourse.org/'>Discourse Meta</a> archived in May, 2026</div>
+    <h1 class="topic-title">Notifying members when a Tracked or Watched topic is solved</h1>
+            <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/318210_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">lindsey</div>
+          <div class="post_content">
+<p>When a member of your community is Tracking or Watching a topic <a href="https://meta.discourse.org/t/easily-create-support-categories-using-the-discourse-solved-plugin/398338">in a support category</a> (using the <a href="https://meta.discourse.org/t/discourse-solved/30155">Discourse Solved plugin</a>), they will receive a notification when that topic is marked as solved. This makes it easier for members to get answers to questions without having to check in on the topic manually or create a duplicate question topic.</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/1YjBQ6EWdmyLPMQwQSIMf2P7Xxt.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/0/d/d/0dd39fd9888a8d3a1069a51dcd840178c6e6b17f.png" title="The notification members will see when a Tracked or Watched topic is solved."><img alt="The notification members will see when a Tracked or Watched topic is solved." data-base62-sha1="1YjBQ6EWdmyLPMQwQSIMf2P7Xxt" height="198" src="../../../images/0dd39fd9888a8d3a1069a51dcd840178c6e6b17f.png" width="407"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">The notification members will see when a Tracked or Watched topic is solved.</span><span class="informations">407×198 14.3 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>The member who marks the solution will not receive this notification.</p>
+<p>We’ve also updated the descriptions from Tracking and Watching in these topics, so members know what to expect:</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/rCOypjU1oCcCN7HOZdJBZJGJ5Xq.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/c/1/9/c19df2d3409a21636c9e98f3fbad78299d75b3d0.png" title="The Watching and Tracking descriptions in a Solved category topic."><img alt="The Watching and Tracking descriptions in a Solved category topic." data-base62-sha1="rCOypjU1oCcCN7HOZdJBZJGJ5Xq" height="406" src="../../../images/c19df2d3409a21636c9e98f3fbad78299d75b3d0.png" width="433"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">The Watching and Tracking descriptions in a Solved category topic.</span><span class="informations">433×406 25 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<h3><a aria-label="Heading link" class="anchor" href="#p-1961285-want-to-turn-it-off-1" name="p-1961285-want-to-turn-it-off-1"></a>Want to turn it off?</h3>
+<p>If you don’t want to be notified when a topic that you’re Tracking or Watching is solved, you can disable this in your notification preferences:</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/920C6F0AKsirxvGIK5LrvInzfPg.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/3/f/4/3f4dbaab78f6ac7b3b5d32365e7dc7b79e43a0be.png" title="The setting that controls whether notifications are sent on solved or not."><img alt="The setting that controls whether notifications are sent on solved or not." data-base62-sha1="920C6F0AKsirxvGIK5LrvInzfPg" data-dominant-color="949495" height="500" src="../../../images/3f4dbaab78f6ac7b3b5d32365e7dc7b79e43a0be_2_469x500.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/3/f/4/3f4dbaab78f6ac7b3b5d32365e7dc7b79e43a0be_2_469x500.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/3/f/4/3f4dbaab78f6ac7b3b5d32365e7dc7b79e43a0be_2_703x750.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/3/f/4/3f4dbaab78f6ac7b3b5d32365e7dc7b79e43a0be.png 2x" width="469"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">The setting that controls whether notifications are sent on solved or not.</span><span class="informations">710×756 50.6 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 11">❤️ 11</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">marteng69</div>
+          <div class="post_content">
+<p>Thank you for the explanation of this new/changed notification!</p>
+<aside class="quote no-group" data-post="1" data-topic="399821" data-username="lindsey">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/318210_2.png" width="24"/> lindsey:</div>
+<blockquote>
+<p>If you don’t want to be notified when a topic that you’re Tracking or Watching is solved, you can disable this in your notification preferences:</p>
+</blockquote>
+</aside>
+<p>I have a question or maybe a bug report on this new feature. I am a regular in a forum that is running the Discourse version v2026.4.0-latest where it seems this feature was introduced.<br/>
+If I disable this notification I even don’t get notifications for post of me that are marked as solution by other users. In former versions I got notifications for posts from me that got marked as solution.<br/>
+So my question: is it by purpose that also my own solution posts don’t get notified to me any more if I disable this or is this a bug? Or is there any chance to have two possibilities for a notification, once for my own solution posts and second like it is now?<br/>
+Thanks in advance!</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span><span class="engagement-pill reaction-pill" title="100: 1">:100: 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/300386_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Zanbabe</div>
+          <div class="post_content">
+<p>I’ve gotten a lot of negative feedback about this recently from people who want to see when they, themselves get a best answer, but not when someone else does, so they can’t just turn it off.</p>
+<p>Also, I have reports that people who are watching the first post only are getting notifications even though that isn’t a first post, and also even if they just read the post and are not watching it.</p>
+<p>Some of them may be overlooking a certain setting… not saying all of the self-reporting is necessarily accurate… but it does seem like there should be a way to go back to the old way where they only got notified for their own best answers.</p>
+<p>Not everything you read is in pursuit of an answer, especially on our site.  They are looking to see if they can help, and so unless it is about their own answer, it is arguably unproductive/unhelpful to get those notifications.</p>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+  </body>
+</html>

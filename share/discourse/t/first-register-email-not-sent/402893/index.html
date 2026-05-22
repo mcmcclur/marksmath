@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width">
+    <title>First register email not sent</title>
+    <link rel="stylesheet" href="../../../archived.css" />
+    <script>
+      function findSageCodeBlocks() {
+        return Array.prototype.slice.call(
+          document.querySelectorAll(
+            "pre[data-code-wrap='sage'] > code, pre > code.lang-sage, pre > code.language-sage, pre > code.sage"
+          )
+        );
+      }
+
+      function loadScript(src) {
+        return new Promise(function (resolve, reject) {
+          var existing = document.querySelector("script[src='" + src + "']");
+          if (existing) {
+            if (existing.dataset.loaded === "true") {
+              resolve();
+              return;
+            }
+            existing.addEventListener("load", resolve, { once: true });
+            existing.addEventListener("error", reject, { once: true });
+            return;
+          }
+
+          var script = document.createElement("script");
+          script.src = src;
+          script.async = true;
+          script.addEventListener("load", function () {
+            script.dataset.loaded = "true";
+            resolve();
+          }, { once: true });
+          script.addEventListener("error", reject, { once: true });
+          document.head.appendChild(script);
+        });
+      }
+
+      function prepareSageCells() {
+        var sageBlocks = findSageCodeBlocks();
+        if (!sageBlocks.length) {
+          return Promise.resolve();
+        }
+
+        return loadScript("https://sagecell.sagemath.org/static/embedded_sagecell.js")
+          .then(function () {
+            if (!window.sagecell || !window.sagecell.makeSagecell) {
+              return;
+            }
+
+            sageBlocks.forEach(function (codeTag, index) {
+              var preTag = codeTag.parentElement;
+              if (!preTag || preTag.dataset.sageMounted === "true") {
+                return;
+              }
+
+              var host = document.createElement("div");
+              host.className = "sagecell-archive";
+
+              var source = document.createElement("script");
+              source.type = "text/x-sage";
+              source.text = codeTag.textContent || "";
+              host.appendChild(source);
+
+              preTag.insertAdjacentElement("afterend", host);
+              preTag.classList.add("sage-source-hidden");
+              preTag.dataset.sageMounted = "true";
+
+              window.sagecell.makeSagecell({
+                inputLocation: host,
+                autoeval: false,
+                evalButtonText: "Run",
+                languages: ["sage"]
+              });
+            });
+          })
+          .catch(function () {
+            // Leave the original code blocks visible if SageCell cannot load.
+          });
+      }
+
+      function preprocessDiscourseMath() {
+        document.querySelectorAll("span.math, div.math").forEach(function (node) {
+          var tex = node.textContent || "";
+          if (!tex.trim()) {
+            return;
+          }
+          if (node.tagName === "SPAN") {
+            node.textContent = "\\(" + tex + "\\)";
+          } else {
+            node.textContent = "\\[" + tex + "\\]";
+          }
+          node.classList.remove("math");
+        });
+      }
+
+      window.MathJax = {
+        tex: {
+          inlineMath: [["\\(", "\\)"]],
+          displayMath: [["\\[", "\\]"]]
+        },
+        startup: {
+          pageReady() {
+            preprocessDiscourseMath();
+            return MathJax.startup.defaultPageReady().then(function () {
+              return prepareSageCells();
+            });
+          }
+        }
+      };
+    </script>
+    <script async id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="title-span">
+        <a href="../../../">
+          <img src="../../../images/ad2526334012b2ad0c3421f9b6dd94bae2ede52f.svg" height="40" alt="Site Logo" id="site-logo" />
+        </a>
+      </div>
+    </header>
+
+    <div class="main">
+    <div class="archive-span"><a href='https://meta.discourse.org/'>Discourse Meta</a> archived in May, 2026</div>
+    <h1 class="topic-title">First register email not sent</h1>
+            <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">zigobs</div>
+          <div class="post_content">
+<p>Hi,</p>
+<p>I just made a <a href="https://github.com/discourse/discourse/blob/main/docs/INSTALL-cloud.md" rel="noopener nofollow ugc">fresh install</a> of Discourse.</p>
+<p>The first connection asked me to create a login and password for the admin account and was supposed to send me an activation email.</p>
+<p>But I didn’t receive this activation email (I checked the spam folder of course) so I <a href="https://meta.discourse.org/t/troubleshoot-email-on-a-new-discourse-install/16326">called the doctor</a> and send a test message to myself as requested. This email came immediately in my inbox.</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/mSZtB6HSgGi0NzWzqRubEgty6gk.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/a/0/6/a06730780b68ec807d34204398cc63b23f9bf34c.png" rel="noopener nofollow ugc" title="discourse-doctor-email"><img alt="discourse-doctor-email" data-base62-sha1="mSZtB6HSgGi0NzWzqRubEgty6gk" data-dominant-color="161617" height="143" src="../../../images/a06730780b68ec807d34204398cc63b23f9bf34c_2_690x143.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/a/0/6/a06730780b68ec807d34204398cc63b23f9bf34c_2_690x143.png, https://d11a6trkgmumsb.cloudfront.net/original/4X/a/0/6/a06730780b68ec807d34204398cc63b23f9bf34c.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/a/0/6/a06730780b68ec807d34204398cc63b23f9bf34c.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">discourse-doctor-email</span><span class="informations">829×173 74.1 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>I know I can create an admin account from the command line but I’d like to understand what happens because it could be the same for future users who will try to register.</p>
+<p>Can you help ?</p>
+<p>Regards.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/507518_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">supermathie</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="1" data-topic="402893" data-username="zigobs">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/48.png" width="24"/> zigobs:</div>
+<blockquote>
+<p>I’d like to understand what happens</p>
+</blockquote>
+</aside>
+<p>There’s two things that may have gone wrong:</p>
+<ul>
+<li>the mail wasn’t sent</li>
+<li>the mail was sent, but wasn’t delivered</li>
+</ul>
+<p>Since this is a new instance, it’s easiest to check all outgoing email logs from the rails console:</p>
+<pre><code class="lang-plaintext">discourse(prod)&gt; EmailLog.all.pluck(:to_address, :email_type, :created_at, :smtp_transaction_response)
+</code></pre>
+<p>If you see something, you’ll know it was at least handed off to the SMTP server which is where Discourse’s responsibility ends.</p>
+<p>If you don’t, then it probably wasn’t sent and you can probably find informative logs by checking the <code>/logs</code> and <code>/sidekiq</code> URL paths after logging in as admin.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">zigobs</div>
+          <div class="post_content">
+<p>We can see that the <strong>test</strong> message was sent (and indeed I received it) using <code>./discourse-doctor</code> but there is no record of the <strong>registration</strong> messages :</p>
+<pre><code class="lang-plaintext">discourse(prod)&gt; EmailLog.all.pluck(:to_address, :email_type, :created_at, :smtp_transaction_response)
+=&gt; [["user@domain.org", "test_message", 2026-05-13 16:23:41.417177000 UTC +00:00, "250 2.0.0 Ok: queued as 4B4DDB0059A"]]
+</code></pre>
+<p>We find four registration messages (indeed I tried four times to register) in the production.log file. But those registration messages where never received, so my guess is they have never been sent even if there is no error or warning.<br/>
+We can notice that there is no trace of the test message which has been successfully sent (and received) in those logs.</p>
+<pre><code class="lang-plaintext">root@my-vps-app:/var/www/discourse/log# cat production.log | grep user
+  Parameters: {"authenticity_token" =&gt; "ityyLIdjT7xvdxEd01LjMT08-xxxx", "email" =&gt; "user@domain.org", "username" =&gt; "admin", "password" =&gt; "[FILTERED]", "commit" =&gt; "Register"}
+  Parameters: {"authenticity_token" =&gt; "tnDxYkOOwXYcv59Ez4t8vWPir-xxxx", "email" =&gt; "user@domain.org", "username" =&gt; "admin", "password" =&gt; "[FILTERED]", "commit" =&gt; "Register"}
+  Parameters: {"authenticity_token" =&gt; "bvOwVYHS3N_UELipxVEG3L3LY-xxxx", "email" =&gt; "user@domain.org", "username" =&gt; "admin", "password" =&gt; "[FILTERED]", "commit" =&gt; "Register"}
+  Parameters: {"authenticity_token" =&gt; "oo6GN-n7clGI5F1-uqzsZcadeP-xxxx", "email" =&gt; "user@domain.org", "username" =&gt; "admin", "password" =&gt; "[FILTERED]", "commit" =&gt; "Register"}
+</code></pre>
+<p>Other log files are empty :</p>
+<pre><code class="lang-plaintext">root@my-vps-app:/var/www/discourse/log# cat production_errors.log 
+root@my-vps-app:/var/www/discourse/log# cat sidekiq.log 
+root@my-vps-app:/var/www/discourse/log# cat unicorn.stderr.log 
+root@my-vps-app:/var/www/discourse/log# cat unicorn.stdout.log 
+
+</code></pre>
+<p>The docker logs for the discourse app show four messages saying something is missing (and we have four registration messages which failed) :</p>
+<pre><code class="lang-plaintext">root@my-vps:/var/discourse# docker logs app
+...
+I, [2026-05-13T16:14:30.769269 #3290]  INFO -- : worker=7 gen=0 pid=4295 registered
+I, [2026-05-13T16:14:30.815178 #4295]  INFO -- : worker=7 gen=0 pid=4295 ready
+X-Accel-Mapping header missing
+X-Accel-Mapping header missing
+X-Accel-Mapping header missing
+X-Accel-Mapping header missing
+</code></pre>
+<p>Can this help ?</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">zigobs</div>
+          <div class="post_content">
+<p>Because the registration email never arrived I’ve activated the admin account using the command line.</p>
+<p>I logged in with the admin account and sent a test email to <a href="mailto:anotheruser@anotherdomain.org">anotheruser@anotherdomain.org</a> from Admin / Email settings / server settings → send test email.</p>
+<p>This test email was sent immediately as we can see below and was delivered in my inbox :</p>
+<pre><code class="lang-plaintext">root@my-vps:/var/discourse# ./launcher enter app
+x86_64 arch detected.
+root@my-vps-app:/var/www/discourse# rails console
+Loading production environment (Rails 8.0.5)
+discourse(prod)&gt; EmailLog.all.pluck(:to_address, :email_type, :created_at, :smtp_transaction_response)
+=&gt; 
+[["user@domain.org",
+  "test_message",
+  2026-05-13 16:23:41.417177000 UTC +00:00,
+  "250 2.0.0 Ok: queued as 4B4DDB0059A"],
+ ["anotheruser@anotherdomain.org",
+  "test_message",
+  2026-05-16 14:44:42.978862000 UTC +00:00,
+  "250 2.0.0 Ok: queued as D79DFB00573"]]
+</code></pre>
+<p>Then I tried to register with the same email address (<a href="mailto:anotheruser@anotherdomain.org">anotheruser@anotherdomain.org</a>) but the registration email wasn’t delivered (and not sent because it doesn’t appear in the logs from the rail console).</p>
+<p>In conclusion test emails are sent and delivered but registration emails are not sent even with we find a trace in production.log :</p>
+<pre><code class="lang-plaintext">cat production.log | grep anotheruser
+  Parameters: {"email_address" =&gt; "anotheruser@anotherdomain.org"}
+Started GET "/u/check_email?email=anotheruser%40anotherdomain.org" for xxx.xxx.xxx.xxx at 2026-05-16 17:40:45 +0000
+  Parameters: {"email" =&gt; "anotheruser@anotherdomain.org"}
+  Parameters: {"email" =&gt; "anotheruser@anotherdomain.org", "password" =&gt; "[FILTERED]", "username" =&gt; "NewUser", "password_confirmation" =&gt; "[FILTERED]", "challenge" =&gt; "xxxxxxxx", "timezone" =&gt; "Europe/Paris"}
+</code></pre>
+<p>People can’t register so what can I do to fix this ?</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">zigobs</div>
+          <div class="post_content">
+<p>Finally I switched to another SMTP provider and everything works fine, but I’m frustrated I could not figured out what happened…</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/545002_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">sniper756</div>
+          <div class="post_content">
+<p>Some email providers just don’t work. I spent a long time at first trying to figure out the cause, but after switching to Mailgun, everything worked fine. From what I know, QQ Mail doesn’t integrate well with Discourse.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/507518_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">supermathie</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="4" data-topic="402893" data-username="zigobs">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/48.png" width="24"/> zigobs:</div>
+<blockquote>
+<p>People can’t register so what can I do to fix this ?</p>
+</blockquote>
+</aside>
+<p>Once you logged in as admin, did anything show here:</p>
+<aside class="quote group-team" data-post="2" data-topic="402893" data-username="supermathie">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/507518_2.png" width="24"/> supermathie:</div>
+<blockquote>
+<p>If you don’t, then it probably wasn’t sent and you can probably find informative logs by checking the <code>/logs</code> and <code>/sidekiq</code> URL paths after logging in as admin.</p>
+</blockquote>
+</aside>
+<p>There should be sufficient information there to figure this out.</p>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+  </body>
+</html>

@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width">
+    <title>Solved improvements: Allowing members to indicate they&rsquo;re experiencing a reported issue</title>
+    <link rel="stylesheet" href="../../../archived.css" />
+    <script>
+      function findSageCodeBlocks() {
+        return Array.prototype.slice.call(
+          document.querySelectorAll(
+            "pre[data-code-wrap='sage'] > code, pre > code.lang-sage, pre > code.language-sage, pre > code.sage"
+          )
+        );
+      }
+
+      function loadScript(src) {
+        return new Promise(function (resolve, reject) {
+          var existing = document.querySelector("script[src='" + src + "']");
+          if (existing) {
+            if (existing.dataset.loaded === "true") {
+              resolve();
+              return;
+            }
+            existing.addEventListener("load", resolve, { once: true });
+            existing.addEventListener("error", reject, { once: true });
+            return;
+          }
+
+          var script = document.createElement("script");
+          script.src = src;
+          script.async = true;
+          script.addEventListener("load", function () {
+            script.dataset.loaded = "true";
+            resolve();
+          }, { once: true });
+          script.addEventListener("error", reject, { once: true });
+          document.head.appendChild(script);
+        });
+      }
+
+      function prepareSageCells() {
+        var sageBlocks = findSageCodeBlocks();
+        if (!sageBlocks.length) {
+          return Promise.resolve();
+        }
+
+        return loadScript("https://sagecell.sagemath.org/static/embedded_sagecell.js")
+          .then(function () {
+            if (!window.sagecell || !window.sagecell.makeSagecell) {
+              return;
+            }
+
+            sageBlocks.forEach(function (codeTag, index) {
+              var preTag = codeTag.parentElement;
+              if (!preTag || preTag.dataset.sageMounted === "true") {
+                return;
+              }
+
+              var host = document.createElement("div");
+              host.className = "sagecell-archive";
+
+              var source = document.createElement("script");
+              source.type = "text/x-sage";
+              source.text = codeTag.textContent || "";
+              host.appendChild(source);
+
+              preTag.insertAdjacentElement("afterend", host);
+              preTag.classList.add("sage-source-hidden");
+              preTag.dataset.sageMounted = "true";
+
+              window.sagecell.makeSagecell({
+                inputLocation: host,
+                autoeval: false,
+                evalButtonText: "Run",
+                languages: ["sage"]
+              });
+            });
+          })
+          .catch(function () {
+            // Leave the original code blocks visible if SageCell cannot load.
+          });
+      }
+
+      function preprocessDiscourseMath() {
+        document.querySelectorAll("span.math, div.math").forEach(function (node) {
+          var tex = node.textContent || "";
+          if (!tex.trim()) {
+            return;
+          }
+          if (node.tagName === "SPAN") {
+            node.textContent = "\\(" + tex + "\\)";
+          } else {
+            node.textContent = "\\[" + tex + "\\]";
+          }
+          node.classList.remove("math");
+        });
+      }
+
+      window.MathJax = {
+        tex: {
+          inlineMath: [["\\(", "\\)"]],
+          displayMath: [["\\[", "\\]"]]
+        },
+        startup: {
+          pageReady() {
+            preprocessDiscourseMath();
+            return MathJax.startup.defaultPageReady().then(function () {
+              return prepareSageCells();
+            });
+          }
+        }
+      };
+    </script>
+    <script async id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="title-span">
+        <a href="../../../">
+          <img src="../../../images/ad2526334012b2ad0c3421f9b6dd94bae2ede52f.svg" height="40" alt="Site Logo" id="site-logo" />
+        </a>
+      </div>
+    </header>
+
+    <div class="main">
+    <div class="archive-span"><a href='https://meta.discourse.org/'>Discourse Meta</a> archived in May, 2026</div>
+    <h1 class="topic-title">Solved improvements: Allowing members to indicate they&rsquo;re experiencing a reported issue</h1>
+            <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/318210_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">lindsey</div>
+          <div class="post_content">
+<p>When a member finds an unsolved topic that describes an issue they’re also facing, there’s been no easy way for them to signal that or get updates about solutions to the topic. To address this, we’ve added a <kbd>Me too</kbd> button to unsolved topics in support categories, which members can click to indicate that they’re impacted by the reported problem and opt-in to receive a notification about the solution.</p>
+<p>In this topic, we’ll review the major changes and share how you can start using this today.</p>
+<h2><a aria-label="Heading link" class="anchor" href="#p-1978323-microscope-whats-changed-1" name="p-1978323-microscope-whats-changed-1"></a><img alt=":microscope:" class="emoji" height="20" loading="lazy" src="../../../images/microscope.png" title=":microscope:" width="20"/> What’s changed</h2>
+<p>An unsolved topic in a <a href="https://meta.discourse.org/t/easily-create-support-categories-using-the-discourse-solved-plugin/398338">support category</a> now shows a <kbd>Me too</kbd> button in the first post. Members can click it to indicate they’re experiencing the same issue.</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/xgEYoC26CR9Tqo1GIqWfBC1jody.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/e/9/2/e929e0cead6cc6b065ee0965d5f9d5056eba8720.png" title="Members can click the &quot;Me too&quot; button on unsolved topics to share that they're impacted by the issue and receive a notification when the topic is solved."><img alt="Members can click the &quot;Me too&quot; button on unsolved topics to share that they're impacted by the issue and receive a notification when the topic is solved." data-base62-sha1="xgEYoC26CR9Tqo1GIqWfBC1jody" data-dominant-color="8F8E8E" height="249" src="../../../images/e929e0cead6cc6b065ee0965d5f9d5056eba8720_2_690x249.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/e/9/2/e929e0cead6cc6b065ee0965d5f9d5056eba8720_2_690x249.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/e/9/2/e929e0cead6cc6b065ee0965d5f9d5056eba8720_2_1035x373.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/e/9/2/e929e0cead6cc6b065ee0965d5f9d5056eba8720.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Members can click the "Me too" button on unsolved topics to share that they're impacted by the issue and receive a notification when the topic is solved.</span><span class="informations">1332×482 22.1 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>When a member clicks <kbd>Me too</kbd>, a few things happen:</p>
+<ul>
+<li>The counter within the button ticks up. The counter always starts at <code>1</code> to represent the topic author.</li>
+<li>The topic tracking will be set to <code>Tracking</code>, which means they’ll receive a notification<a href="https://meta.discourse.org/t/notifying-members-when-a-tracked-or-watched-topic-is-solved/399821"> when the topic is solved</a>.</li>
+</ul>
+<p>If a user that’s not logged in (i.e. an anonymous visitor) clicks <kbd>Me too</kbd>, they’ll be prompted to log in or create an account. The <kbd>Me too</kbd> button disappears once a topic is solved.</p>
+<h2><a aria-label="Heading link" class="anchor" href="#p-1978323-gear-turning-on-the-me-too-button-in-your-community-2" name="p-1978323-gear-turning-on-the-me-too-button-in-your-community-2"></a><img alt=":gear:" class="emoji" height="20" loading="lazy" src="../../../images/gear.png" title=":gear:" width="20"/> Turning on the “Me too” button in your community</h2>
+<p><strong>For now, this is considered an experimental change!</strong> We’re welcoming your feedback, which will help us make improvements and roll this out further.</p>
+<p>To turn this on, head to the <strong><a href="https://meta.discourse.org/t/introducing-upcoming-changes-a-system-to-manage-new-features-and-changes-to-existing-functionality-in-your-community/392894">Upcoming changes</a></strong> page in your admin area (<code>/admin/config/upcoming-changes</code>) and find the <strong>Enable solved shared issues</strong> item. Update the <strong>Enabled for</strong>… field to opt your site in to this new design:</p>
+<blockquote>
+<p><strong><img alt=":warning:" class="emoji" height="20" loading="lazy" src="../../../images/warning.png" title=":warning:" width="20"/> You must also turn on the <code>Enable support type category setup</code> upcoming change to use this feature.</strong></p>
+</blockquote>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/rESbv83S2alGfYILn2DpY2YEJAt.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/c/1/d/c1d9850866ba521577f693e8756cbca232ada849.png" title='The "Enable solved shared issues" upcoming change item, which you can enable to add the "Me too" button to unsolved topics.'><img alt='The "Enable solved shared issues" upcoming change item, which you can enable to add the "Me too" button to unsolved topics.' data-base62-sha1="rESbv83S2alGfYILn2DpY2YEJAt" data-dominant-color="F5F6F6" height="184" src="../../../images/c1d9850866ba521577f693e8756cbca232ada849_2_690x184.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/c/1/d/c1d9850866ba521577f693e8756cbca232ada849_2_690x184.png, https://d11a6trkgmumsb.cloudfront.net/original/4X/c/1/d/c1d9850866ba521577f693e8756cbca232ada849.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/c/1/d/c1d9850866ba521577f693e8756cbca232ada849.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">The "Enable solved shared issues" upcoming change item, which you can enable to add the "Me too" button to unsolved topics.</span><span class="informations">967×258 27.3 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<h2><a aria-label="Heading link" class="anchor" href="#p-1978323-mega-what-do-you-think-3" name="p-1978323-mega-what-do-you-think-3"></a><img alt=":mega:" class="emoji" height="20" loading="lazy" src="../../../images/mega.png" title=":mega:" width="20"/> What do you think?</h2>
+<p>We’re eager to hear how this is working in your community — please share your feedback here and let us know how we can continue to improve support categories for you and your members.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 21">❤️ 21</span><span class="engagement-pill reaction-pill" title="+1: 2">👍 2</span><span class="engagement-pill reaction-pill" title="rocket: 2">🚀 2</span><span class="engagement-pill reaction-pill" title="clap: 1">👏 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/552343_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">noahl</div>
+          <div class="post_content">
+<p>This is neat!</p>
+<p>I’d be interested in seeing an option <em>(or perhaps with <a href="https://meta.discourse.org/t/32566?silent=true">Data explorer</a>)</em> to be notified as an Admin if X amount of people choose “Me too”.</p>
+<p>This seems like a strong way to signal high pain points - and ideal for marking the solution, providing one, or escalating internally for us. Seems especially useful for prior conversations from months ago that I’m not regularly reading now, but people may still be experiencing issues with</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 7">❤️ 7</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/313494_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">NateDhaliwal</div>
+          <div class="post_content">
+<p>Is it possible for such topics to be bumped when a Me too is clicked? Otherwise topics from years ago could get high counts, but with little visible effect. (Perhaps behind a setting to not create noise for some communities)</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/318210_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">lindsey</div>
+          <div class="post_content">
+<p>Right now, this feature is more focused on the member side (making it easy for members to opt-in to notifications about the topic’s solution), but there are definitely ways we can make it more useful to admins/staff, as well, like reporting on the “Me too” counts or helping those surface in other ways.</p>
+<p>Keep the ideas coming!</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 9">❤️ 9</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/370902_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">putty</div>
+          <div class="post_content">
+<p>Do you have a designated test topic to see this? Not sure if it’s cool to create one in <a class="hashtag-cooked" data-icon="circle-question" data-id="6" data-slug="support" data-style-type="icon" data-type="category" href="/c/support/6"><span class="hashtag-icon-placeholder"><svg class="fa d-icon d-icon-square-full svg-icon svg-node"><use href="#square-full"></use></svg></span><span>Support</span></a> just for this.</p>
+<p>This may be the nudge that has me convert my existing question/support categories to the “support” type.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/244677_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">dax</div>
+          <div class="post_content">
+<p>This feature is not enabled on Meta.</p>
+<p>Let me enable it on <a href="https://try.discourse.org/">https://try.discourse.org/</a></p>
+<h3><a aria-label="Heading link" class="anchor" href="#p-1980653-edit-1" name="p-1980653-edit-1"></a>EDIT</h3>
+<p>It’s enabled in <a href="https://try.discourse.org/c/support/50">https://try.discourse.org/c/support/50</a></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 4">❤️ 4</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/445877_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Andrew_Rowe</div>
+          <div class="post_content">
+<aside class="quote group-team quote-modified" data-post="6" data-topic="402498" data-username="dax">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/244677_2.png" width="24"/> dax:</div>
+<blockquote>
+<p>It’s enabled in <a class="inline-onebox" href="https://try.discourse.org/c/support/50">support - Discourse Demo</a></p>
+</blockquote>
+</aside>
+<p>just tried it, it’s working</p>
+<p>Thanks!</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/244677_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">dax</div>
+          <div class="post_content">
+<p>While I was setting it up, the power went out in the whole neighborhood and the internet connection went down. Try again now.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="laughing: 3">😆 3</span><span class="engagement-pill reaction-pill" title="exploding head: 1">:exploding_head: 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/197134_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Jonathan5</div>
+          <div class="post_content">
+<p>Is this the same as a “boost” with the words “Me too”, or something else?</p>
+<p>(P.S. Just checked and it seems to be different.)</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/142900_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">awesomerobot</div>
+          <div class="post_content">
+<p>It’s completely independent from the boost feature (which is still experimental). By clicking “me too” you opt in to receive a notification when there’s a solution selected. If you used a boost to do that instead, you would not be notified when the topic is solved.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 6">❤️ 6</span><span class="engagement-pill reaction-pill" title="chefs kiss: 1">:chefs_kiss: 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/509515_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">ice.d</div>
+          <div class="post_content">
+<p>Not finding this on my forum have all needed things enabled</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/313494_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">NateDhaliwal</div>
+          <div class="post_content">
+<p>Have you looked under Admin &gt; Upcoming Changes? For the TWA forum, this is what I see:<br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/A9rxJn5djA6oUsDU6YORcMqIqN1.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/f/d/5/fd5f90472543f42af2842aa9f53e78bd48aa5b07.png" title="image"><img alt="image" data-base62-sha1="A9rxJn5djA6oUsDU6YORcMqIqN1" data-dominant-color="2A2B2C" height="188" src="../../../images/fd5f90472543f42af2842aa9f53e78bd48aa5b07_2_690x188.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/f/d/5/fd5f90472543f42af2842aa9f53e78bd48aa5b07_2_690x188.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/f/d/5/fd5f90472543f42af2842aa9f53e78bd48aa5b07_2_1035x282.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/f/d/5/fd5f90472543f42af2842aa9f53e78bd48aa5b07_2_1380x376.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1448×396 35.4 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>So it hasn’t been enabled yet.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">EricGT</div>
+          <div class="post_content">
+<p>I think the <strong>“Me too”</strong> idea is great.</p>
+<p>This is something that has been needed for years. That said, the way I would ideally like to see it implemented may not dovetail with how I understand the current design.</p>
+<p>My understanding is that this feature is scoped to the world of Discourse topics. On the <a href="https://community.openai.com/" rel="noopener nofollow ugc">OpenAI forum</a>, for example, there is often a broader need for a “Me too” signal when users are affected by outages or service issues, such as OpenAI servers being down, a specific API endpoint not responding, or a Codex regression affecting multiple users.</p>
+<p>However, those cases are often tied to systems outside Discourse, such as:</p>
+<ul>
+<li><a href="https://status.openai.com/" rel="noopener nofollow ugc">OpenAI Status</a></li>
+<li><a href="https://github.com/openai/codex/issues" rel="noopener nofollow ugc">Codex Issues</a></li>
+</ul>
+<p>From what I understand, this update does not interact with those external systems. It helps members indicate that they are experiencing the same issue in a Discourse topic and opt in to receive a notification when that topic is solved, but it does not appear to connect that signal to an external status page, GitHub issue, or incident tracker.</p>
+<p>A recent OpenAI forum example is this topic:</p>
+<p><a href="https://community.openai.com/t/realtime-api-sip-inbound-calls-failing-again-before-webhook-dispatch/1380763?utm_source=chatgpt.com" rel="noopener nofollow ugc">https://community.openai.com/t/realtime-api-sip-inbound-calls-failing-again-before-webhook-dispatch/1380763</a></p>
+<p>That topic collected multiple user reports and was later linked to this OpenAI Status incident:</p>
+<p><a href="https://status.openai.com/incidents/01KRG0AZKH41DV4D9SNJSXM33Q?utm_source=chatgpt.com" rel="noopener nofollow ugc">https://status.openai.com/incidents/01KRG0AZKH41DV4D9SNJSXM33Q</a></p>
+<p>So, is my understanding correct that the current “Me too” feature is limited to Discourse topics themselves, and does not currently provide a way to connect or synchronize that signal with external systems such as status pages or GitHub issues?</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">EricGT</div>
+          <div class="post_content">
+<p>For real-time issues that attract many “Me Too” replies, users often begin reporting that the issue is resolved before it is officially confirmed solved, sometimes even an hour or more earlier.</p>
+<p>It might be useful to have a companion option such as <strong>“Works for me now”</strong> or <strong>“Resolved for me”</strong> that is also tracked and signaled.</p>
+<p>The idea would be that “Me Too” helps show how many users are affected, while “Works for me now” helps show when the issue may be clearing up in practice.</p>
+<hr/>
+<p>Here is a real world example of this:</p>
+<p><img alt="image" data-base62-sha1="hXDlG1WX1AK3ADrNS77sIVG8gZA" height="24" src="../../../images/7de2aed1728eaa514e5778cc49a53aeacc728c6a.png" width="305"/></p>
+<p><a class="onebox" href="https://community.openai.com/t/my-custom-app-connectors-have-disapeard/1381144/10" rel="noopener nofollow ugc" target="_blank">https://community.openai.com/t/my-custom-app-connectors-have-disapeard/1381144/10</a></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/509515_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">ice.d</div>
+          <div class="post_content">
+<p>I had just updated the forum after posting here but i did look there let me check again</p>
+<p>cause when i searched for it i did not find it</p>
+<p>Ok now i see it and was able to enable it thank you nate</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/523185_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">RGJ</div>
+          <div class="post_content">
+<p>Nice idea, I like it!</p>
+<p>Two things</p>
+<aside class="quote no-group" data-post="1" data-topic="402498" data-username="lindsey">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/318210_2.png" width="24"/> lindsey:</div>
+<blockquote>
+<p>up. The counter always starts at <code>1</code> to represent the topic author.</p>
+</blockquote>
+</aside>
+<p>No. It says “me <strong>too</strong>”. It should start at no counter ie. 0.</p>
+<p>Additionally, it would be nice to be able to see <em>who</em> clicked “me too” in a topic.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span><span class="engagement-pill reaction-pill" title="100: 2">:100: 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/318210_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">lindsey</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="20" data-topic="402498" data-username="RGJ">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/523185_2.png" width="24"/> RGJ:</div>
+<blockquote>
+<p>No. It says “me <strong>too</strong>”. It should start at no counter ie. 0.</p>
+</blockquote>
+</aside>
+<p>The counter represents how many people are impacted by the issue, so it starts at one to reflect the topic author.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/552343_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">noahl</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="22" data-topic="402498" data-username="lindsey">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/318210_2.png" width="24"/> lindsey:</div>
+<blockquote>
+<p>The counter represents how many people are impacted by the issue</p>
+</blockquote>
+</aside>
+<p>I think I’m with <span class="mention">@RGJ</span> on this one. Having seen it in action on <a href="https://meta.discourse.org/t/api/402855">this topic</a>, I thought “wow, kinda interesting to see someone else experiencing this seemingly niche issue” to then realise it was still just the OP.</p>
+<p>“<strong>too</strong>” is additional. It implies additional to the OP, not inclusive of</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 4">❤️ 4</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/523185_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">RGJ</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="22" data-topic="402498" data-username="lindsey">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/318210_2.png" width="24"/> lindsey:</div>
+<blockquote>
+<p>The counter represents how many people are impacted by the issue, so it starts at one to reflect the topic author.</p>
+</blockquote>
+</aside>
+<p>In that case the button should be called “I have this issue”.<br/>
+But “too” indicates <em>additional</em> users.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 4">❤️ 4</span><span class="engagement-pill reaction-pill" title="100: 1">:100: 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/549896_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">darkpixlz</div>
+          <div class="post_content">
+<p>I really like this idea! I’ve been seeing it on Meta and was fairly confused when I noticed every topic had at least one and thought that somebody must have gone down the list and voted for everything but I learned that wasn’t the case when I went to the sandbox, made a topic, and noticed I had automatically voted for it.</p>
+<p>It seems weird to me that the “me too” button is automatically selected for the reporter. I’m not sure how other platforms implement it but I would have figured it’s more similar to liking where you can’t select it on your own posts. Obviously this is a nonissue but I’m just a little confused as to why I’m automatically saying “me too” to my own problems.</p>
+<p>Edit: oops.. this was a discussion already, should have scrolled down a little more. I’ll leave this up though because what I said still stands <img alt=":sweat_smile:" class="emoji" height="20" loading="lazy" src="../../../images/sweat_smile.png" title=":sweat_smile:" width="20"/></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/142900_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">awesomerobot</div>
+          <div class="post_content">
+<p>Thanks for the feedback everyone, we’re removing OP from the count here:</p>
+<aside class="onebox githubpullrequest" data-onebox-src="https://github.com/discourse/discourse/pull/40129">
+<header class="source">
+<a href="https://github.com/discourse/discourse/pull/40129" rel="noopener" target="_blank">github.com/discourse/discourse</a>
+</header>
+<article class="onebox-body">
+<div class="github-row --gh-status-merged" data-github-private-repo="false">
+<div class="github-icon-container" title="Merged Pull Request">
+<svg aria-hidden="true" class="github-icon" height="60" viewbox="0 0 12 16" width="60"><path d="M11 11.28V5c-.03-.78-.34-1.47-.94-2.06C9.46 2.35 8.78 2.03 8 2H7V0L4 3l3 3V4h1c.27.02.48.11.69.31.21.2.3.42.31.69v6.28A1.993 1.993 0 0 0 10 15a1.993 1.993 0 0 0 1-3.72zm-1 2.92c-.66 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2zM4 3c0-1.11-.89-2-2-2a1.993 1.993 0 0 0-1 3.72v6.56A1.993 1.993 0 0 0 2 15a1.993 1.993 0 0 0 1-3.72V4.72c.59-.34 1-.98 1-1.72zm-.8 10c0 .66-.55 1.2-1.2 1.2-.65 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2zM2 4.2C1.34 4.2.8 3.65.8 3c0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2z" fill-rule="evenodd"></path></svg>
+</div>
+<div class="github-info-container">
+<h4>
+<a href="https://github.com/discourse/discourse/pull/40129" rel="noopener" target="_blank">UX: don't include OP in "me too" shared issue counter (#40129)</a>
+</h4>
+<div class="branches">
+<code>main</code> ← <code>ux-op-me-too-solutions</code>
+</div>
+<div class="github-info">
+<div class="date">
+          merged <span class="discourse-local-date" data-date="2026-05-18" data-format="ll" data-time="17:29:54" data-timezone="UTC">05:29PM - 18 May 26 UTC</span>
+</div>
+<div class="user">
+<a href="https://github.com/awesomerobot" rel="noopener" target="_blank">
+<img alt="" class="onebox-avatar-inline" data-dominant-color="444444" height="20" src="../../../images/ebb06c587c9d2602025f6ecd393d9b77e6247929.png" width="20"/>
+            awesomerobot
+          </a>
+</div>
+<div class="lines" title="1 commits changed 7 files with 15 additions and 10 deletions">
+<a href="https://github.com/discourse/discourse/pull/40129/files" rel="noopener" target="_blank">
+<span class="added">+15</span>
+<span class="removed">-10</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+<div class="github-row">
+<p class="github-body-container">This removes the topic author from the count of the "me too" button when `Enable<span class="show-more-container"><a class="show-more" href="https://github.com/discourse/discourse/pull/40129" rel="noopener" target="_blank">…</a></span><span class="excerpt hidden"> solved shared issues` is enabled. This is based on some feedback in https://meta.discourse.org/t/solved-improvements-allowing-members-to-indicate-theyre-experiencing-a-reported-issue/402498
+
+Now when the topic is created the counter starts at 0. 
+
+Before:
+&lt;img width="400"  alt="image" src="https://github.com/user-attachments/assets/cefb5a84-beb6-4637-95b7-b05d9989b98b" /&gt;
+
+
+&lt;img width="400"  alt="image" src="https://github.com/user-attachments/assets/a0154f0b-a66a-436a-aa1a-30ca1956dada" /&gt;
+
+
+
+
+After: 
+&lt;img width="400" alt="image" src="https://github.com/user-attachments/assets/9b633da3-f7a9-4541-8813-d2721af5efef" /&gt;
+
+&lt;img width="400"  alt="image" src="https://github.com/user-attachments/assets/24274b52-0a23-4157-b8e2-6b793ec78324" /&gt;</span></p>
+</div>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 6">❤️ 6</span><span class="engagement-pill reaction-pill" title="+1: 2">👍 2</span><span class="engagement-pill reaction-pill" title="100: 1">:100: 1</span><span class="engagement-pill reaction-pill" title="chefs kiss: 1">:chefs_kiss: 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/484912_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Michelle_L</div>
+          <div class="post_content">
+<p><span class="mention">@awesomerobot</span> - I see that there is a site text for 'Me too (%{count}), can ‘Me too’ be updated to whatever we may see fit based on community?</p>
+<p>Is there any impact if the site text is updated to reflect desired text?</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/549896_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">darkpixlz</div>
+          <div class="post_content">
+<p>Looks to work just as you’d expect:</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/2MD1YPmf0CVzB9tQQiNSG2yVYJL.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/1/3/8/13839a97f29ab835648304055061b66848eccf9d.png" title="image"><img alt="image" data-base62-sha1="2MD1YPmf0CVzB9tQQiNSG2yVYJL" height="126" src="../../../images/13839a97f29ab835648304055061b66848eccf9d.png" width="250"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">250×126 6.53 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div><br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/2Vrk9UiAKCt0BHxBrs33WPyUEe9.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/1/4/8/1482959a1780d693d4a362bb9efaa8c644b1660d.png" title="image"><img alt="image" data-base62-sha1="2Vrk9UiAKCt0BHxBrs33WPyUEe9" height="229" src="../../../images/1482959a1780d693d4a362bb9efaa8c644b1660d.png" width="503"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">503×229 33 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/142900_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">awesomerobot</div>
+          <div class="post_content">
+<p>yes you can change it, there shouldn’t be any problems</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/523185_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">RGJ</div>
+          <div class="post_content">
+<p>Should the “me too” button appear in a <a href="https://meta.discourse.org/t/wasted-space-in-layout/403333">deleted, closed topic</a>?</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span><span class="engagement-pill reaction-pill" title="eyes: 1">👀 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">EricGT</div>
+          <div class="post_content">
+<aside class="quote no-group" data-full="true" data-post="31" data-topic="402498" data-username="RGJ">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/523185_2.png" width="24"/> RGJ:</div>
+<blockquote>
+<p>Should the “me too” button appear in a <a href="https://meta.discourse.org/t/wasted-space-in-layout/403333">deleted, closed topic</a>?</p>
+</blockquote>
+</aside>
+<p>If you’re asking the group, my answer would be: make it a customization option.</p>
+<p>I can see why some communities would want to allow this. However, in my experience, preventing users from updating closed topics often encourages them to look for an existing active topic or start a new one instead.</p>
+<p>Another option would be to preserve the “Me Too” signal even when the topic is closed. For example, if a user clicks “Me Too” on a closed topic, they could be offered a simple option to open a new topic, after AI first checks whether there is already an active topic covering the same issue.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 4">❤️ 4</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Noble_Fish</div>
+          <div class="post_content">
+<p>This is indeed a good design, but I still hope it can be used as a configurable option for Categories. For example, I have a category used for both brainstorming and progress tracking. It uses Topic voting to count how many people support something, and it also uses Solved to serve as a solution when a test version is available, after which everyone moves to another topic for testing and improvement. Currently, due to this feature, the category displays both Topic voting and “Me too,” which actually causes some confusion. In fact, I use Solved in many scenarios, but I only want to use “Me too” for a category that serves the function of Bug feedback.</p>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+  </body>
+</html>

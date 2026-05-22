@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Discourse Meta</title>
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="https://use.fontawesome.com/2374bdec1c.css">
+    <link rel="stylesheet" href="./archived.css" />
+    <script>
+      function applyCategoryFilter() {
+        var hash = window.location.hash || "";
+        var selected = "all";
+        if (hash.indexOf("#category=") === 0) {
+          selected = decodeURIComponent(hash.slice("#category=".length));
+        }
+
+        document.querySelectorAll(".category-nav a").forEach(function (link) {
+          var isActive = link.dataset.category === selected;
+          link.setAttribute("aria-current", isActive ? "page" : "false");
+        });
+
+        document.querySelectorAll(".topic-row").forEach(function (row) {
+          var matches = selected === "all" || row.dataset.category === selected;
+          row.hidden = !matches;
+        });
+
+        document.querySelectorAll(".pagination-link[href]").forEach(function (link) {
+          var baseHref = link.getAttribute("href").split("#")[0];
+          link.setAttribute("href", selected === "all" ? baseHref : baseHref + hash);
+        });
+      }
+
+      function preprocessDiscourseMath() {
+        document.querySelectorAll("span.math, div.math").forEach(function (node) {
+          var tex = node.textContent || "";
+          if (!tex.trim()) {
+            return;
+          }
+          if (node.tagName === "SPAN") {
+            node.textContent = "\\(" + tex + "\\)";
+          } else {
+            node.textContent = "\\[" + tex + "\\]";
+          }
+          node.classList.remove("math");
+        });
+      }
+
+      window.MathJax = {
+        tex: {
+          inlineMath: [["\\(", "\\)"]],
+          displayMath: [["\\[", "\\]"]]
+        },
+        startup: {
+          pageReady() {
+            preprocessDiscourseMath();
+            applyCategoryFilter();
+            return MathJax.startup.defaultPageReady();
+          }
+        }
+      };
+
+      window.addEventListener("hashchange", applyCategoryFilter);
+      window.addEventListener("DOMContentLoaded", applyCategoryFilter);
+    </script>
+    <script async id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
+  </head>
+
+  <body>
+
+    <header class="header">
+      <div class="title-span">
+        <h1 class="site-title">
+          <img src="images/ad2526334012b2ad0c3421f9b6dd94bae2ede52f.svg" height="40" alt="Site Logo" id="site-logo" />
+        </h1>
+      </div>
+    </header>
+
+    <div class="main">
+      <h1 class="archive-title">Discourse Meta</h1>
+      <div class="archive-span"><a href='https://meta.discourse.org/'>Discourse Meta</a> archived in May, 2026</div>
+      <div class="category-nav">Categories: <a href="#" data-category="all">All</a> - <a href="#category=community-building" data-category="community-building">Community Building</a> - <a href="#category=development" data-category="development">Development</a> - <a href="#category=general" data-category="general">General</a> - <a href="#category=support" data-category="support">Support</a></div>
+      <nav class="pagination-nav" aria-label="Topic pages"><a class="pagination-link" href="index.html">1</a><a class="pagination-link" href="page-2.html">2</a><span class="pagination-link current" aria-current="page">3</span><a class="pagination-link" href="page-4.html">4</a></nav>
+      <div class="topics">
+        <div class="header-row">
+          <span class="topic-head">Topics</span>
+          <span class="category-head">Category</span>
+          <span class="post-count-head">Posts</span>
+        </div>
+              <div class="topic-row" data-category="uncategorized">
+        <span class="topic"><a href="t/opening-forum-goes-to-topics-1-day-ago-not-recent-topics/400459">Opening forum goes to topics 1 day ago, not recent topics</a></span>
+        <span class="category"></span>
+        <span class="post-count">9</span>
+      </div>
+
+      <div class="topic-row" data-category="uncategorized">
+        <span class="topic"><a href="t/topic-list-thumbnails/150602">Topic List Thumbnails</a></span>
+        <span class="category"></span>
+        <span class="post-count">167</span>
+      </div>
+
+      <div class="topic-row" data-category="uncategorized">
+        <span class="topic"><a href="t/discourse-calendar-and-event/97376">Discourse Calendar (and Event)</a></span>
+        <span class="category"></span>
+        <span class="post-count">127</span>
+      </div>
+
+      <div class="topic-row" data-category="uncategorized">
+        <span class="topic"><a href="t/notifying-members-when-a-tracked-or-watched-topic-is-solved/399821">Notifying members when a Tracked or Watched topic is solved</a></span>
+        <span class="category"></span>
+        <span class="post-count">3</span>
+      </div>
+
+      <div class="topic-row" data-category="uncategorized">
+        <span class="topic"><a href="t/nested-mode-disables-post-wrench-menu-actions/403155">Nested mode disables post wrench menu actions</a></span>
+        <span class="category"></span>
+        <span class="post-count">6</span>
+      </div>
+
+      <div class="topic-row" data-category="uncategorized">
+        <span class="topic"><a href="t/add-group-option-when-bulk-converting-topics-to-messages/403267">Add Group option when bulk converting Topics to Messages</a></span>
+        <span class="category"></span>
+        <span class="post-count">1</span>
+      </div>
+
+      <div class="topic-row" data-category="support">
+        <span class="topic"><a href="t/missing-png-to-jpeg-settings/395964">Missing PNG to JPEG settings</a></span>
+        <span class="category">Support</span>
+        <span class="post-count">9</span>
+      </div>
+
+      <div class="topic-row" data-category="support">
+        <span class="topic"><a href="t/community-guidelines-abusive-content-moderation-support/403261">Community Guidelines &amp; Abusive Content Moderation Support</a></span>
+        <span class="category">Support</span>
+        <span class="post-count">3</span>
+      </div>
+
+      <div class="topic-row" data-category="community-building">
+        <span class="topic"><a href="t/how-to-grow-a-discourse-forum-without-product-or-service-behind-it/399943">How to Grow a Discourse Forum without product or service behind it?</a></span>
+        <span class="category">Community Building</span>
+        <span class="post-count">9</span>
+      </div>
+
+      <div class="topic-row" data-category="uncategorized">
+        <span class="topic"><a href="t/normalized-profile-links/345494">Normalized Profile Links</a></span>
+        <span class="category"></span>
+        <span class="post-count">12</span>
+      </div>
+
+      <div class="topic-row" data-category="uncategorized">
+        <span class="topic"><a href="t/im-struggling-to-recover-deleted-post-how-to-fix/403161">Im struggling to recover deleted post, how to fix?</a></span>
+        <span class="category"></span>
+        <span class="post-count">19</span>
+      </div>
+
+      <div class="topic-row" data-category="uncategorized">
+        <span class="topic"><a href="t/how-to-regain-admin-access-when-discourse-id-is-disabled-and-before-ticking-enable-local-login-option/403202">How to regain Admin access when Discourse ID is disabled and before ticking Enable Local Login option?</a></span>
+        <span class="category"></span>
+        <span class="post-count">3</span>
+      </div>
+
+      <div class="topic-row" data-category="uncategorized">
+        <span class="topic"><a href="t/what-are-some-common-breaking-points-as-communities-grow/402716">What are some common breaking points as communities grow?</a></span>
+        <span class="category"></span>
+        <span class="post-count">13</span>
+      </div>
+
+      <div class="topic-row" data-category="support">
+        <span class="topic"><a href="t/if-i-try-to-change-ownership-of-a-topic-but-nothing/403257">If I try to change ownership of a topic but nothing</a></span>
+        <span class="category">Support</span>
+        <span class="post-count">4</span>
+      </div>
+
+      <div class="topic-row" data-category="support">
+        <span class="topic"><a href="t/i-cannot-anymore-delete-topics-why/403151">I cannot anymore delete topics , why?</a></span>
+        <span class="category">Support</span>
+        <span class="post-count">13</span>
+      </div>
+
+      <div class="topic-row" data-category="uncategorized">
+        <span class="topic"><a href="t/custom-wizard-plugin/73345">Custom Wizard Plugin :mage:</a></span>
+        <span class="category"></span>
+        <span class="post-count">41</span>
+      </div>
+
+      <div class="topic-row" data-category="uncategorized">
+        <span class="topic"><a href="t/purge-silenced-users-with-no-active-posts-after-x-days/403208">Purge silenced users with no active posts after x days</a></span>
+        <span class="category"></span>
+        <span class="post-count">4</span>
+      </div>
+
+      <div class="topic-row" data-category="uncategorized">
+        <span class="topic"><a href="t/quote-callouts/350962">Quote Callouts</a></span>
+        <span class="category"></span>
+        <span class="post-count">68</span>
+      </div>
+
+      <div class="topic-row" data-category="uncategorized">
+        <span class="topic"><a href="t/replace-the-emoji-which-signifies-more-when-discourse-reactions-experimental-allow-any-emoji-is-set/403116">Replace the :slight_smile: emoji which signifies &ldquo;More&hellip;&rdquo; when discourse_reactions_experimental_allow_any_emoji is set</a></span>
+        <span class="category"></span>
+        <span class="post-count">2</span>
+      </div>
+
+      <div class="topic-row" data-category="support">
+        <span class="topic"><a href="t/repeating-event-going-gets-not-deleted-anymore/335780">Repeating Event &rdquo; going&rdquo; gets not deleted anymore</a></span>
+        <span class="category">Support</span>
+        <span class="post-count">15</span>
+      </div>
+
+      <div class="topic-row" data-category="support">
+        <span class="topic"><a href="t/is-there-a-quick-way-to-link-to-a-comment-in-the-current-topic-by-number/403237">Is there a quick way to link to a comment in the current topic by number?</a></span>
+        <span class="category">Support</span>
+        <span class="post-count">6</span>
+      </div>
+
+      <div class="topic-row" data-category="support">
+        <span class="topic"><a href="t/how-do-i-remove-submissions-via-rails-from-the-custom-wizard-plugin/403230">How do I remove Submissions via Rails from the Custom Wizard plugin?</a></span>
+        <span class="category">Support</span>
+        <span class="post-count">3</span>
+      </div>
+
+      <div class="topic-row" data-category="uncategorized">
+        <span class="topic"><a href="t/high-context-topic-cards-are-now-enabled-by-default-in-the-horizon-theme/402843">High context topic cards are now enabled by default in the Horizon theme</a></span>
+        <span class="category"></span>
+        <span class="post-count">3</span>
+      </div>
+
+      <div class="topic-row" data-category="uncategorized">
+        <span class="topic"><a href="t/introducing-upcoming-changes-a-system-to-manage-new-features-and-changes-to-existing-functionality-in-your-community/392894">Introducing Upcoming Changes, a system to manage new features and changes to existing functionality in your community</a></span>
+        <span class="category"></span>
+        <span class="post-count">26</span>
+      </div>
+
+      <div class="topic-row" data-category="community-building">
+        <span class="topic"><a href="t/wibiblio-discourse-based-community-building-for-libraries-at-re-publica-berlin/403219">Wibiblio Discourse based community building for libraries at Re:publica Berlin</a></span>
+        <span class="category">Community Building</span>
+        <span class="post-count">1</span>
+      </div>
+
+      <div class="topic-row" data-category="uncategorized">
+        <span class="topic"><a href="t/discourse-gamification/225916">Discourse Gamification</a></span>
+        <span class="category"></span>
+        <span class="post-count">58</span>
+      </div>
+
+      <div class="topic-row" data-category="uncategorized">
+        <span class="topic"><a href="t/modernizing-the-foundation-theme/395331">Modernizing the Foundation theme</a></span>
+        <span class="category"></span>
+        <span class="post-count">77</span>
+      </div>
+
+      <div class="topic-row" data-category="uncategorized">
+        <span class="topic"><a href="t/include-date-and-time-and-maybe-location-and-description-in-oneboxes-for-events/381681">Include date and time (and maybe location and description) in Oneboxes for Events</a></span>
+        <span class="category"></span>
+        <span class="post-count">6</span>
+      </div>
+
+      <div class="topic-row" data-category="uncategorized">
+        <span class="topic"><a href="t/ai/403201">Hyperlinks in the official community AI plugin not working; clicking produces no response</a></span>
+        <span class="category"></span>
+        <span class="post-count">1</span>
+      </div>
+
+      <div class="topic-row" data-category="support">
+        <span class="topic"><a href="t/error-with-practically-my-first-test-of-new-forum/403198">Error with practically my first test of new forum</a></span>
+        <span class="category">Support</span>
+        <span class="post-count">5</span>
+      </div>
+
+
+      </div>
+      <nav class="pagination-nav" aria-label="Topic pages"><a class="pagination-link" href="index.html">1</a><a class="pagination-link" href="page-2.html">2</a><span class="pagination-link current" aria-current="page">3</span><a class="pagination-link" href="page-4.html">4</a></nav>
+      <footer class="archive-footer">
+        <a href="https://discourse.org">Discourse</a> forum -- Archived by <a href="https://github.com/mcmcclur/ArchiveDiscourse">Archive Discourse</a>
+      </footer>
+    </div>
+  </body>
+</html>

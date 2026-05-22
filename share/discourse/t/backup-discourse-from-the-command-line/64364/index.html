@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width">
+    <title>Backup discourse from the command line</title>
+    <link rel="stylesheet" href="../../../archived.css" />
+    <script>
+      function findSageCodeBlocks() {
+        return Array.prototype.slice.call(
+          document.querySelectorAll(
+            "pre[data-code-wrap='sage'] > code, pre > code.lang-sage, pre > code.language-sage, pre > code.sage"
+          )
+        );
+      }
+
+      function loadScript(src) {
+        return new Promise(function (resolve, reject) {
+          var existing = document.querySelector("script[src='" + src + "']");
+          if (existing) {
+            if (existing.dataset.loaded === "true") {
+              resolve();
+              return;
+            }
+            existing.addEventListener("load", resolve, { once: true });
+            existing.addEventListener("error", reject, { once: true });
+            return;
+          }
+
+          var script = document.createElement("script");
+          script.src = src;
+          script.async = true;
+          script.addEventListener("load", function () {
+            script.dataset.loaded = "true";
+            resolve();
+          }, { once: true });
+          script.addEventListener("error", reject, { once: true });
+          document.head.appendChild(script);
+        });
+      }
+
+      function prepareSageCells() {
+        var sageBlocks = findSageCodeBlocks();
+        if (!sageBlocks.length) {
+          return Promise.resolve();
+        }
+
+        return loadScript("https://sagecell.sagemath.org/static/embedded_sagecell.js")
+          .then(function () {
+            if (!window.sagecell || !window.sagecell.makeSagecell) {
+              return;
+            }
+
+            sageBlocks.forEach(function (codeTag, index) {
+              var preTag = codeTag.parentElement;
+              if (!preTag || preTag.dataset.sageMounted === "true") {
+                return;
+              }
+
+              var host = document.createElement("div");
+              host.className = "sagecell-archive";
+
+              var source = document.createElement("script");
+              source.type = "text/x-sage";
+              source.text = codeTag.textContent || "";
+              host.appendChild(source);
+
+              preTag.insertAdjacentElement("afterend", host);
+              preTag.classList.add("sage-source-hidden");
+              preTag.dataset.sageMounted = "true";
+
+              window.sagecell.makeSagecell({
+                inputLocation: host,
+                autoeval: false,
+                evalButtonText: "Run",
+                languages: ["sage"]
+              });
+            });
+          })
+          .catch(function () {
+            // Leave the original code blocks visible if SageCell cannot load.
+          });
+      }
+
+      function preprocessDiscourseMath() {
+        document.querySelectorAll("span.math, div.math").forEach(function (node) {
+          var tex = node.textContent || "";
+          if (!tex.trim()) {
+            return;
+          }
+          if (node.tagName === "SPAN") {
+            node.textContent = "\\(" + tex + "\\)";
+          } else {
+            node.textContent = "\\[" + tex + "\\]";
+          }
+          node.classList.remove("math");
+        });
+      }
+
+      window.MathJax = {
+        tex: {
+          inlineMath: [["\\(", "\\)"]],
+          displayMath: [["\\[", "\\]"]]
+        },
+        startup: {
+          pageReady() {
+            preprocessDiscourseMath();
+            return MathJax.startup.defaultPageReady().then(function () {
+              return prepareSageCells();
+            });
+          }
+        }
+      };
+    </script>
+    <script async id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="title-span">
+        <a href="../../../">
+          <img src="../../../images/ad2526334012b2ad0c3421f9b6dd94bae2ede52f.svg" height="40" alt="Site Logo" id="site-logo" />
+        </a>
+      </div>
+    </header>
+
+    <div class="main">
+    <div class="archive-span"><a href='https://meta.discourse.org/'>Discourse Meta</a> archived in May, 2026</div>
+    <h1 class="topic-title">Backup discourse from the command line</h1>
+            <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/148734_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Discourse</div>
+          <div class="post_content">
+<blockquote>
+<p><img alt=":bookmark:" class="emoji" height="20" loading="lazy" src="../../../images/bookmark.png" title=":bookmark:" width="20"/> This guide covers how to back up and restore your Discourse site using command line tools, specifically designed for self-hosted environments.</p>
+<p><img alt=":person_raising_hand:" class="emoji" height="20" loading="lazy" src="../../../images/person_raising_hand.png" title=":person_raising_hand:" width="20"/> Required user level: Administrator</p>
+</blockquote>
+<blockquote>
+<p><img alt=":information_source:" class="emoji" height="20" loading="lazy" src="../../../images/information_source.png" title=":information_source:" width="20"/> You can use the below placeholders to automatically fill out the command line prompts in this guide:</p>
+</blockquote>
+<p><span class="d-wrap" data-default="your-site-2006-01-02-150405-v20200101150405.tar.gz" data-key="FILENAME" data-wrap="placeholder"></span></p>
+<p><span class="d-wrap" data-default="root" data-key="USER" data-wrap="placeholder"></span></p>
+<p><span class="d-wrap" data-default="10.278.31.5" data-key="HOST" data-wrap="placeholder"></span></p>
+<h2><a aria-label="Heading link" class="anchor" href="#p-298342-backing-up-1" name="p-298342-backing-up-1"></a>Backing up</h2>
+<p>To create a backup of your Discourse site, follow these steps:</p>
+<ol>
+<li>Enter the container:</li>
+</ol>
+<pre><code class="lang-plaintext">./launcher enter app
+</code></pre>
+<ol start="2">
+<li>Run the backup:</li>
+</ol>
+<pre><code class="lang-plaintext">discourse backup
+exit
+</code></pre>
+<p>This will print out the final filename of your backup. Download the backup and container configuration (if needed) to your local machine:</p>
+<pre><code>scp =USER=@=HOST=:/var/discourse/shared/standalone/backups/default/=FILENAME= .
+scp =USER=@=HOST=:/var/discourse/containers/app.yml .
+</code></pre>
+<h2><a aria-label="Heading link" class="anchor" href="#p-298342-restoring-2" name="p-298342-restoring-2"></a>Restoring</h2>
+<p>To restore a Discourse backup, follow these steps:</p>
+<ol>
+<li>Install a Discourse site on the server you are restoring to.</li>
+</ol>
+<p>If you’re testing this procedure multiple times, you can wipe the data on your test server.</p>
+<details>
+<summary>
+Wipe Discourse data (optional)</summary>
+<pre><code class="lang-plaintext">./launcher stop app
+./launcher destroy app
+rm -r /var/discourse/shared/standalone/
+mkdir -p /var/discourse/shared/standalone/backups/default/
+</code></pre>
+<hr/>
+</details>
+<ol start="2">
+<li>Upload the backup file:</li>
+</ol>
+<pre><code class="lang-plaintext">scp =FILENAME= =USER=@=HOST=:/var/discourse/shared/standalone/backups/default/
+</code></pre>
+<ol start="3">
+<li>Enter the container and start the restore:</li>
+</ol>
+<pre><code class="lang-plaintext">./launcher enter app
+discourse enable_restore
+discourse restore =FILENAME=
+</code></pre>
+<p>If you happen to forget what the filename was, run the “discourse restore” command by itself to get a list of available backup files.</p>
+<blockquote>
+<p><img alt=":information_source:" class="emoji" height="20" loading="lazy" src="../../../images/information_source.png" title=":information_source:" width="20"/> For a two-container setup, use <code>./launcher enter web_only</code> and replace <code>standalone</code> with <code>web-only</code> in the path to backups.</p>
+</blockquote>
+<p>For additional information about restoring Discourse backups, see <a href="https://meta.discourse.org/t/restore-a-backup-from-the-command-line/108034">Restore a backup from the command line</a>.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 40">❤️ 40</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/211915_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">th21</div>
+          <div class="post_content">
+<aside class="quote no-group quote-modified" data-post="1" data-topic="64364" data-username="Discourse">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" loading="lazy" src="../../../images/148734_2.png" width="24"/> Discourse:</div>
+<blockquote>
+<p><code>scp root@18.177.57.246:/var/discourse/containers/app.yml .</code></p>
+</blockquote>
+</aside>
+<p>where should I run this command? on my cloud server terminal or my local machine?<br/>
+although either give me permission denied error</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/xDAhJpFEaZArxL0Hg2EG4TvKKqY.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/e/b/c/ebc14549258cf31f25c5273c22b90d027099c8e0.png" rel="noopener nofollow ugc" title='A screenshot of a terminal window showing an unsuccessful ssh login attempt with the message "Permission denied (publickey)." (Captioned by AI)'><img alt='A screenshot of a terminal window showing an unsuccessful ssh login attempt with the message "Permission denied (publickey)." (Captioned by AI)' data-base62-sha1="xDAhJpFEaZArxL0Hg2EG4TvKKqY" data-dominant-color="261F1E" height="131" src="../../../images/ebc14549258cf31f25c5273c22b90d027099c8e0_2_690x131.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/e/b/c/ebc14549258cf31f25c5273c22b90d027099c8e0_2_690x131.png, https://d11a6trkgmumsb.cloudfront.net/original/4X/e/b/c/ebc14549258cf31f25c5273c22b90d027099c8e0.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/e/b/c/ebc14549258cf31f25c5273c22b90d027099c8e0.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">A screenshot of a terminal window showing an unsuccessful ssh login attempt with the message "Permission denied (publickey)." (Captioned by AI)</span><span class="informations">1032×196 29 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/119591_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Canapin</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="31" data-topic="64364" data-username="th21">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/211915_2.png" width="24"/> th21:</div>
+<blockquote>
+<p>where should I run this command?</p>
+</blockquote>
+</aside>
+<p>On your local machine.</p>
+<p>Are you using an SSH key to connect? The error is related.</p>
+<p>The command should then be:</p>
+<pre data-code-wrap="bash"><code class="lang-bash">scp -i /path_to_your_key/your_key.pem root@147.43.15.199:/var/discourse/shared/standalone/backups/default/discourse-2024-12-25-033740-v20241211222608.tar.gz .
+</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/197167_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Alon1</div>
+          <div class="post_content">
+<p>I have a scenario where I want to migrate the Discourse installation to a whole new server.<br/>
+My plan was:</p>
+<ol>
+<li>create a new blank Discourse installation</li>
+<li>backup the old Discourse, <code>scp</code> the backup to the new server and restore</li>
+<li>Copy over all the S3 (images, etc.) to the new S3 on a different account</li>
+</ol>
+<p>The restore process goes well until it starts looking for S3 and then fail for no access. I think it is trying to access the same S3 bucket name on the old Discourse, but that one doesn’t exist on the new one and I can’t create it.</p>
+<p>Is there a recommended solution?</p>
+<p>I thought I could try to change the S3 bucket name on the old Discourse (before performing backup) and then when I restore, it would expect to have the new S3 bucket. But I’m afraid of what will happen to the old Discourse if I just switch it to a non-exisiting bucket.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/120154_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">pfaffman</div>
+          <div class="post_content">
+<p>There’s a hidden setting that will download the s3 files and our them in the backup.</p>
+<p>You need to configure s3 in the yml file as in <a href="https://meta.discourse.org/t/configure-an-s3-compatible-object-storage-provider-for-uploads/148916">Configure an S3 compatible object storage provider for uploads</a></p>
+<p>Then when you restore the backup it’ll push the uploads to the new bucket.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Isambard</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="33" data-topic="64364" data-username="Alon1">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/197167_2.png" width="24"/> Alon1:</div>
+<blockquote>
+<p>The restore process goes well until it starts looking for S3 and then fail for no access. I think it is trying to access the same S3 bucket name on the old Discourse, but that one doesn’t exist on the new one and I can’t create it.</p>
+<p>Is there a recommended solution?</p>
+<p>I thought I could try to change the S3 bucket name on the old Discourse (before performing backup) and then when I restore, it would expect to have the new S3 bucket. But I’m afraid of what will happen to the old Discourse if I just switch it to a non-exisiting bucket.</p>
+</blockquote>
+</aside>
+<p>Did you ever figure this one out?</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/120154_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">pfaffman</div>
+          <div class="post_content">
+<p>You need to configure s3 in env variables as described in <a href="https://meta.discourse.org/t/configure-an-s3-compatible-object-storage-provider-for-uploads/148916">Configure an S3 compatible object storage provider for uploads</a></p>
+<p>This is especially true if the s3 settings are different on the new server. Putting the s3 values in the database can cause lots of problems.</p>
+<p>But there is a switch for the restore command that makes it pause between the various parts. It can help.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/197134_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Jonathan5</div>
+          <div class="post_content">
+<p>Can I double check that the file you end up with here is the same as you get when backing up from the forum website?</p>
+<p>I always rebuild at the command line but first back up using the website. This time I forgot to back up! I think using the command line for both might help me <img alt=":slight_smile:" class="emoji" height="20" loading="lazy" src="../../../images/slight_smile.png" title=":slight_smile:" width="20"/> Wish me luck.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/197134_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Jonathan5</div>
+          <div class="post_content">
+<p>The backup script stated:</p>
+<pre><code class="lang-plaintext">Finished!
+[SUCCESS]
+Backup done.
+Output file is in: /var/www/discourse/public/backups/default/FILENAME.tar.gz
+</code></pre>
+<p>To begin with I tried to download that, which contains the wrong path. I found the file elsewhere, and only then noticed that the commands on this topic are correct…</p>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+  </body>
+</html>

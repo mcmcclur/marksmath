@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100%" height="100%">
+    <defs>
+        <path id="petal" d="M0,0 C-3,-7 -7,-10 0,-14 C7,-10 3,-7 0,0" fill="#F78C90" stroke="var(--primary, #1C1C1C)" stroke-width="1.5" stroke-linejoin="round"/>
+
+        <g id="sakura">
+            <use href="#petal" transform="rotate(0)"/>
+            <use href="#petal" transform="rotate(72)"/>
+            <use href="#petal" transform="rotate(144)"/>
+            <use href="#petal" transform="rotate(216)"/>
+            <use href="#petal" transform="rotate(288)"/>
+            <g stroke="var(--primary, #1C1C1C)" stroke-width="0.75" stroke-linecap="round">
+                <line x1="0" y1="0" x2="0" y2="-4"/>
+                <line x1="0" y1="0" x2="3.8" y2="-1.2"/>
+                <line x1="0" y1="0" x2="2.3" y2="3.2"/>
+                <line x1="0" y1="0" x2="-2.3" y2="3.2"/>
+                <line x1="0" y1="0" x2="-3.8" y2="-1.2"/>
+            </g>
+            <circle cx="0" cy="0" r="1.5" fill="var(--primary, #1C1C1C)"/>
+        </g>
+    </defs>
+
+    <style>
+        /* Die Keyframes f&#xFC;r das "Aufploppen" und Verschwinden */
+        @keyframes bloom {
+        0% { transform: scale(0); }
+        20% { transform: scale(1.1); }
+        30% { transform: scale(1); }
+        80% { transform: scale(1); }
+        100% { transform: scale(0); }
+        }
+
+        /* Die CSS-Klassen, die den Bl&#xFC;ten zugewiesen werden */
+        .pop {
+        animation: bloom 2.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+        transform-origin: 0px 0px; /* L&#xE4;sst sie aus ihrer exakten Mitte wachsen */
+        }
+        .delay-1 {
+        animation-delay: 0.3s;
+        }
+        .delay-2 {
+        animation-delay: 0.6s;
+        }
+    </style>
+
+    <g id="branch-structure">
+        <path d="M 15 85 Q 40 70 50 50 T 85 20" stroke="var(--primary, #1C1C1C)" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <path d="M 42 56 Q 55 60 62 58" stroke="var(--primary, #1C1C1C)" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <path d="M 30 70 Q 25 65 25 62" stroke="var(--primary, #1C1C1C)" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <path d="M 45 55 Q 40 45 40 35" stroke="var(--primary, #1C1C1C)" stroke-width="2" fill="none" stroke-linecap="round"/>
+    </g>
+
+    <g transform="translate(40, 35)">
+        <g class="pop"><use href="#sakura" transform="scale(1.4) rotate(15)"/></g>
+    </g>
+    <g transform="translate(62, 58)">
+        <g class="pop"><use href="#sakura" transform="scale(1.15) rotate(45)"/></g>
+    </g>
+
+    <g transform="translate(78, 28)">
+        <g class="pop delay-1"><use href="#sakura" transform="scale(0.7) rotate(10)"/></g>
+    </g>
+    <g transform="translate(25, 62)">
+        <g class="pop delay-1"><use href="#sakura" transform="scale(1.1) rotate(-20)"/></g>
+    </g>
+
+    <g transform="translate(22, 25)">
+        <g class="pop delay-2"><use href="#petal" transform="rotate(-40) scale(0.9)"/></g>
+    </g>
+    <g transform="translate(35, 65)">
+        <g class="pop delay-2"><use href="#petal" transform="rotate(30) scale(0.6)"/></g>
+    </g>
+</svg>

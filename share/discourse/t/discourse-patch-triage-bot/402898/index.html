@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width">
+    <title>Discourse-patch-triage bot</title>
+    <link rel="stylesheet" href="../../../archived.css" />
+    <script>
+      function findSageCodeBlocks() {
+        return Array.prototype.slice.call(
+          document.querySelectorAll(
+            "pre[data-code-wrap='sage'] > code, pre > code.lang-sage, pre > code.language-sage, pre > code.sage"
+          )
+        );
+      }
+
+      function loadScript(src) {
+        return new Promise(function (resolve, reject) {
+          var existing = document.querySelector("script[src='" + src + "']");
+          if (existing) {
+            if (existing.dataset.loaded === "true") {
+              resolve();
+              return;
+            }
+            existing.addEventListener("load", resolve, { once: true });
+            existing.addEventListener("error", reject, { once: true });
+            return;
+          }
+
+          var script = document.createElement("script");
+          script.src = src;
+          script.async = true;
+          script.addEventListener("load", function () {
+            script.dataset.loaded = "true";
+            resolve();
+          }, { once: true });
+          script.addEventListener("error", reject, { once: true });
+          document.head.appendChild(script);
+        });
+      }
+
+      function prepareSageCells() {
+        var sageBlocks = findSageCodeBlocks();
+        if (!sageBlocks.length) {
+          return Promise.resolve();
+        }
+
+        return loadScript("https://sagecell.sagemath.org/static/embedded_sagecell.js")
+          .then(function () {
+            if (!window.sagecell || !window.sagecell.makeSagecell) {
+              return;
+            }
+
+            sageBlocks.forEach(function (codeTag, index) {
+              var preTag = codeTag.parentElement;
+              if (!preTag || preTag.dataset.sageMounted === "true") {
+                return;
+              }
+
+              var host = document.createElement("div");
+              host.className = "sagecell-archive";
+
+              var source = document.createElement("script");
+              source.type = "text/x-sage";
+              source.text = codeTag.textContent || "";
+              host.appendChild(source);
+
+              preTag.insertAdjacentElement("afterend", host);
+              preTag.classList.add("sage-source-hidden");
+              preTag.dataset.sageMounted = "true";
+
+              window.sagecell.makeSagecell({
+                inputLocation: host,
+                autoeval: false,
+                evalButtonText: "Run",
+                languages: ["sage"]
+              });
+            });
+          })
+          .catch(function () {
+            // Leave the original code blocks visible if SageCell cannot load.
+          });
+      }
+
+      function preprocessDiscourseMath() {
+        document.querySelectorAll("span.math, div.math").forEach(function (node) {
+          var tex = node.textContent || "";
+          if (!tex.trim()) {
+            return;
+          }
+          if (node.tagName === "SPAN") {
+            node.textContent = "\\(" + tex + "\\)";
+          } else {
+            node.textContent = "\\[" + tex + "\\]";
+          }
+          node.classList.remove("math");
+        });
+      }
+
+      window.MathJax = {
+        tex: {
+          inlineMath: [["\\(", "\\)"]],
+          displayMath: [["\\[", "\\]"]]
+        },
+        startup: {
+          pageReady() {
+            preprocessDiscourseMath();
+            return MathJax.startup.defaultPageReady().then(function () {
+              return prepareSageCells();
+            });
+          }
+        }
+      };
+    </script>
+    <script async id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="title-span">
+        <a href="../../../">
+          <img src="../../../images/ad2526334012b2ad0c3421f9b6dd94bae2ede52f.svg" height="40" alt="Site Logo" id="site-logo" />
+        </a>
+      </div>
+    </header>
+
+    <div class="main">
+    <div class="archive-span"><a href='https://meta.discourse.org/'>Discourse Meta</a> archived in May, 2026</div>
+    <h1 class="topic-title">Discourse-patch-triage bot</h1>
+            <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554803_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Lilly</div>
+          <div class="post_content">
+<p>trying to figure out how to work with the new <code>discourse-patch-triage</code> bot when doing PRs from our own fork, and it’s a bit confusing, especially in a 3-way conversation with it and a team reviewer. is there a proper way to do this?</p>
+<p>i can’t order it to fix it’s suggested fixes on my fork.  at the moment, i am trying to address it’s replies around spec tests and i am not at all sure if i am doing it correctly -  i would rather tell it to fix them since since this seems to be an option suggested.</p>
+<p>for example, i am fixing spec tests failures on my fork for the pr but it seems like there is some friction between what i am doing and what the bot wants to do:</p>
+<aside class="onebox githubpullrequest" data-onebox-src="https://github.com/discourse/discourse/pull/39917#issuecomment-4444020048">
+<header class="source">
+<a href="https://github.com/discourse/discourse/pull/39917#issuecomment-4444020048" rel="noopener" target="_blank">github.com/discourse/discourse</a>
+</header>
+<article class="onebox-body">
+<div class="github-row" data-github-private-repo="false">
+<div class="github-icon-container" title="Comment">
+<svg aria-hidden="true" class="github-icon" height="60" viewbox="0 0 16 16" width="60"><path d="M1.5 2.75a.25.25 0 01.25-.25h8.5a.25.25 0 01.25.25v5.5a.25.25 0 01-.25.25h-3.5a.75.75 0 00-.53.22L3.5 11.44V9.25a.75.75 0 00-.75-.75h-1a.25.25 0 01-.25-.25v-5.5zM1.75 1A1.75 1.75 0 000 2.75v5.5C0 9.216.784 10 1.75 10H2v1.543a1.457 1.457 0 002.487 1.03L7.061 10h3.189A1.75 1.75 0 0012 8.25v-5.5A1.75 1.75 0 0010.25 1h-8.5zM14.5 4.75a.25.25 0 00-.25-.25h-.5a.75.75 0 110-1.5h.5c.966 0 1.75.784 1.75 1.75v5.5A1.75 1.75 0 0114.25 12H14v1.543a1.457 1.457 0 01-2.487 1.03L9.22 12.28a.75.75 0 111.06-1.06l2.22 2.22v-2.19a.75.75 0 01.75-.75h1a.25.25 0 00.25-.25v-5.5z" fill-rule="evenodd"></path></svg>
+</div>
+<div class="github-info-container">
+<h4>
+        Comment by
+        <a href="https://github.com/janzenisaac" rel="noopener" target="_blank">
+<img alt="" class="onebox-avatar-inline" data-dominant-color="7A5E52" height="20" src="../../../images/c33357c8f14a57fa086e1fbb6402f12c5d28b18f.jpeg" width="20"/>
+          janzenisaac
+        </a> - <a href="https://github.com/discourse/discourse/pull/39917#issuecomment-4444020048" rel="noopener" target="_blank">FIX: Automation Plugin - Monthly recurring triggers shifting dates and skipping months (BYDAY to BYMONTHDAY)</a>
+</h4>
+<div class="branches">
+<code>main</code> ← <code>Lillinator:automation-recurring-month-fix</code>
+</div>
+</div>
+</div>
+<div class="github-row">
+<p class="github-body-container">Ah this is from a fork, which patch-triage does not support writing to directly.<span class="show-more-container"><a class="show-more" href="https://github.com/discourse/discourse/pull/39917" rel="noopener" target="_blank">…</a></span><span class="excerpt hidden"> @patch-triage, how do I fix these tests? 
+```
+Failures:
+
+  1) Recurring scheduling next pending automations with monthly frequency doesn't fail to schedule if the current time is within subsecond of the time component of start_date
+     Failure/Error: example_procsy.run
+       2023-11-01 07:30:00 UTC is not within 1 millisecond of 2023-11-05 07:30:00 UTC
+     # ./plugins/automation/spec/triggers/recurring_spec.rb:167:in 'block (4 levels) in &lt;main&gt;'
+     # ./spec/rails_helper.rb:756:in 'block (3 levels) in &lt;top (required)&gt;'
+     # /var/www/discourse/vendor/bundle/ruby/3.4.0/gems/timeout-0.6.1/lib/timeout.rb:296:in 'block in Timeout.timeout'
+     # /var/www/discourse/vendor/bundle/ruby/3.4.0/gems/timeout-0.6.1/lib/timeout.rb:304:in 'Timeout.timeout'
+     # ./spec/rails_helper.rb:746:in 'block (2 levels) in &lt;top (required)&gt;'
+     # ./spec/rails_helper.rb:703:in 'block (2 levels) in &lt;top (required)&gt;'
+     # /var/www/discourse/vendor/bundle/ruby/3.4.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in 'block (2 levels) in &lt;top (required)&gt;'
+
+  2) Recurring when trigger is called every_month creates the next iteration one month later
+     Failure/Error: example_procsy.run
+       2021-07-04 08:00:00 UTC is not within 1 minute of 2021-07-02 08:00:00 UTC
+     # ./plugins/automation/spec/triggers/recurring_spec.rb:408:in 'block (4 levels) in &lt;main&gt;'
+     # ./spec/rails_helper.rb:756:in 'block (3 levels) in &lt;top (required)&gt;'
+     # /var/www/discourse/vendor/bundle/ruby/3.4.0/gems/timeout-0.6.1/lib/timeout.rb:296:in 'block in Timeout.timeout'
+     # /var/www/discourse/vendor/bundle/ruby/3.4.0/gems/timeout-0.6.1/lib/timeout.rb:304:in 'Timeout.timeout'
+     # ./spec/rails_helper.rb:746:in 'block (2 levels) in &lt;top (required)&gt;'
+     # ./spec/rails_helper.rb:703:in 'block (2 levels) in &lt;top (required)&gt;'
+     # /var/www/discourse/vendor/bundle/ruby/3.4.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in 'block (2 levels) in &lt;top (required)&gt;'
+
+Finished in 5 minutes 23 seconds (files took 0 seconds to load)
+11658 examples, 2 failures, 4 pending, 1 error occurred outside of examples
+
+Failed examples:
+
+rspec ./plugins/automation/spec/triggers/recurring_spec.rb:149 # Recurring scheduling next pending automations with monthly frequency doesn't fail to schedule if the current time is within subsecond of the time component of start_date
+rspec ./plugins/automation/spec/triggers/recurring_spec.rb:404 # Recurring when trigger is called every_month creates the next iteration one month later
+
+Retrying failed examples and logging flaky tests...
+Run options: include {locations: {"./plugins/automation/spec/triggers/recurring_spec.rb" =&gt; [149, 404]}}
+
+Randomized with seed 8900
+
+Recurring
+  scheduling next pending automations
+    with monthly frequency
+      doesn't fail to schedule if the current time is within subsecond of the time component of start_date (FAILED - 1)
+  when trigger is called
+    every_month
+      creates the next iteration one month later (FAILED - 2)
+
+Failures:
+
+  1) Recurring scheduling next pending automations with monthly frequency doesn't fail to schedule if the current time is within subsecond of the time component of start_date
+     Failure/Error:
+       expect(pending_automations.first.execute_at).to eq_time(
+         Time.parse("2023-11-05 07:30:00 UTC"),
+       )
+     
+       2023-11-01 07:30:00 UTC is not within 1 millisecond of 2023-11-05 07:30:00 UTC
+     # ./plugins/automation/spec/triggers/recurring_spec.rb:167:in 'block (4 levels) in &lt;main&gt;'
+
+  2) Recurring when trigger is called every_month creates the next iteration one month later
+     Failure/Error:
+       expect(pending_automation.execute_at).to be_within_one_minute_of(
+         Time.parse("2021-07-02 08:00:00 UTC"),
+       )
+     
+       2021-07-04 08:00:00 UTC is not within 1 minute of 2021-07-02 08:00:00 UTC
+     # ./plugins/automation/spec/triggers/recurring_spec.rb:408:in 'block (4 levels) in &lt;main&gt;'
+
+Finished in 7.53 seconds (files took 5.78 seconds to load)
+2 examples, 2 failures
+
+Failed examples:
+
+rspec ./plugins/automation/spec/triggers/recurring_spec.rb:149 # Recurring scheduling next pending automations with monthly frequency doesn't fail to schedule if the current time is within subsecond of the time component of start_date
+rspec ./plugins/automation/spec/triggers/recurring_spec.rb:404 # Recurring when trigger is called every_month creates the next iteration one month later
+```</span></p>
+</div>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+<p>should i be fixing these in my fork or letting the team/bot fix them instead?</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/235758_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">isaac</div>
+          <div class="post_content">
+<p>Thanks lilly for the back and forth there. A couple things</p>
+<ol>
+<li>To interact with the bot you need to comment <code>@patch-triage</code> and then you can use plain english for your request. It’s functionality is currently limited at reviewing, suggesting changes, rebasing your PR, and creating a new commit with the suggested changes.</li>
+<li>It will not commit changes on forks, however it can still review / suggest changes. I have just made changes to make that explicit, so you will need to handle any suggested changes yourself (as you have done).</li>
+</ol>
+<p>If you would like to take full advantage of the bot I suggest creating a PR directly to core rather than through your fork <img alt=":slight_smile:" class="emoji" height="20" loading="lazy" src="../../../images/slight_smile.png" title=":slight_smile:" width="20"/></p>
+<p>Let me know if that answers your questions!</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="chefs kiss: 1">:chefs_kiss: 1</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554803_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Lilly</div>
+          <div class="post_content">
+<p>thank you Isaac, that clears things up.  i’m just so used to forking repos for PRs, but i’ll start doing PRs on core branches instead in cases like this - the triage bot seems pretty useful.</p>
+<p><small>also, spec tests are the bane of my programming. <img alt=":stuck_out_tongue:" class="emoji" height="20" loading="lazy" src="../../../images/stuck_out_tongue.png" title=":stuck_out_tongue:" width="20"/> </small></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554803_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Lilly</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="3" data-topic="402898" data-username="Lilly">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/554803_2.png" width="24"/> Lilly:</div>
+<blockquote>
+<p>but i’ll start doing PRs on core branches instead in cases like this</p>
+</blockquote>
+</aside>
+<p>i don’t think i can do this anymore now that i am not staff though <img alt=":thinking:" class="emoji" height="20" loading="lazy" src="../../../images/thinking.png" title=":thinking:" width="20"/></p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/k5bpl0yfyBnNL2fgg1xDna5Ipd2.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/8/c/c/8cc17eec67ac33b13a0858798374910ef9395d7c.png" title="Screenshot 2026-05-13 at 1.16.19 PM"><img alt="Screenshot 2026-05-13 at 1.16.19 PM" data-base62-sha1="k5bpl0yfyBnNL2fgg1xDna5Ipd2" data-dominant-color="272F39" height="184" src="../../../images/8cc17eec67ac33b13a0858798374910ef9395d7c_2_690x184.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/8/c/c/8cc17eec67ac33b13a0858798374910ef9395d7c_2_690x184.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/8/c/c/8cc17eec67ac33b13a0858798374910ef9395d7c_2_1035x276.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/8/c/c/8cc17eec67ac33b13a0858798374910ef9395d7c_2_1380x368.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2026-05-13 at 1.16.19 PM</span><span class="informations">1930×516 66.9 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/235758_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">isaac</div>
+          <div class="post_content">
+<p>Ah… yes. You can still take advantage of:</p>
+<aside class="quote group-team" data-post="2" data-topic="402898" data-username="isaac">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/235758_2.png" width="24"/> isaac:</div>
+<blockquote>
+<p>however it can still review / suggest changes.</p>
+</blockquote>
+</aside>
+<p>I will raise the topic of allowing forks to have write access to the PR internally.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/443519_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">system</div>
+          <div class="post_content">
+<p>This topic was automatically closed 2 days after the last reply. New replies are no longer allowed.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/235758_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">isaac</div>
+          <div class="post_content">
+
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/235758_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">isaac</div>
+          <div class="post_content">
+<p><span class="mention">@Lilly</span> updates have been made and you can now</p>
+<ol>
+<li>Ask for <code>@patch-triage</code> to review/rebase/create or commit changes for you</li>
+<li>Everything works as expected on forks <img alt=":slight_smile:" class="emoji" height="20" loading="lazy" src="../../../images/slight_smile.png" title=":slight_smile:" width="20"/></li>
+</ol>
+<p>Please take it for a spin and let me know if you run into any issues <img alt=":slight_smile:" class="emoji" height="20" loading="lazy" src="../../../images/slight_smile.png" title=":slight_smile:" width="20"/></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="chefs kiss: 1">:chefs_kiss: 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554803_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Lilly</div>
+          <div class="post_content">
+<p>i sort of got the hang of the <code>@patch-triage</code> bot working on my fork, but i think when i told it to <code>fix all</code> in addition to addressing the changes it wanted, it went and fixed a bunch of code out of scope in other time intervals <img alt=":woman_facepalming:t2:" class="emoji" height="20" loading="lazy" src="../../../images/2.png" title=":woman_facepalming:t2:" width="20"/></p>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+  </body>
+</html>

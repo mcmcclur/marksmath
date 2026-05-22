@@ -1,0 +1,1179 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width">
+    <title>Custom Wizard Plugin :mage:</title>
+    <link rel="stylesheet" href="../../../archived.css" />
+    <script>
+      function findSageCodeBlocks() {
+        return Array.prototype.slice.call(
+          document.querySelectorAll(
+            "pre[data-code-wrap='sage'] > code, pre > code.lang-sage, pre > code.language-sage, pre > code.sage"
+          )
+        );
+      }
+
+      function loadScript(src) {
+        return new Promise(function (resolve, reject) {
+          var existing = document.querySelector("script[src='" + src + "']");
+          if (existing) {
+            if (existing.dataset.loaded === "true") {
+              resolve();
+              return;
+            }
+            existing.addEventListener("load", resolve, { once: true });
+            existing.addEventListener("error", reject, { once: true });
+            return;
+          }
+
+          var script = document.createElement("script");
+          script.src = src;
+          script.async = true;
+          script.addEventListener("load", function () {
+            script.dataset.loaded = "true";
+            resolve();
+          }, { once: true });
+          script.addEventListener("error", reject, { once: true });
+          document.head.appendChild(script);
+        });
+      }
+
+      function prepareSageCells() {
+        var sageBlocks = findSageCodeBlocks();
+        if (!sageBlocks.length) {
+          return Promise.resolve();
+        }
+
+        return loadScript("https://sagecell.sagemath.org/static/embedded_sagecell.js")
+          .then(function () {
+            if (!window.sagecell || !window.sagecell.makeSagecell) {
+              return;
+            }
+
+            sageBlocks.forEach(function (codeTag, index) {
+              var preTag = codeTag.parentElement;
+              if (!preTag || preTag.dataset.sageMounted === "true") {
+                return;
+              }
+
+              var host = document.createElement("div");
+              host.className = "sagecell-archive";
+
+              var source = document.createElement("script");
+              source.type = "text/x-sage";
+              source.text = codeTag.textContent || "";
+              host.appendChild(source);
+
+              preTag.insertAdjacentElement("afterend", host);
+              preTag.classList.add("sage-source-hidden");
+              preTag.dataset.sageMounted = "true";
+
+              window.sagecell.makeSagecell({
+                inputLocation: host,
+                autoeval: false,
+                evalButtonText: "Run",
+                languages: ["sage"]
+              });
+            });
+          })
+          .catch(function () {
+            // Leave the original code blocks visible if SageCell cannot load.
+          });
+      }
+
+      function preprocessDiscourseMath() {
+        document.querySelectorAll("span.math, div.math").forEach(function (node) {
+          var tex = node.textContent || "";
+          if (!tex.trim()) {
+            return;
+          }
+          if (node.tagName === "SPAN") {
+            node.textContent = "\\(" + tex + "\\)";
+          } else {
+            node.textContent = "\\[" + tex + "\\]";
+          }
+          node.classList.remove("math");
+        });
+      }
+
+      window.MathJax = {
+        tex: {
+          inlineMath: [["\\(", "\\)"]],
+          displayMath: [["\\[", "\\]"]]
+        },
+        startup: {
+          pageReady() {
+            preprocessDiscourseMath();
+            return MathJax.startup.defaultPageReady().then(function () {
+              return prepareSageCells();
+            });
+          }
+        }
+      };
+    </script>
+    <script async id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="title-span">
+        <a href="../../../">
+          <img src="../../../images/ad2526334012b2ad0c3421f9b6dd94bae2ede52f.svg" height="40" alt="Site Logo" id="site-logo" />
+        </a>
+      </div>
+    </header>
+
+    <div class="main">
+    <div class="archive-span"><a href='https://meta.discourse.org/'>Discourse Meta</a> archived in May, 2026</div>
+    <h1 class="topic-title">Custom Wizard Plugin :mage:</h1>
+            <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/341715_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">angus</div>
+          <div class="post_content">
+<div class="md-table">
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><img alt=":pavilion:" class="emoji emoji-custom only-emoji" height="20" loading="lazy" src="../../../images/e9a47d02f909aa470870b6da08174487ad53dc5d.png" title=":pavilion:" width="20"/></td>
+<td><strong>Summary</strong></td>
+<td><strong>Forms for Discourse</strong>. This plugin lets you make rich and powerful forms for your Discourse forum. Better user onboarding, structured posting, data enrichment, automated actions and much more for your community.</td>
+</tr>
+<tr>
+<td><img alt=":hammer_and_wrench:" class="emoji only-emoji" height="20" loading="lazy" src="../../../images/hammer_and_wrench.png" title=":hammer_and_wrench:" width="20"/></td>
+<td><strong>Repository Link</strong></td>
+<td><a href="https://github.com/paviliondev/discourse-custom-wizard">https://github.com/paviliondev/discourse-custom-wizard</a></td>
+</tr>
+<tr>
+<td><img alt=":open_book:" class="emoji only-emoji" height="20" loading="lazy" src="../../../images/open_book.png" title=":open_book:" width="20"/></td>
+<td><strong>Install Guide</strong></td>
+<td><a href="https://meta.discourse.org/t/install-plugins-in-discourse/19157">How to install plugins in Discourse</a></td>
+</tr>
+<tr>
+<td><img alt=":people_hugging:" class="emoji only-emoji" height="20" loading="lazy" src="../../../images/people_hugging.png" title=":people_hugging:" width="20"/></td>
+<td><strong>Community</strong></td>
+<td>Community based support and discussions about this plugin are hosted on the <a href="https://coop.pavilion.tech/tag/custom-wizard"><img alt=":pavilion:" class="emoji emoji-custom" height="20" loading="lazy" src="../../../images/e9a47d02f909aa470870b6da08174487ad53dc5d.png" title=":pavilion:" width="20"/> Pavilion Cooperative site</a>.</td>
+</tr>
+</tbody>
+</table>
+</div><aside class="quote no-group">
+<blockquote>
+<p>As this is a <a class="hashtag-cooked" data-icon="tag" data-id="449" data-slug="pavilion" data-style-type="icon" data-type="tag" href="/tag/pavilion/449"><span class="hashtag-icon-placeholder"><svg class="fa d-icon d-icon-square-full svg-icon svg-node"><use href="#square-full"></use></svg></span><span>pavilion</span></a> plugin maintained by <a href="https://coop.pavilion.tech/">the <img alt=":pavilion:" class="emoji emoji-custom" height="20" loading="lazy" src="../../../images/e9a47d02f909aa470870b6da08174487ad53dc5d.png" title=":pavilion:" width="20"/> Pavilion Coöperative</a>, support, feature requests, and bug reports should be made direct to them. Click on a link below to go direct to their website:</p>
+<p><kbd> <a href="https://coop.pavilion.tech/docs?ascending=true&amp;category=82&amp;order=title"><img alt=":open_book:" class="emoji" height="20" loading="lazy" src="../../../images/open_book.png" title=":open_book:" width="20"/> <strong>Documentation</strong></a> </kbd></p>
+</blockquote>
+</aside>
+<p>The Custom Wizard Plugin is a popular, flexible, and powerful plugin which adds customisable Forms to your Discourse installation. These allow you to:</p>
+<ol>
+<li>
+<p>Augment the onboarding process</p>
+</li>
+<li>
+<p>Conduct surveys linked to your existing user data</p>
+</li>
+<li>
+<p>Utilise automated and structured internal workflows</p>
+</li>
+<li>
+<p>Have structured posting of new topics and messages</p>
+</li>
+<li>
+<p>And a whole heap more…</p>
+</li>
+</ol>
+<h2><a aria-label="Heading link" class="anchor" href="#p-345639-example-joining-wizard-1" name="p-345639-example-joining-wizard-1"></a>Example Joining Wizard</h2>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/z9cEVm8UvX6giufQqWzTiaLzbUD.svg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/f/6/5/f656714c442a3520a168201aec4c22550b6e0c7b.svg" title="undefined"><img alt="undefined" data-base62-sha1="z9cEVm8UvX6giufQqWzTiaLzbUD" height="500" src="../../../images/f656714c442a3520a168201aec4c22550b6e0c7b.svg" width="489"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">undefined</span><span class="informations">792×809 147 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<h2><a aria-label="Heading link" class="anchor" href="#p-345639-example-bug-report-2" name="p-345639-example-bug-report-2"></a>Example Bug Report</h2>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/3CshxM9bBEogc5Qx0b7qhPFVvlM.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/1/9/5/195f60be62cdb793d7142477e8c97c03e616c06a.png" title="pavilion-bug-report"><img alt="pavilion-bug-report" data-base62-sha1="3CshxM9bBEogc5Qx0b7qhPFVvlM" data-dominant-color="272829" height="423" src="../../../images/195f60be62cdb793d7142477e8c97c03e616c06a_2_690x423.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/1/9/5/195f60be62cdb793d7142477e8c97c03e616c06a_2_690x423.png, https://d11a6trkgmumsb.cloudfront.net/original/4X/1/9/5/195f60be62cdb793d7142477e8c97c03e616c06a.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/1/9/5/195f60be62cdb793d7142477e8c97c03e616c06a.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">pavilion-bug-report</span><span class="informations">839×515 21 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<h2><a aria-label="Heading link" class="anchor" href="#p-345639-documentation-3" name="p-345639-documentation-3"></a>Documentation</h2>
+<p>Extensive <a href="https://coop.pavilion.tech/docs?ascending=true&amp;category=82&amp;order=title">documentation</a> about the Custom Wizard Plugin is provided via links within the plugin UI and hosted on <a href="https://coop.pavilion.tech">our Coöperative site</a>:</p>
+<aside class="onebox allowlistedgeneric" data-onebox-src="https://coop.pavilion.tech/docs?ascending=true&amp;category=82&amp;order=title">
+<header class="source">
+<img alt="" class="site-icon" data-dominant-color="030303" height="32" src="../../../images/63ceb0627d906c81743c83267cd96ef65228fa42.png" width="32"/>
+<a href="https://coop.pavilion.tech/docs?ascending=true&amp;category=82&amp;order=title" rel="noopener" target="_blank">coop.pavilion.tech</a>
+</header>
+<article class="onebox-body">
+<h3><a href="https://coop.pavilion.tech/docs?ascending=true&amp;category=82&amp;order=title" rel="noopener" target="_blank">Docs - Pavilion</a></h3>
+<p>Pavilion Community and Coöp</p>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 160">❤️ 160</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/373010_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">KhoiUSA</div>
+          <div class="post_content">
+<p>Hello, <span class="mention">@angus</span> I have noticed that with the plugin installed and enabled it appears to shift the “More” button to the center instead of keeping it in the left. Any idea why this occurs? Thanks.</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/v4HaANsRHJGalCTHAuS1AqcFzdW.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/d/9/c/d9cb4bc9d9e435cf17addea14816b25260392aa4.png" rel="noopener nofollow ugc" title="image"><img alt="image" data-base62-sha1="v4HaANsRHJGalCTHAuS1AqcFzdW" height="139" src="../../../images/d9cb4bc9d9e435cf17addea14816b25260392aa4.png" width="310"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">310×139 2.05 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/341715_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">angus</div>
+          <div class="post_content">
+<p>Thanks for the report. This will address it.</p>
+<aside class="onebox githubcommit" data-onebox-src="https://github.com/paviliondev/discourse-custom-wizard/commit/a1c8cd93e39b31e5ea22938a9ae06d190bed61d6">
+<header class="source">
+<a href="https://github.com/paviliondev/discourse-custom-wizard/commit/a1c8cd93e39b31e5ea22938a9ae06d190bed61d6" rel="noopener" target="_blank">github.com/paviliondev/discourse-custom-wizard</a>
+</header>
+<article class="onebox-body">
+<div class="github-row">
+<div class="github-icon-container" title="Commit">
+<svg aria-hidden="true" class="github-icon" height="60" viewbox="0 0 14 16" width="60"><path d="M10.86 7c-.45-1.72-2-3-3.86-3-1.86 0-3.41 1.28-3.86 3H0v2h3.14c.45 1.72 2 3 3.86 3 1.86 0 3.41-1.28 3.86-3H14V7h-3.14zM7 10.2c-1.22 0-2.2-.98-2.2-2.2 0-1.22.98-2.2 2.2-2.2 1.22 0 2.2.98 2.2 2.2 0 1.22-.98 2.2-2.2 2.2z" fill-rule="evenodd"></path></svg>
+</div>
+<div class="github-info-container">
+<h4>
+<a href="https://github.com/paviliondev/discourse-custom-wizard/commit/a1c8cd93e39b31e5ea22938a9ae06d190bed61d6" rel="noopener" target="_blank">Importing common css components in a plugin breaks css priorities in core</a>
+</h4>
+<div class="github-info">
+<div class="date">
+        committed <span class="discourse-local-date" data-date="2025-02-05" data-format="ll" data-time="08:43:33" data-timezone="UTC">08:43AM - 05 Feb 25 UTC</span>
+</div>
+<div class="user">
+<a href="https://github.com/angusmcleod" rel="noopener" target="_blank">
+<img alt="" class="onebox-avatar-inline" data-dominant-color="8D6A5B" height="20" src="../../../images/44c07cc03ab986c1cc15512e40a25a12d6eaebd1.png" width="20"/>
+          angusmcleod
+        </a>
+</div>
+<div class="lines" title="changed 1 files with 0 additions and 9 deletions">
+<a href="https://github.com/paviliondev/discourse-custom-wizard/commit/a1c8cd93e39b31e5ea22938a9ae06d190bed61d6" rel="noopener" target="_blank">
+<span class="added">+0</span>
+<span class="removed">-9</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/373010_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">KhoiUSA</div>
+          <div class="post_content">
+<p>Thanks for the resolution <img alt=":+1:" class="emoji" height="20" loading="lazy" src="../../../images/+1.png" title=":+1:" width="20"/></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">ppcole</div>
+          <div class="post_content">
+<p>Can the data captured thru the form be immediately displayed in a table in a topic?</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/341715_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">angus</div>
+          <div class="post_content">
+<p>Hey <span class="mention">@ppcole</span>, yes it can. You would need to use the a “Create Topic” action and the “Post Builder” for that. You can read further and follow up here:</p>
+<aside class="onebox discoursetopic" data-onebox-src="https://coop.pavilion.tech/t/action-settings/1711#create-topic-3">
+<header class="source">
+<img class="site-icon" data-dominant-color="362BDE" height="32" src="../../../images/5c19e48cf06cfdd5f34e252b0e56e6c247ce82b9.png" width="32"/>
+<a href="https://coop.pavilion.tech/t/action-settings/1711#create-topic-3" rel="noopener" target="_blank" title="11:17AM - 18 November 2023">Pavilion – 18 Nov 23</a>
+</header>
+<article class="onebox-body">
+<div class="aspect-image" style="--aspect-ratio:608/500;"><img class="thumbnail" data-dominant-color="F9FAFA" height="500" src="../../../images/7d4e9a664935db19cc2a267df1fb5ac5b2748e0f_2_608x500.png" width="608"/></div>
+<div class="title-wrapper">
+<h3><a href="https://coop.pavilion.tech/t/action-settings/1711#create-topic-3" rel="noopener" target="_blank">Action Settings</a></h3>
+<div class="topic-category">
+<span class="badge-wrapper bullet">
+<span class="badge-category-bg" style="background-color: #0088CC;"></span>
+<span class="badge-category clear-badge">
+<span class="category-name">Documentation</span>
+</span>
+</span>
+<span class="badge-wrapper bullet">
+<span class="badge-category-bg" style="background-color: #0088CC;"></span>
+<span class="badge-category clear-badge">
+<span class="category-name">Discourse Custom Wizard</span>
+</span>
+</span>
+<div class="topic-header-extra">
+<div class="list-tags">
+<div class="discourse-tags">
+<svg class="fa d-icon d-icon-tag svg-icon svg-string"><use href="#tag"></use></svg>
+<span class="discourse-tag simple">custom-wizard</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>Each wizard can have multiple actions. Each action has its own settings.     Add, remove and re-arrange You can add, remove and re-arrange actions using the controls below “Actions”. The text in (brackets) is the action id (e.g. “action_1”). You...</p>
+<p>
+<span class="label1">Reading time: 1 mins 🕑</span>
+<span class="label2">Likes: 4 ❤</span>
+</p>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">ppcole</div>
+          <div class="post_content">
+<p><span class="mention">@angus</span>, can rows be added to the previously created table as members complete the form or does a new table have to be created?</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/341715_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">angus</div>
+          <div class="post_content">
+<p>There’s currently no way of doing that. But if you send me a PM on <a href="https://coop.pavilion.tech">coop.pavilion.tech</a> we can discuss further.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/290039_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">nathank</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="1" data-topic="73345" data-username="angus">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/341715_2.png" width="24"/> angus:</div>
+<blockquote>
+<p>You will note that this topic is set to automatically delete replies after 7 days; don’t let that put you off.</p>
+</blockquote>
+</aside>
+<p>This appears to have changed at the start of this year - brilliant!! No more sword of <a href="https://en.wikipedia.org/wiki/Damocles">Damocles</a> up there!</p>
+<p>I’ve just started using the Custom Wizard Plugin again after a break; I’m impressed by just how refined and robust it is now - and how it can cater for many edge cases that aren’t covered by core or the official plugin / TC ecosystem. Or indeed, it can refine and join up some of them quite effectively.</p>
+<p>My latest little project where it has been super helpful has been overcoming the challenging UI for <a class="inline-onebox" href="https://meta.discourse.org/t/discourse-calendar-and-event/97376">Discourse Calendar (and Event)</a>, which is admin-friendly rather than user-friendly.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">jrgong</div>
+          <div class="post_content">
+<p>Hey guys</p>
+<p>has anyone tested CW plugin with 3.6beta1? The composer image upload seems to be broken.<br/>
+Tested with latest commit <a href="https://github.com/paviliondev/discourse-custom-wizard/commit/f331ad276b1755b7f9effa950f330fdaccd8dff3" rel="noopener nofollow ugc">f331ad2</a></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/332487_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">jenmck</div>
+          <div class="post_content">
+<p>I’m trying to get the subscription information to look into upgrading, but every reference to the pricing page is a broken link - <a href="https://custom-wizard.pavilion.tech/pricing/" rel="noopener nofollow ugc">https://custom-wizard.pavilion.tech/pricing/</a></p>
+<p>What is the current URL?</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554653_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Moin</div>
+          <div class="post_content">
+<p>I think a subscription is no longer needed. The information was removed from the first post in summer.<br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/yTBIy9n4rfMs6Qx9PuCRSaUfa8g.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/f/4/9/f493203a871cb548c1d0b0b26badd271cf442ff0.png" title="image"><img alt="image" data-base62-sha1="yTBIy9n4rfMs6Qx9PuCRSaUfa8g" data-dominant-color="EDEAEC" height="500" src="../../../images/f493203a871cb548c1d0b0b26badd271cf442ff0.png" width="664"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">986×742 115 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>And there was also a change in the code that seems related <a class="inline-onebox" href="https://github.com/paviliondev/discourse-custom-wizard/commit/01fe27d15807798eb058311d9838bff67558ff16">Remove subscription restrictions #1 · paviliondev/discourse-custom-wizard@01fe27d · GitHub</a></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 4">❤️ 4</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/332487_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">jenmck</div>
+          <div class="post_content">
+<p>Ah! That explains it then. Thanks!</p>
+<p>I guess my next question is…how to set this up? There’s not documentation that I can find on the Pavilion website, unless I’m missing something - <a class="inline-onebox" href="https://coop.pavilion.tech/c/documentation/discourse-custom-wizard/82" rel="noopener nofollow ugc">Discourse Custom Wizard - Pavilion</a></p>
+<p>I think where I’ve been confused is that on this page: <a class="inline-onebox" href="https://coop.pavilion.tech/t/wizard-administration/1602" rel="noopener nofollow ugc">Wizard Administration - Discourse Custom Wizard - Pavilion</a> It’s indicated that there should be a site setting enabled, but <code>wizard_apis_enabled</code> is not in the site settings:</p>
+<blockquote>
+<p>Site Settings</p>
+<ul>
+<li><code>custom_wizard_enabled</code>: Disable this to prevent custom wizards from being used.</li>
+<li><code>wizard_redirect_exclude_paths</code>: Paths that cannot be redirected to from a wizard.</li>
+<li><code>wizard_recognised_image_upload_formats</code>: Upload types that will treated as images.</li>
+<li><code>wizard_apis_enabled</code>: Enable wizard API features. This is experimental and has not been thoroughly tested. Use with caution.</li>
+</ul>
+</blockquote>
+<p>Assuming though that it’s just enabled by default now, I’m not quite sure how to go about setting it up, because the <code>Select an API</code> dropdown and the <code>Select an endpoint</code> dropdown are both blank and I’m not sure what the steps are to populate those dropdowns.</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/axLfksIEHcVKBI0d4RS4c381rT4.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/4/9/e/49e6c178e38e98115b80df7205b556a980a336da.png" rel="noopener nofollow ugc" title="image"><img alt="image" data-base62-sha1="axLfksIEHcVKBI0d4RS4c381rT4" data-dominant-color="202221" height="343" src="../../../images/49e6c178e38e98115b80df7205b556a980a336da_2_690x343.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/4/9/e/49e6c178e38e98115b80df7205b556a980a336da_2_690x343.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/4/9/e/49e6c178e38e98115b80df7205b556a980a336da_2_1035x514.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/4/9/e/49e6c178e38e98115b80df7205b556a980a336da_2_1380x686.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1633×812 38.3 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>I thought that it might be because we weren’t subscribed, but given that subscriptions aren’t a thing, I’m not quite sure where to go from here.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/547210_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">nesges</div>
+          <div class="post_content">
+<p>After updating Discourse to the latest v2026.3.0-latest.1 (<a href="https://github.com/discourse/discourse/commits/fb8ef7ee72f062074782f676794c01dd93bf4a14" rel="noopener nofollow ugc">fb8ef7ee72</a>) the /admin/wizards and /w pathes aren’t accessible anymore while /admin/plugins/discourse-custom-wizard/settings is working fine</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="eyes: 1">👀 1</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/290039_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">nathank</div>
+          <div class="post_content">
+<p>Yikes, that is a proper breaking change!</p>
+<p>I can confirm that it was still working on 2026.3.0-latest (<a href="https://github.com/discourse/discourse/commits/31ae4b04212d91e4d5de54e9673775ab3833e0f4">31ae4b0421</a>)</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554653_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Moin</div>
+          <div class="post_content">
+<p>Does this help?</p>
+<aside class="quote group-team" data-post="1" data-topic="398713" data-username="david">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/157490_2.png" width="24"/><a href="https://meta.discourse.org/t/introducing-a-new-build-system-for-plugins/398713/1">Introducing a new build system for plugins</a></div>
+<blockquote>
+<p>There will be a brief period where the new system can be disabled using <code>ROLLUP_PLUGIN_COMPILER=0</code>, in case of any surprises, but we intend to keep the transition period to a minimum.</p>
+</blockquote>
+</aside>
+<p>It was enabled by default 2 days ago</p><aside class="quote" data-post="2" data-topic="398713">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/157490_2.png" width="24"/>
+<div class="quote-title__text-content">
+<a href="https://meta.discourse.org/t/introducing-a-new-build-system-for-plugins/398713/2">Introducing a new build system for plugins</a> <a class="badge-category__wrapper" href="/c/dev/7"><span class="badge-category --style-square" data-category-id="7" data-drop-close="true" style="--category-badge-color: #292929; --category-badge-text-color: #f2f2f2;" title="The category for all things Discourse Development. Building a customization for yourself or the community? Then this is the category for you! Learn more…"><span class="badge-category__name">Dev</span></span></a>
+</div>
+</div>
+<blockquote>
+    The new compiler is now enabled by default in the latest version of Discourse
+  </blockquote>
+</aside>
+
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/547210_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">nesges</div>
+          <div class="post_content">
+<p>Setting <code>ROLLUP_PLUGIN_COMPILER: 0</code> did indeed help. Thank you!</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/290039_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">nathank</div>
+          <div class="post_content">
+<p>Hmmm - didn’t work for me though.</p>
+<p>Perhaps I did it wrong; I included this in my app.yml in the env: section</p>
+<pre><code class="lang-plaintext">  DISCOURSE_ROLLUP_PLUGIN_COMPILER: 0
+</code></pre>
+<p>But despite this, after a rebuild / update just now, /admin/wizards and /w are inaccessible.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/547210_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">nesges</div>
+          <div class="post_content">
+<p>Just <code>ROLLUP_PLUGIN_COMPILER</code> without the prefix worked for me</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/157490_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">david</div>
+          <div class="post_content">
+<p>I think this should help:</p>
+<aside class="onebox githubpullrequest" data-onebox-src="https://github.com/paviliondev/discourse-custom-wizard/pull/308">
+<header class="source">
+<a href="https://github.com/paviliondev/discourse-custom-wizard/pull/308" rel="noopener" target="_blank">github.com/paviliondev/discourse-custom-wizard</a>
+</header>
+<article class="onebox-body">
+<div class="github-row --gh-status-merged" data-github-private-repo="false">
+<div class="github-icon-container" title="Merged Pull Request">
+<svg aria-hidden="true" class="github-icon" height="60" viewbox="0 0 12 16" width="60"><path d="M11 11.28V5c-.03-.78-.34-1.47-.94-2.06C9.46 2.35 8.78 2.03 8 2H7V0L4 3l3 3V4h1c.27.02.48.11.69.31.21.2.3.42.31.69v6.28A1.993 1.993 0 0 0 10 15a1.993 1.993 0 0 0 1-3.72zm-1 2.92c-.66 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2zM4 3c0-1.11-.89-2-2-2a1.993 1.993 0 0 0-1 3.72v6.56A1.993 1.993 0 0 0 2 15a1.993 1.993 0 0 0 1-3.72V4.72c.59-.34 1-.98 1-1.72zm-.8 10c0 .66-.55 1.2-1.2 1.2-.65 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2zM2 4.2C1.34 4.2.8 3.65.8 3c0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2z" fill-rule="evenodd"></path></svg>
+</div>
+<div class="github-info-container">
+<h4>
+<a href="https://github.com/paviliondev/discourse-custom-wizard/pull/308" rel="noopener" target="_blank">Update for new core plugin compiler (#308)</a>
+</h4>
+<div class="branches">
+<code>main</code> ← <code>davidtaylorhq:new-plugin-compiler</code>
+</div>
+<div class="github-info">
+<div class="date">
+          merged <span class="discourse-local-date" data-date="2026-03-23" data-format="ll" data-time="13:34:43" data-timezone="UTC">01:34PM - 23 Mar 26 UTC</span>
+</div>
+<div class="user">
+<a href="https://github.com/davidtaylorhq" rel="noopener" target="_blank">
+<img alt="" class="onebox-avatar-inline" data-dominant-color="B7B7B7" height="20" src="../../../images/077d57bb0ff3513281d6715d39b0ae71b5bc654c.jpeg" width="20"/>
+            davidtaylorhq
+          </a>
+</div>
+<div class="lines" title="1 commits changed 3 files with 34 additions and 21 deletions">
+<a href="https://github.com/paviliondev/discourse-custom-wizard/pull/308/files" rel="noopener" target="_blank">
+<span class="added">+34</span>
+<span class="removed">-21</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+<div class="github-row">
+<p class="github-body-container">- Module-level code is now evaluated earlier, so site-settings are not available<span class="show-more-container"><a class="show-more" href="https://github.com/paviliondev/discourse-custom-wizard/pull/308" rel="noopener" target="_blank">…</a></span><span class="excerpt hidden">. Move that logic to an initializer
+
+- Importing admin modules from non-admin code will now raise an error. Updated to use `optionalRequire()`
+
+https://meta.discourse.org/t/398713</span></p>
+</div>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+<p>cc <span class="mention">@angus</span></p>
+<aside class="quote no-group" data-full="true" data-post="934" data-topic="73345" data-username="nesges">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/547210_2.png" width="24"/> nesges:</div>
+<blockquote>
+<p>Setting <code>ROLLUP_PLUGIN_COMPILER: 0</code> did indeed help. Thank you!</p>
+</blockquote>
+</aside>
+<p>Please bear in mind that this option will not be available for much longer. As soon as custom-wizard is fixed, I recommend you switch back to to the new compiler.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span><span class="engagement-pill reaction-pill" title="rocket: 1">🚀 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/157490_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">david</div>
+          <div class="post_content">
+<p>The custom-wizard fix is now merged. <span class="mention">@nathank</span> <span class="mention">@nesges</span> if you have the time, would you mind re-enabling the rollup plugin compiler and see how you get on?</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span><span class="engagement-pill reaction-pill" title="eyes: 1">👀 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/547210_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">nesges</div>
+          <div class="post_content">
+<p>I just updated, removed the env variable and rebuilt. I can confirm the Wizard is functional. Thanks for your quick fix! <img alt=":heart:" class="emoji" height="20" loading="lazy" src="../../../images/heart.png" title=":heart:" width="20"/></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/290039_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">nathank</div>
+          <div class="post_content">
+<p>Yup, working fine here too after removing that line from app.yml and rebuilding.</p>
+<p>Thanks for sorting that so quickly!</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/549022_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">gilles</div>
+          <div class="post_content">
+<p>I just discovered the plugin, which is truly amazing once you know how to use it!!</p>
+<p>I’m encountering an issue with the location section. I’m using the plugin to create a topic with location + event. Everything works fine except that my topic doesn’t appear on the map. I have to go back into my topic and re-confirm the postal address, and then my topic reappears on the map. I don’t know if anyone else has encountered this problem.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/549022_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">gilles</div>
+          <div class="post_content">
+<p>Since the last Discourse update (**2026.4.0-latest), I am unable to assign a form to the ‘Create Topic’ button. In the advanced settings for the category, I can select my form, but I cannot save it.</p>
+<p>Does anyone else using the plugin have the same issue?</p>
+<p>Thank you.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/549022_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">gilles</div>
+          <div class="post_content">
+<p>Hello,</p>
+<p>I wanted to know if it’s possible to dynamically load a list into a dropdown field by typing text into a text field, for example, using a script?</p>
+<p>My goal is to type the name of a game and use an API to fetch a list that I will then load into the dropdown field.</p>
+<p>This is because I didn’t quite understand the configuration of the various fields like prefill, conditions, etc.</p>
+<p>Thank you.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/553565_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Hasimir</div>
+          <div class="post_content">
+<p>Hi <img alt=":slight_smile:" class="emoji" height="20" loading="lazy" src="../../../images/slight_smile.png" title=":slight_smile:" width="20"/></p>
+<p>I’m trying to use the wizard to personalise the sign-up / onboarding of my forum.<br/>
+Basically after email verification, users are shown the wizard…<br/>
+Each step presents a part of the forum rules/covenant and requires an action.<br/>
+Most are just a checkbox agreement.<br/>
+One is a dropdown.<br/>
+I need to “validate” the answer so that if it is correct they go on to the next step, and if it is wrong they can’t progress.</p>
+<p>Problems:</p>
+<ol>
+<li>
+<p>I seem unable to do exactly that.<br/>
+A field can be “required” and block progress if not used, but there is no way to do a validation check.</p>
+</li>
+<li>
+<p>so I hacked validation by crafting 2 steps: one for TRUE and one for FALSE, and used the conditions in those steps to see if the previous step was filled out correctly.<br/>
+But…<br/>
+This screws with the wizard progress bar, as the validation steps functionally “don’t exist” until conditions are met, so the progress first looks shorter, then longer.<br/>
+It looks bad, and if you go back or reload it can be confusing.<br/>
+But…<br/>
+The FALSE step still always has to have a button in addition to the “back” link. Depending on how I configure things this appears as NEXT or DONE, but in either case I don’t want it. The user is supposed to hit a wall and be asked to go back to revise their answers.<br/>
+So…<br/>
+I hacked a wall by attaching an Action at the end of this step, to route the user back to the questionnaire step.<br/>
+It’s inelegant, but it works.</p>
+</li>
+</ol>
+<p>So…<br/>
+Am I missing something?<br/>
+Is there a better way to achieve my goals and fix mi problems? <img alt=":sweat_smile:" class="emoji" height="20" loading="lazy" src="../../../images/sweat_smile.png" title=":sweat_smile:" width="20"/></p>
+<p>EDIT:<br/>
+Also, on mobile the progress bar partly covers the Back and Next buttons.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/553565_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Hasimir</div>
+          <div class="post_content">
+<p>Also, <a href="https://meta.discourse.org/t/composer-ignores-default-composition-mode/401379/9">this</a> problem with the composer still exists <img alt=":sweat_smile:" class="emoji" height="20" loading="lazy" src="../../../images/sweat_smile.png" title=":sweat_smile:" width="20"/></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/549022_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">gilles</div>
+          <div class="post_content">
+<p>I think the custom wizard plugin is no longer maintained, even though the plugin itself is very interesting and powerful <img alt=":pensive_face:" class="emoji" height="20" loading="lazy" src="../../../images/pensive_face.png" title=":pensive_face:" width="20"/></p>
+<p>The best option would be to have a plugin where we can create macros or customizable scenarios that would allow us to use various plugins to address every use case within the Discourse community.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/341715_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">angus</div>
+          <div class="post_content">
+<p>Hey guys!</p>
+<aside class="quote no-group quote-modified" data-post="942" data-topic="73345" data-username="gilles">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/549022_2.png" width="24"/> gilles:</div>
+<blockquote>
+<p>Since the last Discourse update (**2026.4.0-latest), I am unable to assign a form to the ‘Create Topic’ button. In the advanced settings for the category, I can select my form, but I cannot save it.</p>
+</blockquote>
+</aside>
+<p>I’ve addressed this. Please update to the latest version of the plugin.</p>
+<p><span class="mention">@Hasimir</span> What you’re suggesting is quite doable using the regular functionality of the plugin. Have you checked out the documentation?</p>
+<aside class="onebox allowlistedgeneric" data-onebox-src="https://coop.pavilion.tech/docs?ascending=true&amp;category=82&amp;order=title">
+<header class="source">
+<img alt="" class="site-icon" data-dominant-color="030303" height="32" src="../../../images/63ceb0627d906c81743c83267cd96ef65228fa42.png" width="32"/>
+<a href="https://coop.pavilion.tech/docs?ascending=true&amp;category=82&amp;order=title" rel="noopener" target="_blank">coop.pavilion.tech</a>
+</header>
+<article class="onebox-body">
+<h3><a href="https://coop.pavilion.tech/docs?ascending=true&amp;category=82&amp;order=title" rel="noopener" target="_blank">Docs - Pavilion</a></h3>
+<p>Pavilion Community and Coöp</p>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+<p>If there are any other current confirmed issues please highlight them with specific details and I can address them.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/553565_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Hasimir</div>
+          <div class="post_content">
+<p>Thanks for the reply <img alt=":slight_smile:" class="emoji" height="20" loading="lazy" src="../../../images/slight_smile.png" title=":slight_smile:" width="20"/></p>
+<aside class="quote no-group" data-post="947" data-topic="73345" data-username="angus">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/341715_2.png" width="24"/> angus:</div>
+<blockquote>
+<p>What you’re suggesting is quite doable using the regular functionality of the plugin. Have you checked out the documentation?</p>
+</blockquote>
+</aside>
+<p>I am trying, but I’m not finding the info I need.<br/>
+Here is my specific need:</p>
+<ul>
+<li>
+<p>I need a wizard where each Step (including step_1) has a dropdown with three options.<br/>
+Done <img alt=":white_check_mark:" class="emoji" height="20" loading="lazy" src="../../../images/white_check_mark.png" title=":white_check_mark:" width="20"/></p>
+</li>
+<li>
+<p>If the user picks the correct option, the “next” button works and lets them move forward.<br/>
+Done <img alt=":white_check_mark:" class="emoji" height="20" loading="lazy" src="../../../images/white_check_mark.png" title=":white_check_mark:" width="20"/></p>
+</li>
+<li>
+<p>If the user picks a wrong option, the “next” button does not work.<br/>
+I can’t find a way to do this <img alt=":no_entry:" class="emoji" height="20" loading="lazy" src="../../../images/no_entry.png" title=":no_entry:" width="20"/></p>
+<ul>
+<li>
+<p>my current solution is to send the user to a special “Wrong Answer” Step that explains the error and asks to go back.<br/>
+Done <img alt=":white_check_mark:" class="emoji" height="20" loading="lazy" src="../../../images/white_check_mark.png" title=":white_check_mark:" width="20"/></p>
+</li>
+<li>
+<p>…but in this Step there are both a “back” and a “next” buttons. I to only see the “back” button.<br/>
+I can’t find a way to do this <img alt=":no_entry:" class="emoji" height="20" loading="lazy" src="../../../images/no_entry.png" title=":no_entry:" width="20"/></p>
+<ul>
+<li>my current solution is to use an Action to make the “next” button in the “Wrong Answer” step send the user back to the beginning of the wizard, at step_1_field_1<br/>
+Done <img alt=":white_check_mark:" class="emoji" height="20" loading="lazy" src="../../../images/white_check_mark.png" title=":white_check_mark:" width="20"/><br/>
+But it’s not ideal <img alt=":confused:" class="emoji" height="20" loading="lazy" src="../../../images/confused.png" title=":confused:" width="20"/></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>Am I missing something in the official documentation that would allow me to do what I need in a better way? <img alt=":slight_smile:" class="emoji" height="20" loading="lazy" src="../../../images/slight_smile.png" title=":slight_smile:" width="20"/></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/499930_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Willy</div>
+          <div class="post_content">
+<p>I have a site with these two options active:</p>
+<pre><code class="lang-plaintext">Login required
+Invite only
+</code></pre>
+<p>Therefore, it’s a 100% private forum. How can I create a public form using this plugin? It would be very helpful.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/290039_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">nathank</div>
+          <div class="post_content">
+<p>It used to have that functionality, but was only available to enterprise clients (back when it was a subscription plugin). I suspect that it has been removed from the code now though.</p>
+<p>It would be super helpful to have it available; perhaps it is buried in there somewhere.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/352733_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Eviepayne</div>
+          <div class="post_content">
+<p>Yeah idk how to fix it. might require forking the plugin and figuring out why it causes it.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/341715_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">angus</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="948" data-topic="73345" data-username="Hasimir">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/553565_2.png" width="24"/> Hasimir:</div>
+<blockquote>
+<p>If the user picks a wrong option, the “next” button does not work.</p>
+</blockquote>
+</aside>
+<p>If I’m reading you correctly, what you want is a step conditional and / or validation on a user-selected value? If so please check out</p>
+<aside class="onebox discoursetopic" data-onebox-src="https://coop.pavilion.tech/t/conditional-settings/1673">
+<header class="source">
+<img alt="" class="site-icon" data-dominant-color="030303" height="32" src="../../../images/63ceb0627d906c81743c83267cd96ef65228fa42.png" width="32"/>
+<a href="https://coop.pavilion.tech/t/conditional-settings/1673" rel="noopener" target="_blank" title="11:16AM - 18 November 2023">Pavilion – 18 Nov 23</a>
+</header>
+<article class="onebox-body">
+<div class="aspect-image" style="--aspect-ratio:690/118;"><img class="thumbnail" data-dominant-color="F8F9F9" height="118" src="../../../images/32e63e9b922f7433967d353a92521bc31f5f7371_2_690x118.png" width="690"/></div>
+<div class="title-wrapper">
+<h3><a href="https://coop.pavilion.tech/t/conditional-settings/1673" rel="noopener" target="_blank">Conditional Settings</a></h3>
+<div class="topic-category">
+<span class="badge-wrapper bullet">
+<span class="badge-category-bg" style="background-color: #0088CC;"></span>
+<span class="badge-category clear-badge">
+<span class="category-name">Documentation</span>
+</span>
+</span>
+<span class="badge-wrapper bullet">
+<span class="badge-category-bg" style="background-color: #0088CC;"></span>
+<span class="badge-category clear-badge">
+<span class="category-name">Discourse Custom Wizard</span>
+</span>
+</span>
+<div class="topic-header-extra">
+<div class="list-tags">
+<div class="discourse-tags">
+<svg class="fa d-icon d-icon-tag svg-icon svg-string"><use href="#tag"></use></svg>
+<span class="discourse-tag simple">custom-wizard</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>Conditional settings behave differently depending on the conditions you give them. You can spot conditional settings by their grey border.     Each condition can have 3 parts      A type A set of key-value pairs (see “Pairs and Connectors” below)...</p>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+<aside class="onebox discoursetopic" data-onebox-src="https://coop.pavilion.tech/t/realtime-validations/1615">
+<header class="source">
+<img alt="" class="site-icon" data-dominant-color="030303" height="32" src="../../../images/63ceb0627d906c81743c83267cd96ef65228fa42.png" width="32"/>
+<a href="https://coop.pavilion.tech/t/realtime-validations/1615" rel="noopener" target="_blank" title="09:40AM - 16 May 2026">Pavilion – 16 May 26</a>
+</header>
+<article class="onebox-body">
+<div class="aspect-image" style="--aspect-ratio:688/308;"><img class="thumbnail" data-dominant-color="DCEFF9" height="308" src="../../../images/93de7162684c78fbb9d846bbe65bca5f8e3a2159.png" width="688"/></div>
+<div class="title-wrapper">
+<h3><a href="https://coop.pavilion.tech/t/realtime-validations/1615" rel="noopener" target="_blank">Realtime Validations</a></h3>
+<div class="topic-category">
+<span class="badge-wrapper bullet">
+<span class="badge-category-bg" style="background-color: #0088CC;"></span>
+<span class="badge-category clear-badge">
+<span class="category-name">Documentation</span>
+</span>
+</span>
+<span class="badge-wrapper bullet">
+<span class="badge-category-bg" style="background-color: #0088CC;"></span>
+<span class="badge-category clear-badge">
+<span class="category-name">Discourse Custom Wizard</span>
+</span>
+</span>
+<div class="topic-header-extra">
+<div class="list-tags">
+<div class="discourse-tags">
+<svg class="fa d-icon d-icon-tag svg-icon svg-string"><use href="#tag"></use></svg>
+<span class="discourse-tag simple">custom-wizard</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>The Custom Wizard plugin now has a “Realtime Validations” feature.  Similar Topics It is an implementation of the Your topic is similar to... Composer Dialog  for Custom Wizard, especially when using the Text field to create a topic.     Steps to...</p>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+<aside class="quote no-group" data-post="949" data-topic="73345" data-username="Willy">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/499930_2.png" width="24"/> Willy:</div>
+<blockquote>
+<p>it’s a 100% private forum. How can I create a public form using this plugin?</p>
+</blockquote>
+</aside>
+<p>You can’t currently override the <code>login required</code> and <code>invite only</code> protections with the custom wizard plugin.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/499930_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Willy</div>
+          <div class="post_content">
+<p>How do I delete all received submissions? And why isn’t there an option to delete them individually? I mean, even if I delete the custom wizard, if I import another JSON file with the same ID, I will still be able to access all previously received submissions.</p>
+<p>And on the other hand, is it possible to send an email to the admin with the information the user entered in the form? The “Send Message” button doesn’t seem to work.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/341715_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">angus</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="953" data-topic="73345" data-username="Willy">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/499930_2.png" width="24"/> Willy:</div>
+<blockquote>
+<p>How do I delete all received submissions?</p>
+</blockquote>
+</aside>
+<p>You can’t through the admin console. You can delete submission data in the rails console.</p>
+<aside class="quote no-group" data-post="953" data-topic="73345" data-username="Willy">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/499930_2.png" width="24"/> Willy:</div>
+<blockquote>
+<p>I mean, even if I delete the custom wizard, if I import another JSON file with the same ID, I will still be able to access all previously received submissions.</p>
+</blockquote>
+</aside>
+<p>Yup, that’s expected!</p>
+<aside class="quote no-group" data-post="953" data-topic="73345" data-username="Willy">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/499930_2.png" width="24"/> Willy:</div>
+<blockquote>
+<p>And on the other hand, is it possible to send an email to the admin with the information the user entered in the form? The “Send Message” button doesn’t seem to work.</p>
+</blockquote>
+</aside>
+<p>It works <img alt=":slight_smile:" class="emoji" height="20" loading="lazy" src="../../../images/slight_smile.png" title=":slight_smile:" width="20"/></p>
+<p>For example if you fill out this simple wizard I just created it will send me a message</p>
+<aside class="onebox allowlistedgeneric" data-onebox-src="https://coop.pavilion.tech/w/send-message">
+<header class="source">
+<img alt="" class="site-icon" data-dominant-color="030303" height="32" src="../../../images/63ceb0627d906c81743c83267cd96ef65228fa42.png" width="32"/>
+<a href="https://coop.pavilion.tech/w/send-message" rel="noopener" target="_blank">coop.pavilion.tech</a>
+</header>
+<article class="onebox-body">
+<h3><a href="https://coop.pavilion.tech/w/send-message" rel="noopener" target="_blank">Pavilion</a></h3>
+<p>Pavilion Community and Coöp</p>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/499930_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Willy</div>
+          <div class="post_content">
+<p>What command should I use to delete from Rails?</p>
+<p>I was able to verify that it does send an email.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/553565_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Hasimir</div>
+          <div class="post_content">
+<p>Thanks… but I already looked those documents up.<br/>
+For the life of me, I seem unable to find the “advanced” options for the <strong>Dropdown</strong> field <img alt=":sad_but_relieved_face:" class="emoji" height="20" loading="lazy" src="../../../images/sad_but_relieved_face.png" title=":sad_but_relieved_face:" width="20"/><br/>
+This is what I see as a “clean/new” field…</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/xZSz1Dz25xJtHewyfLJTlMHVLL2.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/e/e/4/ee4671d4da6d0526e7f355b239198cb755e83fc8.png" rel="noopener nofollow ugc" title="image"><img alt="image" data-base62-sha1="xZSz1Dz25xJtHewyfLJTlMHVLL2" data-dominant-color="2B2F2D" height="500" src="../../../images/ee4671d4da6d0526e7f355b239198cb755e83fc8_2_592x500.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/e/e/4/ee4671d4da6d0526e7f355b239198cb755e83fc8_2_592x500.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/e/e/4/ee4671d4da6d0526e7f355b239198cb755e83fc8_2_888x750.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/e/e/4/ee4671d4da6d0526e7f355b239198cb755e83fc8.png 2x" width="592"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1059×894 37.4 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>Do I need to enable the feature from somewhere else?<br/>
+This is my actual field with logic and all…</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/lsUVFj02aFJjojp4mNdpAEAWTV2.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/9/6/7/96727f55260a9355415e4dfd3fa80290b67e309c.png" rel="noopener nofollow ugc" title="image"><img alt="image" data-base62-sha1="lsUVFj02aFJjojp4mNdpAEAWTV2" data-dominant-color="2B2E2C" height="500" src="../../../images/96727f55260a9355415e4dfd3fa80290b67e309c_2_490x500.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/9/6/7/96727f55260a9355415e4dfd3fa80290b67e309c_2_490x500.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/9/6/7/96727f55260a9355415e4dfd3fa80290b67e309c_2_735x750.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/9/6/7/96727f55260a9355415e4dfd3fa80290b67e309c_2_980x1000.png 2x" width="490"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1035×1054 49 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/290039_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">nathank</div>
+          <div class="post_content">
+<aside class="quote no-group quote-modified" data-post="952" data-topic="73345" data-username="angus">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/341715_2.png" width="24"/> angus:</div>
+<blockquote>
+<p>If I’m reading you correctly, what you want is a step conditional and / or validation on a user-selected value? If so please check out<br/>
+<a class="inline-onebox" href="https://coop.pavilion.tech/t/realtime-validations/1615">Realtime Validations - Discourse Custom Wizard - Pavilion</a></p>
+</blockquote>
+</aside>
+<aside class="quote no-group" data-post="956" data-topic="73345" data-username="Hasimir">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/553565_2.png" width="24"/> Hasimir:</div>
+<blockquote>
+<p>For the life of me, I seem unable to find the “advanced” options for the <strong>Dropdown</strong> field <img alt=":sad_but_relieved_face:" class="emoji" height="20" loading="lazy" src="../../../images/sad_but_relieved_face.png" title=":sad_but_relieved_face:" width="20"/></p>
+</blockquote>
+</aside>
+<p>Me neither - I can only see them for the Text fields, and then it is just <strong>Similar Topics</strong>:</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/pt6tpbRYJNagJhXRMthTUrWLVn.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/0/2/e/02e10aa8b5cb9210ceb073ee43d54a48e5b90cc1.png" title="image"><img alt="image" data-base62-sha1="pt6tpbRYJNagJhXRMthTUrWLVn" height="254" src="../../../images/02e10aa8b5cb9210ceb073ee43d54a48e5b90cc1.png" width="455"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">607×339 4.48 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p><span class="mention">@angus</span> - I think that this feature must have been removed when subscriptions were dropped, and the documentation didn’t catch up.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/499930_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Willy</div>
+          <div class="post_content">
+<p>I created a Custom Wizard and made several submissions as tests, and I can’t delete them manually. According to what I read in another thread, the only way is via Rails, but I can’t figure out which commands to use, ChatGPT fails a lot here.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+
+    </div>
+  </body>
+</html>

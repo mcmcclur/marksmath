@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width">
+    <title>No starter upgrade option</title>
+    <link rel="stylesheet" href="../../../archived.css" />
+    <script>
+      function findSageCodeBlocks() {
+        return Array.prototype.slice.call(
+          document.querySelectorAll(
+            "pre[data-code-wrap='sage'] > code, pre > code.lang-sage, pre > code.language-sage, pre > code.sage"
+          )
+        );
+      }
+
+      function loadScript(src) {
+        return new Promise(function (resolve, reject) {
+          var existing = document.querySelector("script[src='" + src + "']");
+          if (existing) {
+            if (existing.dataset.loaded === "true") {
+              resolve();
+              return;
+            }
+            existing.addEventListener("load", resolve, { once: true });
+            existing.addEventListener("error", reject, { once: true });
+            return;
+          }
+
+          var script = document.createElement("script");
+          script.src = src;
+          script.async = true;
+          script.addEventListener("load", function () {
+            script.dataset.loaded = "true";
+            resolve();
+          }, { once: true });
+          script.addEventListener("error", reject, { once: true });
+          document.head.appendChild(script);
+        });
+      }
+
+      function prepareSageCells() {
+        var sageBlocks = findSageCodeBlocks();
+        if (!sageBlocks.length) {
+          return Promise.resolve();
+        }
+
+        return loadScript("https://sagecell.sagemath.org/static/embedded_sagecell.js")
+          .then(function () {
+            if (!window.sagecell || !window.sagecell.makeSagecell) {
+              return;
+            }
+
+            sageBlocks.forEach(function (codeTag, index) {
+              var preTag = codeTag.parentElement;
+              if (!preTag || preTag.dataset.sageMounted === "true") {
+                return;
+              }
+
+              var host = document.createElement("div");
+              host.className = "sagecell-archive";
+
+              var source = document.createElement("script");
+              source.type = "text/x-sage";
+              source.text = codeTag.textContent || "";
+              host.appendChild(source);
+
+              preTag.insertAdjacentElement("afterend", host);
+              preTag.classList.add("sage-source-hidden");
+              preTag.dataset.sageMounted = "true";
+
+              window.sagecell.makeSagecell({
+                inputLocation: host,
+                autoeval: false,
+                evalButtonText: "Run",
+                languages: ["sage"]
+              });
+            });
+          })
+          .catch(function () {
+            // Leave the original code blocks visible if SageCell cannot load.
+          });
+      }
+
+      function preprocessDiscourseMath() {
+        document.querySelectorAll("span.math, div.math").forEach(function (node) {
+          var tex = node.textContent || "";
+          if (!tex.trim()) {
+            return;
+          }
+          if (node.tagName === "SPAN") {
+            node.textContent = "\\(" + tex + "\\)";
+          } else {
+            node.textContent = "\\[" + tex + "\\]";
+          }
+          node.classList.remove("math");
+        });
+      }
+
+      window.MathJax = {
+        tex: {
+          inlineMath: [["\\(", "\\)"]],
+          displayMath: [["\\[", "\\]"]]
+        },
+        startup: {
+          pageReady() {
+            preprocessDiscourseMath();
+            return MathJax.startup.defaultPageReady().then(function () {
+              return prepareSageCells();
+            });
+          }
+        }
+      };
+    </script>
+    <script async id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="title-span">
+        <a href="../../../">
+          <img src="../../../images/ad2526334012b2ad0c3421f9b6dd94bae2ede52f.svg" height="40" alt="Site Logo" id="site-logo" />
+        </a>
+      </div>
+    </header>
+
+    <div class="main">
+    <div class="archive-span"><a href='https://meta.discourse.org/'>Discourse Meta</a> archived in May, 2026</div>
+    <h1 class="topic-title">No starter upgrade option</h1>
+            <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554969_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Crown1</div>
+          <div class="post_content">
+<p>I have a free community and want to upgrade to Starter but it doesn’t offer that option. What is going on?</p>
+<p>I refuse to start a Pro trial and should not be required to activate the Pro features. I simply want starter. Why is this setup this way? Why can’t I just upgrade to the plan I actually want?</p>
+<p>Clicking on Upgrade ONLY displays the Pro option for $100USD/mth - not what I want.<br/>
+Clicking Compare Plans shows the Starter plan but offers NO OPTION to start a community on Starter - which wouldn’t upgrade my existing community anyway from what I understand.</p>
+<p>What is going on here? Why would you prevent users from upgrading to what they actually want. This coercion to upgrade to a Pro trial is leaving a bad taste in my mouth.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/549896_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">darkpixlz</div>
+          <div class="post_content">
+<p>Are you sure? The “upgrade” button prompts me to buy Starter.</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/xuozDmRkk0tRCL5lPcrZyHcA3LB.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/e/a/b/eab75c1f4eb7584a97f10a152e726c686f63ebd3.png" title="image"><img alt="image" data-base62-sha1="xuozDmRkk0tRCL5lPcrZyHcA3LB" data-dominant-color="38363B" height="500" src="../../../images/eab75c1f4eb7584a97f10a152e726c686f63ebd3_2_619x500.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/e/a/b/eab75c1f4eb7584a97f10a152e726c686f63ebd3_2_619x500.png, https://d11a6trkgmumsb.cloudfront.net/original/4X/e/a/b/eab75c1f4eb7584a97f10a152e726c686f63ebd3.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/e/a/b/eab75c1f4eb7584a97f10a152e726c686f63ebd3.png 2x" width="619"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">772×623 84.2 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="eyes: 1">👀 1</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554969_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Crown1</div>
+          <div class="post_content">
+<p>Well that would be great to see!</p>
+<p>This is what I get on my instance:</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/rZ02d0IZkfXsQOIXA1Gl88mZTwn.jpeg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/c/4/1/c41ff310cf0b51a33bc6648a3714699b743c4eab.jpeg" rel="noopener nofollow ugc" title="image"><img alt="image" data-base62-sha1="rZ02d0IZkfXsQOIXA1Gl88mZTwn" data-dominant-color="524F57" height="408" src="../../../images/c41ff310cf0b51a33bc6648a3714699b743c4eab_2_690x408.jpeg" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/c/4/1/c41ff310cf0b51a33bc6648a3714699b743c4eab_2_690x408.jpeg, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/c/4/1/c41ff310cf0b51a33bc6648a3714699b743c4eab_2_1035x612.jpeg 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/c/4/1/c41ff310cf0b51a33bc6648a3714699b743c4eab.jpeg 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1173×694 90.5 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/549896_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">darkpixlz</div>
+          <div class="post_content">
+<p>Hmm, maybe the team is A/B testing something. Weirdly I don’t even see Starter available on the plans page so something is going on here that I can’t explain.</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/rgc5fBnBL8kVS4pnFh6gVcGzYmI.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/b/f/0/bf0f59acb88ec0a409bd0533c486386c6c5ae9b8.png" title="image"><img alt="image" data-base62-sha1="rgc5fBnBL8kVS4pnFh6gVcGzYmI" data-dominant-color="F0EEF6" height="499" src="../../../images/bf0f59acb88ec0a409bd0533c486386c6c5ae9b8_2_632x499.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/b/f/0/bf0f59acb88ec0a409bd0533c486386c6c5ae9b8_2_632x499.png, https://d11a6trkgmumsb.cloudfront.net/original/4X/b/f/0/bf0f59acb88ec0a409bd0533c486386c6c5ae9b8.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/b/f/0/bf0f59acb88ec0a409bd0533c486386c6c5ae9b8.png 2x" width="632"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">903×714 67.4 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554969_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Crown1</div>
+          <div class="post_content">
+<p>That page is currently the same for me as well - Starter plan is detailed below but not a selectable option.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/549896_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">darkpixlz</div>
+          <div class="post_content">
+<p>Unfortunately you will have to wait for staff to clarify, I’m not sure if this was ever announced anywhere but it seems like theyre in the middle of A/B testing it.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/103861_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">mcwumbly</div>
+          <div class="post_content">
+<p>We have deprioritized Starter on the pricing page, but it should still be available as an option to upgrade to from the Free plan.</p>
+<p>Where are you clicking?</p>
+<p>(It will show Pro or Business if you are clicking on a plugin that comes with one of those plans, for example)</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554969_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Crown1</div>
+          <div class="post_content">
+<p>Thanks for the reply.</p>
+<p>If this is A/B testing they have 1 result - I’d sooner chew glass than start a Pro subscription <img alt=":sweat_smile:" class="emoji" height="20" loading="lazy" src="../../../images/sweat_smile.png" title=":sweat_smile:" width="20"/></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554969_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Crown1</div>
+          <div class="post_content">
+<p>I’ve tried the Upgrade button on the Dashboard as well as the Upgrade hyperlink on the Account Settings page. The only option available is Pro - same dialog from both places.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554969_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Crown1</div>
+          <div class="post_content">
+<p>I’d also like to mention that the pricing page also has nowhere to purchase the Starter plan either - it wasn’t just deprioritized, it has effectively been disabled entirely in my case, whether starting a new community or trying to upgrade my existing community.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/103861_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">mcwumbly</div>
+          <div class="post_content">
+<p>OK, I think you should still see Starter there when clicking the Upgrade button. We’ll take a closer look on Monday.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/103861_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">mcwumbly</div>
+          <div class="post_content">
+<p>Actually, I may have found what is causing the issue in your case. Try again now and I think it should work.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554969_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Crown1</div>
+          <div class="post_content">
+<p>Thanks for your assistance Dave. I assume this was unintentional - but I nearly pulled the trigger on starting my own infrastructure to self-host instead. I really don’t need that kind of overhead for a very small community that is just starting out. I felt betrayed and angry that the system was trying to push my brand new community into a full Pro package that we don’t want or need quite yet. I would love to have the Pro level, don’t get me wrong, and we love the platform you’ve built. I also want to support open-source projects and value that business decision highly - which is what brought me to this platform in the first place. I had no experience with Discourse prior to a week ago, and stumbled upon it when looking specifically for a project like this to support - that’s where the feeling of betrayal came from. I moved my people here looking to support this exact business model. We are a private group, not a business, and I’m paying for it personally from my own pocket with no income potential.</p>
+<p>Thank you for addressing this, I appreciate it very much!</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 4">❤️ 4</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554969_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Crown1</div>
+          <div class="post_content">
+<p>I tried again with a refresh as well as logout and login, but still only have the Pro option dialog when clicking Upgrade.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/103861_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">mcwumbly</div>
+          <div class="post_content">
+<p>Hmm… OK, we’ll have to take a closer look.</p>
+<p>Hang tight and we’ll do that when the week starts and sort it out with you.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 4">❤️ 4</span></div>
+        </div>
+      </div>
+
+
+    </div>
+  </body>
+</html>

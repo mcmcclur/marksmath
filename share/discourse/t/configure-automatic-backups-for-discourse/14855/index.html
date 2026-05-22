@@ -1,0 +1,1307 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width">
+    <title>Configure automatic backups for Discourse</title>
+    <link rel="stylesheet" href="../../../archived.css" />
+    <script>
+      function findSageCodeBlocks() {
+        return Array.prototype.slice.call(
+          document.querySelectorAll(
+            "pre[data-code-wrap='sage'] > code, pre > code.lang-sage, pre > code.language-sage, pre > code.sage"
+          )
+        );
+      }
+
+      function loadScript(src) {
+        return new Promise(function (resolve, reject) {
+          var existing = document.querySelector("script[src='" + src + "']");
+          if (existing) {
+            if (existing.dataset.loaded === "true") {
+              resolve();
+              return;
+            }
+            existing.addEventListener("load", resolve, { once: true });
+            existing.addEventListener("error", reject, { once: true });
+            return;
+          }
+
+          var script = document.createElement("script");
+          script.src = src;
+          script.async = true;
+          script.addEventListener("load", function () {
+            script.dataset.loaded = "true";
+            resolve();
+          }, { once: true });
+          script.addEventListener("error", reject, { once: true });
+          document.head.appendChild(script);
+        });
+      }
+
+      function prepareSageCells() {
+        var sageBlocks = findSageCodeBlocks();
+        if (!sageBlocks.length) {
+          return Promise.resolve();
+        }
+
+        return loadScript("https://sagecell.sagemath.org/static/embedded_sagecell.js")
+          .then(function () {
+            if (!window.sagecell || !window.sagecell.makeSagecell) {
+              return;
+            }
+
+            sageBlocks.forEach(function (codeTag, index) {
+              var preTag = codeTag.parentElement;
+              if (!preTag || preTag.dataset.sageMounted === "true") {
+                return;
+              }
+
+              var host = document.createElement("div");
+              host.className = "sagecell-archive";
+
+              var source = document.createElement("script");
+              source.type = "text/x-sage";
+              source.text = codeTag.textContent || "";
+              host.appendChild(source);
+
+              preTag.insertAdjacentElement("afterend", host);
+              preTag.classList.add("sage-source-hidden");
+              preTag.dataset.sageMounted = "true";
+
+              window.sagecell.makeSagecell({
+                inputLocation: host,
+                autoeval: false,
+                evalButtonText: "Run",
+                languages: ["sage"]
+              });
+            });
+          })
+          .catch(function () {
+            // Leave the original code blocks visible if SageCell cannot load.
+          });
+      }
+
+      function preprocessDiscourseMath() {
+        document.querySelectorAll("span.math, div.math").forEach(function (node) {
+          var tex = node.textContent || "";
+          if (!tex.trim()) {
+            return;
+          }
+          if (node.tagName === "SPAN") {
+            node.textContent = "\\(" + tex + "\\)";
+          } else {
+            node.textContent = "\\[" + tex + "\\]";
+          }
+          node.classList.remove("math");
+        });
+      }
+
+      window.MathJax = {
+        tex: {
+          inlineMath: [["\\(", "\\)"]],
+          displayMath: [["\\[", "\\]"]]
+        },
+        startup: {
+          pageReady() {
+            preprocessDiscourseMath();
+            return MathJax.startup.defaultPageReady().then(function () {
+              return prepareSageCells();
+            });
+          }
+        }
+      };
+    </script>
+    <script async id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="title-span">
+        <a href="../../../">
+          <img src="../../../images/ad2526334012b2ad0c3421f9b6dd94bae2ede52f.svg" height="40" alt="Site Logo" id="site-logo" />
+        </a>
+      </div>
+    </header>
+
+    <div class="main">
+    <div class="archive-span"><a href='https://meta.discourse.org/'>Discourse Meta</a> archived in May, 2026</div>
+    <h1 class="topic-title">Configure automatic backups for Discourse</h1>
+            <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/148734_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Discourse</div>
+          <div class="post_content">
+<blockquote>
+<p><img alt=":bookmark:" class="emoji" height="20" loading="lazy" src="../../../images/bookmark.png" title=":bookmark:" width="20"/> This guide explains how to configure automatic backups for Discourse, including storage options on local servers and S3-compatible storage.</p>
+</blockquote>
+<p>Learn how to set up automatic backups for your Discourse platform.</p>
+<p>This guide covers configuring automatic backups, storing them on local servers or S3-compatible storage, and managing storage retention options like Amazon Glacier.</p>
+<h2>
+<a aria-label="Heading link" class="anchor" href="#p-49514-configuring-automatic-backups-1" name="p-49514-configuring-automatic-backups-1"></a>Configuring automatic backups</h2>
+<ol>
+<li>Navigate to <code>/admin</code> settings.</li>
+<li>Select the <strong>Backup</strong> section.</li>
+<li>Set <code>backup_frequency</code> to the desired interval in days. The default is <code>7</code> (weekly). Set to <code>1</code> for daily backups, or <code>0</code> to disable automatic backups. The maximum is <code>30</code>.</li>
+</ol>
+<p><img alt="backup_frequency" data-dominant-color="F6E3C7" height="51" src="../../../images/c27177c16702c8746ea9b19e069c036b2eff21b3_2_690x51.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/3X/c/2/c27177c16702c8746ea9b19e069c036b2eff21b3_2_690x51.png, https://d11a6trkgmumsb.cloudfront.net/original/3X/c/2/c27177c16702c8746ea9b19e069c036b2eff21b3.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/3X/c/2/c27177c16702c8746ea9b19e069c036b2eff21b3.png 2x" width="690"/>backup_frequency100%75%50%</p>
+<h3>
+<a aria-label="Heading link" class="anchor" href="#p-49514-additional-backup-settings-2" name="p-49514-additional-backup-settings-2"></a>Additional backup settings</h3>
+<ul>
+<li>
+<code>backup_time_of_day</code> — the time of day (UTC) when backups run. Default: <code>3:30</code>.</li>
+<li>
+<code>backup_with_uploads</code> — include uploads in scheduled backups. Default: enabled. Disabling this will only back up the database.</li>
+<li>
+<code>maximum_backups</code> — the maximum number of backups to keep. Older backups are automatically deleted. Default: <code>5</code>.</li>
+<li>
+<code>remove_older_backups</code> — remove backups older than the specified number of days. Leave blank to disable.</li>
+</ul>
+<h2>
+<a aria-label="Heading link" class="anchor" href="#p-49514-store-backups-on-the-local-server-3" name="p-49514-store-backups-on-the-local-server-3"></a>Store backups on the local server</h2>
+<p>By default, backups are stored on your local server. For self-hosted instances, access them at <code>/var/discourse/shared/standalone/backups/default</code>.</p>
+<h2>
+<a aria-label="Heading link" class="anchor" href="#p-49514-store-backups-on-s3-compatible-storage-4" name="p-49514-store-backups-on-s3-compatible-storage-4"></a>Store backups on S3-compatible storage</h2>
+<h3>
+<a aria-label="Heading link" class="anchor" href="#p-49514-using-the-admin-panel-5" name="p-49514-using-the-admin-panel-5"></a>Using the admin panel</h3>
+<ol>
+<li>Create an S3 bucket.</li>
+<li>Set the <code>s3_backup_bucket</code> in the admin panel.</li>
+</ol>
+<ul>
+<li>
+<em>Follow steps in</em> <a href="https://meta.discourse.org/t/setting-up-file-and-image-uploads-to-s3/7229">setting up S3 uploads</a>.</li>
+</ul>
+<ol start="3">
+<li>Configure <code>s3_access_key_id</code>, <code>s3_secret_access_key</code>, and <code>s3_region</code>.</li>
+<li>Set <code>backup_location</code> to “S3”.</li>
+</ol>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/6fo8o3g0KU3MfX3vX6wZV6j6Yre.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/3X/2/b/2bca621b0b105d6b0cc7d51c49bd4de35fbbc588.png" title="S3 configuration"><img alt="S3 configuration" data-dominant-color="F8F2E3" height="163" src="../../../images/2bca621b0b105d6b0cc7d51c49bd4de35fbbc588_2_690x163.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/3X/2/b/2bca621b0b105d6b0cc7d51c49bd4de35fbbc588_2_690x163.png, https://d11a6trkgmumsb.cloudfront.net/original/3X/2/b/2bca621b0b105d6b0cc7d51c49bd4de35fbbc588.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/3X/2/b/2bca621b0b105d6b0cc7d51c49bd4de35fbbc588.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">S3 configuration</span><span class="informations">854×202 15.8 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p><img alt="image" data-base62-sha1="jcqr6av9GzNzVDkQVBUvSBmS3KW" data-dominant-color="F3E0C6" height="53" src="../../../images/8690e780bf02eb8f9b1d1de52a889cb6c86fc97a_2_690x53.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/3X/8/6/8690e780bf02eb8f9b1d1de52a889cb6c86fc97a_2_690x53.png, https://d11a6trkgmumsb.cloudfront.net/original/3X/8/6/8690e780bf02eb8f9b1d1de52a889cb6c86fc97a.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/3X/8/6/8690e780bf02eb8f9b1d1de52a889cb6c86fc97a.png 2x" width="690"/></p>
+<blockquote>
+<p><img alt=":warning:" class="emoji" height="20" loading="lazy" src="../../../images/warning.png" title=":warning:" width="20"/> <strong>WARNING</strong></p>
+<p>Storing backups and regular uploads in the same bucket <em>and</em> folder is no longer supported and <em>will not work</em>.</p>
+<p>The <code>s3_backup_bucket</code> path should <strong>only</strong> be used for backups. If you need to use a bucket that contains other files please make sure that you provide a prefix when you configure the <code>s3_backup_bucket</code> setting (example: <code>my-awesome-bucket/backups</code>) and make sure that files with that prefix are private.</p>
+</blockquote>
+<p>From now on all backups will be uploaded to S3 and not be stored locally anymore. Local storage will only be used for temporary files during backups and restores.</p>
+<p>Go to the <strong>Backups</strong> tab in the admin dashboard to browse the backups – you can download them any time to do a manual offsite backup.</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/yR7Qe2sjM5mrWASWMRO9FMe3Aam.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/3X/f/4/f44b4e00b8a12b1ab8113087aa3439047294709a.png" title="image"><img alt="image" data-base62-sha1="yR7Qe2sjM5mrWASWMRO9FMe3Aam" data-dominant-color="F1F0F0" height="245" src="../../../images/f44b4e00b8a12b1ab8113087aa3439047294709a.png" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">807×287 11.7 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<h3>
+<a aria-label="Heading link" class="anchor" href="#p-49514-using-environment-variables-in-appyml-6" name="p-49514-using-environment-variables-in-appyml-6"></a>Using environment variables in <code>app.yml</code>
+</h3>
+<p>You can also configure S3 backups using environment variables in <code>app.yml</code>. For more information, see <a href="https://meta.discourse.org/t/configure-an-s3-compatible-object-storage-provider-for-uploads/148916">Configure an S3 compatible object storage provider for uploads</a></p>
+<p>Note that the above article covers <code>app.yml</code> covers S3 setup for backups <em>and</em> for file/image uploads. If you <strong>only</strong> want to use S3 for backups (and not for uploads of files/images), then you can <strong>omit</strong> the following parameters from your <code>app.yml</code> config:</p>
+<ul>
+<li><code>DISCOURSE_USE_S3</code></li>
+<li><code>DISCOURSE_S3_CDN_URL</code></li>
+<li><code>DISCOURSE_S3_BUCKET</code></li>
+</ul>
+<p>You also don’t need to configure the <code>after_assets_precompile</code> step in this case, nor configure a CDN.</p>
+<p>Be sure to include all other parameters that are required for your storage provider, as mentioned in the article. Here is one example configuration that only activates S3 for backups (for Scaleway S3):</p>
+<pre data-code-wrap="bash"><code class="lang-bash">DISCOURSE_S3_REGION: nl-ams
+DISCOURSE_S3_ENDPOINT: https://s3.nl-ams.scw.cloud
+DISCOURSE_S3_ACCESS_KEY_ID: my_access_key
+DISCOURSE_S3_SECRET_ACCESS_KEY: my_secret_access_key
+DISCOURSE_S3_BACKUP_BUCKET: my_bucket/my_folder
+DISCOURSE_BACKUP_LOCATION: s3
+</code></pre>
+<h3>
+<a aria-label="Heading link" class="anchor" href="#p-49514-archiving-to-storage-with-a-lower-cost-7" name="p-49514-archiving-to-storage-with-a-lower-cost-7"></a>Archiving to storage with a lower cost</h3>
+<p>Note that on AWS S3, you can also enable an <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/lifecycle-transition-general-considerations.html">automatic move to Glacier bucket lifecycle rule</a> to keep your S3 backup costs low. Other storage providers often have a similar offering.</p><blockquote class="discourse-automation">
+<p>Last edited by <span class="mention">@SaraDev</span> <span class="discourse-local-date" data-date="2024-11-07" data-email-preview="Thursday, November 7, 2024 8:36 PM UTC" data-time="20:36:45" data-timezone="UTC">2024-11-07T20:36:45Z</span></p>
+<details><summary>Check document</summary>Perform check on document: <input class="btn btn-checked" type="button" value="Done"/></details>
+</blockquote>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 60">❤️ 60</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/39044_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">olivermark83</div>
+          <div class="post_content">
+<p>You are able to Archive Backups from your S3 Bucket to Glacier.<br/>
+It is cheaper, but an Restore attemps more Time.</p>
+<p>This Site will Help you to reduce Backup costs.:<br/>
+<aside class="onebox whitelistedgeneric">
+<header class="source">
+<img class="site-icon" height="16" src="../../../images/favicon.ico" width="16"/>
+<a href="https://aws.amazon.com/de/blogs/aws/archive-s3-to-glacier/" rel="nofollow noopener" target="_blank" title="08:39PM - 13 November 2012">Amazon Web Services – 13 Nov 12</a>
+</header>
+<article class="onebox-body">
+<div class="aspect-image" style="--aspect-ratio:690/345;"><img class="thumbnail" src="../../../images/6288c174-a286-4b65-9b3b-6199bfdaa1e0.png"/></div>
+<h3><a href="https://aws.amazon.com/de/blogs/aws/archive-s3-to-glacier/" rel="nofollow noopener" target="_blank">Archiving Amazon S3 Data to Amazon Glacier | Amazon Web Services</a></h3>
+<p>AWS provides you with a number of data storage options. Today I would like to focus on Amazon S3 and Amazon Glacier and a new and powerful way for you to use both of them together. Both of the services offer dependable and highly durable storage for...</p>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+</p>
+<p><img height="413" src="../../../images/18031dd6f06c5602b15a0225ac216658ca2f6081.png" width="550"/></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 11">❤️ 11</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/49215_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Frez</div>
+          <div class="post_content">
+<aside class="quote no-group quote-modified" data-post="1" data-topic="14855" data-username="codinghorror">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/110067_2.png" width="24"/> codinghorror:</div>
+<blockquote>
+<p>Note that you can also enable an automatic move to Glacier bucket lifecycle rule  to keep your S3 backup costs low.</p>
+</blockquote>
+</aside>
+<p>Setting this up can be rather confusing. Here’s a simple guide to help you out.</p>
+<ul>
+<li>Log into your Discourse admin panel</li>
+<li>Configure daily backups</li>
+<li>Set maximum backups to 7</li>
+<li>Log into your Amazon Web Services account</li>
+<li>Go in the S3 Dashboard</li>
+<li>Open the bucket containing the backups</li>
+<li>Click on the properties tab</li>
+<li>Activate versioning</li>
+<li>Open the Lifecycle menu</li>
+<li>Add a rule for the whole bucket</li>
+<li>Set current version to expire after 15 days</li>
+<li>Set previous version to</li>
+<li>Archive to Glacier after 1 days</li>
+<li>expire after 91 days</li>
+<li>Save and logout</li>
+</ul>
+<h3><a aria-label="Heading link" class="anchor" href="#p-163619-how-it-works-1" name="p-163619-how-it-works-1"></a>How it works</h3>
+<p>Versioning will keep backups automaticly deleted by Discourse. One day after beeing deleted it will be moved to the Glacier storage. After 91 days it will be delete from the Glacier storage.</p>
+<p><strong>Warning</strong></p>
+<p>Amazon charge you for item stored in Glacier for 90 days even if you delete them before. Make sure your Glacier Lyfecicle keep your file at least 90 days.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 11">❤️ 11</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/160184_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">MarcP</div>
+          <div class="post_content">
+<p>I may have missed this, but how to I make sure a bucket for backups is private the proper way? <a class="inline-onebox" href="https://meta.discourse.org/t/setting-up-file-and-image-uploads-to-s3/7229">Setting up file and image uploads to S3</a> doesn’t seem to be described here.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/163548_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Alex_P</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="44" data-topic="14855" data-username="Frez">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" loading="lazy" src="../../../images/49215_2.png" width="24"/> Frez:</div>
+<blockquote>
+<p>Set current version to expire after 15 days</p>
+</blockquote>
+</aside>
+<p>Looks like there is no such option anymore.</p>
+<p>UPD: ah, now it’s split into 2 steps of this wizard.</p>
+<p>So I guess it should be like this:</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/kvaqfjLKAzjz2EEm2QiehZTP2nz.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/3X/8/f/8fb16e71973cf52151eff44ef569fbeab7179235.png" rel="noopener nofollow ugc" title="image"><img alt="image" data-base62-sha1="kvaqfjLKAzjz2EEm2QiehZTP2nz" data-dominant-color="889FAC" height="500" src="../../../images/8fb16e71973cf52151eff44ef569fbeab7179235_2_542x500.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/3X/8/f/8fb16e71973cf52151eff44ef569fbeab7179235_2_542x500.png, https://d11a6trkgmumsb.cloudfront.net/original/3X/8/f/8fb16e71973cf52151eff44ef569fbeab7179235.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/3X/8/f/8fb16e71973cf52151eff44ef569fbeab7179235.png 2x" width="542"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">646×595 78.2 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/ky0mf3gPVHMEUpUP795KjGfXqW5.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/3X/9/0/90038c763c2d9c54896a216efaa8d31398710411.png" rel="noopener nofollow ugc" title="image"><img alt="image" data-base62-sha1="ky0mf3gPVHMEUpUP795KjGfXqW5" data-dominant-color="678596" height="500" src="../../../images/90038c763c2d9c54896a216efaa8d31398710411_2_578x500.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/3X/9/0/90038c763c2d9c54896a216efaa8d31398710411_2_578x500.png, https://d11a6trkgmumsb.cloudfront.net/original/3X/9/0/90038c763c2d9c54896a216efaa8d31398710411.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/3X/9/0/90038c763c2d9c54896a216efaa8d31398710411.png 2x" width="578"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">636×550 49.2 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/wPVb5RNve4NZP3uu2WNc3u57xZL.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/3X/e/6/e6241b9cff17441530f3775cea7745be05bddf91.png" rel="noopener nofollow ugc" title="image"><img alt="image" data-base62-sha1="wPVb5RNve4NZP3uu2WNc3u57xZL" data-dominant-color="527589" height="500" src="../../../images/e6241b9cff17441530f3775cea7745be05bddf91_2_676x500.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/3X/e/6/e6241b9cff17441530f3775cea7745be05bddf91_2_676x500.png, https://d11a6trkgmumsb.cloudfront.net/original/3X/e/6/e6241b9cff17441530f3775cea7745be05bddf91.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/3X/e/6/e6241b9cff17441530f3775cea7745be05bddf91.png 2x" width="676"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">682×504 31 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/162963_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">jorymorrison</div>
+          <div class="post_content">
+<p>Does S3 backup functionality play nice without IAM access key and secret if using AWS roles assigned to the instance and <code>s3 use iam profile</code> is enabled in the <code>settings</code> menu?</p>
+<p>Edit: The answer is YES! Just ensure you have region set appropriately.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/290039_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">nathank</div>
+          <div class="post_content">
+<aside class="quote no-group quote-post-not-found" data-post="164" data-topic="7229" data-username="misterjtc">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" loading="lazy" src="../../../images/196401_2.png" width="24"/><a href="https://meta.discourse.org/t/set-up-file-and-image-uploads-to-s3/7229/164">Set up file and image uploads to S3</a></div>
+<blockquote>
+<p>I am a bit confused with how to use this guide to configure backups as well.</p>
+<p>I did what I thought made sense but I’ve gotten a little lost along the way and now I am getting “Failed to access backup storage: Access Denied”</p>
+</blockquote>
+</aside>
+<p>I had this problem too, which was resolved by adding a couple of lines to the policy document:</p>
+<pre><code class="lang-plaintext">"Resource": [
+        "arn:aws:s3:::your-uploads-bucket",
+        "arn:aws:s3:::your-uploads-bucket/*",
+        "arn:aws:s3:::your-backups-bucket",
+        "arn:aws:s3:::your-backups-bucket/*"
+      ]
+</code></pre>
+<p>Should this be added to the OP (which isn’t a wiki)? Or perhaps in the OP of <a class="inline-onebox" href="https://meta.discourse.org/t/setting-up-file-and-image-uploads-to-s3/7229">Set up file and image uploads to S3</a>?</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/120154_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">pfaffman</div>
+          <div class="post_content">
+<aside class="quote no-group quote-modified" data-post="1" data-topic="14855" data-username="codinghorror">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/110067_2.png" width="24"/> codinghorror:</div>
+<blockquote>
+<p>So you’d like to automatically back up all your Discourse data every day?</p>
+</blockquote>
+</aside>
+<p>Is there a good reason not to make daily backups aren’t the default?</p>
+<h3><a aria-label="Heading link" class="anchor" href="#p-869428-fixes-needed-for-op-1" name="p-869428-fixes-needed-for-op-1"></a>Fixes needed for OP</h3>
+<p><span class="chcklst-box fa fa-square-o fa-fw"></span> Add something about moving S3 backups to Glacier?<br/>
+<span class="chcklst-box fa fa-square-o fa-fw"></span> Delete the S3 stuff and link to <a class="inline-onebox" href="https://meta.discourse.org/t/using-object-storage-for-uploads-s3-clones/148916">Configure an S3 compatible object storage provider for uploads</a></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/110067_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">codinghorror</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="102" data-topic="14855" data-username="pfaffman">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" loading="lazy" src="../../../images/120154_2.png" width="24"/> pfaffman:</div>
+<blockquote>
+<p>Is there a good reason not to make daily backups aren’t the default?</p>
+</blockquote>
+</aside>
+<p>It’d be overkill and expensive. Same reason we don’t recommend changing the oil in your car every 500 miles?</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/120154_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">pfaffman</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="103" data-topic="14855" data-username="codinghorror">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" loading="lazy" src="../../../images/110067_2.png" width="24"/> codinghorror:</div>
+<blockquote>
+<p>It’d be overkill and expensive.</p>
+</blockquote>
+</aside>
+<p>You back up your servers once a week?</p>
+<p>I think your 500 mile oil change analogy would be a good answer for “why not keep 30 backups?”, but it doesn’t make sense to me here.</p>
+<p>Do you not think that if you’re going to have 5 backups most people would rather have backups every day so that if they do have to revert to a backup they’ve lost no more than a day? The only time I remember an older backup being useful is when images fell out of tombstone.</p>
+<p>If they have so little disk space that they can’t hold 5 backups, it would seem better to learn that in 5 days when they still have some memory of what they did than wait 4-5 weeks.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/110067_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">codinghorror</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="104" data-topic="14855" data-username="pfaffman">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" loading="lazy" src="../../../images/120154_2.png" width="24"/> pfaffman:</div>
+<blockquote>
+<p>You back up your servers once a week?</p>
+</blockquote>
+</aside>
+<p>Yes, that is correct, for my self hosted servers.</p>
+<p>If you prefer different settings, feel free to edit them from the defaults. What’s stopping you from doing so?</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/120154_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">pfaffman</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="105" data-topic="14855" data-username="codinghorror">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" loading="lazy" src="../../../images/110067_2.png" width="24"/> codinghorror:</div>
+<blockquote>
+<p>Yes, that is correct, for my self hosted servers.</p>
+</blockquote>
+</aside>
+<p>Well, I’ll be!</p>
+<aside class="quote no-group" data-post="105" data-topic="14855" data-username="codinghorror">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" loading="lazy" src="../../../images/110067_2.png" width="24"/> codinghorror:</div>
+<blockquote>
+<p>What’s stopping you from doing so?</p>
+</blockquote>
+</aside>
+<p>I’m cleaning up topics like this one. If the defaults were changed, it wouldn’t be needed!</p>
+<p>I’m convinced that the defaults won’t be changed, so I’ll move ahead. :wink</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/110067_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">codinghorror</div>
+          <div class="post_content">
+<p>Once a week is a good starting point and a solid default.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/119542_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Discoursecurious</div>
+          <div class="post_content">
+<aside class="quote no-group quote-modified" data-full="true" data-post="101" data-topic="14855" data-username="nathank">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" loading="lazy" src="../../../images/290039_2.png" width="24"/> nathank:</div>
+<blockquote>
+<aside class="quote no-group quote-post-not-found" data-post="164" data-topic="7229" data-username="misterjtc">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" loading="lazy" src="../../../images/196401_2.png" width="24"/><a href="https://meta.discourse.org/t/set-up-file-and-image-uploads-to-s3/7229/164">Set up file and image uploads to S3</a></div>
+<blockquote>
+<p>I am a bit confused with how to use this guide to configure backups as well.</p>
+<blockquote>
+<p>I did what I thought made sense but I’ve gotten a little lost along the way and now I am getting “Failed to access backup storage: Access Denied”</p>
+</blockquote>
+</blockquote>
+</aside>
+<p>I had this problem too, which was resolved by adding a couple of lines to the policy document:</p>
+<pre><code class="lang-plaintext">"Resource": [
+        "arn:aws:s3:::your-uploads-bucket",
+        "arn:aws:s3:::your-uploads-bucket/*",
+        "arn:aws:s3:::your-backups-bucket",
+        "arn:aws:s3:::your-backups-bucket/*"
+      ]
+</code></pre>
+<p>Should this be added to the OP (which isn’t a wiki)? Or perhaps in the OP of <a href="https://meta.discourse.org/t/setting-up-file-and-image-uploads-to-s3/7229">Setting up file and image uploads to S3</a>?</p>
+</blockquote>
+</aside>
+<p>I had the very same problem!</p>
+<p>i suggest to add a note regarding this on the initial post too!</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/102653_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">jessicah</div>
+          <div class="post_content">
+<p>Would be nice if this could be used to upload to a different S3 compatible provider, such as running MinIO.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/120154_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">pfaffman</div>
+          <div class="post_content">
+<p>If you want to use minio, see <a href="https://meta.discourse.org/t/using-object-storage-for-uploads-s3-clones/148916">Using Object Storage for Uploads (S3 &amp; Clones)</a>. If you want different services for backups and assets then you’re out of luck (though there are ways to set up triggers to copy from one bucket 8 another)</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/102653_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">jessicah</div>
+          <div class="post_content">
+<p>No, just want for backups, so they get automatically pushed to a different machine on my network.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/120154_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">pfaffman</div>
+          <div class="post_content">
+<p>Then the guide I linked is what you’re looking for.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/264639_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Tris20</div>
+          <div class="post_content">
+<p>Is it possible to be more frequent than once per day? I’d rather not make assumptions and set backup freqeuncy to a float</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/120154_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">pfaffman</div>
+          <div class="post_content">
+<p>If you want more frequent backups you’ll need to do them externally.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/264639_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Tris20</div>
+          <div class="post_content">
+<p>Thanks for the hint. That pushed me towards the command line option which we can schedule to do whenever: <img alt=":+1:" class="emoji" height="20" loading="lazy" src="../../../images/+1.png" title=":+1:" width="20"/></p><aside class="quote quote-modified" data-post="1" data-topic="64364">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/148734_2.png" width="24"/>
+<div class="quote-title__text-content">
+<a href="https://meta.discourse.org/t/backup-discourse-from-the-command-line/64364">Backup discourse from the command line</a> <a class="badge-category__wrapper" href="/c/documentation/self-hosting/55"><span class="badge-category --style-square --has-parent" data-category-id="55" data-drop-close="true" data-parent-category-id="10" style="--category-badge-color: #ffd200; --category-badge-text-color: #000000; --parent-category-badge-color: #00A94F;" title="Documentation and guides for people who self-host their Discourse sites. (Index)"><span class="badge-category__name">Self-Hosting</span></span></a>
+</div>
+</div>
+<blockquote>
+<img alt="bookmark" class="emoji" height="20" src="../../../images/bookmark.png" title="bookmark" width="20"/> This guide covers how to back up and restore your Discourse site using command line tools, specifically designed for self-hosted environments. 
+<img alt="person_raising_hand" class="emoji" height="20" src="../../../images/person_raising_hand.png" title="person_raising_hand" width="20"/> Required user level: Administrator 
+
+
+<img alt="information_source" class="emoji" height="20" src="../../../images/information_source.png" title="information_source" width="20"/> You can use the below placeholders to automatically fill out the command line prompts in this guide: 
+
+ 
+ 
+ 
+
+<a class="anchor" href="#p-298342-backing-up-1" name="p-298342-backing-up-1"></a>Backing up
+To create a backup of your Discourse site, follow these steps: 
+
+Enter the container:
+
+./launcher enter app
+
+
+Run the backup:
+
+discourse backu…
+  </blockquote>
+</aside>
+
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/254360_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">bksubhuti</div>
+          <div class="post_content">
+<p>I got this to work, but it seems that the uploads checkbox was not really needed, nor do I understand the purpose.  <strong>What is the purpose?</strong>  The only thing I want is backups to s3 instead of local for my server.  The server only has  weekly automatic backups…</p>
+<p>The Json also had problems… I was able to get it to work using another website reference.  However, nobody could upload any images because I had the uploads checkbox checked (as described here)…Unchecking that box fixed the image upload problem for users and their profile pics.</p>
+<p>What is the purpose of the images upload?  I’m seriously hoping images are inside the s3 backups.<br/>
+I had to do the instructions twice because I didn’t understand “uploads” and only made one bucket. Then I had to do it again with 2 buckets, and then I had to remove the checkbox for uploads.   It might be good if there was a separate more simple topic for s3 backups … and only  backups.</p>
+<pre><code class="lang-nohighlight">{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "s3:List*",
+                "s3:Get*",
+                "s3:AbortMultipartUpload",
+                "s3:DeleteObject",
+                "s3:PutObject",
+                "s3:PutObjectAcl",
+                "s3:PutObjectVersionAcl",
+                "s3:PutLifecycleConfiguration",
+                "s3:CreateBucket",
+                "s3:PutBucketCORS"
+            ],
+            "Resource": [
+                "arn:aws:s3:::classicaltheravadabucket",
+                "arn:aws:s3:::classicaltheravadabucket/*",
+                "arn:aws:s3:::classicaltheravadabackupbucket",
+                "arn:aws:s3:::classicaltheravadabackupbucket/*"
+            ]
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "s3:ListAllMyBuckets",
+                "s3:*"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+</code></pre>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/120154_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">pfaffman</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="116" data-topic="14855" data-username="bksubhuti">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/254360_2.png" width="24"/> Bhante Bhikkhu Subhuti:</div>
+<blockquote>
+<p>It might be good if there was a separate more simple topic for s3 backups … and only backups.</p>
+</blockquote>
+</aside>
+<aside class="quote quote-modified" data-post="1" data-topic="14855">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/148734_2.png" width="24"/>
+<div class="quote-title__text-content">
+<a href="https://meta.discourse.org/t/configure-automatic-backups-for-discourse/14855">Configure automatic backups for Discourse</a> <a class="badge-category__wrapper" href="/c/documentation/self-hosting/55"><span class="badge-category --style-square --has-parent" data-category-id="55" data-drop-close="true" data-parent-category-id="10" style="--category-badge-color: #ffd200; --category-badge-text-color: #000000; --parent-category-badge-color: #00A94F;" title="Documentation and guides for people who self-host their Discourse sites. (Index)"><span class="badge-category__name">Self-Hosting</span></span></a>
+</div>
+</div>
+<blockquote>
+<img alt="bookmark" class="emoji" height="20" src="../../../images/bookmark.png" title="bookmark" width="20"/> This guide explains how to configure automatic backups for Discourse, including storage options on local servers and S3-compatible storage. 
+
+Learn how to set up daily automatic backups for your Discourse platform. 
+This guide covers configuring daily backups, storing them on local servers or S3-compatible storage, and managing storage retention options like Amazon Glacier. 
+
+<a class="anchor" href="#p-49514-configuring-daily-backups-1" name="p-49514-configuring-daily-backups-1"></a>Configuring daily backups
+
+Navigate to /admin settings.
+Select the Backup section.
+Set the backup_frequency t…
+  </blockquote>
+</aside>
+<p>Though I think that topic should be updated to recommend that the S3 configuration be moved to <code>app.yml</code> rather than the database, that way you can do a command line restore of the database with only the yml file and not have to configure it with a user and s3 confige before doing a restore.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/254360_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">bksubhuti</div>
+          <div class="post_content">
+<aside class="quote no-group quote-modified" data-post="1" data-topic="14855" data-username="Configure automatic backups for Discourse">
+<div class="title">
+<div class="quote-controls"></div>
+ Configure automatic backups for Discourse:</div>
+<blockquote>
+<p>WARNING Storing backups and regular uploads in the same bucket and folder is no longer supported and will not work. By default backups are stored on the local server disk. In order to store backups on Amazon S3, you’ll need to create a unique,</p>
+</blockquote>
+</aside>
+<p>I’m not sure what you are talking about .  My backups are working see picture<br/>
+.<br/>
+I use s3 because digital ocean backups are only weekly, and if the server crashes and gets deleted, it is not useful.<br/>
+On the other hand.  I’m hoping that restoring from s3 or downloaded s3 bucket will be fine.<br/>
+I’m not uploading the images, and I am hoping that the s3 backups are being backed up including images (although very few).</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/ccmAZuQRxPx0hMRyTdPzQG5HNMO.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/5/5/7/557fe4ddeb84c0f2832958f4b21270f511e926ce.png" rel="noopener nofollow ugc" title="image"><img alt="image" data-base62-sha1="ccmAZuQRxPx0hMRyTdPzQG5HNMO" data-dominant-color="F4F6F7" height="195" src="../../../images/557fe4ddeb84c0f2832958f4b21270f511e926ce_2_690x195.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/5/5/7/557fe4ddeb84c0f2832958f4b21270f511e926ce_2_690x195.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/5/5/7/557fe4ddeb84c0f2832958f4b21270f511e926ce_2_1035x292.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/5/5/7/557fe4ddeb84c0f2832958f4b21270f511e926ce_2_1380x390.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1391×394 76.6 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/523185_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">RGJ</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="118" data-topic="14855" data-username="bksubhuti">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" loading="lazy" src="../../../images/254360_2.png" width="24"/> Bhante Bhikkhu Subhuti:</div>
+<blockquote>
+<p>s3 backups are being backed up including images</p>
+</blockquote>
+</aside>
+<p>Generally: no.<br/>
+It does not make much sense to backup images in an S3 bucket into another S3 bucket?</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/254360_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">bksubhuti</div>
+          <div class="post_content">
+<p>can you be less ambiguous?<br/>
+The instructions had 2 s3 buckets.  I could not get that to work.<br/>
+I have only one s3 bucket.  Hopefully pictures are included in that backup… is that correct?</p>
+<p>I would imagine that local backups work the same, Right?</p>
+<p>Please answer in full sentences regarding my questions.  The tutorial was very confusing as well.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/523185_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">RGJ</div>
+          <div class="post_content">
+<p>What is ambiguous about “no” ? (And what’s not ambiguous about “backups being backed up” <img alt=":wink:" class="emoji" height="20" loading="lazy" src="../../../images/wink.png" title=":wink:" width="20"/> )</p>
+<p>Let me try again.</p>
+<p>If you have configured uploads to be on S3 then uploads are not included in your backup.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/254360_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">bksubhuti</div>
+          <div class="post_content">
+<p>Let’s use the term “pictures” instead of uploads even though it can be other media.<br/>
+This way we don’t confuse the text content as an upload which I’m uploading to s3.</p>
+<p>So the 62 MB, backup files on s3 as pictured and uploaded in this thread does not include <strong>pictures</strong> ?</p>
+<p>So how do I make sure the backups have these?<br/>
+Do the local backups have the pictures too?</p>
+<p>When I configured the s3 for "uploads (of media) " which was ambiguous as well.  Nobody could post pictures because they were rejected from s3…</p>
+<p>Is there a way to have both local and s3 daily backups?<br/>
+I could care less if 5 days of pictures were lost, we are mostly a text based group.<br/>
+But I would care if 5 days of text were lost.  Digital Ocean only does 7-day backups if you pay them.<br/>
+So even though I can backup daily, if the droplet gets hacked or damaged, then we lose those backups…  I’m starting to think there is not much added value in s3.</p>
+<p>I wish there were simple backups similar to WordPress which lets me backup to my google or dropbox account.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/523185_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">RGJ</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="122" data-topic="14855" data-username="bksubhuti">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" loading="lazy" src="../../../images/254360_2.png" width="24"/> Bhante Bhikkhu Subhuti:</div>
+<blockquote>
+<p>Let’s use the term “pictures” instead of uploads even though it can be other media.<br/>
+This way we don’t confuse the text content as an upload which I’m uploading to s3.</p>
+</blockquote>
+</aside>
+<p>No, that is a bad idea, if you upload a text file as an attachment, it’s an upload as well, it will cause confusion. And text in a post is stored into the database. So I’m sticking to the term <em>uploads</em>.</p>
+<p>If your uploads are on S3, they are not included in backups. In that case the backups only contain a copy of the database. It does not matter whether your backups are local or on S3.</p>
+<p>If your uploads are not on S3, they are included in the backups. In that case the backups contain a copy of the database, and a copy of the uploads. It does not matter whether your backups are local or on S3.</p>
+<aside class="quote no-group" data-post="122" data-topic="14855" data-username="bksubhuti">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" loading="lazy" src="../../../images/254360_2.png" width="24"/> Bhante Bhikkhu Subhuti:</div>
+<blockquote>
+<p>So even though I can backup daily, if the droplet gets hacked or damaged, then we lose those backups</p>
+</blockquote>
+</aside>
+<p>If you are storing something on S3, be it uploads or backups of the database, they will not get lost if your DO droplet gets hacked or damaged. So I don’t see your point.</p>
+<p>Since your posts are about backups and not about file and image uploads, I’m moving these to another topic.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/119591_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Canapin</div>
+          <div class="post_content">
+<p>I’d like to automatically move my S3 Backups to Glacier but I’m confused by <a href="http://aws.typepad.com/aws/2012/11/archive-s3-to-glacier.html">the steps</a> linked in the first post, which doesn’t explain much, maybe because there’s outdated stuff.</p>
+<p><img alt="image" data-base62-sha1="npF0irtevHvi5n5SXTBxeO5f2iY" height="242" src="../../../images/a41898edea55265f7d3f6d992f242cb7937b0f38.png" width="680"/></p>
+<p>Which options should be checked here? <img alt=":thinking:" class="emoji" height="20" loading="lazy" src="../../../images/thinking.png" title=":thinking:" width="20"/></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/119591_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Canapin</div>
+          <div class="post_content">
+<p>May I ask again in case someone did these steps and knows about it?</p>
+<p>Also, do you know what makes these fluctuations in S3 fees?</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/8WQ5lmGI7OeZ8JCSEagdxYZy6OG.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/3/e/b/3eb81fa588208562817e598b499012bd97d47d5e.png" title="image"><img alt="image" data-base62-sha1="8WQ5lmGI7OeZ8JCSEagdxYZy6OG" data-small-upload="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/3/e/b/3eb81fa588208562817e598b499012bd97d47d5e_2_10x10.png" height="195" src="../../../images/3eb81fa588208562817e598b499012bd97d47d5e_2_690x195.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/3/e/b/3eb81fa588208562817e598b499012bd97d47d5e_2_690x195.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/3/e/b/3eb81fa588208562817e598b499012bd97d47d5e_2_1035x292.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/3/e/b/3eb81fa588208562817e598b499012bd97d47d5e.png 2x" width="690"/><div class="meta">
+<svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1348×381 7.75 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg>
+</div></a></div></p>
+<p>Plus, since the launch of the forum (September 2020), the size of the backups has increased by roughly 15%, but the S3 bills have doubled, from 2.50$ to 5$. Any idea why that much?</p>
+<p>That’s why I’d like to use Glacier.</p>
+<hr/>
+<p>Edit: I’ve followed the steps described <a href="https://www.youtube.com/watch?v=7LIXqCnaLj0">here</a> and I’ll see how it goes.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/119591_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Canapin</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="125" data-topic="14855" data-username="Canapin">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/119591_2.png" width="24"/> Coin-coin le Canapin:</div>
+<blockquote>
+<p>Edit: I’ve followed the steps described <a href="https://www.youtube.com/watch?v=7LIXqCnaLj0">here </a> and I’ll see how it goes.</p>
+</blockquote>
+</aside>
+<p>Well, it doesn’t go. <img alt=":sweat_smile:" class="emoji" height="20" loading="lazy" src="../../../images/sweat_smile.png" title=":sweat_smile:" width="20"/></p>
+<p>My lifecycle configuration:<br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/gwD9tA7TcpWxVs28gX9ZkTRO9Yj.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/7/3/d/73d3154f336f9c83665843be904601364ab4141f.png" title="image"><img alt="image" data-base62-sha1="gwD9tA7TcpWxVs28gX9ZkTRO9Yj" data-dominant-color="F9F9F9" height="500" src="../../../images/73d3154f336f9c83665843be904601364ab4141f_2_484x500.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/7/3/d/73d3154f336f9c83665843be904601364ab4141f_2_484x500.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/7/3/d/73d3154f336f9c83665843be904601364ab4141f_2_726x750.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/7/3/d/73d3154f336f9c83665843be904601364ab4141f.png 2x" width="484"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">965×996 49.9 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>My S3 bucket:<br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/1MF5de3PdKq4cqzqbevVRs1mprO.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/0/c/8/0c826342cf16e905653a94744fd8b623d329e3c0.png" title="image"><img alt="image" data-base62-sha1="1MF5de3PdKq4cqzqbevVRs1mprO" data-dominant-color="F2F3F3" height="346" src="../../../images/0c826342cf16e905653a94744fd8b623d329e3c0_2_690x346.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/0/c/8/0c826342cf16e905653a94744fd8b623d329e3c0_2_690x346.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/0/c/8/0c826342cf16e905653a94744fd8b623d329e3c0_2_1035x519.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/0/c/8/0c826342cf16e905653a94744fd8b623d329e3c0.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1163×584 67 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>No backup is on Glacier.</p>
+<p>So… Two questions for those who have been able to achieve this automated S3 to Glacier transition:</p>
+<ol>
+<li>
+<p>What could be wrong in my configuration?</p>
+</li>
+<li>
+<p>The minimum storage duration charge in Glacier is 90 days. Does that mean that if I do 1 backup a day, I’ll be eventually charged for 90 backups in Glacier each month?<br/>
+If this is the case, then this Glacier solution won’t be a good idea, unless I reduce a lot my backups frequency.</p>
+</li>
+</ol>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Sectros</div>
+          <div class="post_content">
+<p>where in the vps are the backups stored?</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/120154_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">pfaffman</div>
+          <div class="post_content">
+<aside class="quote no-group" data-full="true" data-post="127" data-topic="14855" data-username="Sectros">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" loading="lazy" src="../../../images/48.png" width="24"/> Sector Pag:</div>
+<blockquote>
+<p>where in the vps are the backups stored?</p>
+</blockquote>
+</aside>
+<p>I added this to the OP:</p>
+<aside class="quote no-group" data-post="1" data-topic="14855" data-username="Discourse">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" loading="lazy" src="../../../images/148734_2.png" width="24"/> Discourse:</div>
+<blockquote>
+<p>If you’re self-hosted you can access them at <code>/var/discourse/shared/standalone/backups/default</code>.</p>
+</blockquote>
+</aside>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/447830_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">satonotdead</div>
+          <div class="post_content">
+<p>Can we chose the folder of the backups or there is a workaround without coding?</p>
+<p>I’m using an storage data from my hosting provider so I can mount and use like local but it not supposed to be saved into default path.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/120154_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">pfaffman</div>
+          <div class="post_content">
+<p>If you want it to be saved in a different place then you’d need to change that in your app.yml</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/295079_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">shyguy</div>
+          <div class="post_content">
+<h2><a aria-label="Heading link" class="anchor" href="#p-1268789-automatic-backups-on-backblaze-b2-1" name="p-1268789-automatic-backups-on-backblaze-b2-1"></a>Automatic Backups on Backblaze B2</h2>
+<p>here’s how i have it set up for a hypothetical site hosted on <strong><code>example.com</code></strong></p>
+<ol>
+<li>make an account on backblaze (atm, no need to enter payment for &lt;10GB which is free)</li>
+<li><strong>create a bucket</strong> (backblaze &gt; B2 Cloud Storage)
+<ul>
+<li>name: <code>$sitename-discourse-$random</code> padded to 30char
+<ul>
+<li>in this example: <code>example-discourse-g87he56ht8vg</code></li>
+<li>discourse needs bucket name to be lowercase letters, numbers, and dashes only</li>
+<li>i suggest keeping it 30 char or less since that shows up nicely in backblaze’s webui without wrapping</li>
+</ul>
+</li>
+<li>private bucket</li>
+<li>enable encryption (SSE-B2)</li>
+<li>enable object lock</li>
+</ul>
+</li>
+<li>create an <strong>application key</strong> (backblaze &gt; account &gt; app keys)
+<ul>
+<li>keyName: <code>example-discourse</code></li>
+<li>bucketName (Allow access to Bucket(s)): <code>example-discourse-g87he56ht8vg</code></li>
+<li>capabilities: read and write</li>
+<li>leave namePrefix and validDurationSeconds blank</li>
+</ul>
+</li>
+<li>configure <strong>discourse B2 settings</strong> (discourse &gt; admin &gt; settings)
+<ul>
+<li><code>backup_location</code>: <code>s3</code></li>
+<li><code>s3_backup_bucket</code>: <code>example-discourse-g87he56ht8vg</code></li>
+<li><code>s3_endpoint</code>: this is shown on the bucket page – make sure to prepend with <code>https://</code></li>
+<li><code>s3_access_key_id</code>: (from previous step)</li>
+<li><code>s3_secret_access_key</code>: (from previous step)
+<ul>
+<li><em>backblaze only shows you the key once (at creation)!</em></li>
+</ul>
+</li>
+<li>btw, you can also <a href="https://meta.discourse.org/t/best-practices-for-backups/148630">set these as env vars in your container yml instead</a>. this would let you restore with only that file and nothing else:</li>
+</ul>
+</li>
+</ol>
+<pre data-code-wrap="yaml"><code class="lang-yaml">env:
+  ## Backblaze B2 Backups
+  # DISCOURSE_BACKUP_LOCATION: 's3' # uncomment to recover from cli
+  DISCOURSE_S3_ENDPOINT: 'https://....backblazeb2.com'
+  DISCOURSE_S3_BACKUP_BUCKET: 'example-discourse-g87he56ht8vg'
+  DISCOURSE_S3_ACCESS_KEY_ID: '...'
+  DISCOURSE_S3_SECRET_ACCESS_KEY: '...'
+  # DISCOURSE_DISABLE_EMAILS: 'non-staff' # uncomment to disable email during a test restore
+  ## you can restore with no data beyond this container yml.
+  ## uncomment DISCOURSE_BACKUP_LOCATION above, build container (./launcher rebuild ...),
+  ## and then run this inside container (it will restore from B2 bucket):
+  ##   discourse enable_restore
+  ##   discourse restore &lt;example-com-...tar.gz&gt; # choose restore filename by browsing B2 webui
+  ## remember to disable restore afterwards
+</code></pre>
+<ol start="5">
+<li>configure backup <strong>retention</strong>
+<ul>
+<li>discourse:
+<ul>
+<li><code>backup_frequency</code>: 1 (daily backups in this example, but you could do weekly)</li>
+<li><code>maximum_backups</code>: disregard this setting – let backblaze handle it <img alt=":sunglasses:" class="emoji" height="20" loading="lazy" src="../../../images/sunglasses.png" title=":sunglasses:" width="20"/></li>
+<li><code>s3_disable_cleanup</code>: <strong>true</strong> <em>(Prevent removal of old backups from S3 when there are more backups than the maximum allowed)</em></li>
+</ul>
+</li>
+<li>backblaze (go to your bucket’s settings):
+<ul>
+<li>Object Lock (Default Retention Policy): 7 days</li>
+<li>Lifecycle Settings (custom):
+<ul>
+<li><code>fileNamePrefix</code>: <code>default/example-com</code> (optional)</li>
+<li><code>daysFromUploadingToHiding</code>: 8 days
+<ul>
+<li><em>this should be object lock + 1</em></li>
+</ul>
+</li>
+<li><code>daysFromHidingToDeleting</code>: 1 day</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<p>to <strong>summarize</strong> retention in this example:</p>
+<ul>
+<li>discourse creates backups every 1 day</li>
+<li>each backup file is immutable for 7 days after upload to B2 (object lock). this protects you against accidents, ransomware, etc.</li>
+<li>8 days after upload, the object lock on the backup expires. since it’s mutable again, a lifecycle rule can hide the backup file</li>
+<li>the next part of the lifecycle rule deletes any file 1 day after it’s hidden</li>
+</ul>
+<p>so you get daily backups. retention time is one week during which backups can’t be deleted no matter what. then backups are deleted 2 days later. so really a backup lives for 9 days or so.</p>
+<p>hope that helps someone <img alt=":slight_smile:" class="emoji" height="20" loading="lazy" src="../../../images/slight_smile.png" title=":slight_smile:" width="20"/></p>
+<hr/>
+<p>on second thought, maybe it’s better to let discourse handle retention (<code>maximum_backups</code>). that way, your backups won’t automatically start expiring if discourse is down. you wouldn’t want a clock ticking on them while trying to recover. if you went that way, you could set <code>maximum_backups=8</code> and <code>s3_disable_cleanup=false</code> in this example <s>and not use a lifecycle policy in B2</s>. you would still use the object lock policy (7 days), though.</p>
+<p>edit: actually, i think you do still need a B2 lifecycle policy because i think files only get ‘hidden’ and not deleted when an S2 client deletes them. i’m using the “<code>Keep only the last version of the file</code>” policy, which is equivalent to <code>daysFromHidingToDeleting=1, daysFromUploadingToHiding=null</code>.</p>
+<p>i guess think it over and decide which approach is right for you.</p>
+<p>btw, i realize there’s some back in forth in this post. i think it’s informative as-is, but if someone wants, i could make another slightly simpler post with my actual recommendations.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 6">❤️ 6</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/120154_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">pfaffman</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="131" data-topic="14855" data-username="shyguy">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" loading="lazy" src="../../../images/295079_2.png" width="24"/> shyguy:</div>
+<blockquote>
+<p>configure <strong>discourse B2 settings</strong> (discourse &gt; admin &gt; settings)</p>
+</blockquote>
+</aside>
+<p>If you put those in environment variables as described in <a href="https://meta.discourse.org/t/configure-an-s3-compatible-object-storage-provider-for-uploads/148916">Configure an S3 compatible object storage provider for uploads</a> then you can restore your site to a new server from the command line with only your yml file.</p>
+<p>The rest seems like a good plan.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/295079_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">shyguy</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="132" data-topic="14855" data-username="pfaffman">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" loading="lazy" src="../../../images/120154_2.png" width="24"/> Jay Pfaffman:</div>
+<blockquote>
+<p>you can restore your site to a new server from the command line with only your yml</p>
+</blockquote>
+</aside>
+<p><code>discourse restore &lt;backup.tar.gz&gt;</code></p>
+<p>this will look in your bucket if you have the env vars set? pretty cool if so.</p>
+<p>and in that case, you could probably also set them manually with <code>export</code> in <code>bash</code> in the unlikely event that you have to recover. that is, if you don’t want to keep secrets in your container yml for some reason.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/317214_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Crius</div>
+          <div class="post_content">
+<aside class="quote no-group" data-full="true" data-post="128" data-topic="14855" data-username="pfaffman">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" loading="lazy" src="../../../images/120154_2.png" width="24"/> Jay Pfaffman:</div>
+<blockquote>
+<p>If you’re self-hosted you can access them at <code>/var/discourse/shared/standalone/backups/default</code>.</p>
+</blockquote>
+</aside>
+<p>Just for confirmation, once I have moved to S3 backups and tested that they works, can I safely delete the content of that folder to reclaim used space?</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/120154_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">pfaffman</div>
+          <div class="post_content">
+<p>Yes. If backups are on S3 and you no longer want the backups on the local drive, you can delete them.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">hawm</div>
+          <div class="post_content">
+<p>Can I only enable S3 for backups but not files or images upload?</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/293030_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">th0rgall</div>
+          <div class="post_content">
+<p>I had the exact same question, and could not find an explicit answer here or in <a class="inline-onebox" href="https://meta.discourse.org/t/configure-an-s3-compatible-object-storage-provider-for-uploads/148916/1">Configure an S3 compatible object storage provider for uploads</a>.</p>
+<p>But, I’ve set up Scaleway S3 Object Storage <em>for backups only</em> with these environment variables, and it seems to work. I just made a manual backup to the bucket this way using the Admin dashboard.</p>
+<pre data-code-wrap="bash"><code class="lang-bash"># Leaving the below parameters commented out 
+# because they configure S3 for uploads/CDN distribution, which we don't want.
+# DISCOURSE_USE_S3: true
+# DISCOURSE_S3_CDN_URL:
+# DISCOURSE_S3_BUCKET: 
+DISCOURSE_S3_REGION: nl-ams
+DISCOURSE_S3_ENDPOINT: https://s3.nl-ams.scw.cloud
+DISCOURSE_S3_ACCESS_KEY_ID: &lt;redacted&gt;
+DISCOURSE_S3_SECRET_ACCESS_KEY: &lt;redacted&gt;
+DISCOURSE_S3_BACKUP_BUCKET: &lt;redacted&gt;
+DISCOURSE_BACKUP_LOCATION: s3
+</code></pre>
+<p>Static assets are still served from my VPS, as expected &amp; desired, and I’m not seeing any errors. I’m not sure if the scheduled backups will work, but if the manual backup worked, they should too.</p>
+<p><s>I’ll add a note to the wiki above that these parameters can be left out if you only want to use S3 for backups, and <em>not</em> for file or image uploads.</s><br/>
+<s>Update: it’s not a wiki.</s><br/>
+Update 2: it was made a wiki at my request, thanks!</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/352733_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Eviepayne</div>
+          <div class="post_content">
+<p>If I have 2 redundant web containers, how can I ensure only 1 runs a backup?</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554803_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Lilly</div>
+          <div class="post_content">
+<aside class="quote no-group" data-full="true" data-post="141" data-topic="14855" data-username="Eviepayne">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/352733_2.png" width="24"/> Eviepayne:</div>
+<blockquote>
+<p>If I have 2 redundant web containers, how can I ensure only 1 runs a backup?</p>
+</blockquote>
+</aside>
+<p>you don’t need to do anything - Discourse handles this automatically - sidekiq and redis will only run the job once, and sidekiq will only grab one of the web containers, but i don’t think you can be sure which one it is on any given backup <em>if you are using local backups</em>.</p>
+<p>thus, you should use an external S3 bucket if you aren’t already, otherwise your backup files will likely be randomly stored across the local disks of both containers. using S3 bucket means your backup will always land in the same place.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="chefs kiss: 1">:chefs_kiss: 1</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+
+    </div>
+  </body>
+</html>

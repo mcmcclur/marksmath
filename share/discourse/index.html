@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Discourse Meta</title>
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="https://use.fontawesome.com/2374bdec1c.css">
+    <link rel="stylesheet" href="./archived.css" />
+    <script>
+      function applyCategoryFilter() {
+        var hash = window.location.hash || "";
+        var selected = "all";
+        if (hash.indexOf("#category=") === 0) {
+          selected = decodeURIComponent(hash.slice("#category=".length));
+        }
+
+        document.querySelectorAll(".category-nav a").forEach(function (link) {
+          var isActive = link.dataset.category === selected;
+          link.setAttribute("aria-current", isActive ? "page" : "false");
+        });
+
+        document.querySelectorAll(".topic-row").forEach(function (row) {
+          var matches = selected === "all" || row.dataset.category === selected;
+          row.hidden = !matches;
+        });
+
+        document.querySelectorAll(".pagination-link[href]").forEach(function (link) {
+          var baseHref = link.getAttribute("href").split("#")[0];
+          link.setAttribute("href", selected === "all" ? baseHref : baseHref + hash);
+        });
+      }
+
+      function preprocessDiscourseMath() {
+        document.querySelectorAll("span.math, div.math").forEach(function (node) {
+          var tex = node.textContent || "";
+          if (!tex.trim()) {
+            return;
+          }
+          if (node.tagName === "SPAN") {
+            node.textContent = "\\(" + tex + "\\)";
+          } else {
+            node.textContent = "\\[" + tex + "\\]";
+          }
+          node.classList.remove("math");
+        });
+      }
+
+      window.MathJax = {
+        tex: {
+          inlineMath: [["\\(", "\\)"]],
+          displayMath: [["\\[", "\\]"]]
+        },
+        startup: {
+          pageReady() {
+            preprocessDiscourseMath();
+            applyCategoryFilter();
+            return MathJax.startup.defaultPageReady();
+          }
+        }
+      };
+
+      window.addEventListener("hashchange", applyCategoryFilter);
+      window.addEventListener("DOMContentLoaded", applyCategoryFilter);
+    </script>
+    <script async id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
+  </head>
+
+  <body>
+
+    <header class="header">
+      <div class="title-span">
+        <h1 class="site-title">
+          <img src="images/ad2526334012b2ad0c3421f9b6dd94bae2ede52f.svg" height="40" alt="Site Logo" id="site-logo" />
+        </h1>
+      </div>
+    </header>
+
+    <div class="main">
+      <h1 class="archive-title">Discourse Meta</h1>
+      <div class="archive-span"><a href='https://meta.discourse.org/'>Discourse Meta</a> archived in May, 2026</div>
+      <div class="category-nav">Categories: <a href="#" data-category="all">All</a> - <a href="#category=community-building" data-category="community-building">Community Building</a> - <a href="#category=development" data-category="development">Development</a> - <a href="#category=general" data-category="general">General</a> - <a href="#category=support" data-category="support">Support</a></div>
+      <nav class="pagination-nav" aria-label="Topic pages"><span class="pagination-link current" aria-current="page">1</span><a class="pagination-link" href="page-2.html">2</a><a class="pagination-link" href="page-3.html">3</a><a class="pagination-link" href="page-4.html">4</a></nav>
+      <div class="topics">
+        <div class="header-row">
+          <span class="topic-head">Topics</span>
+          <span class="category-head">Category</span>
+          <span class="post-count-head">Posts</span>
+        </div>
+              <div class="topic-row" data-category="uncategorized">
+        <span class="topic"><i class="fa fa-thumb-tack" title="This was a pinned topic so it appears near the top of the page."></i><a href="t/new-to-discourse-start-here/1">New to Discourse? Start here!</a></span>
+        <span class="category"></span>
+        <span class="post-count">1</span>
+      </div>
+
+      <div class="topic-row" data-category="support">
+        <span class="topic"><a href="t/optimal-themes-for-screen-reader-accessibility/403464">Optimal Themes for Screen Reader Accessibility</a></span>
+        <span class="category">Support</span>
+        <span class="post-count">1</span>
+      </div>
+
+      <div class="topic-row" data-category="uncategorized">
+        <span class="topic"><a href="t/easily-create-events-categories-using-the-events-and-calendar-plugin/401309">Easily create Events categories using the Events and Calendar plugin</a></span>
+        <span class="category"></span>
+        <span class="post-count">6</span>
+      </div>
+
+      <div class="topic-row" data-category="support">
+        <span class="topic"><a href="t/help-with-updating-component-getting-error-message-when-trying-to-upload-new-version/403447">Help with updating component, getting error message when trying to upload new version</a></span>
+        <span class="category">Support</span>
+        <span class="post-count">3</span>
+      </div>
+
+      <div class="topic-row" data-category="uncategorized">
+        <span class="topic"><a href="t/solved-improvements-allowing-members-to-indicate-theyre-experiencing-a-reported-issue/402498">Solved improvements: Allowing members to indicate they&rsquo;re experiencing a reported issue</a></span>
+        <span class="category"></span>
+        <span class="post-count">27</span>
+      </div>
+
+      <div class="topic-row" data-category="uncategorized">
+        <span class="topic"><a href="t/minor-edit-on-first-post-creates-revision-despite-grace-period-when-tagging-is-enabled/396501">Minor edit on first post creates revision despite grace period when tagging is enabled</a></span>
+        <span class="category"></span>
+        <span class="post-count">5</span>
+      </div>
+
+      <div class="topic-row" data-category="support">
+        <span class="topic"><a href="t/backup-fails-with-postgres-18/403289">Backup fails with postgres 18</a></span>
+        <span class="category">Support</span>
+        <span class="post-count">9</span>
+      </div>
+
+      <div class="topic-row" data-category="support">
+        <span class="topic"><a href="t/is-it-possible-to-convert-a-forum-into-a-real-app/378700">Is it possible to convert a forum into a real app?</a></span>
+        <span class="category">Support</span>
+        <span class="post-count">19</span>
+      </div>
+
+      <div class="topic-row" data-category="development">
+        <span class="topic"><a href="t/notification-are-grouped-for-the-more-than-1-reply-on-the-same-post/403440">Notification are grouped for the more than 1 reply on the same post</a></span>
+        <span class="category">Development</span>
+        <span class="post-count">1</span>
+      </div>
+
+      <div class="topic-row" data-category="uncategorized">
+        <span class="topic"><a href="t/404-at-the-bottom-of-https-meta-discourse-org-n-testing-nested-replies-on-meta-398759/403277">404 at the bottom of https://meta.discourse.org/n/testing-nested-replies-on-meta/398759</a></span>
+        <span class="category"></span>
+        <span class="post-count">4</span>
+      </div>
+
+      <div class="topic-row" data-category="uncategorized">
+        <span class="topic"><a href="t/old-topics-published-via-wordpress-embed-are-missing-x-robots-noindex-and-canonical-tags/403109">Old topics published via WordPress embed are missing x-robots: noindex and canonical tags</a></span>
+        <span class="category"></span>
+        <span class="post-count">7</span>
+      </div>
+
+      <div class="topic-row" data-category="general">
+        <span class="topic"><a href="t/a-native-mobile-ios-android-client-app-for-discourse/403429">A Native Mobile iOS+Android Client App for Discourse</a></span>
+        <span class="category">General</span>
+        <span class="post-count">3</span>
+      </div>
+
+      <div class="topic-row" data-category="uncategorized">
+        <span class="topic"><a href="t/back-button-on-chat-forgets-if-its-a-starred-chat/403431">Back button on Chat forgets if it&rsquo;s a starred chat</a></span>
+        <span class="category"></span>
+        <span class="post-count">1</span>
+      </div>
+
+      <div class="topic-row" data-category="uncategorized">
+        <span class="topic"><a href="t/tag-icons-component-bug/403428">Tag Icons component bug</a></span>
+        <span class="category"></span>
+        <span class="post-count">5</span>
+      </div>
+
+      <div class="topic-row" data-category="uncategorized">
+        <span class="topic"><a href="t/change-request-for-the-text-casing-on-drop-down-options/403413">Change request for the text casing on drop down options</a></span>
+        <span class="category"></span>
+        <span class="post-count">4</span>
+      </div>
+
+      <div class="topic-row" data-category="uncategorized">
+        <span class="topic"><a href="t/read-delivered-for-chat-dms/403370">Read/delivered for Chat DMs</a></span>
+        <span class="category"></span>
+        <span class="post-count">5</span>
+      </div>
+
+      <div class="topic-row" data-category="uncategorized">
+        <span class="topic"><a href="t/configure-an-s3-compatible-object-storage-provider-for-uploads/148916">Configure an S3 compatible object storage provider for uploads</a></span>
+        <span class="category"></span>
+        <span class="post-count">271</span>
+      </div>
+
+      <div class="topic-row" data-category="uncategorized">
+        <span class="topic"><a href="t/tag-icons/109757">Tag Icons</a></span>
+        <span class="category"></span>
+        <span class="post-count">93</span>
+      </div>
+
+      <div class="topic-row" data-category="uncategorized">
+        <span class="topic"><a href="t/undeleting-a-post-does-not-create-a-log-entry/403423">Undeleting a post does not create a log entry</a></span>
+        <span class="category"></span>
+        <span class="post-count">1</span>
+      </div>
+
+      <div class="topic-row" data-category="uncategorized">
+        <span class="topic"><a href="t/process-manager-formerly-discourse-workflow/347110">Process Manager :left_right_arrow: - formerly &ldquo;Discourse Workflow&rdquo;</a></span>
+        <span class="category"></span>
+        <span class="post-count">23</span>
+      </div>
+
+      <div class="topic-row" data-category="uncategorized">
+        <span class="topic"><a href="t/problem-with-emoji-autocomplete-and-special-characters-example-u/403420">Problem with emoji autocomplete and special characters (example ü)</a></span>
+        <span class="category"></span>
+        <span class="post-count">1</span>
+      </div>
+
+      <div class="topic-row" data-category="development">
+        <span class="topic"><a href="t/pg-undefinedtable-error-relation-translation-overrides-does-not-exist/42599">PG::UndefinedTable: ERROR: relation &ldquo;translation_overrides&rdquo; does not exist</a></span>
+        <span class="category">Development</span>
+        <span class="post-count">5</span>
+      </div>
+
+      <div class="topic-row" data-category="support">
+        <span class="topic"><a href="t/internal-server-error-while-approving-new-users/403296">Internal Server Error While Approving New Users</a></span>
+        <span class="category">Support</span>
+        <span class="post-count">4</span>
+      </div>
+
+      <div class="topic-row" data-category="uncategorized">
+        <span class="topic"><a href="t/woocommerce-wp-discourse-safe-to-let-users-change-username-on-discourse/403297">WooCommerce + WP Discourse: safe to let users change username on Discourse?</a></span>
+        <span class="category"></span>
+        <span class="post-count">2</span>
+      </div>
+
+      <div class="topic-row" data-category="uncategorized">
+        <span class="topic"><a href="t/use-translated-posts-when-emailing-users-with-their-user-language-set/383546">Use translated posts when emailing users with their user language set</a></span>
+        <span class="category"></span>
+        <span class="post-count">3</span>
+      </div>
+
+      <div class="topic-row" data-category="uncategorized">
+        <span class="topic"><a href="t/discourse-will-never-block-you-from-the-web/403381">Discourse Will Never Block You From the Web</a></span>
+        <span class="category"></span>
+        <span class="post-count">3</span>
+      </div>
+
+      <div class="topic-row" data-category="support">
+        <span class="topic"><a href="t/changes-to-pricing-structure-and-what-features-are-in-the-free-plan/403393">Changes to pricing structure and what features are in the free plan?</a></span>
+        <span class="category">Support</span>
+        <span class="post-count">2</span>
+      </div>
+
+      <div class="topic-row" data-category="uncategorized">
+        <span class="topic"><a href="t/new-post-reply-count-position-for-sites-using-reactions/403390">New post reply count position for sites using Reactions</a></span>
+        <span class="category"></span>
+        <span class="post-count">1</span>
+      </div>
+
+      <div class="topic-row" data-category="support">
+        <span class="topic"><a href="t/email-with-update-available-has-invalid-link-to-release-notes/403389">Email with update available has invalid link to release notes</a></span>
+        <span class="category">Support</span>
+        <span class="post-count">1</span>
+      </div>
+
+      <div class="topic-row" data-category="uncategorized">
+        <span class="topic"><a href="t/phpbb-to-discourse-migration-speed-optimization/403319">PHPBB to Discourse Migration Speed Optimization</a></span>
+        <span class="category"></span>
+        <span class="post-count">9</span>
+      </div>
+
+
+      </div>
+      <nav class="pagination-nav" aria-label="Topic pages"><span class="pagination-link current" aria-current="page">1</span><a class="pagination-link" href="page-2.html">2</a><a class="pagination-link" href="page-3.html">3</a><a class="pagination-link" href="page-4.html">4</a></nav>
+      <footer class="archive-footer">
+        <a href="https://discourse.org">Discourse</a> forum -- Archived by <a href="https://github.com/mcmcclur/ArchiveDiscourse">Archive Discourse</a>
+      </footer>
+    </div>
+  </body>
+</html>

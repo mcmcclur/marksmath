@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width">
+    <title>What are some common breaking points as communities grow?</title>
+    <link rel="stylesheet" href="../../../archived.css" />
+    <script>
+      function findSageCodeBlocks() {
+        return Array.prototype.slice.call(
+          document.querySelectorAll(
+            "pre[data-code-wrap='sage'] > code, pre > code.lang-sage, pre > code.language-sage, pre > code.sage"
+          )
+        );
+      }
+
+      function loadScript(src) {
+        return new Promise(function (resolve, reject) {
+          var existing = document.querySelector("script[src='" + src + "']");
+          if (existing) {
+            if (existing.dataset.loaded === "true") {
+              resolve();
+              return;
+            }
+            existing.addEventListener("load", resolve, { once: true });
+            existing.addEventListener("error", reject, { once: true });
+            return;
+          }
+
+          var script = document.createElement("script");
+          script.src = src;
+          script.async = true;
+          script.addEventListener("load", function () {
+            script.dataset.loaded = "true";
+            resolve();
+          }, { once: true });
+          script.addEventListener("error", reject, { once: true });
+          document.head.appendChild(script);
+        });
+      }
+
+      function prepareSageCells() {
+        var sageBlocks = findSageCodeBlocks();
+        if (!sageBlocks.length) {
+          return Promise.resolve();
+        }
+
+        return loadScript("https://sagecell.sagemath.org/static/embedded_sagecell.js")
+          .then(function () {
+            if (!window.sagecell || !window.sagecell.makeSagecell) {
+              return;
+            }
+
+            sageBlocks.forEach(function (codeTag, index) {
+              var preTag = codeTag.parentElement;
+              if (!preTag || preTag.dataset.sageMounted === "true") {
+                return;
+              }
+
+              var host = document.createElement("div");
+              host.className = "sagecell-archive";
+
+              var source = document.createElement("script");
+              source.type = "text/x-sage";
+              source.text = codeTag.textContent || "";
+              host.appendChild(source);
+
+              preTag.insertAdjacentElement("afterend", host);
+              preTag.classList.add("sage-source-hidden");
+              preTag.dataset.sageMounted = "true";
+
+              window.sagecell.makeSagecell({
+                inputLocation: host,
+                autoeval: false,
+                evalButtonText: "Run",
+                languages: ["sage"]
+              });
+            });
+          })
+          .catch(function () {
+            // Leave the original code blocks visible if SageCell cannot load.
+          });
+      }
+
+      function preprocessDiscourseMath() {
+        document.querySelectorAll("span.math, div.math").forEach(function (node) {
+          var tex = node.textContent || "";
+          if (!tex.trim()) {
+            return;
+          }
+          if (node.tagName === "SPAN") {
+            node.textContent = "\\(" + tex + "\\)";
+          } else {
+            node.textContent = "\\[" + tex + "\\]";
+          }
+          node.classList.remove("math");
+        });
+      }
+
+      window.MathJax = {
+        tex: {
+          inlineMath: [["\\(", "\\)"]],
+          displayMath: [["\\[", "\\]"]]
+        },
+        startup: {
+          pageReady() {
+            preprocessDiscourseMath();
+            return MathJax.startup.defaultPageReady().then(function () {
+              return prepareSageCells();
+            });
+          }
+        }
+      };
+    </script>
+    <script async id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="title-span">
+        <a href="../../../">
+          <img src="../../../images/ad2526334012b2ad0c3421f9b6dd94bae2ede52f.svg" height="40" alt="Site Logo" id="site-logo" />
+        </a>
+      </div>
+    </header>
+
+    <div class="main">
+    <div class="archive-span"><a href='https://meta.discourse.org/'>Discourse Meta</a> archived in May, 2026</div>
+    <h1 class="topic-title">What are some common breaking points as communities grow?</h1>
+            <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/86627_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">HAWK</div>
+          <div class="post_content">
+<p>Continuing the discussion from <a href="https://meta.discourse.org/t/what-does-enterprise-ready-look-like-in-your-view-hot-takes-welcome/401413">What does "Enterprise-Ready" look like in your view? (Hot takes welcome!)</a> and <a href="https://meta.discourse.org/t/what-are-some-signals-that-a-community-is-moving-beyond-early-stage/402715/1">Signals a community is moving beyond early stage</a>:</p>
+<p>Unmanaged growth creates a paradox which begins if the supporting frameworks and processes can’t keep up with the rate of growth – i.e. the community’s social complexity exceeds its operational structure.</p>
+<p>This can manifest in things such as:</p>
+<ul>
+<li><strong>moderation gaps</strong>
+<ul>
+<li>More flags mean more frequent edge cases to existing guidelines arise.</li>
+<li>Reactive moderation via informal processes rather than explicit policies can lead to inconsistencies in how cases are handled, compounding to break down trust.</li>
+<li>Sometimes exceptions become precedents without anyone deciding they should, creating more downstream friction.</li>
+</ul>
+</li>
+<li><strong>cultural drift</strong>
+<ul>
+<li>Power users shaping the culture is often positive in the early stages but may become a governance problem if not managed at scale.</li>
+<li>In large communities, greater levels of anonymity and lack of context reduce accountability, allowing new behavioural patterns to emerge.</li>
+<li>Even if the moderation function scales with the community, the ratio of original moderators and power users to new members becomes so diluted that cultural norms are lost.</li>
+</ul>
+</li>
+<li><strong>reporting complexity</strong>
+<ul>
+<li>Early stage success is often anecdotal but at Enterprise level they need to provide evidence of value.</li>
+<li>Business cases become more difficult to build if the right metrics weren’t defined and tracked from the start.</li>
+</ul>
+</li>
+<li><strong>buried knowledge</strong>
+<ul>
+<li>Without a scaling taxonomy, the paradox of choice creates friction around where to post.</li>
+<li>As the information architecture weakens, search results become noisy and the problem grows as people give up searching in favour of asking the question again.</li>
+</ul>
+</li>
+<li><strong>internal ownership fractures</strong>
+<ul>
+<li>Without a clear owner for cross-functional decisions, multiple teams wanting different things from the community can create pressure.</li>
+</ul>
+</li>
+</ul>
+<p>Has anyone experienced any of these situations in their community? How have you tried to solve it?</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 12">❤️ 12</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/313494_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">NateDhaliwal</div>
+          <div class="post_content">
+<aside class="quote group-team" data-post="1" data-topic="402716" data-username="HAWK">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/86627_2.png" width="24"/> HAWK:</div>
+<blockquote>
+<p><strong>moderation gaps</strong></p>
+</blockquote>
+</aside>
+<p>When inconsistencies arise in moderation, or when flags go ignored, I would usually have a discussion with my moderation team: where do they need more manpower? How are they coping? I would then promote active, reliable users to TL4 or category moderators on a probationary basis to assist with such matters.</p>
+<aside class="quote group-team" data-post="1" data-topic="402716" data-username="HAWK">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/86627_2.png" width="24"/> HAWK:</div>
+<blockquote>
+<p><strong>buried knowledge</strong></p>
+<ul>
+<li>Without a scaling taxonomy, the paradox of choice creates friction around where to post.</li>
+<li>As the information architecture weakens, search results become noisy and the problem grows as people give up searching in favour of asking the question again.</li>
+</ul>
+</blockquote>
+</aside>
+<p>Related Topics by <a class="hashtag-cooked" data-icon="tag" data-id="543" data-slug="ai" data-style-type="icon" data-type="tag" href="/tag/ai/543"><span class="hashtag-icon-placeholder"><svg class="fa d-icon d-icon-square-full svg-icon svg-node"><use href="#square-full"></use></svg></span><span>ai</span></a> is really helpful in this case, since it provides relevant topics which sometimes contain the answer. One of the downsides when there are too many related topics, then the suggested ones are simply echoes of the current topic.</p>
+<p>I would bump really old topics that contain useful answers, and prune the duplicates (by merging or deleting them).</p>
+<hr/>
+<p>I’d be interested to hear what other people do.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 5">❤️ 5</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/549896_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">darkpixlz</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="2" data-topic="402716" data-username="NateDhaliwal">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/313494_2.png" width="24"/> NateDhaliwal:</div>
+<blockquote>
+<p>Related Topics by <a class="hashtag-cooked" data-icon="tag" data-id="543" data-ref="ai::tag" data-slug="ai" data-style-type="icon" data-type="tag" href="/tag/ai/543"><span class="hashtag-icon-placeholder"><svg class="fa d-icon d-icon-square-full svg-icon svg-node"><use href="#square-full"></use></svg></span><span>ai</span></a> is really helpful in this case, since it provides relevant topics which sometimes contain the answer.</p>
+</blockquote>
+</aside>
+<p>As somebody who is largely anti-genAI I do have to agree here, somehow the whole related topics thing has been my favorite AI bubble era addition to basically any software. It’s shockingly accurate in helping me find when a problem I’m having has already been solved where “similar topics” previously failed.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/370902_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">putty</div>
+          <div class="post_content">
+<p>For better or worse, we haven’t encountered any of these yet. Our userbase is large but relatively quiet (<img alt=":melting_face:" class="emoji" height="20" loading="lazy" src="../../../images/melting_face.png" title=":melting_face:" width="20"/>).</p>
+<p>The one pain point we’ve felt as the community has grown is scope creep for categories and groups.</p>
+<ul>
+<li>For categories, making minor exceptions to accommodate a type of content that doesn’t have the volume to justify a full category. It’s either shoehorn it into somewhere existing or create a new category that will rarely have new topics.</li>
+<li>For (internal) groups, the proper person may be out of the office, so their substitute needs to be added, but they were never removed.</li>
+</ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/86627_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">HAWK</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="2" data-topic="402716" data-username="NateDhaliwal">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/313494_2.png" width="24"/> NateDhaliwal:</div>
+<blockquote>
+<p>When inconsistencies arise in moderation, or when flags go ignored, I would usually have a discussion with my moderation team: where do they need more manpower? How are they coping?</p>
+</blockquote>
+</aside>
+<p>Yeah, nice. The gaps I was referring to are generally more around inconsistencies in how flags are handled or how decisions are made. If those things aren’t properly ironed out and documented, adding additional mods can exacerbate the problem. How do you ensure that everyone is on the same page?</p>
+<aside class="quote no-group" data-post="4" data-topic="402716" data-username="putty">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/370902_2.png" width="24"/> putty:</div>
+<blockquote>
+<p>For categories, making minor exceptions to accommodate a type of content that doesn’t have the volume to justify a full category. It’s either shoehorn it into somewhere existing or create a new category that will rarely have new topics.</p>
+</blockquote>
+</aside>
+<p>Yeah, this is something I’ve struggled with in the past as well. The best workaround I have  found is a [temporary] tag. When there are enough instances of the tag it’s easy to move them to a new sub-cat.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/527285_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">jpishgar</div>
+          <div class="post_content">
+<p>In my world, <em>size</em> has been the largest break-point for communities.</p>
+<p>It’s an interesting effect that occurs when a community, especially one predicated around B2C / enthusiast-level interest, achieves a size so large that it begins to display a series of the maladies you’ve laid out, all compounding. Cultural drift is probably the most apparent of them, where the original intent of the community’s formation has been abandoned or overshadowed by shifting motivations of the userbase, or natural attrition.</p>
+<p>The one that always creeps up on me is the structural content taxonomy break point - what you have referred to as buried knowledge in the scaling taxonomy that generates too much noise. In my mental model of a community as a bonzai tree (or fruit tree, depending on the analogy), a discussion category (branch) can grow so large and active that it starts becoming a disservice to the core users who previously sustained it. The utility declines as activity spikes, and if the community manager isn’t careful, it’ll collapse from content value dilution.</p>
+<p>The trick here is to be able to organically identify when a category should be allowed to split without shattering it’s core users. That tends to require a lot of hands-on attention.</p>
+<p>I’ve seen communities wither because their primary set of load-bearing categories grew too big to be of any use, or what started out as a more casual “General Discussion” area metastasized and the content stopped being surfaceable.</p>
+<p>The fix here is a little more art than science, but I like to keep an eye on how an “active” category is assessed. Classically, I’ve taken Reddit’s old definition, which is 5 or more posts per day counts as “Active”, which is where I know I’ve achieved enough of a self-sustaining core. For what constitutes “too active”, my lower threshold would be that same 5 but to the 3rd power for a medium sized community (so ~125 posts per day). I say to the third power here, because the model here is a series of ever-increasing donut-shapes, and what the human mind can conceivably interact with from memory for actors in our orbit.</p>
+<p>One major item I’ve also seen is a break-point within an enterprise community that is knowledge-based, where the dreaded Overmoderation begins to take its toll. Having too many moderators, or moderation that is too insistent, hyper-strict, or scolding can have a suppressive effect on assimilation by new users, leading to a deeply stagnant pool of “graybeards”. Power-tripping moderation, or an over-effort to tone-police beyond civility and into dogmatic strictures can stifle a community’s vibrancy, stunt its culture, and ultimately reduce or fully eliminate its utility.</p>
+<p>For communities of significant scale, it’s important to be transparency about moderation, to insist that moderation happen with grace and from a rehabilitative perspective rather than a punitive one, and that moderation remains a civic engagement for the community rather than one of prestige or entitlement.</p>
+<p>On moderation gaps, my rule of thumb is to try to have 20% more moderators than I need, but make sure that they know they are empowered to identify additional potential moderators.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span><span class="engagement-pill reaction-pill" title="chefs kiss: 1">:chefs_kiss: 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/509515_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">ice.d</div>
+          <div class="post_content">
+<aside class="quote group-team" data-post="1" data-topic="402716" data-username="HAWK">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/86627_2.png" width="24"/> HAWK:</div>
+<blockquote>
+<p>moderation gaps</p>
+</blockquote>
+</aside>
+<p>This is a mini-challenge for me.</p>
+<p>As leader of the Mod-admin team forum not owner but leader of making sure our staff do what’s right and to make sure we have the right amount of staff on our forum, Sometimes I feel like as one of the more active staff members i feel like i  carry a mini-burden. Many times i consider talking to a user who gets semi-active into possibly giving them moderator to help take my burden off a little like dealing with user-based infractions like spamming harrasment but then they go-away for sometime. Sometimes i ask my self…</p>
+<blockquote>
+<p>Does the fact that our forum’s owner/creator continue to go offline for sometime and not interact among the community lower people’s wanting to post and contribute to a forum that’s really small?</p>
+</blockquote>
+<p>Here’s why,</p>
+<p>Last year i joined and the forum was moderately active then summer hit and it plummeted the DAU/MAU was Horrible and so was the Stickiness of the forum. then this year it failed a lot to regian speed and the owner rarley was active then recently the forum was down a lot and i got a lot of messages from users on other websites asking why the forum was down so i had to explain the reason (something with the forum’s server according to the email i got from owner) and finally when it came back a few users started posting in the chat and being semi-active but thats when i got sad i knew my burden is harder again if we keep it up as active because our three other admins werent super acrtive but i knew it was good but now it’s dead again and my question lingers in my mind</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/283882_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">ted</div>
+          <div class="post_content">
+<aside class="quote group-team" data-post="1" data-topic="402716" data-username="HAWK">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/86627_2.png" width="24"/> HAWK:</div>
+<blockquote>
+<p>Reactive moderation via informal processes rather than explicit policies can lead to inconsistencies in how cases are handled, compounding to break down trust.</p>
+</blockquote>
+</aside>
+<p>This is an interesting one. There has been a lot of discussions around this on certain creator platforms, where moderation is applied (predictably) arbitrarily. In several cases the platform itself doesn’t disclose its decisions. But assuming one <em>wanted</em> a transparent, fair, consistent moderation effort, how would this system be designed at scale? Appeal systems? Internal auditing? Pattern recognition to catch rogue moderators?</p>
+<hr/>
+<p>The rest of the points, apart from moderation gaps, sounds like the same exact problems many organizations experience internally as they grow. <img alt=":slightly_smiling_face:" class="emoji" height="20" loading="lazy" src="../../../images/slightly_smiling_face.png" title=":slightly_smiling_face:" width="20"/></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/86627_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">HAWK</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="8" data-topic="402716" data-username="ted">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/283882_2.png" width="24"/> ted:</div>
+<blockquote>
+<p>But assuming one <em>wanted</em> a transparent, fair, consistent moderation effort, how would this system be designed at scale? Appeal systems? Internal auditing? Pattern recognition to catch rogue moderators?</p>
+</blockquote>
+</aside>
+<p>Hey Ted, good to see you. <img alt=":slight_smile:" class="emoji" height="20" loading="lazy" src="../../../images/slight_smile.png" title=":slight_smile:" width="20"/></p>
+<p>In my experience it is more about getting the right people, making sure you trust them, communicating regularly, documenting processes (including exceptions) and having clear appeal paths.</p>
+<p>From <a class="inline-onebox" href="https://blog.discourse.org/2025/11/the-community-lifecycle-from-launch-to-legacy/">The Community Lifecycle: From Launch to Legacy</a></p>
+<blockquote>
+<p>The team [of 55 volunteer moderators] was already operating as a well oiled machine. Governance was distributed amongst Team Leaders, Advisors and Mentors assigned to different sub-forums; <strong>all following centralised processes which were well documented and regularly reassessed</strong>.</p>
+</blockquote>
+<p>Curious to hear other opinions, if anyone has relevant experience.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span><span class="engagement-pill reaction-pill" title="hugs: 1">🤗 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/380186_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">sps</div>
+          <div class="post_content">
+<p>This scenario felt familiar, almost like crossing items off of my bingo card of community building.</p>
+<p>It’s encouraging to see that we have understanding and supportive team members, alongside very helpful Discourse staff, proactively addressing challenges as they emerge.</p>
+<p>In my view, having power users influence community behavior isn’t inherently problematic, provided their actions remain consistently aligned with our established guidelines.</p>
+<p>My primary curiosity is around sustainably retaining experienced and positive power users over time. As communities scale and evolve, these individuals become instrumental in transferring our cultural norms and best practices to new generations of active members, ensuring long-term community health.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/86627_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">HAWK</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="13" data-topic="402716" data-username="sps">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/380186_2.png" width="24"/> sps:</div>
+<blockquote>
+<p>In my view, having power users influence community behavior isn’t inherently problematic, provided their actions remain consistently aligned with our established guidelines.</p>
+</blockquote>
+</aside>
+<p>I completely agree <span class="mention">@sps</span>, in most cases it is incredibly beneficial to nurture power users for  exactly that reason.</p>
+<aside class="quote no-group" data-post="13" data-topic="402716" data-username="sps">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/380186_2.png" width="24"/> sps:</div>
+<blockquote>
+<p>My primary curiosity is around sustainably retaining experienced and positive power users over time.</p>
+</blockquote>
+</aside>
+<p>Well you’re in luck! I did some research into exactly that a few years back. See <a class="inline-onebox" href="https://www.feverbee.com/superuser/motivations/">Motivations - Building Successful Superuser Programs</a></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/500583_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">pacharanero</div>
+          <div class="post_content">
+<p>The very much ‘partial’ implementation of calendaring/calendar integration (and also video conferencing integration) is a definite pain point for Enterprise use of Discourse.</p>
+<p>When trying to get inherently Microsoft-centric workplaces to adopt Discourse more deeply, it can be frankly embarrassing to have to admit at the end of a topic <em>entirely conducted in Discourse</em>, which might have even included neat features like a Discourse poll for the date/time, that we then have to drop a Teams/Outlook link for the calendaring bit. Most teams are not (especially initially) willing to fully adopt an in-Discourse calendar, which requires extreme Discourse buy-in from the participants.</p>
+<aside class="quote quote-modified" data-post="6" data-topic="399329">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/500583_2.png" width="24"/>
+<div class="quote-title__text-content">
+<a href="https://meta.discourse.org/t/add-to-calendar-ics-ical-attachments-for-events-in-discourse-notification-emails/399329/6">"Add To Calendar" - .ics iCal attachments for Events in Discourse notification emails?</a> <a class="badge-category__wrapper" href="/c/contribute/feature/2"><span class="badge-category --style-square --has-parent" data-category-id="2" data-drop-close="true" data-parent-category-id="208" style="--category-badge-color: #0E76BD; --category-badge-text-color: #FFFFFF; --parent-category-badge-color: #0088CC;" title="Discussion about existing Discourse features, how they can be improved or enhanced, and how proposed new features could work."><span class="badge-category__name">Feature</span></span></a>
+</div>
+</div>
+<blockquote>
+    This is a helpful addition and would work for some use-cases. For me, as a person using multiple Discourses and therefore heavily invested in Discourses, I could subscribe to their calendars and have a single up-to-date place where it’s all together. 
+However, the use-case that prompted the OP feature request was a conversation that initially took place completely on <a href="http://openhealthhub.org">openhealthhub.org</a> via Private Message wherein I arranged a date and time to meet by video call with some potential Wiki contribut…
+  </blockquote>
+</aside>
+
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/86627_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">HAWK</div>
+          <div class="post_content">
+<aside class="quote group-VolunteerMods" data-post="15" data-topic="402716" data-username="pacharanero">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/500583_2.png" width="24"/> pacharanero:</div>
+<blockquote>
+<p>The very much ‘partial’ implementation of calendaring/calendar integration (and also video conferencing integration) is a definite pain point for Enterprise use of Discourse.</p>
+</blockquote>
+</aside>
+<p>You’re in luck too! Calendar/events is under active development and video conferencing is on the roadmap. We’re aware of the gaps.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+
+    </div>
+  </body>
+</html>

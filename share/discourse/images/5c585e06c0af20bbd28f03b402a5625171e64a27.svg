@@ -1,0 +1,88 @@
+<?xml version="1.0"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%" height="100%">
+    <defs>
+        <style>
+            .bubble-wrap {
+                animation: pulse 1.2s infinite ease-in-out;
+                transform-origin: 0px 0px;
+            }
+            /* Animation delays to create a clockwise cascading wave */
+            .d1 { animation-delay: 0s; }
+            .d2 { animation-delay: -1.05s; }
+            .d3 { animation-delay: -0.90s; }
+            .d4 { animation-delay: -0.75s; }
+            .d5 { animation-delay: -0.60s; }
+            .d6 { animation-delay: -0.45s; }
+            .d7 { animation-delay: -0.30s; }
+            .d8 { animation-delay: -0.15s; }
+
+            @keyframes pulse {
+                0%, 100% {
+                    transform: scale(0.35);
+                    opacity: 0.15;
+                }
+                50% {
+                    transform: scale(1.1);
+                    opacity: 1;
+                }
+            }
+        </style>
+        
+        <!-- Reusable Speech Bubble Path (Centered at 0,0) -->
+        <g id="bubble">
+            <!-- 
+                Main chat bubble shape with perfectly rounded corners 
+                and a distinct left-leaning tail.
+            -->
+            <path fill="currentColor" d="M -16 -8                       C -16 -12.4 -12.4 -16 -8 -16                       L 8 -16                       C 12.4 -16 16 -12.4 16 -8                       L 16 8                       C 16 12.4 12.4 16 8 16                       L 2 16                       L -6 24                       L -3 16                       L -8 16                       C -12.4 16 -16 12.4 -16 8                       Z"/>
+            
+            <!-- Typical forum/chat ellipsis dots inside the bubble -->
+            <circle cx="-7" cy="0" r="2" fill="#FFFFFF"/>
+            <circle cx="0" cy="0" r="2" fill="#FFFFFF"/>
+            <circle cx="7" cy="0" r="2" fill="#FFFFFF"/>
+        </g>
+    </defs>
+
+    <!-- Circular Loading Spinner Arrangement -->
+    
+    <!-- Top (Red) -->
+    <g transform="translate(100, 40)">
+        <g class="bubble-wrap d1"><use href="#bubble" style="color: #FF3B30;"/></g>
+    </g>
+    
+    <!-- Top-Right (Orange) -->
+    <g transform="translate(142.43, 57.57)">
+        <g class="bubble-wrap d2"><use href="#bubble" style="color: #FF9500;"/></g>
+    </g>
+    
+    <!-- Right (Amber/Yellow) -->
+    <g transform="translate(160, 100)">
+        <g class="bubble-wrap d3"><use href="#bubble" style="color: #FFC107;"/></g>
+    </g>
+    
+    <!-- Bottom-Right (Green) -->
+    <g transform="translate(142.43, 142.43)">
+        <g class="bubble-wrap d4"><use href="#bubble" style="color: #34C759;"/></g>
+    </g>
+    
+    <!-- Bottom (Light Blue) -->
+    <g transform="translate(100, 160)">
+        <g class="bubble-wrap d5"><use href="#bubble" style="color: #32ADE6;"/></g>
+    </g>
+    
+    <!-- Bottom-Left (Blue) -->
+    <g transform="translate(57.57, 142.43)">
+        <g class="bubble-wrap d6"><use href="#bubble" style="color: #007AFF;"/></g>
+    </g>
+    
+    <!-- Left (Purple) -->
+    <g transform="translate(40, 100)">
+        <g class="bubble-wrap d7"><use href="#bubble" style="color: #AF52DE;"/></g>
+    </g>
+    
+    <!-- Top-Left (Pink) -->
+    <g transform="translate(57.57, 57.57)">
+        <g class="bubble-wrap d8"><use href="#bubble" style="color: #FF2D55;"/></g>
+    </g>
+    
+</svg>

@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width">
+    <title>Monthly triggered recurring automation is not running as expected</title>
+    <link rel="stylesheet" href="../../../archived.css" />
+    <script>
+      function findSageCodeBlocks() {
+        return Array.prototype.slice.call(
+          document.querySelectorAll(
+            "pre[data-code-wrap='sage'] > code, pre > code.lang-sage, pre > code.language-sage, pre > code.sage"
+          )
+        );
+      }
+
+      function loadScript(src) {
+        return new Promise(function (resolve, reject) {
+          var existing = document.querySelector("script[src='" + src + "']");
+          if (existing) {
+            if (existing.dataset.loaded === "true") {
+              resolve();
+              return;
+            }
+            existing.addEventListener("load", resolve, { once: true });
+            existing.addEventListener("error", reject, { once: true });
+            return;
+          }
+
+          var script = document.createElement("script");
+          script.src = src;
+          script.async = true;
+          script.addEventListener("load", function () {
+            script.dataset.loaded = "true";
+            resolve();
+          }, { once: true });
+          script.addEventListener("error", reject, { once: true });
+          document.head.appendChild(script);
+        });
+      }
+
+      function prepareSageCells() {
+        var sageBlocks = findSageCodeBlocks();
+        if (!sageBlocks.length) {
+          return Promise.resolve();
+        }
+
+        return loadScript("https://sagecell.sagemath.org/static/embedded_sagecell.js")
+          .then(function () {
+            if (!window.sagecell || !window.sagecell.makeSagecell) {
+              return;
+            }
+
+            sageBlocks.forEach(function (codeTag, index) {
+              var preTag = codeTag.parentElement;
+              if (!preTag || preTag.dataset.sageMounted === "true") {
+                return;
+              }
+
+              var host = document.createElement("div");
+              host.className = "sagecell-archive";
+
+              var source = document.createElement("script");
+              source.type = "text/x-sage";
+              source.text = codeTag.textContent || "";
+              host.appendChild(source);
+
+              preTag.insertAdjacentElement("afterend", host);
+              preTag.classList.add("sage-source-hidden");
+              preTag.dataset.sageMounted = "true";
+
+              window.sagecell.makeSagecell({
+                inputLocation: host,
+                autoeval: false,
+                evalButtonText: "Run",
+                languages: ["sage"]
+              });
+            });
+          })
+          .catch(function () {
+            // Leave the original code blocks visible if SageCell cannot load.
+          });
+      }
+
+      function preprocessDiscourseMath() {
+        document.querySelectorAll("span.math, div.math").forEach(function (node) {
+          var tex = node.textContent || "";
+          if (!tex.trim()) {
+            return;
+          }
+          if (node.tagName === "SPAN") {
+            node.textContent = "\\(" + tex + "\\)";
+          } else {
+            node.textContent = "\\[" + tex + "\\]";
+          }
+          node.classList.remove("math");
+        });
+      }
+
+      window.MathJax = {
+        tex: {
+          inlineMath: [["\\(", "\\)"]],
+          displayMath: [["\\[", "\\]"]]
+        },
+        startup: {
+          pageReady() {
+            preprocessDiscourseMath();
+            return MathJax.startup.defaultPageReady().then(function () {
+              return prepareSageCells();
+            });
+          }
+        }
+      };
+    </script>
+    <script async id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="title-span">
+        <a href="../../../">
+          <img src="../../../images/ad2526334012b2ad0c3421f9b6dd94bae2ede52f.svg" height="40" alt="Site Logo" id="site-logo" />
+        </a>
+      </div>
+    </header>
+
+    <div class="main">
+    <div class="archive-span"><a href='https://meta.discourse.org/'>Discourse Meta</a> archived in May, 2026</div>
+    <h1 class="topic-title">Monthly triggered recurring automation is not running as expected</h1>
+            <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/220910_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">gassim</div>
+          <div class="post_content">
+<p>Hi there!</p>
+<p>I’ve been facing an issue with an automation that is supposed to trigger at the start of the month; however, even though it is enabled it’s not automatically being triggered. I can’t find any logs or a way to debug why it’s not running on its own when it’s expected to do so. Does anyone of you know how I could resolve this issue please?</p>
+<p>As you can see below the automation is expected to ‘Schedule a PM with <a href="https://meta.discourse.org/t/32566?silent=true">Data Explorer</a> results’ automatically every month. If I click “trigger now” it will work as expected: the users added to the list will receive the <a href="https://meta.discourse.org/t/32566?silent=true">Data Explorer</a> result as well as a CSV; however, the automatic trigger is not runninng.<br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/kclXgHsU9WJbqG3gJFnwXprpYnd.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/8/d/9/8d90fc99f78d4833a8f9a6e7084cda3498c02717.png" rel="noopener nofollow ugc" title="Screenshot of the automation"><img alt="Screenshot of the automation" data-base62-sha1="kclXgHsU9WJbqG3gJFnwXprpYnd" data-dominant-color="F5F8FA" height="500" src="../../../images/8d90fc99f78d4833a8f9a6e7084cda3498c02717_2_253x500.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/8/d/9/8d90fc99f78d4833a8f9a6e7084cda3498c02717_2_253x500.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/8/d/9/8d90fc99f78d4833a8f9a6e7084cda3498c02717_2_379x750.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/8/d/9/8d90fc99f78d4833a8f9a6e7084cda3498c02717_2_506x1000.png 2x" width="253"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot of the automation</span><span class="informations">622×1229 27.7 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>I’d appreciate any feedback or suggestions that you can help me resolve this. Thank you!</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/553988_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">kairo162</div>
+          <div class="post_content">
+<p>Did you confirm the exact scheduled date and the time zone setting, and, if available, did you turn on the Run Missed Jobs button?</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/370902_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">putty</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="1" data-topic="402664" data-username="gassim">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/220910_2.png" width="24"/> gassim:</div>
+<blockquote>
+<p>I’d appreciate any feedback or suggestions that you can help me resolve this.</p>
+</blockquote>
+</aside>
+<p>Have you done any tests to ensure all the criteria are being met naturally (besides <em>trigger now</em>)? I.e., set the timing to occur daily and go to a dummy group. If it works correctly, then shift to monthly to your actual group.</p>
+<p>Also, I <em>believe</em> your target audience needs to have the <a href="https://meta.discourse.org/t/32566?silent=true">data explorer</a> query shared to them:</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/8UTNTfJ7SLv3Ngb8LPUTXICKuXQ.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/3/e/7/3e7ffb8de6e464a009b9787d7ea50a7c856ec7a6.png" title="CleanShot 2026-05-11 at 12.06.40"><img alt="CleanShot 2026-05-11 at 12.06.40" data-base62-sha1="8UTNTfJ7SLv3Ngb8LPUTXICKuXQ" data-dominant-color="8E8D8A" height="200" src="../../../images/3e7ffb8de6e464a009b9787d7ea50a7c856ec7a6.png" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">CleanShot 2026-05-11 at 12.06.40</span><span class="informations">831×241 12.3 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/220910_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">gassim</div>
+          <div class="post_content">
+<p>Hi</p>
+<p>Thanks for the help.. <span class="mention">@kairo162</span> <span class="mention">@putty</span></p>
+<aside class="quote no-group" data-post="2" data-topic="402664" data-username="kairo162">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/553988_2.png" width="24"/> kairo162:</div>
+<blockquote>
+<p>Did you confirm the exact scheduled date and the time zone setting,</p>
+</blockquote>
+</aside>
+<p>Yes.. but the issue is not that it’s not running at the scheduled date/time, the issue is that it’s not running at all.</p>
+<aside class="quote no-group" data-post="2" data-topic="402664" data-username="kairo162">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/553988_2.png" width="24"/> kairo162:</div>
+<blockquote>
+<p>did you turn on the Run Missed Jobs button?</p>
+</blockquote>
+</aside>
+<p>Where can I find this button please?</p>
+<aside class="quote no-group" data-post="3" data-topic="402664" data-username="putty">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/370902_2.png" width="24"/> putty:</div>
+<blockquote>
+<p>Have you done any tests to ensure all the criteria are being met naturally (besides <em>trigger now</em>)? I.e., set the timing to occur daily and go to a dummy group. If it works correctly, then shift to monthly to your actual group.</p>
+</blockquote>
+</aside>
+<p>It’s supposed to send a direct PM to two users. The users have the query shared shared to them. Thanks for the suggestion to test by trying different timing. I’ll try to experiment using a dummy group as well.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554653_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Moin</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="1" data-topic="402664" data-username="gassim">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/220910_2.png" width="24"/> gassim:</div>
+<blockquote>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/kclXgHsU9WJbqG3gJFnwXprpYnd.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/8/d/9/8d90fc99f78d4833a8f9a6e7084cda3498c02717.png" title="Screenshot of the automation"><img alt="Screenshot of the automation" data-base62-sha1="kclXgHsU9WJbqG3gJFnwXprpYnd" data-dominant-color="F5F8FA" height="500" src="../../../images/8d90fc99f78d4833a8f9a6e7084cda3498c02717_2_253x500.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/8/d/9/8d90fc99f78d4833a8f9a6e7084cda3498c02717_2_253x500.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/8/d/9/8d90fc99f78d4833a8f9a6e7084cda3498c02717_2_379x750.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/8/d/9/8d90fc99f78d4833a8f9a6e7084cda3498c02717_2_506x1000.png 2x" width="253"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot of the automation</span><span class="informations">622×1229 27.7 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+</blockquote>
+</aside>
+<p>The main difference I notice is that your interface doesn’t show when the automation is supposed to trigger next.</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/hBLsivtoLNOqXmmVBIFQ1Y6hL3Q.jpeg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/7/b/6/7b69d306b5922f42289642a3662e7fa05a068142.jpeg" title="Screenshot_20260511_184611_Firefox"><img alt="Screenshot_20260511_184611_Firefox" data-base62-sha1="hBLsivtoLNOqXmmVBIFQ1Y6hL3Q" data-dominant-color="F8F4F6" height="500" src="../../../images/7b69d306b5922f42289642a3662e7fa05a068142_2_493x500.jpeg" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/7/b/6/7b69d306b5922f42289642a3662e7fa05a068142_2_493x500.jpeg, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/7/b/6/7b69d306b5922f42289642a3662e7fa05a068142_2_739x750.jpeg 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/7/b/6/7b69d306b5922f42289642a3662e7fa05a068142_2_986x1000.jpeg 2x" width="493"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot_20260511_184611_Firefox</span><span class="informations">1059×1072 126 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>I think I would start by setting up a new automation with the same settings and checking whether that gets a ‘next trigger date’ after enabling it.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554803_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Lilly</div>
+          <div class="post_content">
+<p>i use this exact automation script in multiple places without issue.  here is what my config in one of them - i changed the recurrence to 5 minutes instead of a week for this test, but it fires weekly as expected when that is set):</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/13GqENV8wfFVby8810o31AQWQfK.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/0/7/6/076ccafa6286c49c13eda2b396f651eaf673a650.png" title="image"><img alt="image" data-base62-sha1="13GqENV8wfFVby8810o31AQWQfK" data-dominant-color="343544" height="500" src="../../../images/076ccafa6286c49c13eda2b396f651eaf673a650_2_371x500.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/0/7/6/076ccafa6286c49c13eda2b396f651eaf673a650_2_371x500.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/0/7/6/076ccafa6286c49c13eda2b396f651eaf673a650_2_556x750.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/0/7/6/076ccafa6286c49c13eda2b396f651eaf673a650_2_742x1000.png 2x" width="371"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">860×1159 60.1 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>PM (<code>tech-admin</code> is a group)</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/6tM3wQqwqRY5yTnMh5EUnMIyJDw.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/2/d/6/2d6aaf43c966b17af870f39d727c92d42bcb7ab6.png" title="image"><img alt="image" data-base62-sha1="6tM3wQqwqRY5yTnMh5EUnMIyJDw" data-dominant-color="373A46" height="294" src="../../../images/2d6aaf43c966b17af870f39d727c92d42bcb7ab6.png" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">741×316 24.2 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>try triggering the automation and then have a look at your logs at <code>yoursite/logs</code></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554803_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Lilly</div>
+          <div class="post_content">
+<p>i see this:</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/mbhXsvwA1G6YO1msaWcOsXjYvDq.jpeg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/9/b/7/9b7687e3ca1933851693791a459471a3fa9738f8.jpeg" title="Screenshot 2026-05-11 at 10.37.08 AM"><img alt="Screenshot 2026-05-11 at 10.37.08 AM" data-base62-sha1="mbhXsvwA1G6YO1msaWcOsXjYvDq" data-dominant-color="F3F4F6" height="500" src="../../../images/9b7687e3ca1933851693791a459471a3fa9738f8_2_400x500.jpeg" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/9/b/7/9b7687e3ca1933851693791a459471a3fa9738f8_2_400x500.jpeg, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/9/b/7/9b7687e3ca1933851693791a459471a3fa9738f8_2_600x750.jpeg 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/9/b/7/9b7687e3ca1933851693791a459471a3fa9738f8_2_800x1000.jpeg 2x" width="400"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2026-05-11 at 10.37.08 AM</span><span class="informations">1086×1356 140 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>maybe try removing that control knobs emoji from the script name and <a href="https://meta.discourse.org/t/32566?silent=true">data explorer</a> query title. that might be breaking the payload (although i think they should be ok).</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="eyes: 1">👀 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/220910_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">gassim</div>
+          <div class="post_content">
+<p>Hi <span class="mention">@Moin</span> <span class="mention">@Lilly</span></p>
+<p>Thanks for the help! I’m afraid the mystery is still not solved… here’s why:</p>
+<aside class="quote no-group" data-post="5" data-topic="402664" data-username="Moin">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/554653_2.png" width="24"/> Moin:</div>
+<blockquote>
+<p>I think I would start by setting up a new automation with the same settings and checking whether that gets a ‘next trigger date’ after enabling it.</p>
+</blockquote>
+</aside>
+<p>Before the ‘trigger date’ that’s exactly how it looked with the message ‘Next automation will trigger at: [date/time]’; however, after that date/time passed without it running successfully, it doesn’t show the message. While testing, I changed the timing to 1 minute and the trigger message reappeared. On a previous month when it didn’t trigger, I updated the timer and it showed the message that it will trigger on the first hour of the upcoming month (but it didn’t).<br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/sEcrs9CJU0rE0LJhVwgkLdpEHim.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/c/8/c/c8c835da2b2ffeae4ce933067fbb3026e747ca8e.png" rel="noopener nofollow ugc" title=""><img alt="" data-base62-sha1="sEcrs9CJU0rE0LJhVwgkLdpEHim" data-dominant-color="EFF5F8" height="500" role="presentation" src="../../../images/c8c835da2b2ffeae4ce933067fbb3026e747ca8e.png" width="440"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename"></span><span class="informations">540×613 15 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<aside class="quote no-group" data-post="6" data-topic="402664" data-username="Lilly">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/554803_2.png" width="24"/> Lilly:</div>
+<blockquote>
+<p>i use this exact automation script in multiple places without issue. here is what my config in one of them - i changed the recurrence to 5 minutes instead of a week for this test, but it fires weekly as expected when that is set):</p>
+</blockquote>
+</aside>
+<p>It actually worked and got triggered on some month while it didn’t on other months so it’s not clear why, but now it seems to no longer automatically activate ever. What is the version of the Discourse you’re using? Mine is 2026.5.0-latest…</p>
+<aside class="quote no-group" data-post="6" data-topic="402664" data-username="Lilly">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/554803_2.png" width="24"/> Lilly:</div>
+<blockquote>
+<p>try triggering the automation and then have a look at your logs at <code>yoursite/logs</code></p>
+</blockquote>
+</aside>
+<p>Unfortunately, even when I trigger, nothing appears in the /logs. (I’ve all options selected).</p>
+<aside class="quote no-group" data-post="7" data-topic="402664" data-username="Lilly">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/554803_2.png" width="24"/> Lilly:</div>
+<blockquote>
+<p>maybe try removing that control knobs emoji from the script name and <a href="https://meta.discourse.org/t/32566?silent=true">data explorer</a> query title. that might be breaking the payload (although i think they should be ok).</p>
+</blockquote>
+</aside>
+<p>I don’t think that’s the issue because I changed the trigger to 1 minute and it got sent:<br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/uOQ2ocN9YK9dJSmR6NQZoCcFRih.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/d/8/0/d8006c20e3c4b356c247cf6c2bdb4e6c4cb8c779.png" rel="noopener nofollow ugc" title=""><img alt="" data-base62-sha1="uOQ2ocN9YK9dJSmR6NQZoCcFRih" data-dominant-color="F6F6F6" height="240" role="presentation" src="../../../images/d8006c20e3c4b356c247cf6c2bdb4e6c4cb8c779_2_690x240.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/d/8/0/d8006c20e3c4b356c247cf6c2bdb4e6c4cb8c779_2_690x240.png, https://d11a6trkgmumsb.cloudfront.net/original/4X/d/8/0/d8006c20e3c4b356c247cf6c2bdb4e6c4cb8c779.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/d/8/0/d8006c20e3c4b356c247cf6c2bdb4e6c4cb8c779.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename"></span><span class="informations">848×295 18.3 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554803_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Lilly</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="8" data-topic="402664" data-username="gassim">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/220910_2.png" width="24"/> gassim:</div>
+<blockquote>
+<p>What is the version of the Discourse you’re using? Mine is 2026.5.0-latest…</p>
+</blockquote>
+</aside>
+<p>i’m on same and i update weekly at minimum</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/220910_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">gassim</div>
+          <div class="post_content">
+<p>Okay, thanks! Would you like to try to create a test automation that triggers monthly please?</p>
+<p>I have a feeling that the issue is with the ‘monthly’ trigger because when I change it to 1 minute trigger, it works.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554803_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Lilly</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="10" data-topic="402664" data-username="gassim">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/220910_2.png" width="24"/> gassim:</div>
+<blockquote>
+<p>Would you like to try to create a test automation that triggers monthly please?</p>
+</blockquote>
+</aside>
+<p>ok i set it to a month then triggered it and it worked. but waiting a month to test isn’t really useful here. i’ll try setting the start date in a few minutes.</p>
+<p>edit: monthly appears to be working for me</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/553988_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">kairo162</div>
+          <div class="post_content">
+<p>If it’s working for you, maybe the error is only on some users?</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554803_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Lilly</div>
+          <div class="post_content">
+<p>ok so Moin and i were chatting about this case today, and she brought up that perhaps there is a bug with using monthly because the length of a month varies?  of course she was right - sort of… <img alt=":stuck_out_tongue:" class="emoji" height="20" loading="lazy" src="../../../images/stuck_out_tongue.png" title=":stuck_out_tongue:" width="20"/></p>
+<p>anyways, i did a little more digging <img alt=":detective:" class="emoji" height="20" loading="lazy" src="../../../images/detective.png" title=":detective:" width="20"/></p>
+<p>i couldn’t actually find the automation script for the <code>schedule pm with data-explorer results</code> in core <code>plugins/automation/lib/discourse_automation/scripts</code> folder so it is hiding somewhere else.</p>
+<p>but i was looking at the logic here for recurring (presumably that script is using it) in <code>plugins/automation/lib/discourse_automation/triggers/recurring.rb</code>:</p>
+<aside class="onebox githubblob" data-onebox-src="https://github.com/discourse/discourse/blob/4c15bb09c420748db9404c3df6dd56fda4c4a118/plugins/automation/lib/discourse_automation/triggers/recurring.rb#L81-L90">
+<header class="source">
+<a href="https://github.com/discourse/discourse/blob/4c15bb09c420748db9404c3df6dd56fda4c4a118/plugins/automation/lib/discourse_automation/triggers/recurring.rb#L81-L90" rel="noopener" target="_blank">github.com/discourse/discourse</a>
+</header>
+<article class="onebox-body">
+<h4><a href="https://github.com/discourse/discourse/blob/4c15bb09c420748db9404c3df6dd56fda4c4a118/plugins/automation/lib/discourse_automation/triggers/recurring.rb#L81-L90" rel="noopener" target="_blank">plugins/automation/lib/discourse_automation/triggers/recurring.rb</a></h4>
+<div class="git-blob-info">
+<a href="https://github.com/discourse/discourse/blob/4c15bb09c420748db9404c3df6dd56fda4c4a118/plugins/automation/lib/discourse_automation/triggers/recurring.rb#L81-L90" rel="noopener"><code>4c15bb09c</code></a>
+</div>
+<pre class="onebox"><code class="lang-rb">
+      <ol class="start lines" start="81" style="counter-reset: li-counter 80 ;">
+          <li>when "month"</li>
+          <li>  count = 0</li>
+          <li>  (start_date.beginning_of_month.to_date..start_date.end_of_month.to_date).each do |date|</li>
+          <li>    count += 1 if date.strftime("%A") == start_date.strftime("%A")</li>
+          <li>    break if date.day == start_date.day</li>
+          <li>  end</li>
+          <li>  RRule::Rule</li>
+          <li>    .new("FREQ=MONTHLY;INTERVAL=#{interval};BYDAY=#{count}#{byday}", dtstart: start_date)</li>
+          <li>    .between(Time.now, interval_end.months.from_now)</li>
+          <li>    .find { |date| date &gt; Time.zone.now }</li>
+      </ol>
+    </code></pre>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+<p>i think the underlying code for monthly recurring automations is calculating the Nth weekday instead of the actual calendar date and there is a logic mismatch with <code>Calendar day</code> - that by injecting <code>BYDAY=#{count}#{byday}</code> into the RRule, the automation forces a day-of-week alignment, and that it should use <code>BYMONTHDAY</code> instead of <code>BYDAY</code>.</p>
+<p>so if you set an automation to start on April 15th (which happens to be the 3rd Wednesday of April) the system interpreted the rule as: <em>run on the 3rd Wednesday of every month</em>.</p>
+<p>when May rolls around, the 3rd Wednesday is <em>May 20th</em>, which causes the schedule to drift by 5 days.</p>
+<p>moreover, if you set an automation on the 30th or 31st of a month (e.g., the “5th Tuesday”), the system would look for the 5th Tuesday in the following month. if that month only had 4 Tuesdays, the automation would completely fail to find a valid date and <em>silently skip the entire month</em>.</p>
+<p>i have a tested fix and am making a PR if the team wants to check it out. it changes the logic from Nth Weekday to exact Calendar Date.</p>
+<hr/>
+<p>here are some screenshots from my testing and debugging:</p>
+<p>2 instances, one without a fix and the other with my logic fix</p>
+<p>create the exact same automation in both (fixed version is on the right):</p>
+<div class="d-image-grid">
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/lSAo0YVsSnmGiU8FnzPlIpS9ToO.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/9/9/5/99594dfedf94893e58126f7940ebf30d489ef056.png" title="Screenshot 2026-05-12 at 12.29.39 AM"><img alt="Screenshot 2026-05-12 at 12.29.39 AM" data-base62-sha1="lSAo0YVsSnmGiU8FnzPlIpS9ToO" data-dominant-color="EBE5E5" height="500" src="../../../images/99594dfedf94893e58126f7940ebf30d489ef056_2_380x500.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/9/9/5/99594dfedf94893e58126f7940ebf30d489ef056_2_380x500.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/9/9/5/99594dfedf94893e58126f7940ebf30d489ef056_2_570x750.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/9/9/5/99594dfedf94893e58126f7940ebf30d489ef056_2_760x1000.png 2x" width="380"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2026-05-12 at 12.29.39 AM</span><span class="informations">1094×1438 71.2 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/dBJxhT1a0JmjFMRSNAgmZIMHUye.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/5/f/6/5f603b864b2135abc1945994c121b0b234f1be92.png" title="Screenshot 2026-05-12 at 12.30.01 AM"><img alt="Screenshot 2026-05-12 at 12.30.01 AM" data-base62-sha1="dBJxhT1a0JmjFMRSNAgmZIMHUye" data-dominant-color="F2EFF4" height="500" src="../../../images/5f603b864b2135abc1945994c121b0b234f1be92_2_380x500.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/5/f/6/5f603b864b2135abc1945994c121b0b234f1be92_2_380x500.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/5/f/6/5f603b864b2135abc1945994c121b0b234f1be92_2_570x750.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/5/f/6/5f603b864b2135abc1945994c121b0b234f1be92_2_760x1000.png 2x" width="380"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2026-05-12 at 12.30.01 AM</span><span class="informations">1094×1438 66.3 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+</div>
+<p>check out the differences in the banners that say " Next automation will trigger at:" messages with 5 day drift - the unpatched version is drifting to the <em>third Wednesday</em> (May 20th), instead of May 15th.</p>
+<p>for example, months could get totally skipped if it was looking for the 4th Thursday instead of an actual date.</p>
+<p>can also test the same result in the rails console</p>
+<p>unpatched:<br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/zhtSobEOrqUoCJ85x9yahfmog3x.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/f/7/4/f745fc258acbdf7a1169ee6a68357c66369bef1b.png" title="Screenshot 2026-05-12 at 12.43.50 AM"><img alt="Screenshot 2026-05-12 at 12.43.50 AM" data-base62-sha1="zhtSobEOrqUoCJ85x9yahfmog3x" data-dominant-color="2E2A32" height="147" src="../../../images/f745fc258acbdf7a1169ee6a68357c66369bef1b_2_690x147.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/f/7/4/f745fc258acbdf7a1169ee6a68357c66369bef1b_2_690x147.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/f/7/4/f745fc258acbdf7a1169ee6a68357c66369bef1b_2_1035x220.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/f/7/4/f745fc258acbdf7a1169ee6a68357c66369bef1b_2_1380x294.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2026-05-12 at 12.43.50 AM</span><span class="informations">1534×328 150 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>with fix:<br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/1gB81BRF505p2vrZ5ee4NHzcByw.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/0/8/e/08e284434669b9b226387c1a3efc3858bee9a0a0.png" title="Screenshot 2026-05-12 at 12.43.20 AM"><img alt="Screenshot 2026-05-12 at 12.43.20 AM" data-base62-sha1="1gB81BRF505p2vrZ5ee4NHzcByw" data-dominant-color="2E2A32" height="141" src="../../../images/08e284434669b9b226387c1a3efc3858bee9a0a0_2_690x141.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/0/8/e/08e284434669b9b226387c1a3efc3858bee9a0a0_2_690x141.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/0/8/e/08e284434669b9b226387c1a3efc3858bee9a0a0_2_1035x211.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/0/8/e/08e284434669b9b226387c1a3efc3858bee9a0a0_2_1380x282.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2026-05-12 at 12.43.20 AM</span><span class="informations">1534×314 141 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>PR here:</p>
+<aside class="onebox githubpullrequest" data-onebox-src="https://github.com/discourse/discourse/pull/39917">
+<header class="source">
+<a href="https://github.com/discourse/discourse/pull/39917" rel="noopener" target="_blank">github.com/discourse/discourse</a>
+</header>
+<article class="onebox-body">
+<div class="github-row --gh-status-open" data-github-private-repo="false">
+<div class="github-icon-container" title="Open Pull Request">
+<svg aria-hidden="true" class="github-icon" height="60" viewbox="0 0 12 16" width="60"><path d="M11 11.28V5c-.03-.78-.34-1.47-.94-2.06C9.46 2.35 8.78 2.03 8 2H7V0L4 3l3 3V4h1c.27.02.48.11.69.31.21.2.3.42.31.69v6.28A1.993 1.993 0 0 0 10 15a1.993 1.993 0 0 0 1-3.72zm-1 2.92c-.66 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2zM4 3c0-1.11-.89-2-2-2a1.993 1.993 0 0 0-1 3.72v6.56A1.993 1.993 0 0 0 2 15a1.993 1.993 0 0 0 1-3.72V4.72c.59-.34 1-.98 1-1.72zm-.8 10c0 .66-.55 1.2-1.2 1.2-.65 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2zM2 4.2C1.34 4.2.8 3.65.8 3c0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2z" fill-rule="evenodd"></path></svg>
+</div>
+<div class="github-info-container">
+<h4>
+<a href="https://github.com/discourse/discourse/pull/39917" rel="noopener" target="_blank">FIX: Automation Plugin - Monthly recurring triggers shifting dates and skipping months (BYDAY to BYMONTHDAY) (#39917)</a>
+</h4>
+<div class="branches">
+<code>main</code> ← <code>Lillinator:automation-recurring-month-fix</code>
+</div>
+<div class="github-info">
+<div class="date">
+          opened <span class="discourse-local-date" data-date="2026-05-12" data-format="ll" data-time="07:59:34" data-timezone="UTC">07:59AM - 12 May 26 UTC</span>
+</div>
+<div class="user">
+<a href="https://github.com/Lillinator" rel="noopener" target="_blank">
+<img alt="" class="onebox-avatar-inline" data-dominant-color="74918A" height="20" src="../../../images/29eef1d16327b8db88058465f44a5ec6b3954c8e.jpeg" width="20"/>
+            Lillinator
+          </a>
+</div>
+<div class="lines" title="17 commits changed 2 files with 170 additions and 23 deletions">
+<a href="https://github.com/discourse/discourse/pull/39917/files" rel="noopener" target="_blank">
+<span class="added">+170</span>
+<span class="removed">-23</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+<div class="github-row">
+<p class="github-body-container">**Description:**
+
+**Context / Bug:**
+Currently, when an admin sets a monthly <span class="show-more-container"><a class="show-more" href="https://github.com/discourse/discourse/pull/39917" rel="noopener" target="_blank">…</a></span><span class="excerpt hidden">recurring automation, the script attempts to calculate the "Nth Weekday" (e.g., "The 3rd Tuesday") using `BYDAY` instead of the actual calendar date. This causes two major issues for administrators:
+1. **Shifting Dates:** Users expect a monthly report to run on the exact same calendar date (e.g., the 15th). Instead, the date shifts back and forth depending on when the "3rd Tuesday" or "2nd Friday" falls in the following month.
+2. **Silent Failures:** If an admin sets a start date on the 30th or 31st of a month (e.g., the 5th Tuesday), the automation generates a rule like `BYDAY=5TU`. Months that only have 4 Tuesdays will completely fail to find a valid execution date and silently skip the entire month.
+
+**Changes:**
+*   Replaced the `BYDAY` string calculation with `BYMONTHDAY=#{start_date.day}`. Monthly schedules will now reliably trigger on the exact calendar date matching user expectations.
+*   Removed the now-unused `count` while-loop that was calculating the weekday occurrence.
+*   *Minor cleanup:* Swapped `Time.now` for `Time.zone.now` in the RRule bounds check for standard Rails timezone consistency.
+
+**Test Updates:**
+*   Updated two existing assertions in `recurring_spec.rb`. The original tests were explicitly (and incorrectly) expecting the buggy Nth-weekday drift. I corrected the assertion dates to expect the proper exact calendar day.
+
+**Files Touched:**
+*   `plugins/discourse-automation/lib/discourse_automation/triggers/recurring.rb`
+*   `plugins/discourse-automation/spec/lib/discourse_automation/triggers/recurring_spec.rb`</span></p>
+</div>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+<p>edit: bug appears to be affecting any automation script using <code>recurring</code> trigger set to run every month. <img alt=":grimacing:" class="emoji" height="20" loading="lazy" src="../../../images/grimacing.png" title=":grimacing:" width="20"/></p>
+<p>i can repro the empty banner sometimes too, for example if one sets the start date for 2026 April 29th, then  it cannot find the the 5th Wednesday for May because it doesn’t exist - the automation will fail to trigger here: (unfixed is on left, fixed on right)</p>
+<div class="d-image-grid">
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/fBCOv99zuI0wwwnrrRsWaK4NXlX.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/6/d/6/6d61715c8c04d3a8a435c7f4b91a6d8770b47ab5.png" title="Screenshot 2026-05-12 at 7.31.48 AM"><img alt="Screenshot 2026-05-12 at 7.31.48 AM" data-base62-sha1="fBCOv99zuI0wwwnrrRsWaK4NXlX" data-dominant-color="EBE5E5" height="375" src="../../../images/6d61715c8c04d3a8a435c7f4b91a6d8770b47ab5_2_361x375.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/6/d/6/6d61715c8c04d3a8a435c7f4b91a6d8770b47ab5_2_361x375.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/6/d/6/6d61715c8c04d3a8a435c7f4b91a6d8770b47ab5_2_541x562.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/6/d/6/6d61715c8c04d3a8a435c7f4b91a6d8770b47ab5_2_722x750.png 2x" width="361"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2026-05-12 at 7.31.48 AM</span><span class="informations">1132×1172 53.6 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/gnfaejxDsjRFlxHpjHu1lO907Ue.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/7/2/c/72c3714047cf6f9d26c093bb5de5a152b05d71ca.png" title="Screenshot 2026-05-12 at 7.41.03 AM"><img alt="Screenshot 2026-05-12 at 7.41.03 AM" data-base62-sha1="gnfaejxDsjRFlxHpjHu1lO907Ue" data-dominant-color="F1EEF4" height="500" src="../../../images/72c3714047cf6f9d26c093bb5de5a152b05d71ca_2_412x500.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/7/2/c/72c3714047cf6f9d26c093bb5de5a152b05d71ca_2_412x500.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/7/2/c/72c3714047cf6f9d26c093bb5de5a152b05d71ca_2_618x750.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/7/2/c/72c3714047cf6f9d26c093bb5de5a152b05d71ca_2_824x1000.png 2x" width="412"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2026-05-12 at 7.41.03 AM</span><span class="informations">1088×1318 62.6 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+</div>
+<p>it looks like the bug  throws a <code>NoMethodError</code> in rails when it can’t find the Nth day in week like above; hence empty next trigger banner and failed run:</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/pAqPtboGVc2xkOjnqhKzlDBAitE.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/b/3/5/b354a68a4dabbf9c033a2e713b118ff313d32186.png" title="Screenshot 2026-05-12 at 7.53.22 AM"><img alt="Screenshot 2026-05-12 at 7.53.22 AM" data-base62-sha1="pAqPtboGVc2xkOjnqhKzlDBAitE" data-dominant-color="ECE8F1" height="185" src="../../../images/b354a68a4dabbf9c033a2e713b118ff313d32186_2_690x185.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/b/3/5/b354a68a4dabbf9c033a2e713b118ff313d32186_2_690x185.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/b/3/5/b354a68a4dabbf9c033a2e713b118ff313d32186_2_1035x277.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/b/3/5/b354a68a4dabbf9c033a2e713b118ff313d32186.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2026-05-12 at 7.53.22 AM</span><span class="informations">1300×350 145 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="chefs kiss: 1">:chefs_kiss: 1</span><span class="engagement-pill reaction-pill" title="eyes: 1">👀 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/512781_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">zogstrip</div>
+          <div class="post_content">
+<p><span class="mention">@j.jaffeux</span> mind giving this a quick look <img alt=":eyes:" class="emoji" height="20" loading="lazy" src="../../../images/eyes.png" title=":eyes:" width="20"/>?</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554803_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Lilly</div>
+          <div class="post_content">
+<p>just noting that it occurred to me at one point during debugging that the existing behavior may be intentional (given the spec tests were configured with drifting days).  however, i would argue that admins who configure this automation are likely expecting date calendar month and not Nth day month. and the skipping of months for an automation when it can’t find the Nth day of month is problematic.</p>
+<p>edit: just added an edge case fix and spec tests for when it can’t find an exact date match for the next month, it goes to the last day of month (ie: Jan 31st → Feb 28th). also account for leap year.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span><span class="engagement-pill reaction-pill" title="rocket: 1">🚀 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/220910_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">gassim</div>
+          <div class="post_content">
+<p>Hi <span class="mention">@Lilly</span></p>
+<p>Thank you so much for looking into this. I don’t know if your fix has been merged and if it will solve the month date issue. However, I assume that if I update the trigger for each month, it should work, right?</p>
+<p>In other words, I’d need to specifically update the trigger to that specific day each month and then it will trigger. If I understood correctly, the issue was when it wants to pick the day on its own. Hopefully your fix will fix that… saw the batch bot was giving you a challenge but hope it all goes well. Thanks once again for your help!</p>
+<p>Thank you all! &lt;3</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554803_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Lilly</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="20" data-topic="402664" data-username="gassim">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/220910_2.png" width="24"/> gassim:</div>
+<blockquote>
+<p>Thank you so much for looking into this. I don’t know if your fix has been merged and if it will solve the month date issue. However, I assume that if I update the trigger for each month, it should work, right?</p>
+</blockquote>
+</aside>
+<p>sorry my PR has not been merged and is awaiting a final  review from a team member. for now, you can  try updating the trigger with a different date, just make sure  when you configure it that the “next trigger” message that pops up gives the correct next monthly date run.</p>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+  </body>
+</html>

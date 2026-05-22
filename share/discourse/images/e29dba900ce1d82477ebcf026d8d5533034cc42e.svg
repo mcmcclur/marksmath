@@ -1,0 +1,190 @@
+<?xml version="1.0"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%" height="100%">
+  <defs>
+
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="blur"/>
+      
+    </filter>
+
+
+    <polygon id="hex" points="0,-8 6.9,-4 6.9,4 0,8 -6.9,4 -6.9,-4"/>
+  </defs>
+
+  <style>
+
+    .bg-board { fill: #0f172a; stroke: #1e293b; stroke-width: 4; }
+    .trace { stroke: #1e293b; stroke-width: 3; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+    .hole { fill: #020617; stroke: #eab308; stroke-width: 2; }
+    .port { fill: #1e293b; stroke: #334155; stroke-width: 2; }
+    .pin { fill: #eab308; }
+
+
+    .hex {
+      transform-origin: center;
+      transform-box: fill-box;
+      opacity: 0.8;
+    }
+    .leaf {
+      transform-origin: center;
+      transform-box: fill-box;
+      opacity: 0.9;
+    }
+
+
+    .spin-linear {
+      transform-origin: 100px 100px;
+      animation: spin 2s linear infinite;
+    }
+    .spin-reverse {
+      transform-origin: 100px 100px;
+      animation: spin-rev 3s linear infinite;
+    }
+    .spin-slow {
+      transform-origin: 100px 100px;
+      animation: spin 6s linear infinite;
+    }
+
+
+    .led-pwr { animation: blink-pwr 2.5s infinite; }
+    .led-act { animation: blink-act 0.4s infinite; }
+
+
+    .r1 { animation: pulse-hex 1.5s infinite 0.0s; }
+    .r2 { animation: pulse-hex 1.5s infinite 0.15s; }
+    .r3 { animation: pulse-hex 1.5s infinite 0.3s; }
+    .r4 { animation: pulse-hex 1.5s infinite 0.45s; }
+    .r5 { animation: pulse-hex 1.5s infinite 0.6s; }
+
+    .leaf-center { animation: pulse-leaf 1.5s infinite 0.0s; }
+    .leaf-side   { animation: pulse-leaf 1.5s infinite 0.15s; }
+
+
+    @keyframes spin {
+      100% { transform: rotate(360deg); }
+    }
+    @keyframes spin-rev {
+      100% { transform: rotate(-360deg); }
+    }
+    @keyframes pulse-hex {
+      0%, 100% { fill: #9f1239; transform: scale(0.8); opacity: 0.5; }
+      50% { fill: #f43f5e; transform: scale(1.1); opacity: 1; filter: drop-shadow(0px 0px 3px #f43f5e); }
+    }
+    @keyframes pulse-leaf {
+      0%, 100% { fill: #166534; transform: scale(0.9); opacity: 0.6; }
+      50% { fill: #22c55e; transform: scale(1.05); opacity: 1; filter: drop-shadow(0px 0px 3px #22c55e); }
+    }
+    @keyframes blink-pwr {
+      0%, 90%, 100% { opacity: 1; filter: drop-shadow(0 0 2px #ef4444); }
+      95% { opacity: 0.2; }
+    }
+    @keyframes blink-act {
+      0%, 100% { opacity: 0.1; }
+      50% { opacity: 1; filter: drop-shadow(0 0 3px #22c55e); }
+    }
+  </style>
+
+
+  <rect x="10" y="10" width="180" height="180" rx="20" class="bg-board"/>
+
+
+  <path d="M 30 35 L 30 50 L 50 70" class="trace"/>
+  <circle cx="50" cy="70" r="2" fill="#1e293b"/>
+  <path d="M 170 35 L 170 50 L 150 70" class="trace"/>
+  <circle cx="150" cy="70" r="2" fill="#1e293b"/>
+  <path d="M 30 165 L 30 150 L 50 130" class="trace"/>
+  <circle cx="50" cy="130" r="2" fill="#1e293b"/>
+  <path d="M 170 165 L 170 150 L 150 130" class="trace"/>
+  <circle cx="150" cy="130" r="2" fill="#1e293b"/>
+
+
+  <circle cx="30" cy="30" r="4" class="hole"/>
+  <circle cx="170" cy="30" r="4" class="hole"/>
+  <circle cx="30" cy="170" r="4" class="hole"/>
+  <circle cx="170" cy="170" r="4" class="hole"/>
+
+
+  <g class="pin">
+    <rect x="64" y="15" width="4" height="8" rx="1"/>
+    <rect x="72" y="15" width="4" height="8" rx="1"/>
+    <rect x="80" y="15" width="4" height="8" rx="1"/>
+    <rect x="88" y="15" width="4" height="8" rx="1"/>
+    <rect x="96" y="15" width="4" height="8" rx="1"/>
+    <rect x="104" y="15" width="4" height="8" rx="1"/>
+    <rect x="112" y="15" width="4" height="8" rx="1"/>
+    <rect x="120" y="15" width="4" height="8" rx="1"/>
+    <rect x="128" y="15" width="4" height="8" rx="1"/>
+    <rect x="136" y="15" width="4" height="8" rx="1"/>
+  </g>
+
+
+  <rect x="50" y="175" width="25" height="15" rx="2" class="port"/>
+  <rect x="85" y="175" width="30" height="15" rx="2" class="port"/>
+  <rect x="125" y="175" width="25" height="15" rx="2" class="port"/>
+
+
+  <circle cx="25" cy="178" r="2" fill="#ef4444" class="led-pwr"/>
+  <circle cx="33" cy="178" r="2" fill="#22c55e" class="led-act"/>
+
+
+  <polygon points="100,32 145,58 145,145 100,171 55,145 55,58" fill="#020617" stroke="#1e293b" stroke-width="2"/>
+
+
+
+
+  <g class="spin-slow">
+    <circle cx="100" cy="100" r="76" stroke="#334155" stroke-width="2" stroke-dasharray="2 6" fill="none"/>
+    <circle cx="100" cy="100" r="76" stroke="#eab308" stroke-width="3" stroke-dasharray="40 438" stroke-linecap="round" fill="none" transform="rotate(-90 100 100)"/>
+  </g>
+
+
+  <g class="spin-linear">
+    <path d="M 100 32 A 68 68 0 0 1 168 100" stroke="#22c55e" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <circle cx="168" cy="100" r="4" fill="#22c55e" filter="url(#glow)"/>
+  </g>
+
+
+  <g class="spin-reverse">
+    <path d="M 100 40 A 60 60 0 0 0 40 100" stroke="#f43f5e" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <circle cx="40" cy="100" r="3" fill="#f43f5e" filter="url(#glow)"/>
+
+    <path d="M 100 160 A 60 60 0 0 0 160 100" stroke="#f43f5e" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <circle cx="160" cy="100" r="3" fill="#f43f5e" filter="url(#glow)"/>
+  </g>
+
+
+
+
+  <path d="M 100,70 L 85,40 L 100,52 L 115,40 Z" class="leaf leaf-center"/>
+  <path d="M 92,72 L 80,52 L 60,40 L 65,60 Z" class="leaf leaf-side"/>
+  <path d="M 108,72 L 120,52 L 140,40 L 135,60 Z" class="leaf leaf-side"/>
+
+
+
+  <use href="#hex" x="73" y="80" class="hex r1"/>
+  <use href="#hex" x="91" y="80" class="hex r1"/>
+  <use href="#hex" x="109" y="80" class="hex r1"/>
+  <use href="#hex" x="127" y="80" class="hex r1"/>
+
+
+  <use href="#hex" x="64" y="98" class="hex r2"/>
+  <use href="#hex" x="82" y="98" class="hex r2"/>
+  <use href="#hex" x="100" y="98" class="hex r2"/>
+  <use href="#hex" x="118" y="98" class="hex r2"/>
+  <use href="#hex" x="136" y="98" class="hex r2"/>
+
+
+  <use href="#hex" x="73" y="116" class="hex r3"/>
+  <use href="#hex" x="91" y="116" class="hex r3"/>
+  <use href="#hex" x="109" y="116" class="hex r3"/>
+  <use href="#hex" x="127" y="116" class="hex r3"/>
+
+
+  <use href="#hex" x="82" y="134" class="hex r4"/>
+  <use href="#hex" x="100" y="134" class="hex r4"/>
+  <use href="#hex" x="118" y="134" class="hex r4"/>
+
+
+  <use href="#hex" x="91" y="152" class="hex r5"/>
+  <use href="#hex" x="109" y="152" class="hex r5"/>
+</svg>

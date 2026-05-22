@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <path id="drop" d="M257.9 32C135.3 32 32 130.5 32 252.1 32 256 32.1 480 32.1 480l225.8-.2c122.7 0 222.1-102.3 222.1-223.9C480 134.3 380.6 32 257.9 32z"/>
+    
+    <g id="inner-bubble">
+      <circle cx="256" cy="256" r="145"/>
+      <path d="M 169 372 L 91 421 L 140 343 Z"/>
+    </g>
+  </defs>
+
+  <style>
+    .spin {
+      /* Rotates the bubbles around the center of the canvas in 3D */
+      transform-origin: 256px 256px;
+      animation: paddle-flip 4s cubic-bezier(0.45, 0, 0.15, 1) infinite;
+    }
+
+    /* Staggered delays for the "3 visual bubbles" peel effect */
+    .bubble-left { animation-delay: 0s; }
+    .bubble-right { animation-delay: 0.15s; }
+    .bubble-center { animation-delay: 0.3s; }
+
+    @keyframes paddle-flip {
+      0%, 15% { transform: rotate3d(-1, 1, 0, 0deg); }
+      40%, 60% { transform: rotate3d(-1, 1, 0, 180deg); }
+      85%, 100% { transform: rotate3d(-1, 1, 0, 360deg); }
+    }
+  </style>
+
+  <use href="#drop" fill="#1b1b1b"/>
+
+  <g>
+    <g class="spin bubble-left">
+      <use href="#inner-bubble" fill="#ed205e" transform="rotate(-6 91 421)"/>
+      <use href="#inner-bubble" fill="#f15d22" transform="rotate(-3 91 421)"/>
+    </g>
+
+    <g class="spin bubble-right">
+      <use href="#inner-bubble" fill="#00aeee" transform="rotate(6 91 421)"/>
+      <use href="#inner-bubble" fill="#00a94f" transform="rotate(3 91 421)"/>
+    </g>
+
+    <g class="spin bubble-center">
+      <use href="#inner-bubble" fill="#fff9ae"/>
+    </g>
+  </g>
+</svg>

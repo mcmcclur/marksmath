@@ -1,0 +1,138 @@
+<?xml version="1.0"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="100%" height="100%">
+  <style>
+    .spinner-track {
+      stroke: #e2e8f0;
+      stroke-width: 3.5;
+      fill: none;
+    }
+    .spinner-ring {
+      stroke: #0088cc;
+      stroke-width: 3.5;
+      stroke-linecap: round;
+      fill: none;
+      transform-origin: 60px 58px;
+      animation: spin 1.6s linear infinite;
+    }
+
+    .main-bubble {
+      transform-origin: 60px 58px;
+      animation: pulseBubble 3s infinite ease-in-out;
+      filter: drop-shadow(0px 2px 2px rgba(0, 0, 0, 0.15));
+    }
+    .bubble-path {
+      fill: #0088cc;
+    }
+
+    .dot {
+      fill: #ffffff;
+      animation: pulseDot 1.4s infinite ease-in-out;
+    }
+    .dot-1 { animation-delay: 0s; transform-origin: 52px 58px; }
+    .dot-2 { animation-delay: 0.2s; transform-origin: 60px 58px; }
+    .dot-3 { animation-delay: 0.4s; transform-origin: 68px 58px; }
+
+    .reaction {
+      opacity: 0;
+      transform-origin: center;
+    }
+
+    .heart {
+      animation: float-heart 2.8s infinite cubic-bezier(0.25, 1, 0.5, 1);
+      animation-delay: 0s;
+    }
+    .thumbs {
+      animation: float-thumbs 2.8s infinite cubic-bezier(0.25, 1, 0.5, 1);
+      animation-delay: 0.7s;
+    }
+    .reply {
+      animation: float-reply 2.8s infinite cubic-bezier(0.25, 1, 0.5, 1);
+      animation-delay: 1.4s;
+    }
+    .star {
+      animation: float-star 2.8s infinite cubic-bezier(0.25, 1, 0.5, 1);
+      animation-delay: 2.1s;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    @keyframes pulseBubble {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.04); }
+    }
+
+    @keyframes pulseDot {
+      0%, 100% { opacity: 0.3; transform: scale(0.8); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+
+    @keyframes float-heart {
+      0% { transform: translate(60px, 58px) scale(0); opacity: 0; }
+      15% { opacity: 1; transform: translate(44px, 35px) scale(1); }
+      50% { transform: translate(30px, 22px) scale(0.9); }
+      100% { transform: translate(16px, 8px) scale(0.6); opacity: 0; }
+    }
+
+    @keyframes float-thumbs {
+      0% { transform: translate(60px, 58px) scale(0); opacity: 0; }
+      15% { opacity: 1; transform: translate(76px, 36px) scale(1.1); }
+      50% { transform: translate(88px, 26px) scale(0.95); }
+      100% { transform: translate(102px, 14px) scale(0.6); opacity: 0; }
+    }
+
+    @keyframes float-reply {
+      0% { transform: translate(60px, 58px) scale(0); opacity: 0; }
+      15% { opacity: 1; transform: translate(50px, 32px) scale(1); }
+      50% { transform: translate(56px, 18px) scale(0.9); }
+      100% { transform: translate(52px, 4px) scale(0.6); opacity: 0; }
+    }
+
+    @keyframes float-star {
+      0% { transform: translate(60px, 58px) scale(0); opacity: 0; }
+      15% { opacity: 1; transform: translate(70px, 42px) scale(1); }
+      50% { transform: translate(66px, 28px) scale(0.9); }
+      100% { transform: translate(74px, 12px) scale(0.6); opacity: 0; }
+    }
+  </style>
+
+  <!-- Background loading circular track -->
+  <circle class="spinner-track" cx="60" cy="58" r="42"/>
+
+  <!-- Active loading spinner ring segment -->
+  <circle class="spinner-ring" cx="60" cy="58" r="42" stroke-dasharray="65 200"/>
+
+  <!-- Central Forum Speech Bubble -->
+  <g class="main-bubble">
+    <path class="bubble-path" d="M 60 42 C 48 42 38 49 38 58 C 38 63 41 68 46 71 L 43 79 L 52 74 C 55 74.7 57 75 60 75 C 72 75 82 68 82 58 C 82 49 72 42 60 42 Z"/>
+
+    <!-- Typing indicator dots -->
+    <circle class="dot dot-1" cx="52" cy="58" r="2.5"/>
+    <circle class="dot dot-2" cx="60" cy="58" r="2.5"/>
+    <circle class="dot dot-3" cx="68" cy="58" r="2.5"/>
+  </g>
+
+  <!-- Reaction Elements (Positioned via CSS translate) -->
+
+  <!-- Heart Icon (Like) -->
+  <g class="reaction heart">
+    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" transform="scale(0.55) translate(-12, -12)" fill="#e63946"/>
+  </g>
+
+  <!-- Thumbs Up Icon (Reaction) -->
+  <g class="reaction thumbs">
+    <path d="M1 21h4V9H1v12zm22-10c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z" transform="scale(0.5) translate(-12, -12)" fill="#3a86c8"/>
+  </g>
+
+  <!-- Smaller Speech Bubble (Reply) -->
+  <g class="reaction reply">
+    <path d="M21.99 4c0-1.1-.89-2-1.99-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4-.01-18z" transform="scale(0.5) translate(-12, -12)" fill="#f7b731"/>
+  </g>
+
+  <!-- Star Icon (Bookmark / Feature) -->
+  <g class="reaction star">
+    <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" transform="scale(0.55) translate(-12, -12)" fill="#2bcbba"/>
+  </g>
+</svg>

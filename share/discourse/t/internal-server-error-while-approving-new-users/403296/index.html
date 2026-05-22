@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width">
+    <title>Internal Server Error While Approving New Users</title>
+    <link rel="stylesheet" href="../../../archived.css" />
+    <script>
+      function findSageCodeBlocks() {
+        return Array.prototype.slice.call(
+          document.querySelectorAll(
+            "pre[data-code-wrap='sage'] > code, pre > code.lang-sage, pre > code.language-sage, pre > code.sage"
+          )
+        );
+      }
+
+      function loadScript(src) {
+        return new Promise(function (resolve, reject) {
+          var existing = document.querySelector("script[src='" + src + "']");
+          if (existing) {
+            if (existing.dataset.loaded === "true") {
+              resolve();
+              return;
+            }
+            existing.addEventListener("load", resolve, { once: true });
+            existing.addEventListener("error", reject, { once: true });
+            return;
+          }
+
+          var script = document.createElement("script");
+          script.src = src;
+          script.async = true;
+          script.addEventListener("load", function () {
+            script.dataset.loaded = "true";
+            resolve();
+          }, { once: true });
+          script.addEventListener("error", reject, { once: true });
+          document.head.appendChild(script);
+        });
+      }
+
+      function prepareSageCells() {
+        var sageBlocks = findSageCodeBlocks();
+        if (!sageBlocks.length) {
+          return Promise.resolve();
+        }
+
+        return loadScript("https://sagecell.sagemath.org/static/embedded_sagecell.js")
+          .then(function () {
+            if (!window.sagecell || !window.sagecell.makeSagecell) {
+              return;
+            }
+
+            sageBlocks.forEach(function (codeTag, index) {
+              var preTag = codeTag.parentElement;
+              if (!preTag || preTag.dataset.sageMounted === "true") {
+                return;
+              }
+
+              var host = document.createElement("div");
+              host.className = "sagecell-archive";
+
+              var source = document.createElement("script");
+              source.type = "text/x-sage";
+              source.text = codeTag.textContent || "";
+              host.appendChild(source);
+
+              preTag.insertAdjacentElement("afterend", host);
+              preTag.classList.add("sage-source-hidden");
+              preTag.dataset.sageMounted = "true";
+
+              window.sagecell.makeSagecell({
+                inputLocation: host,
+                autoeval: false,
+                evalButtonText: "Run",
+                languages: ["sage"]
+              });
+            });
+          })
+          .catch(function () {
+            // Leave the original code blocks visible if SageCell cannot load.
+          });
+      }
+
+      function preprocessDiscourseMath() {
+        document.querySelectorAll("span.math, div.math").forEach(function (node) {
+          var tex = node.textContent || "";
+          if (!tex.trim()) {
+            return;
+          }
+          if (node.tagName === "SPAN") {
+            node.textContent = "\\(" + tex + "\\)";
+          } else {
+            node.textContent = "\\[" + tex + "\\]";
+          }
+          node.classList.remove("math");
+        });
+      }
+
+      window.MathJax = {
+        tex: {
+          inlineMath: [["\\(", "\\)"]],
+          displayMath: [["\\[", "\\]"]]
+        },
+        startup: {
+          pageReady() {
+            preprocessDiscourseMath();
+            return MathJax.startup.defaultPageReady().then(function () {
+              return prepareSageCells();
+            });
+          }
+        }
+      };
+    </script>
+    <script async id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="title-span">
+        <a href="../../../">
+          <img src="../../../images/ad2526334012b2ad0c3421f9b6dd94bae2ede52f.svg" height="40" alt="Site Logo" id="site-logo" />
+        </a>
+      </div>
+    </header>
+
+    <div class="main">
+    <div class="archive-span"><a href='https://meta.discourse.org/'>Discourse Meta</a> archived in May, 2026</div>
+    <h1 class="topic-title">Internal Server Error While Approving New Users</h1>
+            <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/514662_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Soumya_Ranjan_Mishra</div>
+          <div class="post_content">
+<p>Hi Meta Team,</p>
+<p>We are facing an issue with user approvals in our Discourse instance.</p>
+<p>When a new user logs in, they correctly receive the message:</p>
+<blockquote>
+<p>“Your account has not been approved by a staff member yet.”</p>
+</blockquote>
+<p>However, when a staff member/admin tries to approve the pending user, Discourse shows an <strong>“Internal Server Error”</strong> popup and the approval fails.</p>
+<p>Authentication is configured using OAuth2.</p>
+<p>Could you please help us understand:</p>
+<ul>
+<li>
+<p>What could cause this issue?</p>
+</li>
+<li>
+<p>Are there any known issues with user approval + OAuth2 setup?</p>
+</li>
+<li>
+<p>Which logs/settings should we check for troubleshooting?</p>
+</li>
+</ul>
+<p>Screenshots attached for reference.</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/2Q9QyhqPgvEBp2dNiUsb3VjiEMR.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/1/3/e/13e9bc403f3a68d254877a059d14875100822735.png" rel="noopener nofollow ugc" title="image"><img alt="image" data-base62-sha1="2Q9QyhqPgvEBp2dNiUsb3VjiEMR" data-dominant-color="FAF6F7" height="207" src="../../../images/13e9bc403f3a68d254877a059d14875100822735_2_690x207.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/1/3/e/13e9bc403f3a68d254877a059d14875100822735_2_690x207.png, https://d11a6trkgmumsb.cloudfront.net/original/4X/1/3/e/13e9bc403f3a68d254877a059d14875100822735.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/1/3/e/13e9bc403f3a68d254877a059d14875100822735.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">931×280 23.9 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/zU2RtBCwrRPNmnJOfVspb7Vok9F.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/f/b/a/fba1f81ef1bdf9af054e78e8d1313c2aa39118d7.png" rel="noopener nofollow ugc" title="image"><img alt="image" data-base62-sha1="zU2RtBCwrRPNmnJOfVspb7Vok9F" data-dominant-color="83888C" height="124" src="../../../images/fba1f81ef1bdf9af054e78e8d1313c2aa39118d7.png" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1311×236 5.09 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="eyes: 1">👀 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/313494_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">NateDhaliwal</div>
+          <div class="post_content">
+<p>Are there any errors in /logs or in the browser console? Thanks.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/514662_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Soumya_Ranjan_Mishra</div>
+          <div class="post_content">
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/nRBy9yjjEHUnLfeFoXhsFZOtGvM.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/a/7/4/a74141e42196e5d22eb199b579b69c7220bf6332.png" rel="noopener nofollow ugc" title="image"><img alt="image" data-base62-sha1="nRBy9yjjEHUnLfeFoXhsFZOtGvM" data-dominant-color="ECECEB" height="94" src="../../../images/a74141e42196e5d22eb199b579b69c7220bf6332_2_690x94.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/a/7/4/a74141e42196e5d22eb199b579b69c7220bf6332_2_690x94.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/a/7/4/a74141e42196e5d22eb199b579b69c7220bf6332_2_1035x141.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/a/7/4/a74141e42196e5d22eb199b579b69c7220bf6332_2_1380x188.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1567×214 44.2 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/523185_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">RGJ</div>
+          <div class="post_content">
+<p>Is this a <a href="https://meta.discourse.org/t/142537?silent=true">standard install</a>?<br/>
+Are you using an external database like AWS RDS ?</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+
+    </div>
+  </body>
+</html>

@@ -1,0 +1,1879 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width">
+    <title>Quote Callouts</title>
+    <link rel="stylesheet" href="../../../archived.css" />
+    <script>
+      function findSageCodeBlocks() {
+        return Array.prototype.slice.call(
+          document.querySelectorAll(
+            "pre[data-code-wrap='sage'] > code, pre > code.lang-sage, pre > code.language-sage, pre > code.sage"
+          )
+        );
+      }
+
+      function loadScript(src) {
+        return new Promise(function (resolve, reject) {
+          var existing = document.querySelector("script[src='" + src + "']");
+          if (existing) {
+            if (existing.dataset.loaded === "true") {
+              resolve();
+              return;
+            }
+            existing.addEventListener("load", resolve, { once: true });
+            existing.addEventListener("error", reject, { once: true });
+            return;
+          }
+
+          var script = document.createElement("script");
+          script.src = src;
+          script.async = true;
+          script.addEventListener("load", function () {
+            script.dataset.loaded = "true";
+            resolve();
+          }, { once: true });
+          script.addEventListener("error", reject, { once: true });
+          document.head.appendChild(script);
+        });
+      }
+
+      function prepareSageCells() {
+        var sageBlocks = findSageCodeBlocks();
+        if (!sageBlocks.length) {
+          return Promise.resolve();
+        }
+
+        return loadScript("https://sagecell.sagemath.org/static/embedded_sagecell.js")
+          .then(function () {
+            if (!window.sagecell || !window.sagecell.makeSagecell) {
+              return;
+            }
+
+            sageBlocks.forEach(function (codeTag, index) {
+              var preTag = codeTag.parentElement;
+              if (!preTag || preTag.dataset.sageMounted === "true") {
+                return;
+              }
+
+              var host = document.createElement("div");
+              host.className = "sagecell-archive";
+
+              var source = document.createElement("script");
+              source.type = "text/x-sage";
+              source.text = codeTag.textContent || "";
+              host.appendChild(source);
+
+              preTag.insertAdjacentElement("afterend", host);
+              preTag.classList.add("sage-source-hidden");
+              preTag.dataset.sageMounted = "true";
+
+              window.sagecell.makeSagecell({
+                inputLocation: host,
+                autoeval: false,
+                evalButtonText: "Run",
+                languages: ["sage"]
+              });
+            });
+          })
+          .catch(function () {
+            // Leave the original code blocks visible if SageCell cannot load.
+          });
+      }
+
+      function preprocessDiscourseMath() {
+        document.querySelectorAll("span.math, div.math").forEach(function (node) {
+          var tex = node.textContent || "";
+          if (!tex.trim()) {
+            return;
+          }
+          if (node.tagName === "SPAN") {
+            node.textContent = "\\(" + tex + "\\)";
+          } else {
+            node.textContent = "\\[" + tex + "\\]";
+          }
+          node.classList.remove("math");
+        });
+      }
+
+      window.MathJax = {
+        tex: {
+          inlineMath: [["\\(", "\\)"]],
+          displayMath: [["\\[", "\\]"]]
+        },
+        startup: {
+          pageReady() {
+            preprocessDiscourseMath();
+            return MathJax.startup.defaultPageReady().then(function () {
+              return prepareSageCells();
+            });
+          }
+        }
+      };
+    </script>
+    <script async id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="title-span">
+        <a href="../../../">
+          <img src="../../../images/ad2526334012b2ad0c3421f9b6dd94bae2ede52f.svg" height="40" alt="Site Logo" id="site-logo" />
+        </a>
+      </div>
+    </header>
+
+    <div class="main">
+    <div class="archive-span"><a href='https://meta.discourse.org/'>Discourse Meta</a> archived in May, 2026</div>
+    <h1 class="topic-title">Quote Callouts</h1>
+            <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/298682_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Arkshine</div>
+          <div class="post_content">
+<div class="md-table">
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><img alt=":information_source:" class="emoji only-emoji" height="20" loading="lazy" src="../../../images/information_source.png" title=":information_source:" width="20"/></td>
+<td><strong>Summary</strong></td>
+<td>Adds Obsidian-style callouts as an alternative for markdown quotes.</td>
+</tr>
+<tr>
+<td><img alt=":eyeglasses:" class="emoji only-emoji" height="20" loading="lazy" src="../../../images/eyeglasses.png" title=":eyeglasses:" width="20"/></td>
+<td><strong>Preview</strong></td>
+<td><a class="inline-onebox" href="https://discourse.theme-creator.io/theme/Arkshine/quote-callouts">Theme Creator</a></td>
+</tr>
+<tr>
+<td><img alt=":hammer_and_wrench:" class="emoji only-emoji" height="20" loading="lazy" src="../../../images/hammer_and_wrench.png" title=":hammer_and_wrench:" width="20"/></td>
+<td><strong>Repository</strong></td>
+<td><a class="inline-onebox" href="https://github.com/Arkshine/discourse-quote-callouts">GitHub - Arkshine/discourse-quote-callouts · GitHub</a></td>
+</tr>
+<tr>
+<td><img alt=":question:" class="emoji only-emoji" height="20" loading="lazy" src="../../../images/question.png" title=":question:" width="20"/></td>
+<td><strong>Install Guide</strong></td>
+<td><a href="https://meta.discourse.org/t/how-do-i-install-a-theme-or-theme-component/63682">How to install a theme or theme component</a></td>
+</tr>
+<tr>
+<td><img alt=":open_book:" class="emoji only-emoji" height="20" loading="lazy" src="../../../images/open_book.png" title=":open_book:" width="20"/></td>
+<td><strong>New to Discourse Themes?</strong></td>
+<td><a href="https://meta.discourse.org/t/beginners-guide-to-using-discourse-themes/91966">Beginner’s guide to using Discourse Themes</a></td>
+</tr>
+</tbody>
+</table>
+</div><div class="d-wrap" data-repo-name="Quote Callouts" data-repo-url="https://github.com/Arkshine/discourse-quote-callouts" data-wrap="theme-install-button">
+<p>Install this theme component</p>
+</div>
+<p>This theme component adds support for <a href="https://help.obsidian.md/Editing+and+formatting/Callouts">Obsidian-style callouts</a> in Discourse as an alternative for markdown quotes.</p>
+<p>Callouts are a great way to highlight content and add notes, warnings, or other special messages to your posts.</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/c06q5JnUekLAZ3oYlvXyYnS4fB4.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/5/4/1/541d15a4117ab4e333f15ef8e8e2c372fdaec196.png" title="The image shows different types of annotation tool callouts, including a note, custom title, collapsible warning, and a title-only note. (Captioned by AI)"><img alt="The image shows different types of annotation tool callouts, including a note, custom title, collapsible warning, and a title-only note. (Captioned by AI)" data-base62-sha1="c06q5JnUekLAZ3oYlvXyYnS4fB4" data-dominant-color="EDF4F3" height="419" src="../../../images/541d15a4117ab4e333f15ef8e8e2c372fdaec196.png" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">The image shows different types of annotation tool callouts, including a note, custom title, collapsible warning, and a title-only note. (Captioned by AI)</span><span class="informations">701×426 5.15 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div><br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/j2BoyeEVBq9jY8O1T1zQPJtl76w.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/8/5/7/8574a2ee238e7b18c393bf2ac1dea212bcdcd8f8.png" title='The image displays a chat message notification stating that "It works in chat as well." (Captioned by AI)'><img alt='The image displays a chat message notification stating that "It works in chat as well." (Captioned by AI)' data-base62-sha1="j2BoyeEVBq9jY8O1T1zQPJtl76w" height="296" src="../../../images/8574a2ee238e7b18c393bf2ac1dea212bcdcd8f8.png" width="469"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">The image displays a chat message notification stating that "It works in chat as well." (Captioned by AI)</span><span class="informations">469×296 5.86 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<h2><a aria-label="Heading link" class="anchor" href="#p-1704830-usage-1" name="p-1704830-usage-1"></a>Usage</h2>
+<p>To create callout, you have several ways.</p>
+<h3><a aria-label="Heading link" class="anchor" href="#p-1704830-markdown-syntax-2" name="p-1704830-markdown-syntax-2"></a>Markdown syntax</h3>
+<p>Add <code>[!type]</code> to the first line of a quote, where <code>type</code> is the type identifier. The type identifier determines how the callout looks and feels. To see all available types, refer to Supported types.</p>
+<blockquote>
+<p><img alt=":information_source:" class="emoji" height="20" loading="lazy" src="../../../images/information_source.png" title=":information_source:" width="20"/> The type identifier is case-insensitive.</p>
+</blockquote>
+<pre data-code-wrap="markdown"><code class="lang-markdown">&gt; [!tip] 
+&gt; **Tip**: Use `code snippets` to enhance readability. They provide clarity and precision.
+</code></pre>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/7LMifvFmxDGIZa2hnYgy553Tvtw.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/3/6/7/3675dbcf45e48b1e88f47fe6d8f251efc48913ba.png" title="image"><img alt="image" data-base62-sha1="7LMifvFmxDGIZa2hnYgy553Tvtw" data-dominant-color="E1F2F2" height="107" src="../../../images/3675dbcf45e48b1e88f47fe6d8f251efc48913ba.png" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">694×108 2.91 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<h4><a aria-label="Heading link" class="anchor" href="#p-1704830-preview-3" name="p-1704830-preview-3"></a>Preview</h4>
+<pre><code>You can change the type by clicking on the icon: 
+
+![chrome_atmmLf0v3c|690x209](upload://hZYzuK1MCwo7vsMEV9uYEZZOqjn.jpeg) 
+</code></pre>
+<h3><a aria-label="Heading link" class="anchor" href="#p-1704830-rich-text-editor-4" name="p-1704830-rich-text-editor-4"></a>Rich text editor</h3>
+<p>It’s now fully supported, please refer to <em>Rich text editor support</em> section.</p>
+<h3><a aria-label="Heading link" class="anchor" href="#p-1704830-keyboard-shortcut-5" name="p-1704830-keyboard-shortcut-5"></a>Keyboard shortcut</h3>
+<ul>
+<li><kbd>Ctrl</kbd> + <kbd>q</kbd> — Insert an empty callout</li>
+</ul>
+<h3><a aria-label="Heading link" class="anchor" href="#p-1704830-toolbar-6" name="p-1704830-toolbar-6"></a>Toolbar</h3>
+<div class="d-image-grid" data-mode="carousel">
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/x44lZiReC0DwVX61nmYnEJ8l56F.jpeg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/e/7/b/e7bd86d2cfc1e5fbea1376031d4249a288df9c69.jpeg" title="chrome_7HSSbReBtO"><img alt="chrome_7HSSbReBtO" data-base62-sha1="x44lZiReC0DwVX61nmYnEJ8l56F" height="348" src="../../../images/e7bd86d2cfc1e5fbea1376031d4249a288df9c69.jpeg" width="329"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">chrome_7HSSbReBtO</span><span class="informations">329×348 15.5 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div><br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/eaYci4Tmy03XmjjGSt5UwCrIgzY.jpeg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/6/3/5/635bea715f9ffc5018b8738de16c986233516786.jpeg" title="chrome_YaDrphqvbV"><img alt="chrome_YaDrphqvbV" data-base62-sha1="eaYci4Tmy03XmjjGSt5UwCrIgzY" data-dominant-color="EDEFF0" height="266" src="../../../images/635bea715f9ffc5018b8738de16c986233516786.jpeg" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">chrome_YaDrphqvbV</span><span class="informations">712×275 19.1 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+</div>
+<h4><a aria-label="Heading link" class="anchor" href="#p-1704830-chat-7" name="p-1704830-chat-7"></a>Chat</h4>
+<p>A button in the toolbar to insert a default callout is available.</p>
+<div class="d-image-grid" data-mode="carousel">
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/gXfyvjhr6otlpueP2W2liyJYeKO.jpeg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/7/6/d/76d5674fbc2dc07188bc4b24d483a5e85adaf63e.jpeg" title="chrome_CWig42tWHY"><img alt="chrome_CWig42tWHY" data-base62-sha1="gXfyvjhr6otlpueP2W2liyJYeKO" data-dominant-color="FCFCFC" height="500" src="../../../images/76d5674fbc2dc07188bc4b24d483a5e85adaf63e_2_433x500.jpeg" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/7/6/d/76d5674fbc2dc07188bc4b24d483a5e85adaf63e_2_433x500.jpeg, https://d11a6trkgmumsb.cloudfront.net/original/4X/7/6/d/76d5674fbc2dc07188bc4b24d483a5e85adaf63e.jpeg 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/7/6/d/76d5674fbc2dc07188bc4b24d483a5e85adaf63e.jpeg 2x" width="433"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">chrome_CWig42tWHY</span><span class="informations">478×551 16.3 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div><br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/4Vm40cOz91iQbXbfludlYqySiii.jpeg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/2/2/8/22847a19f440484f63e94f192f732dbaffdb9b66.jpeg" title="chrome_TsyfsoA82R"><img alt="chrome_TsyfsoA82R" data-base62-sha1="4Vm40cOz91iQbXbfludlYqySiii" height="373" src="../../../images/22847a19f440484f63e94f192f732dbaffdb9b66.jpeg" width="291"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">chrome_TsyfsoA82R</span><span class="informations">291×373 12.8 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div><br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/rWKCT35AfRkzY5vQtiOUwXaJ2Dp.jpeg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/c/3/d/c3dee18db204017fe15879927b4baebc0223b06b.jpeg" title="chrome_nWk7hUyRGr"><img alt="chrome_nWk7hUyRGr" data-base62-sha1="rWKCT35AfRkzY5vQtiOUwXaJ2Dp" height="181" src="../../../images/c3dee18db204017fe15879927b4baebc0223b06b.jpeg" width="445"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">chrome_nWk7hUyRGr</span><span class="informations">445×181 5.07 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+</div>
+<h3><a aria-label="Heading link" class="anchor" href="#p-1704830-custom-title-8" name="p-1704830-custom-title-8"></a>Custom title</h3>
+<p>By default, the title of the callout is its type identifier in title case. You can change it by adding text after the type identifier:</p>
+<pre data-code-wrap="markdown"><code class="lang-markdown">&gt; [!question] Custom Label 🤗
+&gt; Callouts labels can be customized.
+
+&gt; [!abstract] [date=2032-12-22 timezone="Europe/Paris"]
+&gt; They can also contain special inline formatting like dynamic dates.
+</code></pre>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/iVUveG6lbQIwpQQfyJjxjLGmYJq.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/8/4/b/84b2fca7273699fba7cfba275dac02084e5fc740.png" title="The image shows an example of a custom label and a date formatting with dynamic date in inline formatting. (Captioned by AI)"><img alt="The image shows an example of a custom label and a date formatting with dynamic date in inline formatting. (Captioned by AI)" data-base62-sha1="iVUveG6lbQIwpQQfyJjxjLGmYJq" data-dominant-color="EEF2EC" height="227" src="../../../images/84b2fca7273699fba7cfba275dac02084e5fc740.png" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">The image shows an example of a custom label and a date formatting with dynamic date in inline formatting. (Captioned by AI)</span><span class="informations">697×230 6.59 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>You can also create title-only callouts:</p>
+<pre data-code-wrap="markdown"><code class="lang-markdown">&gt; [!success] solved.
+</code></pre>
+<p><img alt="chrome_z53bS1GCew" data-base62-sha1="hSgpkyXax82DqxbhwF0rjC9wLFl" data-dominant-color="EEFBF2" height="59" src="../../../images/7d4748a50a4bb19e2ee9a332a82885afd8b903cf.png" width="690"/></p>
+<h3><a aria-label="Heading link" class="anchor" href="#p-1704830-foldable-callouts-9" name="p-1704830-foldable-callouts-9"></a>Foldable callouts</h3>
+<p>You can make a callout foldable by adding a plus <code>+</code> or a minus <code>-</code> directly after the type identifier.</p>
+<ul>
+<li><code>+</code> expands the callout by default</li>
+<li><code>-</code> collapses it instead</li>
+</ul>
+<pre data-code-wrap="markdown"><code class="lang-markdown">&gt; [!todo]- My Todo List
+&gt;
+&gt; - [x] Write documentation
+&gt; - [ ] Add tests
+&gt; - [ ] Review code
+
+&gt; [!todo]+ My Expanded Todo List
+&gt;
+&gt; - [x] Create repository
+&gt; - [ ] Setup CI/CD
+&gt; - [ ] Deploy to production
+</code></pre>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/b082EKQqfgABeU8TlQmoXNRaG2v.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/4/d/1/4d1baaea2a903f99ee5e1ffbef59345232f3bae3.png" title="The image displays an expanded to-do list with tasks such as &quot;Create repository,&quot; &quot;Setup CI/CD,&quot; and &quot;Deploy to production,&quot; partially completed, within a user's digital task management system. (Captioned by AI)"><img alt="The image displays an expanded to-do list with tasks such as &quot;Create repository,&quot; &quot;Setup CI/CD,&quot; and &quot;Deploy to production,&quot; partially completed, within a user's digital task management system. (Captioned by AI)" data-base62-sha1="b082EKQqfgABeU8TlQmoXNRaG2v" data-dominant-color="E4F0FD" height="228" src="../../../images/4d1baaea2a903f99ee5e1ffbef59345232f3bae3.png" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">The image displays an expanded to-do list with tasks such as "Create repository," "Setup CI/CD," and "Deploy to production," partially completed, within a user's digital task management system. (Captioned by AI)</span><span class="informations">701×232 3.58 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p><img alt='The image shows a Todoist project titled "arkshine" with checkboxes for "Create repository," "Setup CI/CD," and "Deploy to production" under "My Expanded Todo List," and options "My Todo List" and "My Expanded Todo List" visible. (Captioned by AI)' class="animated" data-base62-sha1="hj7qfVS7XQVxQuR9J4RwVTg4QfO" height="293" src="../../../images/794e3ff78c7590cc0870e9a7ed04f58a4d1c59e4.gif" width="690"/></p>
+<h3><a aria-label="Heading link" class="anchor" href="#p-1704830-nested-callouts-10" name="p-1704830-nested-callouts-10"></a>Nested callouts</h3>
+<p>You can nest callouts in multiple levels.</p>
+<pre data-code-wrap="markdown"><code class="lang-markdown">&gt; [!question] Can callouts be nested?
+&gt;
+&gt; &gt; [!todo] Yes!, they can.
+&gt; &gt;
+&gt; &gt; &gt; [!example] You can even use multiple layers of nesting.
+
+&gt; [!tip]
+&gt; Here's a helpful tip
+&gt;
+&gt; &gt; [!info]
+&gt; &gt; With some additional information
+&gt; &gt;
+&gt; &gt; &gt; [!example]
+&gt; &gt; &gt; And a nested example
+&gt;
+&gt; Back to the main tip
+</code></pre>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/pqon6rpxt4esOhPapSipgIv1KPW.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/b/2/3/b2321ee00d8c4fe369ba89a42ad4aba4b0cf0834.png" title="The image shows interactable tips on UI design, explaining that callouts can be nested within other callouts and providing an example. (Captioned by AI)"><img alt="The image shows interactable tips on UI design, explaining that callouts can be nested within other callouts and providing an example. (Captioned by AI)" data-base62-sha1="pqon6rpxt4esOhPapSipgIv1KPW" data-dominant-color="DEEAF2" height="500" src="../../../images/b2321ee00d8c4fe369ba89a42ad4aba4b0cf0834.png" width="564"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">The image shows interactable tips on UI design, explaining that callouts can be nested within other callouts and providing an example. (Captioned by AI)</span><span class="informations">719×637 7.66 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<h2><a aria-label="Heading link" class="anchor" href="#p-1704830-supported-default-types-11" name="p-1704830-supported-default-types-11"></a>Supported default types</h2>
+<p>You can use several callout types and aliases.<br/>
+Each type comes with a different background color and icon.</p>
+<blockquote>
+<p><img alt=":information_source:" class="emoji" height="20" loading="lazy" src="../../../images/information_source.png" title=":information_source:" width="20"/> You can create your callouts or manage the default ones.<br/>
+See the <code>callouts</code> setting.</p>
+</blockquote>
+<blockquote>
+<p><img alt=":information_source:" class="emoji" height="20" loading="lazy" src="../../../images/information_source.png" title=":information_source:" width="20"/> Any unsupported type defaults to the <code>note</code> type. See Default Fallbacks section for more information.</p>
+</blockquote>
+<blockquote>
+<p><img alt=":information_source:" class="emoji" height="20" loading="lazy" src="../../../images/information_source.png" title=":information_source:" width="20"/> The type identifier is case-insensitive.</p>
+</blockquote>
+<div class="md-table">
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+<th>Aliases</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>note</code></td>
+<td>For general notes and information</td>
+<td>-</td>
+</tr>
+<tr>
+<td><code>abstract</code></td>
+<td>For summaries or abstract sections</td>
+<td><code>summary</code>, <code>tldr</code></td>
+</tr>
+<tr>
+<td><code>info</code></td>
+<td>For informational content</td>
+<td>-</td>
+</tr>
+<tr>
+<td><code>todo</code></td>
+<td>For task lists or todo items</td>
+<td>-</td>
+</tr>
+<tr>
+<td><code>tip</code></td>
+<td>For tips and important information</td>
+<td><code>hint</code>, <code>important</code></td>
+</tr>
+<tr>
+<td><code>success</code></td>
+<td>For success messages</td>
+<td><code>check</code>, <code>done</code></td>
+</tr>
+<tr>
+<td><code>question</code></td>
+<td>For questions and FAQs</td>
+<td><code>help</code>, <code>faq</code></td>
+</tr>
+<tr>
+<td><code>warning</code></td>
+<td>For warnings</td>
+<td><code>caution</code>, <code>attention</code></td>
+</tr>
+<tr>
+<td><code>failure</code></td>
+<td>For failure notices</td>
+<td><code>fail</code>, <code>missing</code></td>
+</tr>
+<tr>
+<td><code>danger</code></td>
+<td>For danger or error messages</td>
+<td><code>error</code></td>
+</tr>
+<tr>
+<td><code>bug</code></td>
+<td>For bug reports or known issues</td>
+<td>-</td>
+</tr>
+<tr>
+<td><code>example</code></td>
+<td>For examples</td>
+<td>-</td>
+</tr>
+<tr>
+<td><code>quote</code></td>
+<td>For quotes</td>
+<td><code>cite</code></td>
+</tr>
+</tbody>
+</table>
+</div><p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/ow9tppvBAMOZDqVBHqTHN58oSyn.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/a/b/d/abd69f65f4ed7057834cae8147b6e3e18370cc0b.png" title="The image displays markdown notation examples for notes, abstracts, to-do lists, tips, and questions, illustrating the use of italics, bold text, links, formatted items, bullet points, code snippets, and check marks. (Captioned by AI)"><img alt="The image displays markdown notation examples for notes, abstracts, to-do lists, tips, and questions, illustrating the use of italics, bold text, links, formatted items, bullet points, code snippets, and check marks. (Captioned by AI)" data-base62-sha1="ow9tppvBAMOZDqVBHqTHN58oSyn" data-dominant-color="E7F2F4" height="499" src="../../../images/abd69f65f4ed7057834cae8147b6e3e18370cc0b.png" width="436"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">The image displays markdown notation examples for notes, abstracts, to-do lists, tips, and questions, illustrating the use of italics, bold text, links, formatted items, bullet points, code snippets, and check marks. (Captioned by AI)</span><span class="informations">702×805 20.8 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/5pgHhaWO35RckLg5ZqaK91JoWj7.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/2/5/e/25e61eeee408f6c785b277563e94a68510b97eb9.png" title="The image presents a warning about protecting data, a message about viewing failure constructively, a caution on managing tasks with care, an explanation of bugs in code, an example of using markdown lists, and a motivational quote about not letting doubts limit one's potential. (Captioned by AI)"><img alt="The image presents a warning about protecting data, a message about viewing failure constructively, a caution on managing tasks with care, an explanation of bugs in code, an example of using markdown lists, and a motivational quote about not letting doubts limit one's potential. (Captioned by AI)" data-base62-sha1="5pgHhaWO35RckLg5ZqaK91JoWj7" data-dominant-color="F5EBEE" height="500" src="../../../images/25e61eeee408f6c785b277563e94a68510b97eb9.png" width="426"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">The image presents a warning about protecting data, a message about viewing failure constructively, a caution on managing tasks with care, an explanation of bugs in code, an example of using markdown lists, and a motivational quote about not letting doubts limit one's potential. (Captioned by AI)</span><span class="informations">703×825 15.1 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<h2><a aria-label="Heading link" class="anchor" href="#p-1704830-customization-12" name="p-1704830-customization-12"></a>Customization</h2>
+<h3><a aria-label="Heading link" class="anchor" href="#p-1704830-icon-13" name="p-1704830-icon-13"></a>Icon</h3>
+<p>You can use either <a href="https://fontawesome.com/search?ic=free-collection">FontAwesome</a> icon or directly provide an SVG element.</p>
+<h4><a aria-label="Heading link" class="anchor" href="#p-1704830-svg-element-14" name="p-1704830-svg-element-14"></a>SVG element</h4>
+<p>While the free FontAwesome version provides many choices, you may feel limited sometimes.<br/>
+You can provide an SVG element <code>&lt;svg&gt;...&lt;/svg&gt;</code>.</p>
+<p>Example: <a href="https://lucide.dev/icons/">Lucile icons</a> – It’s a great set with the advantage of choosing the stroke width.</p>
+<ol>
+<li>Select an icon</li>
+<li>Adjust the Stroke width</li>
+<li>Click on <kbd>Copy SVG</kbd></li>
+<li>Go to the theme component settings and paste the content</li>
+</ol>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/rfvdJmskJG5DDus06946h8dOaQg.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/b/e/f/befb58121c2aed84660235bb5b95ba7a9d682a50.png" title='The image displays the Lucide app interface with a customizable icon drawer, showcasing an emoji-style "party-popper" icon example and a code snippet highlighting how to import icons from Lucide using SVG and JSX formats. (Captioned by AI)'><img alt='The image displays the Lucide app interface with a customizable icon drawer, showcasing an emoji-style "party-popper" icon example and a code snippet highlighting how to import icons from Lucide using SVG and JSX formats. (Captioned by AI)' data-base62-sha1="rfvdJmskJG5DDus06946h8dOaQg" data-dominant-color="F0F0F0" height="328" src="../../../images/befb58121c2aed84660235bb5b95ba7a9d682a50_2_690x328.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/b/e/f/befb58121c2aed84660235bb5b95ba7a9d682a50_2_690x328.png, https://d11a6trkgmumsb.cloudfront.net/original/4X/b/e/f/befb58121c2aed84660235bb5b95ba7a9d682a50.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/b/e/f/befb58121c2aed84660235bb5b95ba7a9d682a50.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">The image displays the Lucide app interface with a customizable icon drawer, showcasing an emoji-style "party-popper" icon example and a code snippet highlighting how to import icons from Lucide using SVG and JSX formats. (Captioned by AI)</span><span class="informations">966×460 38.7 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div><br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/nYgSmx9uHLFPcAx1iojtis2mukI.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/a/8/0/a8022d06439af35f48b07f46fdaa29fda56a5e6c.png" title="The image shows a form interface for adding a confetti callout with options for type, alias, and an SVG icon with specified width and height dimensions. (Captioned by AI)"><img alt="The image shows a form interface for adding a confetti callout with options for type, alias, and an SVG icon with specified width and height dimensions. (Captioned by AI)" data-base62-sha1="nYgSmx9uHLFPcAx1iojtis2mukI" data-dominant-color="F9F9F9" height="279" src="../../../images/a8022d06439af35f48b07f46fdaa29fda56a5e6c.png" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">The image shows a form interface for adding a confetti callout with options for type, alias, and an SVG icon with specified width and height dimensions. (Captioned by AI)</span><span class="informations">777×315 8.15 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div><br/>
+<img alt="image" data-base62-sha1="ok8rVffPlFdiMqH7eseSXBcK6ub" height="61" src="../../../images/aa7ae29eb3e1bbff8eba4c731340b422c089f3d7.png" width="608"/></p>
+<h3><a aria-label="Heading link" class="anchor" href="#p-1704830-default-fallbacks-15" name="p-1704830-default-fallbacks-15"></a>Default Fallbacks</h3>
+<p>You can set default values for when a specified callout type isn’t found with the following settings:</p>
+<ul>
+<li><code>callout_fallback_type</code></li>
+<li><code>callout_fallback_icon</code></li>
+<li><code>callout_fallback_color</code></li>
+</ul>
+<pre data-code-wrap="markdown"><code class="lang-markdown">&gt; [!discourse is fantastic]
+&gt; Yes.
+</code></pre>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/zFIsjUqTqJAwQW9Dg7n4tSIwLgl.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/f/a/0/fa034f10d90226d91502e76e3b60d03ab09a6ef1.png" title="chrome_02DZB72MyB"><img alt="chrome_02DZB72MyB" data-base62-sha1="zFIsjUqTqJAwQW9Dg7n4tSIwLgl" height="122" src="../../../images/fa034f10d90226d91502e76e3b60d03ab09a6ef1.png" width="610"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">chrome_02DZB72MyB</span><span class="informations">610×122 916 Bytes</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<h3><a aria-label="Heading link" class="anchor" href="#p-1704830-global-configuration-16" name="p-1704830-global-configuration-16"></a>Global configuration</h3>
+<p>You can customize various aspects of the callouts through</p>
+<ul>
+<li>Background opacity</li>
+<li>Border properties (width, style, color, radius)</li>
+<li>Padding</li>
+<li>Title font properties (size, weight)</li>
+<li>Space between icon and title</li>
+</ul>
+<h3><a aria-label="Heading link" class="anchor" href="#p-1704830-per-callout-configuration-17" name="p-1704830-per-callout-configuration-17"></a>Per-Callout configuration</h3>
+<p>Each callout type can be customized with:</p>
+<ul>
+<li>Custom icon</li>
+<li>Title text</li>
+<li>Color scheme</li>
+<li>Border properties</li>
+</ul>
+<p>See the Settings section below.</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/onWSczhvfqY3fJQmk5LMULBN19H.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/a/a/e/aae93c3aa643e3f8575aafaaaf8ebb81328d9e45.png" title="The image displays two text callouts: one highlighting that it's a simple note with an icon, and the other suggests using callouts to highlight important information with a flame icon. (Captioned by AI)"><img alt="The image displays two text callouts: one highlighting that it's a simple note with an icon, and the other suggests using callouts to highlight important information with a flame icon. (Captioned by AI)" data-base62-sha1="onWSczhvfqY3fJQmk5LMULBN19H" data-dominant-color="F0F4F9" height="258" src="../../../images/aae93c3aa643e3f8575aafaaaf8ebb81328d9e45.png" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">The image displays two text callouts: one highlighting that it's a simple note with an icon, and the other suggests using callouts to highlight important information with a flame icon. (Captioned by AI)</span><span class="informations">706×264 3.9 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<h2><a aria-label="Heading link" class="anchor" href="#p-1704830-settings-18" name="p-1704830-settings-18"></a>Settings</h2>
+<details>
+<summary>
+List</summary>
+<div class="md-table">
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>callouts</strong></td>
+<td>Define the callouts.</td>
+</tr>
+<tr>
+<td><strong>callout_fallback_type</strong></td>
+<td>The default callout type to use when the specified type is not found.<br/><small>Default value: <code>note</code></small></td>
+</tr>
+<tr>
+<td><strong>callout_fallback_icon</strong></td>
+<td>The default icon to use when the specified type is not found.<br/><small>Default value: <code>far-pen-to-square</code></small></td>
+</tr>
+<tr>
+<td><strong>callout_fallback_color</strong></td>
+<td>The default color to use when the specified type is not found.<br/><small>Default value: <code>#027aff</code></small></td>
+</tr>
+<tr>
+<td><strong>callout_background_opacity</strong></td>
+<td>The global background opacity for the callout (1 to 100).<br/><small>Default value: <code>10</code></small></td>
+</tr>
+<tr>
+<td><strong>callout_border_width</strong></td>
+<td>The global border width for the callout.<br/><small>Default value: <code>empty</code></small></td>
+</tr>
+<tr>
+<td><strong>callout_border_style</strong></td>
+<td>The global border style for the callout.<br/><small>Default value: <code>empty</code></small></td>
+</tr>
+<tr>
+<td><strong>callout_border_color</strong></td>
+<td>The global border color for the callout.<br/><small>Default value: <code>empty</code></small></td>
+</tr>
+<tr>
+<td><strong>callout_border_radius</strong></td>
+<td>The global border radius for the callout.<br/><small>Default value: <code>var(--d-border-radius)</code></small></td>
+</tr>
+<tr>
+<td><strong>callout_padding</strong></td>
+<td>The global padding for the callout.<br/><small>Default value: <code>0.75em 0.75em 0.75em 1.5em</code></small></td>
+</tr>
+<tr>
+<td><strong>callout_title_font_size</strong></td>
+<td>The global font size for the callout title.<br/><small>Default value: <code>inherit</code></small></td>
+</tr>
+<tr>
+<td><strong>callout_title_font_weight</strong></td>
+<td>The global font weight for the callout title.<br/><small>Default value: <code>bold</code></small></td>
+</tr>
+<tr>
+<td><strong>callout_title_gap</strong></td>
+<td>The global gap between the callout icon and title.<br/><small>Default value: <code>0.5em</code></small></td>
+</tr>
+<tr>
+<td><strong>callout_icon_sizep</strong></td>
+<td>The global size for the callout icon.</td>
+</tr>
+<tr>
+<td><strong>callout_transition_duration_ms</strong></td>
+<td>The duration of the open and close animation (ms).</td>
+</tr>
+<tr>
+<td><strong>svg_icons</strong></td>
+<td>List of FontAwesome 6 icons used in this theme component.</td>
+</tr>
+</tbody>
+</table>
+</div><p>Per-callout setting page:</p>
+<div class="md-table">
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Type*</strong></td>
+<td>The type of the callout.<br/><small>This identifier will be used in the callout syntax: <code>[!type]</code></small></td>
+</tr>
+<tr>
+<td><strong>Alias</strong></td>
+<td>The aliases for the callout, separated by <code>|</code>.<br/><small>Example: <code>cite|quote</code></small></td>
+</tr>
+<tr>
+<td><strong>Icon</strong></td>
+<td>The <a href="https://fontawesome.com/search?ic=free">fontawesome</a> icon for the callout.<br/><small>You might need to add it to <code>svg_icons</code> setting if it’s not available in the default subset.<br/>Alternatively, you can provide an SVG element directly, e.g. <code>&lt;svg&gt;...&lt;/svg&gt;</code></small></td>
+</tr>
+<tr>
+<td><strong>Icon size</strong></td>
+<td>The size for the callout icon.<br/><small>Note: Use only valid CSS values, e.g. <code>1em</code>, <code>16px</code>, <code>1.5rem</code></small></td>
+</tr>
+<tr>
+<td><strong>Title</strong></td>
+<td>The title for the callout.<br/><small>If no title is provided in the callout, this setting will be used.<br/>Note: if both are empty, the title will be the callout type.</small></td>
+</tr>
+<tr>
+<td><strong>Color</strong></td>
+<td>The color for the callout.<br/><small>This will be used for the background, title, and icon.<br/>Note: Use only hexadecimal color codes, e.g. <code>#027aff</code></small></td>
+</tr>
+<tr>
+<td><strong>Border width</strong></td>
+<td>The <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/border-width">border width</a> for the callout.</td>
+</tr>
+<tr>
+<td><strong>Border style</strong></td>
+<td>The <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/border-style">border style</a> for the callout.</td>
+</tr>
+<tr>
+<td><strong>Border color</strong></td>
+<td>The <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/border-color">border color</a> for the callout.<br/><small>Important: if you’re using CSS functions to produce an alpha value, such as <code>rgba</code>, make sure not to use spaces between the values, e.g., <code>rgba(145,145,145,0.1)</code></small></td>
+</tr>
+<tr>
+<td><strong>Border radius</strong></td>
+<td>The <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/border-radius">border radius</a> for the callout.</td>
+</tr>
+</tbody>
+</table>
+</div><p>* Required setting</p>
+</details>
+<h2><a aria-label="Heading link" class="anchor" href="#p-1704830-rich-text-editor-support-19" name="p-1704830-rich-text-editor-support-19"></a>Rich text editor support</h2>
+<p>This component now supports the Discourse rich text editor, making callouts easier to create, edit, and organize.</p>
+<h3><a aria-label="Heading link" class="anchor" href="#p-1704830-creating-callouts-20" name="p-1704830-creating-callouts-20"></a>Creating callouts</h3>
+<p>You can insert callouts in multiple ways:</p>
+<ul>
+<li>Keyboard shortcut: <kbd>Ctrl</kbd> + <kbd>Q</kbd></li>
+<li>Toolbar button</li>
+<li>Input rules:
+<ul>
+<li><code>/callout&lt;:type&gt; </code></li>
+<li><code>!!&lt;type&gt; </code></li>
+</ul>
+</li>
+<li>Paste support</li>
+</ul>
+<details>
+<summary>
+Video</summary>
+<p> </p><div class="video-placeholder-container" data-thumbnail-src="https://d11a6trkgmumsb.cloudfront.net/original/4X/8/5/5/855def74513bd6d0859c82fa098f383794ee0e87.jpeg" data-video-base62-sha1="tboRaXHnoh4SWetahIvIe11Wd0O.mp4" data-video-src="https://d11a6trkgmumsb.cloudfront.net/original/4X/c/c/8/cc88f7f17ce98272f3805e13547b4939d5651406.mp4">
+</div> <p></p>
+</details>
+<h3><a aria-label="Heading link" class="anchor" href="#p-1704830-editing-callouts-21" name="p-1704830-editing-callouts-21"></a>Editing callouts</h3>
+<p>The controls to edit a callout appear only when you select it before.</p>
+<ul>
+<li>
+<p><strong>Type chooser</strong><br/>
+By clicking on the icon, a floating menu will appear.</p>
+</li>
+<li>
+<p><strong>Custom Title</strong><br/>
+Supports inline formatting and emoji</p>
+</li>
+<li>
+<p><strong>Folding</strong><br/>
+Set callouts as collapsible. It can be accessed from the options menu.</p>
+</li>
+</ul>
+<details>
+<summary>
+Video</summary>
+<p> </p><div class="video-placeholder-container" data-thumbnail-src="https://d11a6trkgmumsb.cloudfront.net/original/4X/9/b/7/9b7a554254ceaaab5d542f91ab3a3326bc547750.png" data-video-base62-sha1="2SDuhWwiValpRRVaOUFJMqTWe6r.mp4" data-video-src="https://d11a6trkgmumsb.cloudfront.net/original/4X/1/4/3/1431725ce25b7b799e86a9192e1a9f52fdd516a7.mp4">
+</div> <p></p>
+</details>
+<h3><a aria-label="Heading link" class="anchor" href="#p-1704830-move-controls-22" name="p-1704830-move-controls-22"></a>Move controls</h3>
+<ul>
+<li>
+<p><strong>Desktop</strong></p>
+<ul>
+<li>Drag &amp; drop using a handle</li>
+</ul>
+</li>
+<li>
+<p><strong>Touch devices</strong></p>
+<ul>
+<li>Move callouts up/down</li>
+<li>Nest inside adjacent callouts</li>
+<li>Disabled by default (can be enabled in options)</li>
+</ul>
+</li>
+</ul>
+<details>
+<summary>
+Video</summary>
+<p> </p><div class="video-placeholder-container" data-thumbnail-src="https://d11a6trkgmumsb.cloudfront.net/original/4X/f/3/9/f3990d15184af18c0371e12952be6f1deb47f936.jpeg" data-video-base62-sha1="3wlWjpKAZrXZzyZuKGCnmVDJcJh.mp4" data-video-src="https://d11a6trkgmumsb.cloudfront.net/original/4X/1/8/a/18aec9b09c3c435f2d31dc59590107564afdf00f.mp4">
+</div> <p></p>
+</details>
+<h3><a aria-label="Heading link" class="anchor" href="#p-1704830-keyboard-navigation-23" name="p-1704830-keyboard-navigation-23"></a>Keyboard navigation</h3>
+<p>Improves navigation inside nested callouts:</p>
+<ul>
+<li><kbd>←</kbd> at the start of the title opens the type chooser</li>
+<li><kbd>↑</kbd> / <kbd>↓</kbd> inside empty areas creates/removes paragraphs</li>
+<li><kbd>Enter</kbd> in the title moves the cursor into the body</li>
+</ul>
+<details>
+<summary>
+Video</summary>
+<p> </p><div class="video-placeholder-container" data-thumbnail-src="https://d11a6trkgmumsb.cloudfront.net/original/4X/c/e/3/ce352ffb41a0c54cc6aa41d2be246579c397257b.jpeg" data-video-base62-sha1="7e9pEwO9oJ43dED9MFNBbbYFhDn.mp4" data-video-src="https://d11a6trkgmumsb.cloudfront.net/original/4X/3/2/a/32a8bf6841fcdc7e5c2399d6e6da15ffaec0f825.mp4">
+</div> <p></p>
+</details>
+<h3><a aria-label="Heading link" class="anchor" href="#p-1704830-click-to-insert-24" name="p-1704830-click-to-insert-24"></a>Click-to-insert</h3>
+<ul>
+<li>Click in empty areas to create a paragraph</li>
+<li>Optional buttons allow inserting content inside or outside callouts</li>
+</ul>
+<details>
+<summary>
+Video</summary>
+<p> </p><div class="video-placeholder-container" data-thumbnail-src="https://d11a6trkgmumsb.cloudfront.net/original/4X/3/f/3/3f365759044cdbede13f12fa70325432f32f7ce3.png" data-video-base62-sha1="jchaAJg1WirCmvT5TuA9Bpa1HJl.mp4" data-video-src="https://d11a6trkgmumsb.cloudfront.net/original/4X/8/6/8/868c944e5ab184f52c7c8de99b5e185102c905df.mp4">
+</div> <p></p>
+</details>
+<h2><a aria-label="Heading link" class="anchor" href="#p-1704830-roadmap-25" name="p-1704830-roadmap-25"></a>Roadmap</h2>
+<p>Future development plans may include:</p>
+<ul>
+<li>Autocomplete types on typing</li>
+</ul>
+<h2><a aria-label="Heading link" class="anchor" href="#p-1704830-credits-26" name="p-1704830-credits-26"></a>Credits</h2>
+<ul>
+<li><span class="mention">@StefanoCecere</span> – Feature request, <a class="inline-onebox" href="https://meta.discourse.org/t/style-blockquotes-as-callouts-in-obsidian/350045">Style blockquotes as callouts in Obsidian</a></li>
+</ul>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 37">❤️ 37</span><span class="engagement-pill reaction-pill" title="star struck: 10">:star_struck: 10</span><span class="engagement-pill reaction-pill" title="100: 4">:100: 4</span><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span><span class="engagement-pill reaction-pill" title="chefs kiss: 1">:chefs_kiss: 1</span><span class="engagement-pill reaction-pill" title="rocket: 1">🚀 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/176214_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">merefield</div>
+          <div class="post_content">
+<p>Oh nice!</p>
+<p>I think this could be used for this purpose?:</p>
+<aside class="quote" data-post="1" data-topic="341813">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/176214_2.png" width="24"/>
+<a href="https://meta.discourse.org/t/additional-post-colour-coding/341813">Additional Post "Colour" coding</a> <a class="badge-category__wrapper" href="/c/ux/9"><span class="badge-category" data-category-id="9" data-drop-close="true" style="--category-badge-color: #5F497A; --category-badge-text-color: #FFFFFF;" title="Discussion about the user interface of Discourse and how features are presented (including language and UI elements)."><span class="badge-category__name">UX</span></span></a>
+</div>
+<blockquote>
+    We have “Add Staff Colour” which is great … are there any other quick solutions for “colour-coding” specific Posts?
+  </blockquote>
+</aside>
+
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 6">❤️ 6</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/298682_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Arkshine</div>
+          <div class="post_content">
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/w94IbR45mCmvYZNTy1eFGvrieWf.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/e/1/4/e14c36165529769c756fc01215f22cc5bb6e7993.png" title='The image presents a split-screen document with two columns filled with two identical sets of placeholder text (Lorem Ipsum), each marked by a "A" symbol in green circles at their top positions. A warning message, text box, and dialog box are situated above the left text. (Captioned by AI)'><img alt='The image presents a split-screen document with two columns filled with two identical sets of placeholder text (Lorem Ipsum), each marked by a "A" symbol in green circles at their top positions. A warning message, text box, and dialog box are situated above the left text. (Captioned by AI)' data-base62-sha1="w94IbR45mCmvYZNTy1eFGvrieWf" data-dominant-color="ECEAD7" height="500" src="../../../images/e14c36165529769c756fc01215f22cc5bb6e7993_2_657x500.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/e/1/4/e14c36165529769c756fc01215f22cc5bb6e7993_2_657x500.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/e/1/4/e14c36165529769c756fc01215f22cc5bb6e7993_2_985x750.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/e/1/4/e14c36165529769c756fc01215f22cc5bb6e7993_2_1314x1000.png 2x" width="657"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">The image presents a split-screen document with two columns filled with two identical sets of placeholder text (Lorem Ipsum), each marked by a "A" symbol in green circles at their top positions. A warning message, text box, and dialog box are situated above the left text. (Captioned by AI)</span><span class="informations">1630×1239 301 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>That seems like a valid usage!</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 8">❤️ 8</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/158064_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">StefanoCecere</div>
+          <div class="post_content">
+<p>impressive! you’re great</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 4">❤️ 4</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/131899_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Heliosurge</div>
+          <div class="post_content">
+<p>This is a stellar add.  Much more than the base discussion seemed to entail(granted haven’t used Obsidian).</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/119526_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">alehandrof</div>
+          <div class="post_content">
+<p>This looks amazing. Will the callouts be styled correctly on email as well?</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/119526_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">alehandrof</div>
+          <div class="post_content">
+<p>When I added this component to my site I got an error message that read:</p>
+<blockquote>
+<p><img alt=":warning:" class="emoji" height="20" loading="lazy" src="../../../images/warning.png" title=":warning:" width="20"/> Your site may not work because a theme / component has errors.<br/>
+Caused by ‘Quote Callouts’. Click here to update, reconfigure or disable.</p>
+</blockquote>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/131899_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Heliosurge</div>
+          <div class="post_content">
+<p>What version of discourse are you running?</p>
+<p>I am on Tests-passed(3.5 beta) and it seems fine</p>
+<p>If you’re on Stable you may still be 3.4 or maybe earlier version as 3.4 just rolled out to stable</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/119526_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">alehandrof</div>
+          <div class="post_content">
+<p>Ah, I haven’t upgraded recently because of the <a href="https://meta.discourse.org/t/postgresql-15-update/349515">PostgreSQL stuff</a>. I’ll report back when I do!</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/131899_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Heliosurge</div>
+          <div class="post_content">
+<p>Not sure if that is the case…  But a likely suspect as many changes have rolled out with how TC etc… structures have changed.  Like the move to glimmer components.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/298682_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Arkshine</div>
+          <div class="post_content">
+<aside class="quote no-group" data-full="true" data-post="7" data-topic="350962" data-username="alehandrof">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/119526_2.png" width="24"/> Alex Armstrong:</div>
+<blockquote>
+<p>This looks amazing. Will the callouts be styled correctly on email as well?</p>
+</blockquote>
+</aside>
+<p>Unfortunately, I don’t think so. It would require a plugin.</p>
+<aside class="quote no-group" data-post="8" data-topic="350962" data-username="alehandrof">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/119526_2.png" width="24"/> Alex Armstrong:</div>
+<blockquote>
+<p>When I added this component to my site I got an error message that read:</p>
+</blockquote>
+</aside>
+<p>What is your current Discourse version?</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/119526_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">alehandrof</div>
+          <div class="post_content">
+<p>I updated to the latest version and it works now.</p>
+<p>The lack of email support unfortunately makes this unusable for our case. Most of our members are subscribed to groupts &amp; categories and so read messages in their email. Bummer!</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/298682_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Arkshine</div>
+          <div class="post_content">
+<p>I might try to make a plugin version later!</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 7">❤️ 7</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">jrgong</div>
+          <div class="post_content">
+<p>This is a fantastic addition to Discourse! <img alt=":heart:" class="emoji" height="20" loading="lazy" src="../../../images/heart.png" title=":heart:" width="20"/> <img alt=":heart:" class="emoji" height="20" loading="lazy" src="../../../images/heart.png" title=":heart:" width="20"/> <img alt=":heart:" class="emoji" height="20" loading="lazy" src="../../../images/heart.png" title=":heart:" width="20"/></p>
+<p>That’s exactly what we are missing in Discourse core, at least the 4 most common types of callout such as info, danger, warning and success. We have been using the blockquote + emoji format for a while and we willl definitely give this one a shot <img alt=":slight_smile:" class="emoji" height="20" loading="lazy" src="../../../images/slight_smile.png" title=":slight_smile:" width="20"/></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 5">❤️ 5</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/515563_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">jordan.vidrine</div>
+          <div class="post_content">
+<p>Love what you’ve done here!</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 5">❤️ 5</span><span class="engagement-pill reaction-pill" title="hugs: 1">🤗 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/520162_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">patrickemin</div>
+          <div class="post_content">
+<p>Very nice thanks !</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/520162_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">patrickemin</div>
+          <div class="post_content">
+<p>Hi, just one thing, the quote callout code appears in the excerpts on my home page, it would be better it doesn’t:</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/umoLos9l2YwnvdRErB70UfaQM99.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/d/4/c/d4c96b8f400a9695e6a8615478aea85b76806f17.png" rel="noopener nofollow ugc" title="The image shows the Autodesk logo along with a text in French discussing the history, evolution, definitions, and future perspectives of Autodesk software since its creation in 1982. (Captioned by AI)"><img alt="The image shows the Autodesk logo along with a text in French discussing the history, evolution, definitions, and future perspectives of Autodesk software since its creation in 1982. (Captioned by AI)" data-base62-sha1="umoLos9l2YwnvdRErB70UfaQM99" data-dominant-color="E9E6DF" height="500" src="../../../images/d4c96b8f400a9695e6a8615478aea85b76806f17.png" width="444"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">The image shows the Autodesk logo along with a text in French discussing the history, evolution, definitions, and future perspectives of Autodesk software since its creation in 1982. (Captioned by AI)</span><span class="informations">453×509 35.2 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/298682_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Arkshine</div>
+          <div class="post_content">
+<p><span class="mention">@patrickemin</span> Can you test the latest version? It should clean up the topic excerpt now.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 4">❤️ 4</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/520162_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">patrickemin</div>
+          <div class="post_content">
+<p>Yes it works thanks!</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">dubwoc</div>
+          <div class="post_content">
+<p>Thank you for the theme component I really like it!</p>
+<p>Unfortunately, I had to temporarily disable it as it was causing visual problems on my site and I saw the following in the console that I was able to trace back to your callouts.gjs</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/klDr8ED0Cp3DNP68sOBmV9Y4uO.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/0/2/4/024cdd474d8f1843c77a3103cea2f60842605816.png" rel="noopener nofollow ugc" title="bug"><img alt="bug" data-base62-sha1="klDr8ED0Cp3DNP68sOBmV9Y4uO" data-dominant-color="4B3037" height="106" src="../../../images/024cdd474d8f1843c77a3103cea2f60842605816_2_690x106.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/0/2/4/024cdd474d8f1843c77a3103cea2f60842605816_2_690x106.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/0/2/4/024cdd474d8f1843c77a3103cea2f60842605816_2_1035x159.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/0/2/4/024cdd474d8f1843c77a3103cea2f60842605816.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">bug</span><span class="informations">1266×195 11.9 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/298682_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Arkshine</div>
+          <div class="post_content">
+<p>Thanks for reporting! Can you share your Discourse version?</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">dubwoc</div>
+          <div class="post_content">
+<p>Thank you for such a fast response :). I updated about 10 minutes ago to see if it would resolve the problem the version I am running is:</p>
+<p><strong>3.5.0.beta1-dev</strong><br/>
+( <a href="https://github.com/discourse/discourse/commits/a77d469eeb28941b8ea81babdb36d639400e8a58" rel="noopener nofollow ugc"> a77d469eeb </a> )</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">dubwoc</div>
+          <div class="post_content">
+<p>I went ahead and downgraded to stable, which is 3.4.0 ( <a href="https://github.com/discourse/discourse/commits/3bbf96fa2188ff42a23033de6710dfc069fcc921" rel="noopener nofollow ugc"> 3bbf96fa21 </a> ) and while I do not get the error in the console anymore the same symptom is there which is that other theme components / visual changes do not load properly.</p>
+<p><strong>Updated</strong><br/>
+Correction: after reloading the page a few more times the error does now show up so it might have been a fluke that it didn’t initially, so I am confirming this on 3.4.0 as well.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/298682_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Arkshine</div>
+          <div class="post_content">
+<p><span class="mention">@dubwoc</span><br/>
+The component works best with a recent Discourse version.<br/>
+I updated the component. I can’t reproduce it, but I made some changes. Make sure to update it and try it!</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">dubwoc</div>
+          <div class="post_content">
+<p>Thanks again for the quick response. This did not fix the error I get a similar error that looks like the following:</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/qmSstADPbhIUoG8RTcdpKzvmkiG.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/b/8/c/b8ce959271e066edd2f94d393ba6ece646a92bb6.png" rel="noopener nofollow ugc" title="bug2"><img alt="bug2" data-base62-sha1="qmSstADPbhIUoG8RTcdpKzvmkiG" data-dominant-color="493037" height="124" src="../../../images/b8ce959271e066edd2f94d393ba6ece646a92bb6_2_690x124.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/b/8/c/b8ce959271e066edd2f94d393ba6ece646a92bb6_2_690x124.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/b/8/c/b8ce959271e066edd2f94d393ba6ece646a92bb6_2_1035x186.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/b/8/c/b8ce959271e066edd2f94d393ba6ece646a92bb6_2_1380x248.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">bug2</span><span class="informations">1908×345 38.6 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>I was able to narrow it down to an interaction between your component and the official Discourse Topic Cards component (<a class="inline-onebox" href="https://github.com/discourse/discourse-topic-cards" rel="noopener nofollow ugc">GitHub - discourse/discourse-topic-cards: This changed the topic list into cards with a modified layout, and a thumbnail if available.</a>), you are likely unable to reproduce the error because you do not have this component installed. If you install it and navigate around to different categories you’ll see the error relatively quickly.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/298682_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Arkshine</div>
+          <div class="post_content">
+<p>Thanks for the details! <span class="mention">@dubwoc</span></p>
+<p>I can see an error (not the same, though, but it might be because it’s a dev instance).<br/>
+It seems that, for some reason, one of the excerpt returns a boolean instead of a string.</p>
+<p>I’ve pushed a fix, hit the update button, and try again.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">dubwoc</div>
+          <div class="post_content">
+<p>Yep, that fixed the issue on my end! Thank you for iterating with me!</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 4">❤️ 4</span><span class="engagement-pill reaction-pill" title="rocket: 1">🚀 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/298682_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Arkshine</div>
+          <div class="post_content">
+<p>Awesome, thanks for your patience! <img alt=":smile:" class="emoji" height="20" loading="lazy" src="../../../images/smile.png" title=":smile:" width="20"/></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 2">👍 2</span><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span><span class="engagement-pill reaction-pill" title="100: 1">:100: 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/120154_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">pfaffman</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="24" data-topic="350962" data-username="dubwoc">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/48.png" width="24"/> dubwoc:</div>
+<blockquote>
+<p>I went ahead and downgraded to stable</p>
+</blockquote>
+</aside>
+<p>You can’t downgrade. Unless you were lucky and there were no database migrations, you’ll likely have problems.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 4">❤️ 4</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">dubwoc</div>
+          <div class="post_content">
+<p>Fair enough, then I got lucky at the time I did this <img alt=":slight_smile:" class="emoji" height="20" loading="lazy" src="../../../images/slight_smile.png" title=":slight_smile:" width="20"/></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Mate</div>
+          <div class="post_content">
+<p>I installed it, and it shows a banner saying</p>
+<p><img alt=":warning:" class="emoji" height="20" loading="lazy" src="../../../images/warning.png" title=":warning:" width="20"/> Your site may not work because a theme / component has errors.<br/>
+Caused by ‘Quote Callouts’. <a href="https://ds.pienza.dev/admin/customize/themes/48?safe_mode=no_themes" rel="noopener nofollow ugc">Click here</a> to update, reconfigure or disable.<br/>
+(this message is only shown to site administrators)</p>
+<p>I probably need to update Discourse but just telling you guys since it is interesting.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/298682_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Arkshine</div>
+          <div class="post_content">
+<p>Thanks for the report!</p>
+<p>Can you open the browser’s console and paste any errors you see here?<br/>
+It should not throw an error even if it works well with the latest Discourse version.</p>
+<p>Also, what is your Discourse version?</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 4">❤️ 4</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Mate</div>
+          <div class="post_content">
+<p>oh it was because I did not update, I will try to do that soon!</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Mate</div>
+          <div class="post_content">
+<p>also, I like your callout theme component a lot!</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="clap: 1">👏 1</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">0xDBFB7</div>
+          <div class="post_content">
+<p>This component <strong>rules</strong> <strong>so hard.</strong> I love it. Leaving this message in the hope that anyone who comes across this older thread</p>
+<aside class="quote quote-modified" data-post="1" data-topic="234753">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/269051_2.png" width="24"/>
+<div class="quote-title__text-content">
+<a href="https://meta.discourse.org/t/warning-success-info-blocks/234753">Warning, Success &amp; Info Blocks</a> <a class="badge-category__wrapper" href="/c/support/6"><span class="badge-category --style-square" data-category-id="6" data-drop-close="true" style="--category-badge-color: #ce96c9; --category-badge-text-color: #000000;" title="The category for general support questions on using your Discourse site."><span class="badge-category__name">Support</span></span></a>
+</div>
+</div>
+<blockquote>
+    Hello, 
+I am looking for a plugin or markdown extension for notification blocks. Bootstrap has something like this 
+ <a class="lightbox" data-download-href="/uploads/short-url/vqJiLuBHRESrVnSJVBW4cGRHX0g.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/d/c/4/dc48eef60feec846d9b69c79566c41a1241460b4.png" rel="noopener nofollow ugc" title="image">[image]</a> 
+Would appreciate it if there’s a plugin out there.
+  </blockquote>
+</aside>
+<p>like I did ends up here.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/520162_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">patrickemin</div>
+          <div class="post_content">
+<p>Hello, would it be possible for the formatting codes for these callouts not to appear in the article excerpts, see the illustration below?</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/3QYvW0oZfzn5bIIPs6WZpV1oTDq.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/1/b/0/1b038ee592cfcf793149e57d790bc95297d85d58.png" rel="noopener nofollow ugc" title="image"><img alt="image" data-base62-sha1="3QYvW0oZfzn5bIIPs6WZpV1oTDq" height="204" src="../../../images/1b038ee592cfcf793149e57d790bc95297d85d58.png" width="454"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">454×204 6.93 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="eyes: 1">👀 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/529474_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">jordanjay29</div>
+          <div class="post_content">
+<p>Hi Arkshine, fantastic component! Seems like the latest discourse update is threatening to not play nice with this now, however, it throws a warning at the top of the forum for admins that this component uses the now-deprecated widget feature in discourse.</p>
+<p>Afaict, it hasn’t impacted actual usage yet.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="eyes: 1">👀 1</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">RowBro</div>
+          <div class="post_content">
+<p>I’ve taken the liberty of updating the component to use the new api. I’ve put a PR up on the original repo, but you can install it via <a href="https://github.com/rowan-gray/discourse-quote-callouts.git" rel="noopener nofollow ugc">the fork here</a> if you’re impatient.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 5">❤️ 5</span><span class="engagement-pill reaction-pill" title="rocket: 1">🚀 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/298682_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Arkshine</div>
+          <div class="post_content">
+<p>Hi, thanks for the help. it’s actually on my todo list to update soon the component to use glimmer and add rich editor support! Stay tuned <img alt=":+1:" class="emoji" height="20" loading="lazy" src="../../../images/+1.png" title=":+1:" width="20"/></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 10">❤️ 10</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/352776_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Cédric_DANIEL</div>
+          <div class="post_content">
+<p>Great! I can’t wait to use it. <img alt=":slight_smile:" class="emoji" height="20" loading="lazy" src="../../../images/slight_smile.png" title=":slight_smile:" width="20"/></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/529474_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">jordanjay29</div>
+          <div class="post_content">
+<p>There may be an error in here, enabling this (with the original disabled) created issues for accounts without admin access. Unsure of what conflicted exactly, but some topics were hidden and the Categories/Tags navigation was unusable at all for non-permissive accounts (TL1).</p>
+<p>I’ll wait for Arkshine’s update.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="eyes: 1">👀 1</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/119526_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">alehandrof</div>
+          <div class="post_content">
+<p>I’m seeing the following when I updated today</p>
+<blockquote>
+<p><strong>[Admin Notice]</strong> Theme <a href="https://connect.amicalnet.org/admin/customize/themes/41?safe_mode=no_themes" rel="noopener nofollow ugc">‘Quote Callouts’</a> contains code which needs updating. (id:discourse.widgets-decommissioned) (<em><a href="https://meta.discourse.org/t/375332/1">learn more</a></em>)</p>
+</blockquote>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="eyes: 1">👀 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/298682_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Arkshine</div>
+          <div class="post_content">
+<p>I’ve pushed a fix, can you update the component and give it a try? <img alt=":folded_hands:" class="emoji" height="20" loading="lazy" src="../../../images/folded_hands.png" title=":folded_hands:" width="20"/></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span><span class="engagement-pill reaction-pill" title="rocket: 3">🚀 3</span><span class="engagement-pill reaction-pill" title="eyes: 1">👀 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/529474_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">jordanjay29</div>
+          <div class="post_content">
+<p>Working fine so far!</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/501520_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">祁同伟</div>
+          <div class="post_content">
+<p>I’m currently encountering an issue where the quote block cannot be collapsed/expanded</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/298682_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Arkshine</div>
+          <div class="post_content">
+<p>Do you mind pasting here a reproducible example or a link to your post in your forum (feel free to PM me if you prefer)?</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/501520_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">祁同伟</div>
+          <div class="post_content">
+<p>Of course, the bottom of this topic</p><aside class="onebox discoursetopic" data-onebox-src="https://qingju.me/t/topic/2129">
+<header class="source">
+<img alt="" class="site-icon" height="32" src="../../../images/71c15fac068192f175693c579db4b89e2713cdbe_2_32x32.png" width="32"/>
+<a href="https://qingju.me/t/topic/2129" rel="nofollow ugc noopener" target="_blank" title="09:31AM - 20 October 2025">青橘社区 – 20 Oct 25</a>
+</header>
+<article class="onebox-body">
+<img class="thumbnail onebox-avatar" height="256" src="../../../images/426a1dbccfe921dd37c898501ecf3702646cabd2.png" width="256"/>
+<div class="title-wrapper">
+<h3><a href="https://qingju.me/t/topic/2129" rel="nofollow ugc noopener" target="_blank">R2Modman(Thunderstore 游戏模组管理器) v3.2.3 自制简体汉化补丁</a></h3>
+<div class="topic-category">
+<span class="badge-wrapper bullet">
+<span class="badge-category-bg" style="background-color: #12A89D;"></span>
+<span class="badge-category clear-badge">
+<span class="category-name">资源荟萃</span>
+</span>
+</span>
+<div class="topic-header-extra">
+<div class="list-tags">
+<div class="discourse-tags">
+<svg class="fa d-icon d-icon-tag svg-icon svg-string"><use href="#tag"></use></svg>
+<span class="discourse-tag simple">游戏</span>
+<span class="discourse-tag simple">移动云盘</span>
+<span class="discourse-tag simple">MOD</span>
+<span class="discourse-tag simple">精华神帖</span>
+<span class="discourse-tag simple">夸克网盘</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>应用介绍 R2Modman是一个简单易用的 Thunderstore 游戏模组管理器。  ThunderStore下载   [!Github]+  GitHub - ebkr/r2modmanPlus: A simple and easy to use mod manager for several games using Thunderstore    [!pan]+夸克网盘  夸克网盘   功能   支持雨中冒险 2、戴森球计划、瓦尔海姆、GTFO、BONEWORKS 等游戏...</p>
+<p>
+<span class="label1">阅读时间: 9 mins 🕑</span>
+<span class="label2">赞: 83 ❤</span>
+</p>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/298682_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Arkshine</div>
+          <div class="post_content">
+<p>Here’s an <a href="https://github.com/Arkshine/discourse-quote-callouts/pull/6">update</a> that modernizes the component and brings rich text editor support! <img alt=":rocket:" class="emoji" height="20" loading="lazy" src="../../../images/rocket.png" title=":rocket:" width="20"/><br/>
+It might need some polish or may have unforeseen edge cases, but I believe it’s a fair good start.  <img alt=":folded_hands:" class="emoji" height="20" loading="lazy" src="../../../images/folded_hands.png" title=":folded_hands:" width="20"/></p>
+<h3><a aria-label="Heading link" class="anchor" href="#p-1954455-in-short-1" name="p-1954455-in-short-1"></a>In short</h3>
+<ul>
+<li>Adds Rich text editor support (see below for a detailed overview)</li>
+<li>Converts rendering to a glimmer component</li>
+<li>Fixes CSS color with nested callouts</li>
+<li>Fixes CSS color with alias</li>
+<li>The fold animation should be smoother</li>
+<li>Adds <code>callout_transition_duration_ms</code> setting (fold animation)</li>
+<li>Adds <kbd>Ctrl</kbd> + <kbd>q</kbd>  shortcut to insert a default callout.<br/>
+It works on both editors, and the shortcut is added to the Keyboard Shortcut modal
+<details>
+<summary>
+Images</summary>
+<div class="d-image-grid" data-mode="carousel">
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/x44lZiReC0DwVX61nmYnEJ8l56F.jpeg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/e/7/b/e7bd86d2cfc1e5fbea1376031d4249a288df9c69.jpeg" title="chrome_7HSSbReBtO"><img alt="chrome_7HSSbReBtO" data-base62-sha1="x44lZiReC0DwVX61nmYnEJ8l56F" height="348" src="../../../images/e7bd86d2cfc1e5fbea1376031d4249a288df9c69.jpeg" width="329"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">chrome_7HSSbReBtO</span><span class="informations">329×348 15.5 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div><br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/eaYci4Tmy03XmjjGSt5UwCrIgzY.jpeg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/6/3/5/635bea715f9ffc5018b8738de16c986233516786.jpeg" title="chrome_YaDrphqvbV"><img alt="chrome_YaDrphqvbV" data-base62-sha1="eaYci4Tmy03XmjjGSt5UwCrIgzY" data-dominant-color="EDEFF0" height="266" src="../../../images/635bea715f9ffc5018b8738de16c986233516786.jpeg" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">chrome_YaDrphqvbV</span><span class="informations">712×275 19.1 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+</div>
+</details>
+</li>
+<li>Chat: Adds a button in the toolbar to insert a default callout
+<details>
+<summary>
+Images</summary>
+<div class="d-image-grid" data-mode="carousel">
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/gXfyvjhr6otlpueP2W2liyJYeKO.jpeg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/7/6/d/76d5674fbc2dc07188bc4b24d483a5e85adaf63e.jpeg" title="chrome_CWig42tWHY"><img alt="chrome_CWig42tWHY" data-base62-sha1="gXfyvjhr6otlpueP2W2liyJYeKO" data-dominant-color="FCFCFC" height="500" src="../../../images/76d5674fbc2dc07188bc4b24d483a5e85adaf63e_2_433x500.jpeg" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/7/6/d/76d5674fbc2dc07188bc4b24d483a5e85adaf63e_2_433x500.jpeg, https://d11a6trkgmumsb.cloudfront.net/original/4X/7/6/d/76d5674fbc2dc07188bc4b24d483a5e85adaf63e.jpeg 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/7/6/d/76d5674fbc2dc07188bc4b24d483a5e85adaf63e.jpeg 2x" width="433"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">chrome_CWig42tWHY</span><span class="informations">478×551 16.3 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div><br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/4Vm40cOz91iQbXbfludlYqySiii.jpeg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/2/2/8/22847a19f440484f63e94f192f732dbaffdb9b66.jpeg" title="chrome_TsyfsoA82R"><img alt="chrome_TsyfsoA82R" data-base62-sha1="4Vm40cOz91iQbXbfludlYqySiii" height="373" src="../../../images/22847a19f440484f63e94f192f732dbaffdb9b66.jpeg" width="291"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">chrome_TsyfsoA82R</span><span class="informations">291×373 12.8 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div><br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/rWKCT35AfRkzY5vQtiOUwXaJ2Dp.jpeg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/c/3/d/c3dee18db204017fe15879927b4baebc0223b06b.jpeg" title="chrome_nWk7hUyRGr"><img alt="chrome_nWk7hUyRGr" data-base62-sha1="rWKCT35AfRkzY5vQtiOUwXaJ2Dp" height="181" src="../../../images/c3dee18db204017fe15879927b4baebc0223b06b.jpeg" width="445"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">chrome_nWk7hUyRGr</span><span class="informations">445×181 5.07 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+</div>
+</details>
+</li>
+<li>Markdown Preview: Adds the ability to change the type by clicking on the icon
+<details>
+<summary>
+Image</summary>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/hZYzuK1MCwo7vsMEV9uYEZZOqjn.jpeg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/7/e/2/7e2677151669485d110fc3e5cd00ef35244c13b9.jpeg" title="chrome_atmmLf0v3c"><img alt="chrome_atmmLf0v3c" data-base62-sha1="hZYzuK1MCwo7vsMEV9uYEZZOqjn" data-dominant-color="F9FBFA" height="209" src="../../../images/7e2677151669485d110fc3e5cd00ef35244c13b9_2_690x209.jpeg" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/7/e/2/7e2677151669485d110fc3e5cd00ef35244c13b9_2_690x209.jpeg, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/7/e/2/7e2677151669485d110fc3e5cd00ef35244c13b9_2_1035x313.jpeg 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/7/e/2/7e2677151669485d110fc3e5cd00ef35244c13b9_2_1380x418.jpeg 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">chrome_atmmLf0v3c</span><span class="informations">1522×462 41.3 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+</details>
+</li>
+</ul>
+<h2><a aria-label="Heading link" class="anchor" href="#p-1954455-rich-text-editor-2" name="p-1954455-rich-text-editor-2"></a>Rich text editor</h2>
+<p>Let’s talk about the rich text editor and what to expect!</p>
+<h3><a aria-label="Heading link" class="anchor" href="#p-1954455-creating-callouts-3" name="p-1954455-creating-callouts-3"></a>Creating callouts:</h3>
+<p>You have four ways to insert callouts:</p>
+<ul>
+<li>Keyboard shortcut</li>
+<li>Toolbar</li>
+<li>Input rules
+<ul>
+<li><code>/callout&lt;:type&gt; </code></li>
+<li><code>!!&lt;type&gt; </code></li>
+</ul>
+</li>
+<li>Paste support
+<details>
+<summary>
+Video</summary>
+<p></p><div class="video-placeholder-container" data-thumbnail-src="https://d11a6trkgmumsb.cloudfront.net/original/4X/8/5/5/855def74513bd6d0859c82fa098f383794ee0e87.jpeg" data-video-base62-sha1="tboRaXHnoh4SWetahIvIe11Wd0O.mp4" data-video-src="https://d11a6trkgmumsb.cloudfront.net/original/4X/c/c/8/cc88f7f17ce98272f3805e13547b4939d5651406.mp4">
+</div><p></p>
+</details>
+</li>
+</ul>
+<h3><a aria-label="Heading link" class="anchor" href="#p-1954455-editing-callouts-4" name="p-1954455-editing-callouts-4"></a>Editing callouts</h3>
+<p>The controls to edit a callout appear only when you select it before.</p>
+<ul>
+<li><strong>Type chooser</strong><br/>
+By clicking on the icon, a floating menu will appear.</li>
+<li><strong>Custom Title</strong><br/>
+Supports inline formatting and emoji</li>
+<li><strong>Folding</strong><br/>
+Set callouts as collapsible. It can be accessed from the options menu.
+<details>
+<summary>
+Video</summary>
+<p></p><div class="video-placeholder-container" data-thumbnail-src="https://d11a6trkgmumsb.cloudfront.net/original/4X/9/b/7/9b7a554254ceaaab5d542f91ab3a3326bc547750.png" data-video-base62-sha1="2SDuhWwiValpRRVaOUFJMqTWe6r.mp4" data-video-src="https://d11a6trkgmumsb.cloudfront.net/original/4X/1/4/3/1431725ce25b7b799e86a9192e1a9f52fdd516a7.mp4">
+</div><p></p>
+</details>
+</li>
+</ul>
+<h3><a aria-label="Heading link" class="anchor" href="#p-1954455-organizing-callouts-5" name="p-1954455-organizing-callouts-5"></a>Organizing callouts</h3>
+<ul>
+<li>
+<p><strong>Move controls</strong></p>
+<ul>
+<li><em>Desktop</em><br/>
+There is a handle that you grab to drag and drop the callout.</li>
+<li><em>Touch device</em><br/>
+You move callouts up/down or nest them into adjacent callouts. It’s disabled by default to avoid bloat in the view, since that’s not something you will do often. You can toggle in the options.</li>
+</ul>
+<details>
+<summary>
+Video</summary>
+<p></p><div class="video-placeholder-container" data-thumbnail-src="https://d11a6trkgmumsb.cloudfront.net/original/4X/f/3/9/f3990d15184af18c0371e12952be6f1deb47f936.jpeg" data-video-base62-sha1="3wlWjpKAZrXZzyZuKGCnmVDJcJh.mp4" data-video-src="https://d11a6trkgmumsb.cloudfront.net/original/4X/1/8/a/18aec9b09c3c435f2d31dc59590107564afdf00f.mp4">
+</div><p></p>
+</details>
+</li>
+<li>
+<p><strong>Keyboard navigation</strong><br/>
+This helps make it easier to move in and out of nested callouts.<br/>
+It might require some future adjustments to make the behavior consistent in this version.</p>
+<ul>
+<li><kbd>←</kbd> At the start of the title, the callout chooser will open automatically.</li>
+<li><kbd> ↑</kbd> <kbd> ↓</kbd> Inside a callout body with no paragraph to land on, it will create one; if you exit with empty content, the paragraph is removed.</li>
+<li><kbd>Enter</kbd> inside the title moves the cursor into the body (and creates one if necessary).</li>
+</ul>
+<details>
+<summary>
+Video</summary>
+<p></p><div class="video-placeholder-container" data-thumbnail-src="https://d11a6trkgmumsb.cloudfront.net/original/4X/c/e/3/ce352ffb41a0c54cc6aa41d2be246579c397257b.jpeg" data-video-base62-sha1="7e9pEwO9oJ43dED9MFNBbbYFhDn.mp4" data-video-src="https://d11a6trkgmumsb.cloudfront.net/original/4X/3/2/a/32a8bf6841fcdc7e5c2399d6e6da15ffaec0f825.mp4">
+</div><p></p>
+</details>
+</li>
+<li>
+<p><strong>Click-to-insert</strong></p>
+<ul>
+<li>In areas where there is no paragraph, you can click inside to open a paragraph.</li>
+<li>If you prefer, you can also use buttons to open a paragraph inside or outside a callout.
+<details>
+<summary>
+Video</summary>
+<p></p><div class="video-placeholder-container" data-thumbnail-src="https://d11a6trkgmumsb.cloudfront.net/original/4X/3/f/3/3f365759044cdbede13f12fa70325432f32f7ce3.png" data-video-base62-sha1="jchaAJg1WirCmvT5TuA9Bpa1HJl.mp4" data-video-src="https://d11a6trkgmumsb.cloudfront.net/original/4X/8/6/8/868c944e5ab184f52c7c8de99b5e185102c905df.mp4">
+</div><p></p>
+</details>
+</li>
+</ul>
+</li>
+</ul>
+<p>Possibly, later, I will look for:</p>
+<ul>
+<li>input rules autocompletion</li>
+<li>improve color using modern CSS, to ensure consistency and visibility, especially in dark mode.</li>
+<li>
+<div class="spoiler">
+<p>I wish to remove all the settings and focus on simplicity first, with advanced customisation with CSS only, but it’s too late for that <img alt=":rofl:" class="emoji" height="20" loading="lazy" src="../../../images/rofl.png" title=":rofl:" width="20"/></p>
+</div>
+</li>
+</ul>
+<p>Special thanks to Moin for giving me feedback.</p>
+<p>That’s it. Let me know what you think. Feedback is very welcome!</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="star struck: 4">:star_struck: 4</span><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span><span class="engagement-pill reaction-pill" title="exploding head: 1">:exploding_head: 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Noble_Fish</div>
+          <div class="post_content">
+<p>I noticed that you designed such an effect: if a certain type has multiple aliases, then when selecting the type in the rich text editor, each alias appears as an option, and they are positioned consecutively.<br/>
+This is a nice design, but it seems to need further expansion: if no Title is defined, they will display the callout type, so these consecutive options that share the same final color scheme will show different names and titles; however, if a Title is defined, they will display and use the same Title in the list as when actually creating a Quote, which is somewhat confusing.<br/>
+If this extension is difficult to implement, I think perhaps a checkbox could be provided to prevent adding extra entries in the type selection list that correspond one-to-one with aliases when a Title is defined. <img alt=":slightly_smiling_face:" class="emoji" height="20" loading="lazy" src="../../../images/slightly_smiling_face.png" title=":slightly_smiling_face:" width="20"/><br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/kZ47svDLv02A1CoxEKJR4fFQhS7.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/9/3/1/9312a361383cf05ae6e063a12de445758886caef.png" rel="noopener nofollow ugc" title="image"><img alt="image" data-base62-sha1="kZ47svDLv02A1CoxEKJR4fFQhS7" data-dominant-color="D6D8DA" height="312" src="../../../images/9312a361383cf05ae6e063a12de445758886caef_2_690x312.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/9/3/1/9312a361383cf05ae6e063a12de445758886caef_2_690x312.png, https://d11a6trkgmumsb.cloudfront.net/original/4X/9/3/1/9312a361383cf05ae6e063a12de445758886caef.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/9/3/1/9312a361383cf05ae6e063a12de445758886caef.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">840×380 77.6 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/298682_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Arkshine</div>
+          <div class="post_content">
+<p>You’re right! Thanks for the feedback, it’s nice to see people using the TC.<br/>
+Actually, I thought about it at some point, but completely forgot to fix it. <img alt=":grinning_face_with_smiling_eyes:" class="emoji" height="20" loading="lazy" src="../../../images/grinning_face_with_smiling_eyes.png" title=":grinning_face_with_smiling_eyes:" width="20"/><br/>
+I will work on a fix to properly filter the list when title is set.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/298682_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Arkshine</div>
+          <div class="post_content">
+<p>I pushed a fix. Let me know how it goes! <img alt=":+1:" class="emoji" height="20" loading="lazy" src="../../../images/+1.png" title=":+1:" width="20"/></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span><span class="engagement-pill reaction-pill" title="rocket: 1">🚀 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Noble_Fish</div>
+          <div class="post_content">
+<p>I just tested the latest version, and now the ones with a Title will only show one in the category selection list, regardless of how many aliases there are. <img alt=":smiley:" class="emoji" height="20" loading="lazy" src="../../../images/smiley.png" title=":smiley:" width="20"/></p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/DKDC5H4u9XyVClI4wZXIOc03DY.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/0/4/7/047e5ca392dd2f37984f838fdeacf586c457b3ba.png" rel="noopener nofollow ugc" title="image"><img alt="image" data-base62-sha1="DKDC5H4u9XyVClI4wZXIOc03DY" height="317" src="../../../images/047e5ca392dd2f37984f838fdeacf586c457b3ba.png" width="581"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">581×317 17.4 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/547210_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">nesges</div>
+          <div class="post_content">
+<p>I have the following error, <strong>only</strong> when using the <strong>de</strong> translation*:</p>
+<p><img alt="Screenshot of a red banner stating an error in Quote Callouts" data-base62-sha1="6mDy23ZK01FnLsNzIoILlWzhzJu" data-dominant-color="D12A2B" height="36" src="../../../images/2c9c2540837b580429084f205f7121c00518c7b8_2_690x36.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/2/c/9/2c9c2540837b580429084f205f7121c00518c7b8_2_690x36.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/2/c/9/2c9c2540837b580429084f205f7121c00518c7b8_2_1035x54.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/2/c/9/2c9c2540837b580429084f205f7121c00518c7b8.png 2x" width="690"/></p>
+<p>JS-Console:</p>
+<pre><code class="lang-plaintext">client-error-handler.js:109 [THEME 6 'Quote Callouts'] TypeError: Cannot set properties of undefined (setting 'callout_sample')
+    at new po (callouts.gjs:30:19)
+    at callouts.gjs:265:23
+    at eK (plugin-api.gjs:3582:10)
+    at Object.initialize (callouts.gjs:264:5)
+    at i.initialize (app.js:304:28)
+    at index.js:375:19
+    at e.each (index.js:183:7)
+    at e.walk (index.js:112:10)
+    at e.each (index.js:59:20)
+    at e.topsort (index.js:65:10)
+    at ij._runInitializer (index.js:388:11)
+    at ij.runInstanceInitializers (index.js:373:10)
+    at l._bootSync (instance.js:111:22)
+    at ij.didBecomeReady (index.js:780:18)
+    at invoke (index.js:262:14)
+    at m.flush (index.js:180:11)
+    at g.flush (index.js:334:19)
+    at Y._end (index.js:762:32)
+    at Y._boundAutorunEnd (index.js:499:12)
+h	@	client-error-handler.js:109
+</code></pre>
+<p>It occurs in the last line of this quote:</p>
+<pre><code class="lang-plaintext">class QuoteCallouts {
+  constructor(owner, api) {
+    [...]
+    window.I18n.translations[
+      window.I18n.fallbackLocale || "en"
+    ].js.composer.callout_sample = ``;
+</code></pre>
+<ul>
+<li>Set /u//preferences/interface “Interface language” to “German (Deutsch)”</li>
+</ul>
+<p>The error seems to have been introduced in one of the last Discourse updates between 2026.3.0-latest and 2026.4.0-latest, but I can’t pinpoint it any further. Currently I’m at 2026.4.0-latest <a href="https://github.com/discourse/discourse/commits/4b2c45376db6321d798dba51dbb3b4fbf0f36976" rel="noopener nofollow ugc">4b2c45376d</a> and Quote Callout v0.0.1 <a href="https://github.com/Arkshine/discourse-quote-callouts/commit/9aa65482bf69d9863194fad4c17dc3dca5e0316d" rel="noopener nofollow ugc">9aa6548</a></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/298682_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Arkshine</div>
+          <div class="post_content">
+<p>I really thought this kind of issue was fixed.<br/>
+<span class="bbcode-s">Is the site’s locale set to default English (US), while the user’s locale is set to German, am I correct?</span></p>
+<p>Looking at the error, the <code>composer</code> object doesn’t exist. Let me know how it goes.<br/>
+I made a quick fix for that: <a class="inline-onebox" href="https://github.com/Arkshine/discourse-quote-callouts/pull/11" rel="noopener nofollow ugc">FIX: Ensures composer translation object exists by Arkshine · Pull Request #11 · Arkshine/discourse-quote-callouts · GitHub</a></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/547210_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">nesges</div>
+          <div class="post_content">
+<p>Yes, that fixed the issue. Thank you! &lt;3</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/249626_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Helga_Razinkova</div>
+          <div class="post_content">
+<p>Hi <span class="mention">@Arkshine</span>, thanks for a great plugin!</p>
+<p>Is it possible to use the callout with no title at all or with just an icon instead?</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/298682_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Arkshine</div>
+          <div class="post_content">
+<p>I don’t think you can do that at the moment, I’ll think of a way to do that in the next update!</p>
+<p>In the meantime, there’s a trick: insert a zero width space and it should work <img alt=":grinning_face_with_smiling_eyes:" class="emoji" height="20" loading="lazy" src="../../../images/grinning_face_with_smiling_eyes.png" title=":grinning_face_with_smiling_eyes:" width="20"/>. You can copy it from this page for example: <a class="inline-onebox" href="https://unicode-explorer.com/c/200B">​ U+200B ZERO WIDTH SPACE - Unicode Explorer</a></p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/i00VlJbUjm9BL0P4IgaBYO6D3dw.jpeg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/7/e/2/7e27902cd4bfec27ab997c8ab234862899ef8cba.jpeg" title="chrome_4Pa7RJUTb4"><img alt="chrome_4Pa7RJUTb4" data-base62-sha1="i00VlJbUjm9BL0P4IgaBYO6D3dw" data-dominant-color="F5F9F9" height="144" src="../../../images/7e27902cd4bfec27ab997c8ab234862899ef8cba_2_690x144.jpeg" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/7/e/2/7e27902cd4bfec27ab997c8ab234862899ef8cba_2_690x144.jpeg, https://d11a6trkgmumsb.cloudfront.net/original/4X/7/e/2/7e27902cd4bfec27ab997c8ab234862899ef8cba.jpeg 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/7/e/2/7e27902cd4bfec27ab997c8ab234862899ef8cba.jpeg 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">chrome_4Pa7RJUTb4</span><span class="informations">937×196 13.8 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div><br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/ucschVeN9evLrC8rBj5hQIAv4rv.jpeg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/d/3/a/d3a9a3d4ab6358c1b18781a6e695039d97e45b01.jpeg" title="chrome_fgCimP8Pt6"><img alt="chrome_fgCimP8Pt6" data-base62-sha1="ucschVeN9evLrC8rBj5hQIAv4rv" data-dominant-color="EAF8F8" height="174" src="../../../images/d3a9a3d4ab6358c1b18781a6e695039d97e45b01.jpeg" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">chrome_fgCimP8Pt6</span><span class="informations">761×192 11.2 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>Or without any text<br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/78omQlGPGGgLYtX1KwJB24W53l6.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/3/2/0/320219163d5e46cc5acccfb77256befb0ccfcf20.png" title="image"><img alt="image" data-base62-sha1="78omQlGPGGgLYtX1KwJB24W53l6" data-dominant-color="EFF3F6" height="200" src="../../../images/320219163d5e46cc5acccfb77256befb0ccfcf20_2_690x200.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/3/2/0/320219163d5e46cc5acccfb77256befb0ccfcf20_2_690x200.png, https://d11a6trkgmumsb.cloudfront.net/original/4X/3/2/0/320219163d5e46cc5acccfb77256befb0ccfcf20.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/3/2/0/320219163d5e46cc5acccfb77256befb0ccfcf20.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">783×228 7.25 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>Let me know if that works for you.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span><span class="engagement-pill reaction-pill" title="clap: 1">👏 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/249626_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Helga_Razinkova</div>
+          <div class="post_content">
+<p>I think it did work! Thank you! <img alt=":heart_eyes:" class="emoji" height="20" loading="lazy" src="../../../images/heart_eyes.png" title=":heart_eyes:" width="20"/></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span><span class="engagement-pill reaction-pill" title="star struck: 1">:star_struck: 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/426129_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Max_Salishchev</div>
+          <div class="post_content">
+<p>Hey there, <span class="mention">@Arkshine</span> <img alt=":waving_hand:" class="emoji" height="20" loading="lazy" src="../../../images/waving_hand.png" title=":waving_hand:" width="20"/></p>
+<p>Is it possible to keep the original callout color when using the Hide details feature?</p>
+<p>In the post editor mode the original colors are saved, but the background becomes gray after saving changes:</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/zxQww5F6dHf7xJB4s1XSlE5ltlb.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/f/9/1/f91f916ecc13f90cc52ad40755cfaa885c755d7d.png" rel="noopener nofollow ugc" title="image"><img alt="image" data-base62-sha1="zxQww5F6dHf7xJB4s1XSlE5ltlb" data-dominant-color="F1F0F2" height="364" src="../../../images/f91f916ecc13f90cc52ad40755cfaa885c755d7d_2_690x364.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/f/9/1/f91f916ecc13f90cc52ad40755cfaa885c755d7d_2_690x364.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/f/9/1/f91f916ecc13f90cc52ad40755cfaa885c755d7d_2_1035x546.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/f/9/1/f91f916ecc13f90cc52ad40755cfaa885c755d7d.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1239×654 45.8 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/eNfijuYJxlJihePFrVwowJ6fRbr.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/6/7/a/67af8d03d1eb9d14097e3fc4449fa804336037e1.png" rel="noopener nofollow ugc" title="image"><img alt="image" data-base62-sha1="eNfijuYJxlJihePFrVwowJ6fRbr" height="475" src="../../../images/67af8d03d1eb9d14097e3fc4449fa804336037e1.png" width="643"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">643×475 16.1 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/298682_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Arkshine</div>
+          <div class="post_content">
+<p>Thanks for the report!<br/>
+I pushed a fix. Can you update the component and see if it happens again?</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/426129_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Max_Salishchev</div>
+          <div class="post_content">
+<p>Great, it worked fine! Thank you for the quick fix <img alt=":slightly_smiling_face:" class="emoji" height="20" loading="lazy" src="../../../images/slightly_smiling_face.png" title=":slightly_smiling_face:" width="20"/></p>
+<p>Have a great day!</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Noble_Fish</div>
+          <div class="post_content">
+<p>This is really a great component, but it currently still displays as a citation style in the revision history view. Can this scenario be supported? <img alt=":smiley:" class="emoji" height="20" loading="lazy" src="../../../images/smiley.png" title=":smiley:" width="20"/><br/>
+<img alt="image" data-base62-sha1="5TWr9QcHNd5Ru6sPNyJMyuvfWZl" height="68" src="../../../images/295dc0652975a77c1a8abf66f66e842a4f8805fb.png" width="238"/></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span><span class="engagement-pill reaction-pill" title="eyes: 1">👀 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/290039_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">nathank</div>
+          <div class="post_content">
+<p>It also appears like that in excerpts too, and in Oneboxes.</p>
+<p>I suspect that it might be tricky to cover all the edge cases though.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 4">❤️ 4</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/115938_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">scavin</div>
+          <div class="post_content">
+<p>Hi! I noticed a potential usability issue with the default <code>Ctrl + Q</code> shortcut on macOS.</p>
+<p>Many Mac users instinctively press <code>⌘ + Q</code> instead of <code>Ctrl + Q</code>, since <code>⌘</code> is the primary modifier key used for most shortcuts on macOS. Unfortunately, <code>⌘ + Q</code> is also the system-wide shortcut for quitting the application/browser.</p>
+<p>As a result, users may accidentally quit their browser while trying to insert a callout.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/298682_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Arkshine</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="64" data-topic="350962" data-username="Noble_Fish">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/48.png" width="24"/> Noble_Fish:</div>
+<blockquote>
+<p>This is really a great component, but it currently still displays as a citation style in the revision history view. Can this scenario be supported? <img alt=":smiley:" class="emoji" height="20" loading="lazy" src="../../../images/smiley.png" title=":smiley:" width="20"/></p>
+</blockquote>
+</aside>
+<p>It’s not impossible, I gave it a try yesterday.  I will see what I can do!</p>
+<aside class="quote no-group" data-post="65" data-topic="350962" data-username="nathank">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/290039_2.png" width="24"/> nathank:</div>
+<blockquote>
+<p>t also appears like that in excerpts too, and in Oneboxes.</p>
+</blockquote>
+</aside>
+<p>It should be hidden in excerpt unless something is broken again, but yes not hidden in onebox yet.  I will keep in mind, thanks!</p>
+<aside class="quote no-group" data-post="66" data-topic="350962" data-username="scavin">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/115938_2.png" width="24"/> scavin:</div>
+<blockquote>
+<p>Hi! I noticed a potential usability issue with the default <code>Ctrl + Q</code> shortcut on macOS.</p>
+</blockquote>
+</aside>
+<p>Good catch <img alt=":scream:" class="emoji" height="20" loading="lazy" src="../../../images/scream.png" title=":scream:" width="20"/><br/>
+Any suggestions? I’m thinking of using <kbd>ctrl/⌘</kbd> + <kbd>alt</kbd> + <kbd>c</kbd> instead. That sounds safe, I hope.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 5">❤️ 5</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/298682_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Arkshine</div>
+          <div class="post_content">
+<p>I pushed an update.</p>
+<ul>
+<li>Callouts are now rendered in history revision. Thanks for the suggestion <span class="mention">@Noble_Fish</span>. It might need ajustements, like not rendered in some situations. The collapse toggle is ignored and not rendered. Let me know how it plays on your side!</li>
+<li>Onebox excerpt should strip the callout marker. Works in RTE too. Let me know if you see other cases <span class="mention">@nathank</span>.</li>
+<li>Shortcut changed to <kbd>ctrl/⌘</kbd> + <kbd>alt</kbd> + <kbd>c</kbd>. Great catch <span class="mention">@scavin</span>. It should be a safe change.</li>
+</ul>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 5">❤️ 5</span><span class="engagement-pill reaction-pill" title="rocket: 2">🚀 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Noble_Fish</div>
+          <div class="post_content">
+<p>Just a style issue: I’ve noticed that the code styling within quote callouts titles appears much shorter in length compared to normal text, which can cause it to be completely obscured by symbols like <code>█</code> , and in languages such as Chinese, some larger text sizes may cause the four corners of its bounding box to go out of bounds, making it look odd.</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/oeN6dOwEnd7ToH1oxd8GZUi4yDW.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/a/9/e/a9e03a8ec6f106c1afee5392898d57a73c176a74.png" title="image"><img alt="image" data-base62-sha1="oeN6dOwEnd7ToH1oxd8GZUi4yDW" height="348" src="../../../images/a9e03a8ec6f106c1afee5392898d57a73c176a74.png" width="295"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">295×348 8.06 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/298682_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Arkshine</div>
+          <div class="post_content">
+<p>I pushed a fix. It adds missing core CSS to <code>&lt;code&gt;</code> HTML in the callout title. Also, it removes extra newline spaces. Overall, this should be consistent now!</p>
+<div class="d-image-grid">
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/p8h8BqtN9ehPLwMaTp0OKo3jQNp.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/b/0/2/b025dae178cb6607a462a1583eee623442f782df.png" title="image"><img alt="image" data-base62-sha1="p8h8BqtN9ehPLwMaTp0OKo3jQNp" height="218" src="../../../images/b025dae178cb6607a462a1583eee623442f782df.png" width="397"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">397×218 5.15 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div><br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/cS0sp01YnOOoXSD4Rwrc5VqKFyg.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/5/a/3/5a34f81706c5d35911026bba0ed36e537237a140.png" title="image"><img alt="image" data-base62-sha1="cS0sp01YnOOoXSD4Rwrc5VqKFyg" height="218" src="../../../images/5a34f81706c5d35911026bba0ed36e537237a140.png" width="378"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">378×218 4.98 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+</div>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span><span class="engagement-pill reaction-pill" title="rocket: 1">🚀 1</span></div>
+        </div>
+      </div>
+
+
+    </div>
+  </body>
+</html>

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width">
+    <title>WooCommerce + WP Discourse: safe to let users change username on Discourse?</title>
+    <link rel="stylesheet" href="../../../archived.css" />
+    <script>
+      function findSageCodeBlocks() {
+        return Array.prototype.slice.call(
+          document.querySelectorAll(
+            "pre[data-code-wrap='sage'] > code, pre > code.lang-sage, pre > code.language-sage, pre > code.sage"
+          )
+        );
+      }
+
+      function loadScript(src) {
+        return new Promise(function (resolve, reject) {
+          var existing = document.querySelector("script[src='" + src + "']");
+          if (existing) {
+            if (existing.dataset.loaded === "true") {
+              resolve();
+              return;
+            }
+            existing.addEventListener("load", resolve, { once: true });
+            existing.addEventListener("error", reject, { once: true });
+            return;
+          }
+
+          var script = document.createElement("script");
+          script.src = src;
+          script.async = true;
+          script.addEventListener("load", function () {
+            script.dataset.loaded = "true";
+            resolve();
+          }, { once: true });
+          script.addEventListener("error", reject, { once: true });
+          document.head.appendChild(script);
+        });
+      }
+
+      function prepareSageCells() {
+        var sageBlocks = findSageCodeBlocks();
+        if (!sageBlocks.length) {
+          return Promise.resolve();
+        }
+
+        return loadScript("https://sagecell.sagemath.org/static/embedded_sagecell.js")
+          .then(function () {
+            if (!window.sagecell || !window.sagecell.makeSagecell) {
+              return;
+            }
+
+            sageBlocks.forEach(function (codeTag, index) {
+              var preTag = codeTag.parentElement;
+              if (!preTag || preTag.dataset.sageMounted === "true") {
+                return;
+              }
+
+              var host = document.createElement("div");
+              host.className = "sagecell-archive";
+
+              var source = document.createElement("script");
+              source.type = "text/x-sage";
+              source.text = codeTag.textContent || "";
+              host.appendChild(source);
+
+              preTag.insertAdjacentElement("afterend", host);
+              preTag.classList.add("sage-source-hidden");
+              preTag.dataset.sageMounted = "true";
+
+              window.sagecell.makeSagecell({
+                inputLocation: host,
+                autoeval: false,
+                evalButtonText: "Run",
+                languages: ["sage"]
+              });
+            });
+          })
+          .catch(function () {
+            // Leave the original code blocks visible if SageCell cannot load.
+          });
+      }
+
+      function preprocessDiscourseMath() {
+        document.querySelectorAll("span.math, div.math").forEach(function (node) {
+          var tex = node.textContent || "";
+          if (!tex.trim()) {
+            return;
+          }
+          if (node.tagName === "SPAN") {
+            node.textContent = "\\(" + tex + "\\)";
+          } else {
+            node.textContent = "\\[" + tex + "\\]";
+          }
+          node.classList.remove("math");
+        });
+      }
+
+      window.MathJax = {
+        tex: {
+          inlineMath: [["\\(", "\\)"]],
+          displayMath: [["\\[", "\\]"]]
+        },
+        startup: {
+          pageReady() {
+            preprocessDiscourseMath();
+            return MathJax.startup.defaultPageReady().then(function () {
+              return prepareSageCells();
+            });
+          }
+        }
+      };
+    </script>
+    <script async id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="title-span">
+        <a href="../../../">
+          <img src="../../../images/ad2526334012b2ad0c3421f9b6dd94bae2ede52f.svg" height="40" alt="Site Logo" id="site-logo" />
+        </a>
+      </div>
+    </header>
+
+    <div class="main">
+    <div class="archive-span"><a href='https://meta.discourse.org/'>Discourse Meta</a> archived in May, 2026</div>
+    <h1 class="topic-title">WooCommerce + WP Discourse: safe to let users change username on Discourse?</h1>
+            <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554488_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">JuliusRa</div>
+          <div class="post_content">
+<p>Hi everyone,</p>
+<p>I run WordPress + WooCommerce as the <a href="https://meta.discourse.org/t/13045?silent=true">DiscourseConnect</a> provider via <a href="https://github.com/discourse/wp-discourse" rel="noopener nofollow ugc">WP Discourse</a>. Users SSO into Discourse through WordPress.</p>
+<p>Our users currently have auto-generated WordPress usernames because WooCommerce had “Generate account login” enabled. They end up with awkward forum names (sometimes email-prefix style), which is both a privacy concern and a UX issue since users want proper community <span class="mention">@usernames</span>.</p>
+<p>I’m trying to understand the recommended long-term setup with <a href="https://github.com/discourse/wp-discourse" rel="noopener nofollow ugc">WP Discourse</a>.</p>
+<p>Should WordPress usernames remain the immutable “source of truth” and all username changes happen in WordPress?</p>
+<p>Or is it considered safe/supported to let Discourse usernames permanently diverge from WordPress user_login (for example by disabling auth overrides username and allowing renames only on the Discourse side)?</p>
+<p>My main concern is that changing usernames in WordPress at scale feels risky, since WordPress core does not support changing user_login and it would require additional plugins or custom handling.</p>
+<p>On the other hand, I’m unclear what problems can appear if Discourse usernames differ permanently from WP usernames.</p>
+<p>What setup would you recommend for existing sites with many auto-generated WP usernames?</p>
+<p>Thanks!</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/341715_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">angus</div>
+          <div class="post_content">
+<p>Hey there <span class="mention">@JuliusRa</span>. There’s no need to keep Wordpress and Discourse usernames in sync. <a href="https://meta.discourse.org/t/13045?silent=true">DiscourseConnect</a> uses an <code>external_id</code> to match accounts from the provider (i.e. <a href="https://github.com/discourse/wp-discourse">WP Discourse</a>) with the Discourse account. In the case of <a href="https://github.com/discourse/wp-discourse">WP Discourse</a> that’s the Wordpress user id (not the Wordpress username).</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span></div>
+        </div>
+      </div>
+
+
+    </div>
+  </body>
+</html>

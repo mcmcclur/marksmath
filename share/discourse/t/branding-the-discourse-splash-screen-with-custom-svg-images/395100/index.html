@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width">
+    <title>Branding the Discourse splash screen with custom SVG images</title>
+    <link rel="stylesheet" href="../../../archived.css" />
+    <script>
+      function findSageCodeBlocks() {
+        return Array.prototype.slice.call(
+          document.querySelectorAll(
+            "pre[data-code-wrap='sage'] > code, pre > code.lang-sage, pre > code.language-sage, pre > code.sage"
+          )
+        );
+      }
+
+      function loadScript(src) {
+        return new Promise(function (resolve, reject) {
+          var existing = document.querySelector("script[src='" + src + "']");
+          if (existing) {
+            if (existing.dataset.loaded === "true") {
+              resolve();
+              return;
+            }
+            existing.addEventListener("load", resolve, { once: true });
+            existing.addEventListener("error", reject, { once: true });
+            return;
+          }
+
+          var script = document.createElement("script");
+          script.src = src;
+          script.async = true;
+          script.addEventListener("load", function () {
+            script.dataset.loaded = "true";
+            resolve();
+          }, { once: true });
+          script.addEventListener("error", reject, { once: true });
+          document.head.appendChild(script);
+        });
+      }
+
+      function prepareSageCells() {
+        var sageBlocks = findSageCodeBlocks();
+        if (!sageBlocks.length) {
+          return Promise.resolve();
+        }
+
+        return loadScript("https://sagecell.sagemath.org/static/embedded_sagecell.js")
+          .then(function () {
+            if (!window.sagecell || !window.sagecell.makeSagecell) {
+              return;
+            }
+
+            sageBlocks.forEach(function (codeTag, index) {
+              var preTag = codeTag.parentElement;
+              if (!preTag || preTag.dataset.sageMounted === "true") {
+                return;
+              }
+
+              var host = document.createElement("div");
+              host.className = "sagecell-archive";
+
+              var source = document.createElement("script");
+              source.type = "text/x-sage";
+              source.text = codeTag.textContent || "";
+              host.appendChild(source);
+
+              preTag.insertAdjacentElement("afterend", host);
+              preTag.classList.add("sage-source-hidden");
+              preTag.dataset.sageMounted = "true";
+
+              window.sagecell.makeSagecell({
+                inputLocation: host,
+                autoeval: false,
+                evalButtonText: "Run",
+                languages: ["sage"]
+              });
+            });
+          })
+          .catch(function () {
+            // Leave the original code blocks visible if SageCell cannot load.
+          });
+      }
+
+      function preprocessDiscourseMath() {
+        document.querySelectorAll("span.math, div.math").forEach(function (node) {
+          var tex = node.textContent || "";
+          if (!tex.trim()) {
+            return;
+          }
+          if (node.tagName === "SPAN") {
+            node.textContent = "\\(" + tex + "\\)";
+          } else {
+            node.textContent = "\\[" + tex + "\\]";
+          }
+          node.classList.remove("math");
+        });
+      }
+
+      window.MathJax = {
+        tex: {
+          inlineMath: [["\\(", "\\)"]],
+          displayMath: [["\\[", "\\]"]]
+        },
+        startup: {
+          pageReady() {
+            preprocessDiscourseMath();
+            return MathJax.startup.defaultPageReady().then(function () {
+              return prepareSageCells();
+            });
+          }
+        }
+      };
+    </script>
+    <script async id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="title-span">
+        <a href="../../../">
+          <img src="../../../images/ad2526334012b2ad0c3421f9b6dd94bae2ede52f.svg" height="40" alt="Site Logo" id="site-logo" />
+        </a>
+      </div>
+    </header>
+
+    <div class="main">
+    <div class="archive-span"><a href='https://meta.discourse.org/'>Discourse Meta</a> archived in May, 2026</div>
+    <h1 class="topic-title">Branding the Discourse splash screen with custom SVG images</h1>
+            <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/142900_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">awesomerobot</div>
+          <div class="post_content">
+<p>This feature has been highly requested here on Meta <a class="inline-onebox" href="https://meta.discourse.org/t/personal-branding-for-the-splash-screen/304711">Personal branding for the splash screen</a> .</p>
+<p>We have now added the option to add an SVG, either static or animated, as the splash screen image to replace this default loading dot indicator:</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/i4SsmoRC1TikW2kquzL6gtUcT7m.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/7/e/b/7eb44d6bb88f5de79683ba83d5f4f6dbb9f2d524.png" title="image"><img alt="image" data-base62-sha1="i4SsmoRC1TikW2kquzL6gtUcT7m" data-dominant-color="EEF0FF" height="245" src="../../../images/7eb44d6bb88f5de79683ba83d5f4f6dbb9f2d524_2_345x245.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/7/e/b/7eb44d6bb88f5de79683ba83d5f4f6dbb9f2d524_2_345x245.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/7/e/b/7eb44d6bb88f5de79683ba83d5f4f6dbb9f2d524_2_517x367.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/7/e/b/7eb44d6bb88f5de79683ba83d5f4f6dbb9f2d524_2_690x490.png 2x" width="345"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1080×768 2.65 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>If a static SVG is used, then it appears above the loading dot animation:</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/nIpkolcD36oGMh0Iy32x9WggrqM.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/a/6/3/a6371bb45bfaa9a89a4604fa2b935105930642e8.png" title="image"><img alt="image" data-base62-sha1="nIpkolcD36oGMh0Iy32x9WggrqM" data-dominant-color="F7EDE1" height="243" src="../../../images/a6371bb45bfaa9a89a4604fa2b935105930642e8_2_345x243.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/a/6/3/a6371bb45bfaa9a89a4604fa2b935105930642e8_2_345x243.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/a/6/3/a6371bb45bfaa9a89a4604fa2b935105930642e8_2_517x364.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/a/6/3/a6371bb45bfaa9a89a4604fa2b935105930642e8_2_690x486.png 2x" width="345"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1232×868 4.64 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>otherwise if an animated SVG is used it replaces the dots entirely:</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/o1F39gSjf6uyubqcdlsIGAl0OGR.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/a/8/6/a864461bfb11aaa70bfb28413e049af9e778b879.png" title="image"><img alt="image" data-base62-sha1="o1F39gSjf6uyubqcdlsIGAl0OGR" data-dominant-color="FEFEFF" height="190" src="../../../images/a864461bfb11aaa70bfb28413e049af9e778b879_2_345x190.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/a/8/6/a864461bfb11aaa70bfb28413e049af9e778b879_2_345x190.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/a/8/6/a864461bfb11aaa70bfb28413e049af9e778b879_2_517x285.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/a/8/6/a864461bfb11aaa70bfb28413e049af9e778b879_2_690x380.png 2x" width="345"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1034×572 2.94 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>Note that for performance reasons, animated SVGs should use CSS transform or opacity animations only. <sup class="footnote-ref"><a href="#footnote-1931600-1" id="footnote-ref-1931600-1">[1]</a></sup></p>
+<p>You can enable this functionality via our Upcoming Changes system ( <code>/admin/config/upcoming-changes</code>):</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/t1Ayvj9JKF9014wiSNrpgNA7C32.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/c/b/6/cb6d0bc849847f166cda527dd72aeecf539148bc.png" title="image"><img alt="image" data-base62-sha1="t1Ayvj9JKF9014wiSNrpgNA7C32" data-dominant-color="F4F3F3" height="107" src="../../../images/cb6d0bc849847f166cda527dd72aeecf539148bc_2_690x107.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/c/b/6/cb6d0bc849847f166cda527dd72aeecf539148bc_2_690x107.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/c/b/6/cb6d0bc849847f166cda527dd72aeecf539148bc_2_1035x160.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/c/b/6/cb6d0bc849847f166cda527dd72aeecf539148bc_2_1380x214.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1930×302 42.2 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>The <code>splash screen image</code> site setting is used for this. You can use <code>var(--primary)</code>, <code>var(--secondary)</code>, and <code>var(--tertiary)</code> CSS variables within your SVG to reference your theme’s colors and adapt to dark mode.</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/bX2TdnyXA6YAMdhPzN3yJG0PcKh.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/5/3/c/53c49f367093083f117c4047d317396aefda28cd.png" title="image"><img alt="image" data-base62-sha1="bX2TdnyXA6YAMdhPzN3yJG0PcKh" data-dominant-color="F3F0F0" height="97" src="../../../images/53c49f367093083f117c4047d317396aefda28cd_2_345x97.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/5/3/c/53c49f367093083f117c4047d317396aefda28cd_2_345x97.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/5/3/c/53c49f367093083f117c4047d317396aefda28cd_2_517x145.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/5/3/c/53c49f367093083f117c4047d317396aefda28cd_2_690x194.png 2x" width="345"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1728×488 44.2 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p><strong>It is important to note</strong> that enabling this functionality may have impacts on your <a href="https://developer.chrome.com/docs/lighthouse/performance/lighthouse-largest-contentful-paint">LCP score</a> , so making the change, waiting a while, and checking if it has any impact on LCP or indexing in the Google Search console is the best way to try this out.</p>
+<hr class="footnotes-sep"/>
+<ol class="footnotes-list">
+<li class="footnote-item" id="footnote-1931600-1"><p>We originally attempted to allow SMIL animation elements (<code>&lt;animate&gt;</code>, <code>&lt;animateTransform&gt;</code>, etc) but these animations will be paused by the browser when javascript is executing, causing stutter. Transform and opacity CSS animations are not blocked by JS, and avoid this issue. <a class="footnote-backref" href="#footnote-ref-1931600-1">↩︎</a></p>
+</li>
+</ol>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 24">❤️ 24</span><span class="engagement-pill reaction-pill" title="rocket: 3">🚀 3</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/318210_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">lindsey</div>
+          <div class="post_content">
+
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/532740_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">philh</div>
+          <div class="post_content">
+<p>hmmmmm <a class="inline-onebox" href="https://meta.discourse.org/t/discourse-logo-with-throbber/395101/">Discourse Logo with Throbber</a></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/528804_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">eisammy</div>
+          <div class="post_content">
+<p>How I replace this dots? for me only appear to put my svg logo</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/md8mkkjXleE40pp59oJQiABxGJR.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/9/b/a/9babed594fdcc97fa0ab22b1882ecda831dc5d0b.png" rel="noopener nofollow ugc" title="Splash"><img alt="Splash" data-base62-sha1="md8mkkjXleE40pp59oJQiABxGJR" data-dominant-color="EBEBEB" height="238" src="../../../images/9babed594fdcc97fa0ab22b1882ecda831dc5d0b_2_517x238.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/9/b/a/9babed594fdcc97fa0ab22b1882ecda831dc5d0b_2_517x238.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/9/b/a/9babed594fdcc97fa0ab22b1882ecda831dc5d0b_2_775x357.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/9/b/a/9babed594fdcc97fa0ab22b1882ecda831dc5d0b_2_1034x476.png 2x" width="517"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Splash</span><span class="informations">1920×885 32.3 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/228726_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Don</div>
+          <div class="post_content">
+<p>Hello <img alt=":waving_hand:" class="emoji" height="20" loading="lazy" src="../../../images/waving_hand.png" title=":waving_hand:" width="20"/></p>
+<aside class="quote group-team" data-post="1" data-topic="395100" data-username="awesomerobot">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/142900_2.png" width="24"/> awesomerobot:</div>
+<blockquote>
+<p>If a static SVG is used, then it appears above the loading dot animation, otherwise if an animated one is used it replaces them:</p>
+</blockquote>
+</aside>
+<p>So it will be replaced if you use an animated SVG.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/528615_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">ばこん</div>
+          <div class="post_content">
+<p>I’ve applied an SVG animation, but it appears very small.<br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/cEvuzpqGeOGWMQGWdZvD0PdD2kO.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/5/8/a/58ae5189cfa3295990c0fc9a7a48a259a48f6aca.png" rel="noopener nofollow ugc" title="Screenshot_20260204-224211"><img alt="Screenshot_20260204-224211" data-base62-sha1="cEvuzpqGeOGWMQGWdZvD0PdD2kO" data-dominant-color="FFFFFF" height="478" src="../../../images/58ae5189cfa3295990c0fc9a7a48a259a48f6aca_2_690x478.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/5/8/a/58ae5189cfa3295990c0fc9a7a48a259a48f6aca_2_690x478.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/5/8/a/58ae5189cfa3295990c0fc9a7a48a259a48f6aca_2_1035x717.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/5/8/a/58ae5189cfa3295990c0fc9a7a48a259a48f6aca.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot_20260204-224211</span><span class="informations">1337×928 25.1 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>Is there a way to enlarge it?</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/142900_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">awesomerobot</div>
+          <div class="post_content">
+<p>We don’t currently have a way to add custom CSS because this screen loads before much of the app and there are a lot more constraints. Can you share the SVG image you’re using here (or PM me with it)? I could do some testing and see if our defaults could be more accommodating.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/528615_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">ばこん</div>
+          <div class="post_content">
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/gMDCgA3X7tssUlF8Wpbheu7OKCp.svg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/7/5/a/75a250078d745a63a1bb26d36c9b086743d1a925.svg" rel="noopener nofollow ugc" title="svg"><img alt="svg" data-base62-sha1="gMDCgA3X7tssUlF8Wpbheu7OKCp" height="200" src="../../../images/75a250078d745a63a1bb26d36c9b086743d1a925.svg" width="300"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">svg</span><span class="informations">300×200 22.3 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div><br/>
+Here it is</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/142900_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">awesomerobot</div>
+          <div class="post_content">
+<p>Thanks for the reference!</p>
+<p>I’m adding a change that will allow slightly larger dimensions, and will better center screens with static logos: <a class="inline-onebox" href="https://github.com/discourse/discourse/pull/37574">UX: better centering and slightly larger experimental splash by awesomerobot · Pull Request #37574 · discourse/discourse · GitHub</a></p>
+<p>I also noticed your SVG has a lot of space at the top which is impacting centering, not sure if that’s intentional, but this version removes it</p>
+<p><img alt="かい鯖グループフォーラムのsvgにしたいけど、penguinmode_cleaned (3) (1)" data-base62-sha1="6Ap0JTdasbpJ2qp1R6gXSInfxnN" height="70" src="../../../images/2e2a7f1997437bc79488a3f6ef8443685718f5bf.svg" width="250"/></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/528615_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">ばこん</div>
+          <div class="post_content">
+<p>Thank you very much!</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/142900_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">awesomerobot</div>
+          <div class="post_content">
+<p>Note that there’s a <a href="https://github.com/discourse/discourse/pull/37606">slight change</a> in what we’re allowing for SVG animation (and I’ve updated OP to reflect this). Originally we were allowing SMIL animations in SVGs, but it turns out these stutter because the browser pauses this type of animation while javascript executes.</p>
+<p>So instead the recommendation is to only use CSS transform and opacity animations in your SVGs, as these aren’t blocked by JS.</p>
+<p>If you take a look at <span class="mention">@ばこん</span>’s SVG above… it provides a good example of an allowable animation:</p>
+<pre data-code-wrap="css"><code class="lang-css">@keyframes unique-slide {
+  0% { transform: translateX(-80px); }
+  100% { transform: translateX(260px); }
+}
+</code></pre>
+<p>Also be careful to give your animations unique names so they don’t clash with other animations in Discourse (names like “blink”, “rotate”, “fade” etc could be too generic). Using a prefix like <code>unique-</code> is a great way to avoid this.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 6">❤️ 6</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/179432_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Falco</div>
+          <div class="post_content">
+<p>Google just launched Gemini Pro 3.1, and their first highlight of the model was animated SVGs. Naturally I tried making a loader for <a href="https://discourse-on-a-pi5.falco.dev/">https://discourse-on-a-pi5.falco.dev/</a> and got this after just 2 prompts</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/nBezlBHq0XtdIl2W4UaNOQsnhiV.svg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/a/5/6/a56784c100590ae94c7712bfd01f084d8056b161.svg" title="pi-2shot"><img alt="pi-2shot" data-base62-sha1="nBezlBHq0XtdIl2W4UaNOQsnhiV" height="200" src="../../../images/a56784c100590ae94c7712bfd01f084d8056b161.svg" width="200"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">pi-2shot</span><span class="informations">200×200 6.91 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>Pairs really well with this new feature!</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 11">❤️ 11</span><span class="engagement-pill reaction-pill" title="exploding head: 3">:exploding_head: 3</span><span class="engagement-pill reaction-pill" title="clap: 1">👏 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/294929_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Bas</div>
+          <div class="post_content">
+<p>That is amazing Falco <img alt=":exploding_head:" class="emoji" height="20" loading="lazy" src="../../../images/exploding_head.png" title=":exploding_head:" width="20"/></p>
+<p>I need to see what Gemini can do with the Discourse logo <img alt=":star_struck:" class="emoji" height="20" loading="lazy" src="../../../images/star_struck.png" title=":star_struck:" width="20"/></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="100: 1">:100: 1</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/179432_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Falco</div>
+          <div class="post_content">
+<p>Yeah, I was pretty happy with the result! I’ve been trying this for a long time with models, this is the first model that can handle it well.</p>
+<p>Here is the prompt</p>
+<blockquote>
+<p>Generate an animated SVG that will be used as a loading animation on a forum about the raspberry pi mini board pc. Animation must be done using SVG inline CSS.</p>
+</blockquote>
+<p>which produced</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/wkJQ7oeOVR3R6xXdim5UEPJ3imW.svg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/e/2/9/e29dba900ce1d82477ebcf026d8d5533034cc42e.svg" title="pi"><img alt="pi" data-base62-sha1="wkJQ7oeOVR3R6xXdim5UEPJ3imW" height="200" src="../../../images/e29dba900ce1d82477ebcf026d8d5533034cc42e.svg" width="200"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">pi</span><span class="informations">200×200 6.26 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>then I followed up with</p>
+<blockquote>
+<p>This is great! Can you change the raspberry itself, the red haxagons, animation? They are moving diagonally from top left to botton right, but are off center and it looks weird. Maybe we keep those static and centralized and with a subtler animation?</p>
+</blockquote>
+<p>which then produced the version I shared</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/nBezlBHq0XtdIl2W4UaNOQsnhiV.svg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/a/5/6/a56784c100590ae94c7712bfd01f084d8056b161.svg" title="pi-2shot"><img alt="pi-2shot" data-base62-sha1="nBezlBHq0XtdIl2W4UaNOQsnhiV" height="200" src="../../../images/a56784c100590ae94c7712bfd01f084d8056b161.svg" width="200"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">pi-2shot</span><span class="informations">200×200 6.91 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>Only point of contention is that the SVG code has plenty of CSS comments like</p>
+<pre data-code-wrap="css"><code class="lang-css">/* Base Animation &amp; Board Styles */
+</code></pre>
+<p>which are invalid when you save it as a SVG file, so I removed the 7 lines with those manually.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span><span class="engagement-pill reaction-pill" title="clap: 1">👏 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/294929_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Bas</div>
+          <div class="post_content">
+<p>You’re getting a lot better results than I am.</p>
+<p>Giving up after a handful of iterations, this is the best I got <img alt=":stuck_out_tongue:" class="emoji" height="20" loading="lazy" src="../../../images/stuck_out_tongue.png" title=":stuck_out_tongue:" width="20"/></p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/1vUQpDtcMEocovRDXUaXzxvvLgr.svg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/0/a/9/0a9dcb186960707ea50c23e19d3fdcdee80584cf.svg" title="notdiscourse"><img alt="notdiscourse" data-base62-sha1="1vUQpDtcMEocovRDXUaXzxvvLgr" height="150" src="../../../images/0a9dcb186960707ea50c23e19d3fdcdee80584cf.svg" width="150"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">notdiscourse</span><span class="informations">150×150 1.2 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>[Edit], let me add two more inbetween states:<br/>
+This one was pretty good.. except that the logo was broken:<br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/wi3RgU1F1oMykqSUgCirjs3mGbR.svg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/e/2/5/e25041ebf2187196fcadab5c055f4fab01762cc7.svg" title="notdiscourse"><img alt="notdiscourse" data-base62-sha1="wi3RgU1F1oMykqSUgCirjs3mGbR" height="200" src="../../../images/e25041ebf2187196fcadab5c055f4fab01762cc7.svg" width="200"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">notdiscourse</span><span class="informations">200×200 1.65 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>I thought this was the most interesting one, but it really didn’t work as a logo animation (and for no apparent reason was rendered as a video with sound instead of an SVG):<br/>
+</p><div class="video-placeholder-container" data-thumbnail-src="https://d11a6trkgmumsb.cloudfront.net/original/4X/f/3/6/f36b728cdbc5e1c11bd5701be6c02d47b2de9e41.png" data-video-base62-sha1="kGRHyWPVBsnlv2vAH0ud5XKvyi9.mp4" data-video-src="https://d11a6trkgmumsb.cloudfront.net/original/4X/9/1/0/9103f3fcc0ca64d886aed6dc16bbce0d63023b35.mp4">
+</div><p></p>
+<hr/>
+<p>Sorry all for taking this off topic <img alt=":sweat_smile:" class="emoji" height="20" loading="lazy" src="../../../images/sweat_smile.png" title=":sweat_smile:" width="20"/> Let’s get back to admiring Falco’s work and discussing the splash screen!</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span><span class="engagement-pill reaction-pill" title="laughing: 3">😆 3</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/179432_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Falco</div>
+          <div class="post_content">
+<aside class="quote group-team" data-post="17" data-topic="395100" data-username="Bas">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/294929_2.png" width="24"/> Bas:</div>
+<blockquote>
+<p>You’re getting a lot better results than I am.</p>
+<p>Giving up after a handful of iterations</p>
+</blockquote>
+</aside>
+<p>The Discourse logo constraint may be too harsh for it I’m afraid.</p>
+<p>I tried</p>
+<blockquote>
+<p>Generate an animated SVG that will be used as a loading animation on a discussion forum. The forum runs on Discourse, so it could use some of the motifs of it on the svg, like rainbow colored speech bubbles maybe? Animation must be done using SVG inline CSS.</p>
+</blockquote>
+<p>And got</p>
+<p></p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/daVfHNbwHDrQoThpsLggAUVaDdB.svg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/5/c/5/5c585e06c0af20bbd28f03b402a5625171e64a27.svg" title="discourse"><img alt="discourse" data-base62-sha1="daVfHNbwHDrQoThpsLggAUVaDdB" height="200" src="../../../images/5c585e06c0af20bbd28f03b402a5625171e64a27.svg" width="200"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">discourse</span><span class="informations">200×200 3.34 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div><p></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span><span class="engagement-pill reaction-pill" title="laughing: 2">😆 2</span><span class="engagement-pill reaction-pill" title="discourse: 1">:discourse: 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/179432_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Falco</div>
+          <div class="post_content">
+<p>We should do a animated Discourse splash contest!</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 4">❤️ 4</span><span class="engagement-pill reaction-pill" title="chefs kiss: 1">:chefs_kiss: 1</span><span class="engagement-pill reaction-pill" title="star struck: 1">:star_struck: 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/119591_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Canapin</div>
+          <div class="post_content">
+<aside class="quote group-team" data-post="17" data-topic="395100" data-username="Bas">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/294929_2.png" width="24"/> Bas:</div>
+<blockquote>
+<p>You’re getting a lot better results than I am.</p>
+</blockquote>
+</aside>
+<p>Did you set setting Gemini to “pro” mode? It might not be the case by default.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="100: 1">:100: 1</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/383395_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">keegan</div>
+          <div class="post_content">
+<aside class="quote group-team" data-full="true" data-post="19" data-topic="395100" data-username="Falco">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/179432_2.png" width="24"/> Falco:</div>
+<blockquote>
+<p>We should do a animated Discourse splash contest!</p>
+</blockquote>
+</aside>
+<p>Made an attempt to make one in line with the new branding style</p>
+<p><img alt="splash|24x24,%" data-base62-sha1="nBY1J4of6lFOzcoTnIx8Vrx1SxW" height="180" src="../../../images/a57cbc5db933d88f978a5f245b97429b86eb6ff8.svg" width="300"/></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 4">❤️ 4</span><span class="engagement-pill reaction-pill" title="laughing: 1">😆 1</span><span class="engagement-pill reaction-pill" title="star struck: 1">:star_struck: 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/552343_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">noahl</div>
+          <div class="post_content">
+<aside class="quote group-team" data-full="true" data-post="19" data-topic="395100" data-username="Falco">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/179432_2.png" width="24"/> Falco:</div>
+<blockquote>
+<p>We should do a animated Discourse splash contest!</p>
+</blockquote>
+</aside>
+<p>Wellllll - I guess I’m now joining this trend <img alt=":laughing:" class="emoji" height="20" loading="lazy" src="../../../images/laughing.png" title=":laughing:" width="20"/></p>
+<details>
+<summary>
+Prompt</summary>
+<p>Convert this into an animated SVG.</p>
+<p>Rules:</p>
+<ul>
+<li>It must be an animated SVG</li>
+<li>It will act as a loading icon between pages, so needs to be subtle and minimal.</li>
+</ul>
+<p>Idea:</p>
+<ul>
+<li>I want to keep the overall shape with no distortion</li>
+<li>I think we can do something with the 3 inner shapes - some sort of rotating, similar to what you would get if you span a table tennis raquet in your hands by it’s handle</li>
+</ul>
+<p>You MUST preserve the brand identity, and do not break it’s overall design - this is imperative to the brand.</p>
+</details>
+<p>Output (After 3 revisions):<br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/2CXJ6TLisHlAaip4gu303eTRD4Y.svg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/1/2/6/126be16f6ba1d1f6b6a8485fc5bed6bdcb169198.svg" rel="noopener nofollow ugc" title="svgviewer-output (69)"><img alt="svgviewer-output (69)" data-base62-sha1="2CXJ6TLisHlAaip4gu303eTRD4Y" height="250" src="../../../images/126be16f6ba1d1f6b6a8485fc5bed6bdcb169198.svg" width="250"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">svgviewer-output (69)</span><span class="informations">512×512 1.56 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 6">❤️ 6</span><span class="engagement-pill reaction-pill" title="clap: 2">👏 2</span><span class="engagement-pill reaction-pill" title="eyes: 1">👀 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/532740_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">philh</div>
+          <div class="post_content">
+<p>Very reptilian!</p>
+<p><span class="bbcode-s">Add one rotated about 60 degrees counter clockwise  180 degrees about the y axis and you the eyes of a resurrected </span><br/>
+Add a mirror image that has been rotated about the y axis so two images (eyes)</p>
+<p>Go Discourse a rex</p>
+<p>yep, can’t get this out of my head and definitely need to get out more</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span><span class="engagement-pill reaction-pill" title="laughing: 1">😆 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/119591_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Canapin</div>
+          <div class="post_content">
+<p>I’ve set a unicycle loader here! <a href="https://unicyclist.com">https://unicyclist.com</a><br/>
+Neat!</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/L1lwHH08adfryhfUWU8jIxb8Sy.svg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/0/5/5/0550ba7a71d236248d70796d6b70607a631a174e.svg" title="loader2"><img alt="loader2" data-base62-sha1="L1lwHH08adfryhfUWU8jIxb8Sy" height="218" src="../../../images/0550ba7a71d236248d70796d6b70607a631a174e.svg" width="200"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">loader2</span><span class="informations">200×218 5.9 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>The original animation was by me with CSS only, and I asked Gemini to “convert” it (so to speak) to SVG.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 6">❤️ 6</span><span class="engagement-pill reaction-pill" title="chefs kiss: 3">:chefs_kiss: 3</span><span class="engagement-pill reaction-pill" title="eyes: 1">👀 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/528615_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">ばこん</div>
+          <div class="post_content">
+<p>On the loading screen of <a href="https://unicyclist.com" rel="noopener nofollow ugc">https://unicyclist.com</a> , the loading bar seems to extend beyond the background.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/119591_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Canapin</div>
+          <div class="post_content">
+<p>Thank you. A user reported this. There were some SVG quirks (?) that made the image appears… Weird, when uploaded to a post, but not on the loading screen.</p>
+<p>For example, this olders version:</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/vXxNvfYiIvrhl4ALQDC2mNWoe3B.svg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/d/f/f/dffe8706e1d9ff4209f9d84db2cf7fa6baac5057.svg" title="dffe8706e1d9ff4209f9d84db2cf7fa6baac5057"><img alt="dffe8706e1d9ff4209f9d84db2cf7fa6baac5057" data-base62-sha1="vXxNvfYiIvrhl4ALQDC2mNWoe3B" height="260" src="../../../images/dffe8706e1d9ff4209f9d84db2cf7fa6baac5057.svg" width="260"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">dffe8706e1d9ff4209f9d84db2cf7fa6baac5057</span><span class="informations">260×260 6.22 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>Looks completely broken here, even when we click on it (it shows a double loading bar…).<br/>
+But looks fine when used as a splash screen.</p>
+<p>I brainlessly asked Gemini to “fix it”, which created the SVG I posted and looks OK, yet apparently certain users have an issue regardint the progress bar. I suppose this is what you see:</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/imPnUurgZw1EiMGayT8cjxXWYWw.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/8/0/b/80bbc205c10651cc6998a792640a64481f2b1b9c.png" title="image"><img alt="image" data-base62-sha1="imPnUurgZw1EiMGayT8cjxXWYWw" height="302" src="../../../images/80bbc205c10651cc6998a792640a64481f2b1b9c.png" width="311"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">311×302 9.72 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>I don’t have any issue on Windows Chrome/Firefox or Android/Chrome.</p>
+<p>I don’t know if there’s any kind of relationship between Discourse and those glitches.</p>
+<p>So, to stay in topic, besides non-CSS animations, are there some things to be aware of when we want to use an animated SVG for a splash screen?</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/528615_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">ばこん</div>
+          <div class="post_content">
+<p>I utilize clipPaths in my SVGs to prevent elements from overflowing.<br/>
+Perhaps instructing Gemini in the following manner would be effective:</p>
+<pre><code class="lang-plaintext">The loading bar in this SVG is extending beyond the background. Please modify it to ensure it remains within the confines of the background using a clipPath.
+</code></pre>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 4">❤️ 4</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/184869_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">asa</div>
+          <div class="post_content">
+<p>Thank you for the feature, I also gave it a try, I’m not completely satisfied yet but I’m fixing it <img alt=":smiley:" class="emoji" height="20" loading="lazy" src="../../../images/smiley.png" title=":smiley:" width="20"/></p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/dPoczVyCKoU7yidDnBpnG9XzCbH.svg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/6/0/e/60eb6937015ab54246296601a2229d2ed624d5e5.svg" title="splash-loader"><img alt="splash-loader" data-base62-sha1="dPoczVyCKoU7yidDnBpnG9XzCbH" height="100" src="../../../images/60eb6937015ab54246296601a2229d2ed624d5e5.svg" width="100"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">splash-loader</span><span class="informations">100×100 3.08 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 7">❤️ 7</span><span class="engagement-pill reaction-pill" title="clap: 2">👏 2</span><span class="engagement-pill reaction-pill" title="rocket: 1">🚀 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/375316_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Monikas</div>
+          <div class="post_content">
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/pM3P26NqQNkzT7GRmwSpac0Wew5.svg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/b/4/a/b4a52bebc4170d59ea55626ae325a687c4e360ad.svg" rel="noopener nofollow ugc" title="download (2)"><img alt="download (2)" data-base62-sha1="pM3P26NqQNkzT7GRmwSpac0Wew5" height="500" src="../../../images/b4a52bebc4170d59ea55626ae325a687c4e360ad.svg" width="500"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">download (2)</span><span class="informations">600×600 2.38 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/f6CxeHirnQr80BRq5eKwZamZvjQ.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/6/9/e/69e039d1d022ec795484bcfb2d53a644f347d8c2.png" rel="noopener nofollow ugc" title="image"><img alt="image" data-base62-sha1="f6CxeHirnQr80BRq5eKwZamZvjQ" data-dominant-color="18191A" height="330" src="../../../images/69e039d1d022ec795484bcfb2d53a644f347d8c2_2_690x330.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/6/9/e/69e039d1d022ec795484bcfb2d53a644f347d8c2_2_690x330.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/6/9/e/69e039d1d022ec795484bcfb2d53a644f347d8c2_2_1035x495.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/6/9/e/69e039d1d022ec795484bcfb2d53a644f347d8c2_2_1380x660.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">3806×1824 111 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>Size cannot be customized</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/179432_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Falco</div>
+          <div class="post_content">
+<p>The new Gemini 3.5 Flash is even better at this</p>
+<div class="d-image-grid">
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/x1F1QTEIW8DxBy9SMnt7iwdSuDH.svg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/e/7/7/e777d46f6c52266844e517d687d192cb2ccf4135.svg" title="loading3"><img alt="loading3" data-base62-sha1="x1F1QTEIW8DxBy9SMnt7iwdSuDH" height="200" src="../../../images/e777d46f6c52266844e517d687d192cb2ccf4135.svg" width="200"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">loading3</span><span class="informations">120×120 4.84 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/evb6Hz9D1AVhXCNTATFS0jFF2NA.svg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/6/5/a/65a4b50c686f732a7b5a8e62e6370186ac8b5ff2.svg" title="cup_of_ideas"><img alt="cup_of_ideas" data-base62-sha1="evb6Hz9D1AVhXCNTATFS0jFF2NA" height="200" src="../../../images/65a4b50c686f732a7b5a8e62e6370186ac8b5ff2.svg" width="200"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">cup_of_ideas</span><span class="informations">100×100 4.3 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/hU0PVygQeorltTkQw0mlIOPOJlB.svg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/7/d/7/7d79e48321f6a8332a338bf667f98e5868bb50cf.svg" title="loading_3"><img alt="loading_3" data-base62-sha1="hU0PVygQeorltTkQw0mlIOPOJlB" height="200" src="../../../images/7d79e48321f6a8332a338bf667f98e5868bb50cf.svg" width="200"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">loading_3</span><span class="informations">120×120 5.71 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/f7WbxJgzuuSl0tyklo1WA72d8Y.svg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/0/1/b/01b5c7947812b3015ac09f73ea92a8cc7f7d3b40.svg" title="i18n"><img alt="i18n" data-base62-sha1="f7WbxJgzuuSl0tyklo1WA72d8Y" height="120" src="../../../images/01b5c7947812b3015ac09f73ea92a8cc7f7d3b40.svg" width="120"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">i18n</span><span class="informations">120×120 6.09 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+</div>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 11">❤️ 11</span><span class="engagement-pill reaction-pill" title="clap: 1">👏 1</span></div>
+        </div>
+      </div>
+
+
+    </div>
+  </body>
+</html>

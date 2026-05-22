@@ -1,0 +1,167 @@
+<?xml version="1.0"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="100%" height="100%">
+  <style>
+    .discourse-track {
+      stroke: #e2e8f0;
+      stroke-width: 2;
+      stroke-dasharray: 4 4;
+      fill: none;
+    }
+
+    .traveler {
+      stroke: #f59e0b;
+      stroke-width: 3.5;
+      stroke-linecap: round;
+      fill: none;
+      transform-origin: 60px 60px;
+      animation: spin-traveler 3.6s linear infinite;
+    }
+
+    .center-graphic {
+      transform-origin: 60px 60px;
+      animation: pulse-center 3.6s infinite ease-in-out;
+    }
+    .center-bubble-1 {
+      fill: #e0f2fe;
+      stroke: #0088cc;
+      stroke-width: 1.5;
+      stroke-linejoin: round;
+    }
+    .center-bubble-2 {
+      fill: #ffe4e6;
+      stroke: #f43f5e;
+      stroke-width: 1.5;
+      stroke-linejoin: round;
+    }
+
+    .avatar {
+      transform-origin: center;
+      filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.1));
+    }
+
+    .avatar-1 {
+      animation: pulse-av1 3.6s infinite ease-in-out;
+    }
+    .avatar-2 {
+      animation: pulse-av2 3.6s infinite ease-in-out;
+    }
+    .avatar-3 {
+      animation: pulse-av3 3.6s infinite ease-in-out;
+    }
+
+    .reaction {
+      opacity: 0;
+      transform-origin: center;
+    }
+    .reaction-heart {
+      animation: float-heart 3.6s infinite ease-out;
+    }
+    .reaction-star {
+      animation: float-star 3.6s infinite ease-out;
+    }
+    .reaction-reply {
+      animation: float-reply 3.6s infinite ease-out;
+    }
+
+
+    @keyframes spin-traveler {
+      0% { transform: rotate(-90deg); }
+      100% { transform: rotate(270deg); }
+    }
+
+    @keyframes pulse-center {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.06); }
+    }
+
+    @keyframes pulse-av1 {
+      0%, 100% { transform: scale(1.15); filter: brightness(1.1) drop-shadow(0px 3px 6px rgba(0,0,0,0.15)); }
+      16.6%, 83.3% { transform: scale(1); filter: brightness(1); }
+    }
+    @keyframes pulse-av2 {
+      33.3% { transform: scale(1.15); filter: brightness(1.1) drop-shadow(0px 3px 6px rgba(0,0,0,0.15)); }
+      0%, 16.6%, 50%, 100% { transform: scale(1); filter: brightness(1); }
+    }
+    @keyframes pulse-av3 {
+      66.6% { transform: scale(1.15); filter: brightness(1.1) drop-shadow(0px 3px 6px rgba(0,0,0,0.15)); }
+      0%, 50%, 83.3%, 100% { transform: scale(1); filter: brightness(1); }
+    }
+
+    @keyframes float-heart {
+      0% { transform: translate(14px, -12px) scale(0); opacity: 0; }
+      5% { transform: translate(18px, -18px) scale(1); opacity: 1; }
+      18% { transform: translate(22px, -24px) scale(0.9); opacity: 1; }
+      26% { transform: translate(24px, -30px) scale(0.6); opacity: 0; }
+      100% { transform: translate(14px, -12px) scale(0); opacity: 0; }
+    }
+
+    @keyframes float-star {
+      33.3% { transform: translate(14px, -12px) scale(0); opacity: 0; }
+      38.3% { transform: translate(18px, -18px) scale(1); opacity: 1; }
+      51.3% { transform: translate(22px, -24px) scale(0.9); opacity: 1; }
+      59.3% { transform: translate(24px, -30px) scale(0.6); opacity: 0; }
+      0%, 100% { transform: translate(14px, -12px) scale(0); opacity: 0; }
+    }
+
+    @keyframes float-reply {
+      66.6% { transform: translate(-14px, -12px) scale(0); opacity: 0; }
+      71.6% { transform: translate(-18px, -18px) scale(1); opacity: 1; }
+      84.6% { transform: translate(-22px, -24px) scale(0.9); opacity: 1; }
+      92.6% { transform: translate(-24px, -30px) scale(0.6); opacity: 0; }
+      0%, 100% { transform: translate(-14px, -12px) scale(0); opacity: 0; }
+    }
+  </style>
+
+  <!-- Loop Conversation Track -->
+  <circle class="discourse-track" cx="60" cy="60" r="36"/>
+
+  <!-- Traveling Active Conversation Signal -->
+  <circle class="traveler" cx="60" cy="60" r="36" stroke-dasharray="15 211"/>
+
+  <!-- Central Pulsing Chat Bubbles -->
+  <g class="center-graphic">
+    <!-- Bubble 1 (Blue, Top-Left oriented) -->
+    <path class="center-bubble-1" d="M 47 48 h 11 a 3 3 0 0 1 3 3 v 6 a 3 3 0 0 1 -3 3 h -6 l -3 3 v -3 a 3 3 0 0 1 -2 -2.5 v -4.5 a 3 3 0 0 1 3 -3 Z"/>
+    <!-- Bubble 2 (Pink, Bottom-Right oriented) -->
+    <path class="center-bubble-2" d="M 59 58 h 11 a 3 3 0 0 1 3 3 v 6 a 3 3 0 0 1 -3 3 h -3 l -3 3 v -3 a 3 3 0 0 1 -5 -2.5 v -4.5 a 3 3 0 0 1 3 -3 Z"/>
+  </g>
+
+  <!-- USER 1 (Top Blue Avatar) -->
+  <g transform="translate(60, 24)">
+    <g class="avatar avatar-1">
+      <circle cx="0" cy="0" r="10" fill="#0088cc"/>
+      <circle cx="0" cy="-2.5" r="2.5" fill="#ffffff"/>
+      <path d="M -5 5.5 A 5 5 0 0 1 5 5.5 Z" fill="#ffffff"/>
+    </g>
+    <!-- Floating Heart Reaction -->
+    <g class="reaction reaction-heart">
+      <path d="M0,2.5 C0,2.5 1.1,0 3,0 C4.9,0 6,1.5 6,3.4 C6,5.6 3,7.5 0,9 C-3,7.5 -6,5.6 -6,3.4 C-6,1.5 -4.9,0 -3,0 C-1.1,0 0,2.5 0,2.5 Z" fill="#ef4444"/>
+    </g>
+  </g>
+
+  <!-- USER 2 (Bottom Right Green Avatar) -->
+  <g transform="translate(91, 78)">
+    <g class="avatar avatar-2">
+      <circle cx="0" cy="0" r="10" fill="#10b981"/>
+      <circle cx="0" cy="-2.5" r="2.5" fill="#ffffff"/>
+      <path d="M -5 5.5 A 5 5 0 0 1 5 5.5 Z" fill="#ffffff"/>
+    </g>
+    <!-- Floating Star Reaction -->
+    <g class="reaction reaction-star">
+      <path d="M0,-5 L1.5,-1.5 L5,-1.5 L2.2,0.8 L3.3,4.3 L0,2.2 L-3.3,4.3 L-2.2,0.8 L-5,-1.5 L-1.5,-1.5 Z" fill="#f59e0b"/>
+    </g>
+  </g>
+
+  <!-- USER 3 (Bottom Left Coral Avatar) -->
+  <g transform="translate(29, 78)">
+    <g class="avatar avatar-3">
+      <circle cx="0" cy="0" r="10" fill="#f43f5e"/>
+      <circle cx="0" cy="-2.5" r="2.5" fill="#ffffff"/>
+      <path d="M -5 5.5 A 5 5 0 0 1 5 5.5 Z" fill="#ffffff"/>
+    </g>
+    <!-- Floating Reply Bubble Reaction -->
+    <g class="reaction reaction-reply">
+      <path d="M-5,-3 h10 a2,2 0 0 1 2,2 v3 a2,2 0 0 1 -2,2 h-5 l-3,2.5 v-2.5 a2,2 0 0 1 -2,-2 v-3 a2,2 0 0 1 2,-2 Z" fill="#3b82f6"/>
+    </g>
+  </g>
+</svg>

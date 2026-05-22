@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width">
+    <title>Reverse proxy X-Forwarded-For</title>
+    <link rel="stylesheet" href="../../../archived.css" />
+    <script>
+      function findSageCodeBlocks() {
+        return Array.prototype.slice.call(
+          document.querySelectorAll(
+            "pre[data-code-wrap='sage'] > code, pre > code.lang-sage, pre > code.language-sage, pre > code.sage"
+          )
+        );
+      }
+
+      function loadScript(src) {
+        return new Promise(function (resolve, reject) {
+          var existing = document.querySelector("script[src='" + src + "']");
+          if (existing) {
+            if (existing.dataset.loaded === "true") {
+              resolve();
+              return;
+            }
+            existing.addEventListener("load", resolve, { once: true });
+            existing.addEventListener("error", reject, { once: true });
+            return;
+          }
+
+          var script = document.createElement("script");
+          script.src = src;
+          script.async = true;
+          script.addEventListener("load", function () {
+            script.dataset.loaded = "true";
+            resolve();
+          }, { once: true });
+          script.addEventListener("error", reject, { once: true });
+          document.head.appendChild(script);
+        });
+      }
+
+      function prepareSageCells() {
+        var sageBlocks = findSageCodeBlocks();
+        if (!sageBlocks.length) {
+          return Promise.resolve();
+        }
+
+        return loadScript("https://sagecell.sagemath.org/static/embedded_sagecell.js")
+          .then(function () {
+            if (!window.sagecell || !window.sagecell.makeSagecell) {
+              return;
+            }
+
+            sageBlocks.forEach(function (codeTag, index) {
+              var preTag = codeTag.parentElement;
+              if (!preTag || preTag.dataset.sageMounted === "true") {
+                return;
+              }
+
+              var host = document.createElement("div");
+              host.className = "sagecell-archive";
+
+              var source = document.createElement("script");
+              source.type = "text/x-sage";
+              source.text = codeTag.textContent || "";
+              host.appendChild(source);
+
+              preTag.insertAdjacentElement("afterend", host);
+              preTag.classList.add("sage-source-hidden");
+              preTag.dataset.sageMounted = "true";
+
+              window.sagecell.makeSagecell({
+                inputLocation: host,
+                autoeval: false,
+                evalButtonText: "Run",
+                languages: ["sage"]
+              });
+            });
+          })
+          .catch(function () {
+            // Leave the original code blocks visible if SageCell cannot load.
+          });
+      }
+
+      function preprocessDiscourseMath() {
+        document.querySelectorAll("span.math, div.math").forEach(function (node) {
+          var tex = node.textContent || "";
+          if (!tex.trim()) {
+            return;
+          }
+          if (node.tagName === "SPAN") {
+            node.textContent = "\\(" + tex + "\\)";
+          } else {
+            node.textContent = "\\[" + tex + "\\]";
+          }
+          node.classList.remove("math");
+        });
+      }
+
+      window.MathJax = {
+        tex: {
+          inlineMath: [["\\(", "\\)"]],
+          displayMath: [["\\[", "\\]"]]
+        },
+        startup: {
+          pageReady() {
+            preprocessDiscourseMath();
+            return MathJax.startup.defaultPageReady().then(function () {
+              return prepareSageCells();
+            });
+          }
+        }
+      };
+    </script>
+    <script async id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="title-span">
+        <a href="../../../">
+          <img src="../../../images/ad2526334012b2ad0c3421f9b6dd94bae2ede52f.svg" height="40" alt="Site Logo" id="site-logo" />
+        </a>
+      </div>
+    </header>
+
+    <div class="main">
+    <div class="archive-span"><a href='https://meta.discourse.org/'>Discourse Meta</a> archived in May, 2026</div>
+    <h1 class="topic-title">Reverse proxy X-Forwarded-For</h1>
+            <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/352733_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Eviepayne</div>
+          <div class="post_content">
+<p>I recently migrated my forum to a much more performant host, and I am working towards high availability.</p>
+<p>in the reverse proxy I added the Forward Proto and For headers but the nginx configuration on the discourse only respected the Proto.</p>
+<p>I had to add under server:</p>
+<pre data-code-wrap="nginx"><code class="lang-nginx">set_real_ip_from loadbalancerip;
+real_ip_header X-Forwarded-For;
+</code></pre>
+<p>Is there a discourse envvar to add these?<br/>
+or possibly a argument to add to app.yml?</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/549896_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">darkpixlz</div>
+          <div class="post_content">
+<p>I believe this is what you’re looking for:</p>
+<aside class="quote quote-modified" data-post="1" data-topic="17247">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/148734_2.png" width="24"/>
+<div class="quote-title__text-content">
+<a href="https://meta.discourse.org/t/run-other-websites-on-the-same-machine-as-discourse/17247">Run other websites on the same machine as Discourse</a> <a class="badge-category__wrapper" href="/c/documentation/self-hosting/55"><span class="badge-category --style-square --has-parent" data-category-id="55" data-drop-close="true" data-parent-category-id="10" style="--category-badge-color: #ffd200; --category-badge-text-color: #000000; --parent-category-badge-color: #ED207B;" title="Documentation and guides for people who self-host their Discourse sites. (Index)"><span class="badge-category__name">Self-Hosting</span></span></a>
+</div>
+</div>
+<blockquote>
+<span class="mention">@pfaffman</span> edited this heavily 2022.02.24. Blame me if it’s broken. 
+If you want to run other websites on the same machine as Discourse, you need to set up an extra NGINX or HAProxy proxy in front of the Docker container. 
+
+<a aria-label="Heading link" class="anchor" href="#p-59808-note-this-is-for-advanced-admins-1" name="p-59808-note-this-is-for-advanced-admins-1"></a>NOTE: This is for advanced admins
+This guide assumes you already have Discourse working - if you don’t, it may be hard to tell whether or not the configuration is working. 
+You cannot use ./discourse-setup to set up Discourse if another server is using port 80 or 443. You will…
+  </blockquote>
+</aside>
+
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/352733_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Eviepayne</div>
+          <div class="post_content">
+<p>No this guide explains how to setup an nginx socket that’s shared between the container and host.</p>
+<p>I’m trying to find a declarative way to include:</p>
+<pre><code class="lang-plaintext">set_real_ip_from loadbalancerip;
+real_ip_header X-Forwarded-For;
+</code></pre>
+<p>In the nginx configuration in containers after rebuild.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/549896_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">darkpixlz</div>
+          <div class="post_content">
+<p>You’re trying to add this to the container’s internal nginx? I believe that’s unnecessary because it’s added by default:</p>
+<aside class="onebox githubblob" data-onebox-src="https://github.com/discourse/discourse/blob/main/config/nginx.sample.conf#L105">
+<header class="source">
+<a href="https://github.com/discourse/discourse/blob/main/config/nginx.sample.conf#L105" rel="noopener" target="_blank">github.com/discourse/discourse</a>
+</header>
+<article class="onebox-body">
+<h4><a href="https://github.com/discourse/discourse/blob/main/config/nginx.sample.conf#L105" rel="noopener" target="_blank">config/nginx.sample.conf</a></h4>
+<div class="git-blob-info">
+<a href="https://github.com/discourse/discourse/blob/main/config/nginx.sample.conf#L105" rel="noopener"><code>main</code></a>
+</div>
+<pre class="onebox"><code class="lang-conf">
+      <ol class="start lines" start="95" style="counter-reset: li-counter 94 ;">
+          <li></li>
+          <li># auth_basic on;</li>
+          <li># auth_basic_user_file /etc/nginx/htpasswd;</li>
+          <li></li>
+          <li># proxy_set_header directives are inherited from the previous configuration</li>
+          <li># level if and only if there are no proxy_set_header directives defined on</li>
+          <li># the current level.</li>
+          <li>proxy_set_header Host $http_host;</li>
+          <li>proxy_set_header X-Real-IP $remote_addr;</li>
+          <li>proxy_set_header X-Request-Start "t=${msec}";</li>
+          <li class="selected">proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;</li>
+          <li>proxy_set_header X-Forwarded-Proto $thescheme;</li>
+          <li>proxy_set_header X-Sendfile-Type "";</li>
+          <li>proxy_set_header X-Accel-Mapping "";</li>
+          <li>proxy_set_header Client-Ip "";</li>
+          <li></li>
+          <li>location ~ ^/uploads/short-url/ {</li>
+          <li>  proxy_pass http://discourse;</li>
+          <li>  break;</li>
+          <li>}</li>
+          <li></li>
+      </ol>
+    </code></pre>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/352733_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Eviepayne</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="3" data-topic="403181" data-username="Eviepayne">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/352733_2.png" width="24"/> Eviepayne:</div>
+<blockquote>
+<p><code>set_real_ip_from loadbalancerip;</code></p>
+</blockquote>
+</aside>
+<p>This line is needed for that to work.<br/>
+Without it all the requests are still the loadbalancer IP.<br/>
+I know because my discourse was down for 429 errors.</p>
+<p>In case it’s not clear this is my infra:<br/>
+user &gt; haproxy &gt; discourse</p>
+<p>Discourse of course includes an nginx rproxy</p>
+<p>I included the forwarding headers in haproxy but the discourse internal nginx was not respecting forwarded for. I had to add the 2 lines in my OP and restart the container for it to work.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554803_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Lilly</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="1" data-topic="403181" data-username="Eviepayne">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/352733_2.png" width="24"/> Eviepayne:</div>
+<blockquote>
+<p>I recently migrated my forum to a much more performant host, and I am working towards high availability.</p>
+</blockquote>
+</aside>
+<p>are you using a 2-containter build?</p>
+<p>i don’t think there is built-in env variable for custom load balancer IPs, because nginx doesn’t natively read those vars for the server block.</p>
+<p>also, if you manually edited the nginx config inside the running container, it will be wiped out the next time you rebuild.</p>
+<p>i think in order to make it permanent and survive rebuilds, you need to use the replace command in your <code>app.yml</code> (or <code>web_only.yml</code> if dual container) - scroll to the very bottom of your <code>.yml</code> file to the <code>run:</code> section, and add this block. it tells the discourse builder to automatically inject your real ip settings after the <code>server {</code> block opens:</p>
+<pre><code class="lang-plaintext">run:
+  - replace:
+      filename: /etc/nginx/conf.d/discourse.conf
+      from: /server.+{/
+      to: |
+        server {
+          set_real_ip_from 192.168.1.100; ## Replace with your actual load balancer ip/subnet
+          real_ip_header X-Forwarded-For;
+          real_ip_recursive on;
+</code></pre>
+<p>(make sure indentation and spacing match the rest of run block, <code>yml</code> files are super strict)</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span><span class="engagement-pill reaction-pill" title="100: 1">:100: 1</span></div>
+        </div>
+      </div>
+
+
+    </div>
+  </body>
+</html>

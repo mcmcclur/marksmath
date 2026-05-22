@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width">
+    <title>Is it possible to convert a forum into a real app?</title>
+    <link rel="stylesheet" href="../../../archived.css" />
+    <script>
+      function findSageCodeBlocks() {
+        return Array.prototype.slice.call(
+          document.querySelectorAll(
+            "pre[data-code-wrap='sage'] > code, pre > code.lang-sage, pre > code.language-sage, pre > code.sage"
+          )
+        );
+      }
+
+      function loadScript(src) {
+        return new Promise(function (resolve, reject) {
+          var existing = document.querySelector("script[src='" + src + "']");
+          if (existing) {
+            if (existing.dataset.loaded === "true") {
+              resolve();
+              return;
+            }
+            existing.addEventListener("load", resolve, { once: true });
+            existing.addEventListener("error", reject, { once: true });
+            return;
+          }
+
+          var script = document.createElement("script");
+          script.src = src;
+          script.async = true;
+          script.addEventListener("load", function () {
+            script.dataset.loaded = "true";
+            resolve();
+          }, { once: true });
+          script.addEventListener("error", reject, { once: true });
+          document.head.appendChild(script);
+        });
+      }
+
+      function prepareSageCells() {
+        var sageBlocks = findSageCodeBlocks();
+        if (!sageBlocks.length) {
+          return Promise.resolve();
+        }
+
+        return loadScript("https://sagecell.sagemath.org/static/embedded_sagecell.js")
+          .then(function () {
+            if (!window.sagecell || !window.sagecell.makeSagecell) {
+              return;
+            }
+
+            sageBlocks.forEach(function (codeTag, index) {
+              var preTag = codeTag.parentElement;
+              if (!preTag || preTag.dataset.sageMounted === "true") {
+                return;
+              }
+
+              var host = document.createElement("div");
+              host.className = "sagecell-archive";
+
+              var source = document.createElement("script");
+              source.type = "text/x-sage";
+              source.text = codeTag.textContent || "";
+              host.appendChild(source);
+
+              preTag.insertAdjacentElement("afterend", host);
+              preTag.classList.add("sage-source-hidden");
+              preTag.dataset.sageMounted = "true";
+
+              window.sagecell.makeSagecell({
+                inputLocation: host,
+                autoeval: false,
+                evalButtonText: "Run",
+                languages: ["sage"]
+              });
+            });
+          })
+          .catch(function () {
+            // Leave the original code blocks visible if SageCell cannot load.
+          });
+      }
+
+      function preprocessDiscourseMath() {
+        document.querySelectorAll("span.math, div.math").forEach(function (node) {
+          var tex = node.textContent || "";
+          if (!tex.trim()) {
+            return;
+          }
+          if (node.tagName === "SPAN") {
+            node.textContent = "\\(" + tex + "\\)";
+          } else {
+            node.textContent = "\\[" + tex + "\\]";
+          }
+          node.classList.remove("math");
+        });
+      }
+
+      window.MathJax = {
+        tex: {
+          inlineMath: [["\\(", "\\)"]],
+          displayMath: [["\\[", "\\]"]]
+        },
+        startup: {
+          pageReady() {
+            preprocessDiscourseMath();
+            return MathJax.startup.defaultPageReady().then(function () {
+              return prepareSageCells();
+            });
+          }
+        }
+      };
+    </script>
+    <script async id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="title-span">
+        <a href="../../../">
+          <img src="../../../images/ad2526334012b2ad0c3421f9b6dd94bae2ede52f.svg" height="40" alt="Site Logo" id="site-logo" />
+        </a>
+      </div>
+    </header>
+
+    <div class="main">
+    <div class="archive-span"><a href='https://meta.discourse.org/'>Discourse Meta</a> archived in May, 2026</div>
+    <h1 class="topic-title">Is it possible to convert a forum into a real app?</h1>
+            <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/492709_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">alltiagocom</div>
+          <div class="post_content">
+<p>With the right developer, is it possible to convert a forum into a real iOS and Android app?</p>
+<p>What are the main challenges, if any (besides finding the right developer, of course)?</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/192154_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Jagster</div>
+          <div class="post_content">
+<p>Define ”real”? Because even PWA is ”real”, as is DiscourseHub.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/537252_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">chapoi</div>
+          <div class="post_content">
+<p>It’s been done before, or in progress, by others, might be interested to check it out and ask them. These 2 were very recent ones:</p>
+<aside class="quote quote-modified" data-post="1" data-topic="377296">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/198280_2.png" width="24"/>
+<div class="quote-title__text-content">
+<a href="https://meta.discourse.org/t/dishub-a-modern-native-mobile-app-for-discourse-forums/377296">DisHub – A Modern, Native Mobile App for Discourse Forums</a> <a class="badge-category__wrapper" href="/c/plugin/extras/5"><span class="badge-category --style-square --has-parent" data-category-id="5" data-drop-close="true" data-parent-category-id="22" style="--category-badge-color: #25AAE2; --category-badge-text-color: #000000; --parent-category-badge-color: #F7941D;" title="A directory of all extensions &amp; integrations for Discourse which are not Discourse plugins, i.e. a CMS plugin, a browser extension or a native application."><span class="badge-category__name">Extras</span></span></a>
+</div>
+</div>
+<blockquote>
+    Hello Discourse community! <img alt="waving_hand" class="emoji" height="20" src="../../../images/waving_hand.png" title="waving_hand" width="20"/> 
+I’m excited to share something I’ve been working on for a while: DisHub, a new mobile app designed specifically for Discourse forums. 
+Like many of you, I really enjoy using Discourse, but I’ve always felt that the official mobile app is a bit limited — it’s mostly just a web wrapper, with minimal use of true native features. Also Fig project seems to be unavailable, and it was only on Android. 
+So I decided to build DisHub from scratch using Flutter. My…
+  </blockquote>
+</aside>
+<aside class="quote quote-modified" data-post="1" data-topic="357103">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/466278_2.png" width="24"/>
+<div class="quote-title__text-content">
+<a href="https://meta.discourse.org/t/introducing-discorkie-a-multi-instance-discourse-client/357103">Introducing DisCorkie – A Multi-Instance Discourse Client</a> <a class="badge-category__wrapper" href="/c/plugin/extras/5"><span class="badge-category --style-square --has-parent" data-category-id="5" data-drop-close="true" data-parent-category-id="22" style="--category-badge-color: #25AAE2; --category-badge-text-color: #000000; --parent-category-badge-color: #F7941D;" title="A directory of all extensions &amp; integrations for Discourse which are not Discourse plugins, i.e. a CMS plugin, a browser extension or a native application."><span class="badge-category__name">Extras</span></span></a>
+</div>
+</div>
+<blockquote>
+    Hi Discourse Meta, 
+If you’re active in more than one Discourse forum, you’ve probably wished for a faster, cleaner way to stay connected. That’s exactly what I’m building with DisCorkie – a modern Discourse client that lets you access multiple forums from one app, with a native experience across platforms. 
+ <a class="lightbox" data-download-href="/uploads/short-url/1klzZzLGqjrYCyH8aaeOINOK7R3.jpeg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/0/9/4/094f032d193eee4933a8f6a8c465674d4d82e385.jpeg" rel="noopener nofollow ugc" title="Screenshot 2025-03-13 at 10.45.35">[Screenshot 2025-03-13 at 10.45.35]</a>
+<a class="anchor" href="#p-1731056-what-is-discorkie-1" name="p-1731056-what-is-discorkie-1"></a>What is DisCorkie?
+DisCorkie helps you manage several Discourse communities in one place. No more juggling browser tabs or switching accounts manually. …
+  </blockquote>
+</aside>
+<p>But, afaik, it’s pretty tough to get everything Discourse has into a native app.</p>
+<p>Both examples above don’t cover everything by far, which makes me think it’s not as simple as just wrapping it in something and calling it a day.</p>
+<p>Also, if you look through Meta, you will find many instances of the same question asked and discussed already:</p>
+<ul>
+<li><a class="inline-onebox" href="https://meta.discourse.org/t/discourse-native-app/361616">Discourse Native App</a></li>
+<li><a class="inline-onebox" href="https://meta.discourse.org/t/whats-the-best-advice-for-native-app-requests/219370">What's the best advice for native app requests?</a></li>
+<li><a class="inline-onebox" href="https://meta.discourse.org/t/can-i-turn-my-forum-into-an-app/321896">Can I turn my forum into an app?</a></li>
+<li><a class="inline-onebox" href="https://meta.discourse.org/t/flutter-mobile-app-for-your-discourse-community/299768">Flutter Mobile App for your Discourse Community</a></li>
+</ul>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 7">❤️ 7</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/176214_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">merefield</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="1" data-topic="378700" data-username="alltiagocom">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/492709_2.png" width="24"/> alltiagocom:</div>
+<blockquote>
+<p>What are the main challenges</p>
+</blockquote>
+</aside>
+<p>Cost of maintenance.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/492709_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">alltiagocom</div>
+          <div class="post_content">
+<p>By “real” I mean that it belongs to the forum’s owner, not the official Discourse app where there’s more forums that users can add. An app people can download from the store with the forum’s name.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/492709_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">alltiagocom</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="3" data-topic="378700" data-username="chapoi">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/537252_2.png" width="24"/> chapoi:</div>
+<blockquote>
+<p>These 2 were very recent ones</p>
+</blockquote>
+</aside>
+<p>Thanks for sharing. I saw that DisHub recently.<br/>
+I have an issue with people promoting stuff when they seem to just sign up to promote their product, but they have never interacted with the community before. It always feels suspicious…</p>
+<p>And then for DisCorkie, for example, the developer hasn’t been active at all in his topic since April. Weird…</p>
+<aside class="quote no-group" data-post="3" data-topic="378700" data-username="chapoi">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/537252_2.png" width="24"/> chapoi:</div>
+<blockquote>
+<p>But, afaik, it’s pretty tough to get everything Discourse has into a native app.</p>
+<p>Both examples above don’t cover everything by far, which makes me think it’s not as simple as just wrapping it in something and calling it a day.</p>
+</blockquote>
+</aside>
+<p>I’m thinking that maybe the app could cover the most used features, just to make it usable enough, and some other features like stuff related to user account, etc, could still rely on the browser?</p>
+<p>At this point I’m just guessing. I just thought about it today, actually, and decided to ask.</p>
+<p>I will check the other links as well. Thanks!</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/492709_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">alltiagocom</div>
+          <div class="post_content">
+<p>This would be something down the road, of course.</p>
+<p>As a musician myself, this community will eventually be my main “hub” and place to communicate with not only my fans, but other musicians as well. More than my social media or my official websites. So, a bigger investment would be justified, because that’s where people will be able to find more of my stuff, up to date, exclusive content, etc.</p>
+<p>I’m super tired of social media algorithms, short attention span, constant scrolling, etc. I rather focus on valuable content, than “fast-food” content.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 4">❤️ 4</span><span class="engagement-pill reaction-pill" title="hugs: 1">🤗 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/537252_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">chapoi</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="6" data-topic="378700" data-username="alltiagocom">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/492709_2.png" width="24"/> alltiagocom:</div>
+<blockquote>
+<p>I have an issue with people promoting stuff when they seem to just sign up to promote their product, but they have never interacted with the community before. It always feels suspicious…</p>
+</blockquote>
+</aside>
+<p>Haha yes, I hear you, I’m not saying “use those” but it could still provide some context.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/492709_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">alltiagocom</div>
+          <div class="post_content">
+<p>At least from the videos, DisCorkie looks pretty decent. Very “Discord-esque”, which is good, along with a desktop app as well.</p>
+<p>The downside is that all the customization is lost.</p>
+<p>But yeah, looking at those options, makes it look like it’s a possibility. I will keep that in mind for sure.</p>
+<p>Appreciate it</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/383632_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">renato</div>
+          <div class="post_content">
+<p>The easiest thing you can try is deploying a TWA based on a PWA for Android. It’s really simple; it’s essentially publishing a PWA on the Play Store with official tools.</p>
+<p>It’s a more involved process for iOS, especially because of the review process, but you can also use something like PWABuilder or a similar tool to help publish your web app there.</p>
+<p>Both are just web views which will work <em>almost</em> the same as an installed PWA.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 4">❤️ 4</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/492709_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">alltiagocom</div>
+          <div class="post_content">
+<p>I saw other people talking about PWA, but I have no idea what that is. Gotta do some research. Thanks for the extra info.</p>
+<p>As I mentioned, this is something to truly think about down the road. I’ve been using the platform as an admin since March, so I’m still exploring what can be done, how I want it to be structured, etc. I’m just gathering more info for future updates so when the time comes, I’m ready!</p>
+<hr/>
+<p>EDIT: <span class="mention">@renato</span> I just did a quick research and I understand what TWA and PWA are. It seems like a simpler and first step indeed. At least, people would be able to download it from the app store, and it would have my own icon, etc. Thanks.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/383632_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">renato</div>
+          <div class="post_content">
+<p>The simplest to think of PWAs is that they are “installable web apps”. You can check this behavior on iOS when you “Add to Home Screen” <strong>and</strong> the website has the information needed to be “installed” (Discourse has it, so you can try it with your own site)</p>
+<p>It then becomes visually standalone instead of opening inside a browser. Doing so is also a way for a website to use push notifications on iOS.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 6">❤️ 6</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/290039_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">nathank</div>
+          <div class="post_content">
+<p>It would be brilliant to have a more detailed guide on how to do that, with a summary of the likely costs and maintenance requirements.</p>
+<p>I’ve looked into it this in the past, and have been rather put off by how much it would cost to maintain.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 5">❤️ 5</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/466278_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">messiaslima</div>
+          <div class="post_content">
+<p>Hey! DisCorkie developer here. It’s not weird that I wasn’t active on this topic. I just didnt want to Hijack a public forum to promote my app. Updates about DisCorkie are being published regularly here <a href="https://blog.appoutlet.dev/series/discorkie" rel="noopener nofollow ugc">https://blog.appoutlet.dev/series/discorkie</a></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/466278_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">messiaslima</div>
+          <div class="post_content">
+<p>The inspiration on Discord is on purpose. I find it very easy to switch servers and be active in more than one at the same time. So, why not to apply this concept to forums?</p>
+<p>Im glad that you liked the UX. You can experience it in first hand by downloading it here <a class="inline-onebox" href="https://discorkie.appoutlet.dev/download" rel="noopener nofollow ugc">DisCorkie</a></p>
+<p>Removing the customisation initially was a strategical decision. DisCorkie is developed by just one dev (myself) and I decided to focus on the UX, basic features and make it available on all platforms.</p>
+<p>Once the project has achieve a good level of maturity, the forum customisation will be on the roadmap.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/492709_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">alltiagocom</div>
+          <div class="post_content">
+<p>When I said “weird” is just because I would expect a Discourse developer to be active on the forum when it comes to updates on the platform they use for their own product, asking questions, sharing issues they encounter, etc. Not necessarily focused on promoting the app, which I agree, it would probably be “annoying”, but at the same time, if the updates are balanced, meaningful, and probably all done in the same thread, I believe all users would benefit from your updates. If your app is good, then why not share it, get feedback from users, etc?</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/492709_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">alltiagocom</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="15" data-topic="378700" data-username="messiaslima">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/466278_2.png" width="24"/> messiaslima:</div>
+<blockquote>
+<p>The inspiration on Discord is on purpose. I find it very easy to switch servers and be active in more than one at the same time. So, why not to apply this concept to forums?</p>
+</blockquote>
+</aside>
+<p>I agree. Discord is well designed (for the most part… there are things that make absolutely no sense, but…). The official Discourse app could actually mimic some of the features, one of them being the communities on the left, swipe gestures, etc.</p>
+<aside class="quote no-group" data-post="15" data-topic="378700" data-username="messiaslima">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/466278_2.png" width="24"/> messiaslima:</div>
+<blockquote>
+<p>Removing the customisation initially was a strategical decision. DisCorkie is developed by just one dev (myself) and I decided to focus on the UX, basic features and make it available on all platforms.</p>
+</blockquote>
+</aside>
+<p>I understand it. It makes sense. It’s better to have a simpler yet functional app than something that tries to do a lot and nothing really feels solid.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 4">❤️ 4</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/545883_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">nicolsdennis</div>
+          <div class="post_content">
+<p>I have a native discourse app, hoping to release in May. I’ve mirrored 83% of discourse web into the mobile apps. I will publish and allow app trials for users with their own forums to test.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/545883_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">nicolsdennis</div>
+          <div class="post_content">
+<p>Slight update, I’ve created a client native app for almost anyone who has Discourse to use. It will be made available for free, with a few additional power user features that are paid.</p>
+<p>I’m responding to you now via the client app.</p>
+<p><img alt="A Native Mobile iOS+Android Client App for Discourse - General - Discourse Meta" height="500" src="../../../images/27c962ecdabce3b687575a892008fae872762481_2_472x1024.jpeg" width="230"/><br/>
+<a href="https://www.meta.discourse.org/t/403429">A Native Mobile iOS+Android Client App for Discourse - General - Discourse Meta</a></p>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+  </body>
+</html>

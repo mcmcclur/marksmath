@@ -1,0 +1,1327 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width">
+    <title>Discourse Gamification</title>
+    <link rel="stylesheet" href="../../../archived.css" />
+    <script>
+      function findSageCodeBlocks() {
+        return Array.prototype.slice.call(
+          document.querySelectorAll(
+            "pre[data-code-wrap='sage'] > code, pre > code.lang-sage, pre > code.language-sage, pre > code.sage"
+          )
+        );
+      }
+
+      function loadScript(src) {
+        return new Promise(function (resolve, reject) {
+          var existing = document.querySelector("script[src='" + src + "']");
+          if (existing) {
+            if (existing.dataset.loaded === "true") {
+              resolve();
+              return;
+            }
+            existing.addEventListener("load", resolve, { once: true });
+            existing.addEventListener("error", reject, { once: true });
+            return;
+          }
+
+          var script = document.createElement("script");
+          script.src = src;
+          script.async = true;
+          script.addEventListener("load", function () {
+            script.dataset.loaded = "true";
+            resolve();
+          }, { once: true });
+          script.addEventListener("error", reject, { once: true });
+          document.head.appendChild(script);
+        });
+      }
+
+      function prepareSageCells() {
+        var sageBlocks = findSageCodeBlocks();
+        if (!sageBlocks.length) {
+          return Promise.resolve();
+        }
+
+        return loadScript("https://sagecell.sagemath.org/static/embedded_sagecell.js")
+          .then(function () {
+            if (!window.sagecell || !window.sagecell.makeSagecell) {
+              return;
+            }
+
+            sageBlocks.forEach(function (codeTag, index) {
+              var preTag = codeTag.parentElement;
+              if (!preTag || preTag.dataset.sageMounted === "true") {
+                return;
+              }
+
+              var host = document.createElement("div");
+              host.className = "sagecell-archive";
+
+              var source = document.createElement("script");
+              source.type = "text/x-sage";
+              source.text = codeTag.textContent || "";
+              host.appendChild(source);
+
+              preTag.insertAdjacentElement("afterend", host);
+              preTag.classList.add("sage-source-hidden");
+              preTag.dataset.sageMounted = "true";
+
+              window.sagecell.makeSagecell({
+                inputLocation: host,
+                autoeval: false,
+                evalButtonText: "Run",
+                languages: ["sage"]
+              });
+            });
+          })
+          .catch(function () {
+            // Leave the original code blocks visible if SageCell cannot load.
+          });
+      }
+
+      function preprocessDiscourseMath() {
+        document.querySelectorAll("span.math, div.math").forEach(function (node) {
+          var tex = node.textContent || "";
+          if (!tex.trim()) {
+            return;
+          }
+          if (node.tagName === "SPAN") {
+            node.textContent = "\\(" + tex + "\\)";
+          } else {
+            node.textContent = "\\[" + tex + "\\]";
+          }
+          node.classList.remove("math");
+        });
+      }
+
+      window.MathJax = {
+        tex: {
+          inlineMath: [["\\(", "\\)"]],
+          displayMath: [["\\[", "\\]"]]
+        },
+        startup: {
+          pageReady() {
+            preprocessDiscourseMath();
+            return MathJax.startup.defaultPageReady().then(function () {
+              return prepareSageCells();
+            });
+          }
+        }
+      };
+    </script>
+    <script async id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="title-span">
+        <a href="../../../">
+          <img src="../../../images/ad2526334012b2ad0c3421f9b6dd94bae2ede52f.svg" height="40" alt="Site Logo" id="site-logo" />
+        </a>
+      </div>
+    </header>
+
+    <div class="main">
+    <div class="archive-span"><a href='https://meta.discourse.org/'>Discourse Meta</a> archived in May, 2026</div>
+    <h1 class="topic-title">Discourse Gamification</h1>
+            <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/148734_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Discourse</div>
+          <div class="post_content">
+<div data-theme-toc="true"> </div>
+<div class="md-table">
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><img alt=":discourse2:" class="emoji emoji-custom only-emoji" height="20" loading="lazy" src="../../../images/0e65eeb3631702ee91807a5f302a3f10f099dd11.png" title=":discourse2:" width="20"/></td>
+<td><strong>Summary</strong></td>
+<td>
+<strong>Discourse Gamification</strong> adds customizable scoring (karma, kudos, points) and leaderboards to your instance.</td>
+</tr>
+<tr>
+<td><img alt=":open_book:" class="emoji only-emoji" height="20" loading="lazy" src="../../../images/open_book.png" title=":open_book:" width="20"/></td>
+<td><strong>Install Guide</strong></td>
+<td>
+<strong>This plugin is  bundled with Discourse core</strong>. There is no need to install the plugin separately.</td>
+</tr>
+<tr>
+<td><img alt=":test_tube:" class="emoji only-emoji" height="20" loading="lazy" src="../../../images/test_tube.png" title=":test_tube:" width="20"/></td>
+<td><strong>Demo</strong></td>
+<td><a href="https://meta.discourse.org/leaderboard/1">Leaderboard</a></td>
+</tr>
+</tbody>
+</table>
+</div><aside class="quote no-group">
+<blockquote>
+<p><img alt=":discourse2:" class="emoji emoji-custom" height="20" loading="lazy" src="../../../images/0e65eeb3631702ee91807a5f302a3f10f099dd11.png" title=":discourse2:" width="20"/> As this is an <a class="hashtag-cooked" data-icon="tag" data-id="83" data-slug="official" data-style-type="icon" data-type="tag" href="/tag/official"><span class="hashtag-icon-placeholder"><svg class="fa d-icon d-icon-square-full svg-icon svg-node"><use href="#square-full"></use></svg></span><span>official</span></a> plugin maintained by the Discourse team, <a class="hashtag-cooked" data-id="6" data-slug="support" data-style-type="square" data-type="category" href="/c/support/6"><span class="hashtag-icon-placeholder"><svg class="fa d-icon d-icon-square-full svg-icon svg-node"><use href="#square-full"></use></svg></span><span>Support</span></a>, <a class="hashtag-cooked" data-id="1" data-slug="bug" data-style-type="square" data-type="category" href="/c/bug/1"><span class="hashtag-icon-placeholder"><svg class="fa d-icon d-icon-square-full svg-icon svg-node"><use href="#square-full"></use></svg></span><span>Bug</span></a>, <a class="hashtag-cooked" data-id="9" data-slug="ux" data-style-type="square" data-type="category" href="/c/ux/9"><span class="hashtag-icon-placeholder"><svg class="fa d-icon d-icon-square-full svg-icon svg-node"><use href="#square-full"></use></svg></span><span>UX</span></a>, and <a class="hashtag-cooked" data-id="2" data-slug="feature" data-style-type="square" data-type="category" href="/c/feature/2"><span class="hashtag-icon-placeholder"><svg class="fa d-icon d-icon-square-full svg-icon svg-node"><use href="#square-full"></use></svg></span><span>Feature</span></a> requests can be made in the respective categories here on Meta, and tagged with the appropriate plugin tag. Click on a link below to get one started. <img alt=":+1:" class="emoji" height="20" loading="lazy" src="../../../images/+1.png" title=":+1:" width="20"/></p>
+<p><kbd> <a href="https://meta.discourse.org/new-topic?category_id=6&amp;body=%3E%20Before%20asking,%20did%20you%20search%20first%3F%20Press%20%F0%9F%94%8D%20at%20the%20upper%20right%20to%20search.&amp;tags=gamification" title="Ask for support on configuring and using Discourse Gamification"><img alt=":question:" class="emoji" height="20" loading="lazy" src="../../../images/question.png" title=":question:" width="20"/> <strong>Support</strong></a> </kbd> <kbd> <a href="https://meta.discourse.org/new-topic?category_id=1&amp;tags=gamification" title="A bug report means something is broken, preventing normal/typical use of the plugin"><img alt=":bug:" class="emoji" height="20" loading="lazy" src="../../../images/bug.png" title=":bug:" width="20"/> <strong>Bug</strong></a> </kbd> <kbd> <a href="https://meta.discourse.org/new-topic?category_id=9&amp;tags=gamification" title="Discussion about the user interface of Discourse Gamification, and how features are presented (including language and UI elements)"><img alt=":eyes:" class="emoji" height="20" loading="lazy" src="../../../images/eyes.png" title=":eyes:" width="20"/> <strong>UX</strong></a> </kbd> <kbd> <a href="https://meta.discourse.org/new-topic?category_id=2&amp;tags=gamification" title="Discussion about how existing Discourse Gamification features can be improved or enhanced, and how proposed new features could work"><img alt=":bulb:" class="emoji" height="20" loading="lazy" src="../../../images/bulb.png" title=":bulb:" width="20"/> <strong>Feature</strong></a></kbd></p>
+</blockquote>
+</aside>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/f87AW5yVSvZBzb2XgAlEfrjJF0u.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/6/a/0/6a0ba940d7912795e41787feb5ab6dc5e84fe3ea.png" title="image"><img alt="image" data-base62-sha1="f87AW5yVSvZBzb2XgAlEfrjJF0u" data-dominant-color="2E3233" height="499" src="../../../images/6a0ba940d7912795e41787feb5ab6dc5e84fe3ea_2_527x499.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/6/a/0/6a0ba940d7912795e41787feb5ab6dc5e84fe3ea_2_527x499.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/6/a/0/6a0ba940d7912795e41787feb5ab6dc5e84fe3ea_2_790x748.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/6/a/0/6a0ba940d7912795e41787feb5ab6dc5e84fe3ea_2_1054x998.png 2x" width="527"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1169×1108 119 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<h3>
+<a aria-label="Heading link" class="anchor" href="#p-1097263-features-1" name="p-1097263-features-1"></a>Features</h3>
+<p>While Discourse ships, out of the box, with gamification features (badges, trust levels) some communities want to take it to another level. That’s where <a class="inline-onebox" href="https://github.com/discourse/discourse-gamification">GitHub - discourse/discourse-gamification</a> comes in.</p>
+<p>This plugin allows admins to easily create and tweak community scoring contests, where points are awarded by participating in the community.</p>
+<p>Points are automatically updated every hour for events of the day, and we re-calculate scores from the last 10 days once a day.</p>
+<h4>
+<a aria-label="Heading link" class="anchor" href="#p-1097263-cheers-2" name="p-1097263-cheers-2"></a>Cheers</h4>
+<p>Users are awarded “cheers” by performing certain actions on the community. Each user cheer score appear on their user card, user profile and can be enabled on the user directory.</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/nVYQRvNytbVxCjp1CE7DQ0pgGOs.jpeg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/a/7/b/a7bfe2f5d0061f38d44fae9e00211637e8e22c70.jpeg" title="user card example with cheers"><img alt="user card example with cheers" data-base62-sha1="nVYQRvNytbVxCjp1CE7DQ0pgGOs" height="257" src="../../../images/a7bfe2f5d0061f38d44fae9e00211637e8e22c70.jpeg" width="577"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">user card example with cheers</span><span class="informations">577×257 43 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/zq57ICPPEDvPIzT1C7AqFgdNJWz.jpeg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/f/8/3/f83ee054e22bd8d04ed8bb596b7769903596dd6b.jpeg" title="user profile example with cheers"><img alt="user profile example with cheers" data-base62-sha1="zq57ICPPEDvPIzT1C7AqFgdNJWz" data-dominant-color="252524" height="499" src="../../../images/f83ee054e22bd8d04ed8bb596b7769903596dd6b_2_690x499.jpeg" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/f/8/3/f83ee054e22bd8d04ed8bb596b7769903596dd6b_2_690x499.jpeg, https://d11a6trkgmumsb.cloudfront.net/original/4X/f/8/3/f83ee054e22bd8d04ed8bb596b7769903596dd6b.jpeg 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/f/8/3/f83ee054e22bd8d04ed8bb596b7769903596dd6b.jpeg 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">user profile example with cheers</span><span class="informations">799×578 69.4 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/dE8zEMNBrL8M3hsK59MfHYAOFc6.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/5/f/a/5fa5cbac6b82262791f2ba985037de243bb1af02.png" title="user directory example with cheers"><img alt="user directory example with cheers" data-base62-sha1="dE8zEMNBrL8M3hsK59MfHYAOFc6" data-dominant-color="2A2724" height="352" src="../../../images/5fa5cbac6b82262791f2ba985037de243bb1af02_2_690x352.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/5/f/a/5fa5cbac6b82262791f2ba985037de243bb1af02_2_690x352.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/5/f/a/5fa5cbac6b82262791f2ba985037de243bb1af02_2_1035x528.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/5/f/a/5fa5cbac6b82262791f2ba985037de243bb1af02.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">user directory example with cheers</span><span class="informations">1166×595 77.7 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>Like the plugin but the name cheers isn’t the best for your community? You can rename it to anything using <a href="https://meta.discourse.org/t/customize-all-text-in-discourse/36092">Customize all text in Discourse</a>.</p>
+<h4>
+<a aria-label="Heading link" class="anchor" href="#p-1097263-leaderboards-3" name="p-1097263-leaderboards-3"></a>Leaderboards</h4>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/4bemXIPqEG5eLUf3SNKuVXKSb9f.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/1/d/4/1d4db97176d4ae8cbe74a7c34084926bf37f1a79.png" title="image"><img alt="image" data-base62-sha1="4bemXIPqEG5eLUf3SNKuVXKSb9f" data-dominant-color="2F3637" height="500" src="../../../images/1d4db97176d4ae8cbe74a7c34084926bf37f1a79_2_623x500.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/1/d/4/1d4db97176d4ae8cbe74a7c34084926bf37f1a79_2_623x500.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/1/d/4/1d4db97176d4ae8cbe74a7c34084926bf37f1a79_2_934x750.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/1/d/4/1d4db97176d4ae8cbe74a7c34084926bf37f1a79.png 2x" width="623"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1189×953 130 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>Admins can create multiple leaderboards, and each one can have a custom:</p>
+<ul>
+<li>start date</li>
+<li>end date</li>
+<li>Competing users</li>
+<li>Leaderboard privacy</li>
+</ul>
+<p>By default, we ship with a default leaderboard at <code>/leaderboard</code> that will list all users from the first day where scores started to be awarded.</p>
+<p>You can see a demo of it at <a class="inline-onebox" href="https://meta.discourse.org/leaderboard/1">Discourse Meta</a></p>
+<h4>
+<a aria-label="Heading link" class="anchor" href="#p-1097263-scorables-4" name="p-1097263-scorables-4"></a>Scorables</h4>
+<p>Currently, the following events award cheers:</p>
+<ul>
+<li>Daily visits</li>
+<li>Flags accepted</li>
+<li>Likes given</li>
+<li>Likes received</li>
+<li>Posts created</li>
+<li>Posts read</li>
+<li>Solutions accepted (requires <a href="https://meta.discourse.org/t/discourse-solved-accepted-answer-plugin/30155">Discourse Solved (Accepted answer plugin)</a>)</li>
+<li>Time read</li>
+<li>Topics created</li>
+<li>User invites accepted</li>
+</ul>
+<p>See <a href="https://meta.discourse.org/t/discourse-gamification/225916#roadmap-10">roadmap</a> for upcoming scorables.</p>
+<h3>
+<a aria-label="Heading link" class="anchor" href="#p-1097263-score-backfill-5" name="p-1097263-score-backfill-5"></a>Score backfill</h3>
+<p>You can run a backfill to calculate the historical scores through the UI using the ‘Recalculate Scores’ button on your <code>/admin/plugins/gamification</code> page:</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/sIs6X9qp22XlD0qxysyFNEIoejh.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/c/9/4/c94346f279c73a6a7d73fb90c4a40afd5426dda3.png" title="recalculate scores - button"><img alt="recalculate scores - button" data-base62-sha1="sIs6X9qp22XlD0qxysyFNEIoejh" data-dominant-color="F4F6F5" height="239" src="../../../images/c94346f279c73a6a7d73fb90c4a40afd5426dda3.png" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">recalculate scores - button</span><span class="informations">1390×482 14.2 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>This can also be used to recalculate the leaderboard if you make any changes to your scorables or eligible scoring categories. You can generate a rescore up to 5 times a day, and can select a range of time frames (or set a custom one):</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/dgTYAkEJ5iQEsM8o8M1ZdeDAFUW.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/5/d/0/5d0566c206e584d49d721c27d8aac5947e1666be.png" title="select timeframe"><img alt="select timeframe" data-base62-sha1="dgTYAkEJ5iQEsM8o8M1ZdeDAFUW" height="237" src="../../../images/5d0566c206e584d49d721c27d8aac5947e1666be.png" width="360"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">select timeframe</span><span class="informations">481×317 6.32 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div> <div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/b7b3jhxnInjiJWTLyyglfvyxUNl.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/4/d/e/4de7a40d1cc88217654798a402a359a61adbd64b.png" title="timefarne options"><img alt="timefarne options" data-base62-sha1="b7b3jhxnInjiJWTLyyglfvyxUNl" height="231" src="../../../images/4de7a40d1cc88217654798a402a359a61adbd64b.png" width="263"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">timefarne options</span><span class="informations">526×462 8.68 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<h3>
+<a aria-label="Heading link" class="anchor" href="#p-1097263-configuration-6" name="p-1097263-configuration-6"></a>Configuration</h3>
+<p>Global customizations are:</p>
+<ul>
+<li>each action score multiplier</li>
+<li>Restrict categories where points can be earned</li>
+<li>enable and disable the plugin</li>
+</ul>
+<p>Those plugin-level settings live at <code>/admin/site_settings/category/plugins?filter=plugin%3Adiscourse-gamification</code>.</p>
+<p>To create, delete and update leaderboards, admins can visit <code>/admin/plugins/gamification</code>.</p>
+<h3>
+<a aria-label="Heading link" class="anchor" href="#p-1097263-use-as-widget-7" name="p-1097263-use-as-widget-7"></a>Use as widget</h3>
+<p>This can also be displayed as a widget in a smaller format, inside the <a href="https://meta.discourse.org/t/right-sidebar-blocks/231067">Right Sidebar Blocks theme component</a>. More info to be found there.</p>
+<h3>
+<a aria-label="Heading link" class="anchor" href="#p-1097263-badges-based-on-score-8" name="p-1097263-badges-based-on-score-8"></a>Badges based on score</h3>
+<p>You can have automatic badges based on the gamification score using <a class="inline-onebox" href="https://meta.discourse.org/t/enable-badge-sql/47894">Enable Badge SQL</a></p>
+<p>Here is an example badge when a user has over 9000 cheers:</p>
+<pre data-code-wrap="sql"><code class="lang-sql">SELECT user_id, current_timestamp AS granted_at 
+FROM gamification_scores
+WHERE (:backfill OR user_id IN (:user_ids))
+GROUP BY 1
+HAVING SUM(score) &gt; 9000
+</code></pre>
+<h3>
+<a aria-label="Heading link" class="anchor" href="#p-1097263-changelog-9" name="p-1097263-changelog-9"></a>Changelog</h3>
+<ul>
+<li>
+<span class="discourse-local-date" data-date="2022-05-02" data-email-preview="Monday, May 2, 2022 3:00 AM UTC" data-timezone="America/Sao_Paulo">2022-05-02T03:00:00Z</span> - Public Release</li>
+<li>
+<span class="discourse-local-date" data-date="2022-05-10" data-email-preview="Tuesday, May 10, 2022 5:00 AM UTC" data-timezone="America/Chicago">2022-05-10T05:00:00Z</span> - Update roadmap with recent changes</li>
+</ul>
+<h3>
+<a aria-label="Heading link" class="anchor" href="#p-1097263-roadmap-10" name="p-1097263-roadmap-10"></a>Roadmap</h3>
+<p>(roughly ordered)</p>
+<ul>
+<li>
+<p>Make leaderboard respect <code>prioritize usernames in ux</code> being disabled</p>
+</li>
+<li>
+<p>Use higher resolutions avatars in leaderboard podium</p>
+</li>
+<li>
+<p>Add custom per-badge scoring</p>
+</li>
+<li>
+<p>Add per-reaction score awarding (requires <a class="inline-onebox" href="https://meta.discourse.org/t/discourse-reactions-beyond-likes/183261">Discourse Reactions</a>)</p>
+</li>
+<li>
+<p>Add chat-events scoring (requires <a class="inline-onebox" href="https://meta.discourse.org/t/discourse-chat/230881">Discourse Chat</a>)</p>
+</li>
+<li>
+<p>Add poll events scoring (created poll, voted in poll)</p>
+</li>
+<li>
+<p>Add media events scoring (posted image, posted video, posted onebox)</p>
+</li>
+</ul>
+<p>Implemented:</p>
+<ul>
+<li><s>Fix i18n table title in custom score column on user directory</s></li>
+<li><s>Ignore staged users</s></li>
+<li><s>Ignore anonymized users (email match <code>@anonymized.invalid</code>)</s></li>
+<li><s>Style leaderboard edit form</s></li>
+<li><s>Leaderboard “you” link needs a larger offset to accommodate floating header..</s></li>
+<li><s>Fix highlight of own user on the leaderboard not working if own user position is &gt; 100</s></li>
+<li><s>Add i18n thousands separator to user card / profile cheer score</s></li>
+<li><s>Add time period filters to leaderboards</s></li>
+<li><s>Add default time period filter to leaderboard settings</s></li>
+<li><s>Add <code>excluded_groups_ids</code> to leaderboard settings</s></li>
+<li><s>Allow admins to award/remove arbitrary points to users to allow integration with out-of-Discourse scorable events</s></li>
+<li><s>Make scores click link to leaderboard (both in user profile and  user card)</s></li>
+</ul>
+<blockquote>
+<p><img alt=":discourse2:" class="emoji emoji-custom" height="20" loading="lazy" src="../../../images/0e65eeb3631702ee91807a5f302a3f10f099dd11.png" title=":discourse2:" width="20"/> Hosted by us? This plugin is available on our Business and Enterprise plans <a class="inline-onebox" href="https://discourse.org/plugins/gamification.html">Gamification | Discourse - Civilized Discussion</a></p>
+</blockquote><blockquote class="discourse-automation">
+<p>Last edited by <span class="mention">@tobiaseigen</span> <span class="discourse-local-date" data-date="2025-07-16" data-email-preview="Wednesday, July 16, 2025 9:11 PM UTC" data-time="21:11:22" data-timezone="UTC">2025-07-16T21:11:22Z</span></p>
+<details><summary>Check document</summary>Perform check on document: <input class="btn btn-checked" type="button" value="Done"/></details>
+</blockquote>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 109">❤️ 109</span><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span><span class="engagement-pill reaction-pill" title="chefs kiss: 1">:chefs_kiss: 1</span><span class="engagement-pill reaction-pill" title="laughing: 1">😆 1</span><span class="engagement-pill reaction-pill" title="rocket: 1">🚀 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/254611_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">JammyDodger</div>
+          <div class="post_content">
+<p>A post was split to a new topic: <a href="/t/choose-leaderboard-linked-in-profile/314980">Choose leaderboard linked in profile</a></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/254611_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">JammyDodger</div>
+          <div class="post_content">
+<p>A post was split to a new topic: <a href="/t/subtract-points-based-on-certain-reactions/314984">Subtract points based on certain reactions</a></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/254611_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">JammyDodger</div>
+          <div class="post_content">
+<p>2 posts were split to a new topic: <a href="/t/creating-a-top-20-leaderboard-for-a-specific-date-range/314999">Creating a Top 20 leaderboard for a specific date range</a></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/254611_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">JammyDodger</div>
+          <div class="post_content">
+<p>Just a note to say the gamification scoring for <code>posts_created</code> has been adjusted to account for a few extra things:</p>
+<aside class="onebox githubpullrequest" data-onebox-src="https://github.com/discourse/discourse-gamification/pull/114">
+<header class="source">
+<a href="https://github.com/discourse/discourse-gamification/pull/114" rel="noopener" target="_blank">github.com/discourse/discourse-gamification</a>
+</header>
+<article class="onebox-body">
+<div class="github-row --gh-status-merged" data-github-private-repo="false">
+<div class="github-icon-container" title="Merged Pull Request">
+<svg aria-hidden="true" class="github-icon" height="60" viewbox="0 0 12 16" width="60"><path d="M11 11.28V5c-.03-.78-.34-1.47-.94-2.06C9.46 2.35 8.78 2.03 8 2H7V0L4 3l3 3V4h1c.27.02.48.11.69.31.21.2.3.42.31.69v6.28A1.993 1.993 0 0 0 10 15a1.993 1.993 0 0 0 1-3.72zm-1 2.92c-.66 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2zM4 3c0-1.11-.89-2-2-2a1.993 1.993 0 0 0-1 3.72v6.56A1.993 1.993 0 0 0 2 15a1.993 1.993 0 0 0 1-3.72V4.72c.59-.34 1-.98 1-1.72zm-.8 10c0 .66-.55 1.2-1.2 1.2-.65 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2zM2 4.2C1.34 4.2.8 3.65.8 3c0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2z" fill-rule="evenodd"></path></svg>
+</div>
+<div class="github-info-container">
+<h4>
+<a href="https://github.com/discourse/discourse-gamification/pull/114" rel="noopener" target="_blank">FIX: Update post_created scoring</a>
+</h4>
+<div class="branches">
+<code>main</code> ← <code>update-post_created-scoring</code>
+</div>
+<div class="github-info">
+<div class="date">
+          merged <span class="discourse-local-date" data-date="2024-07-02" data-format="ll" data-time="12:26:01" data-timezone="UTC">12:26PM - 02 Jul 24 UTC</span>
+</div>
+<div class="user">
+<a href="https://github.com/TheJammiestDodger" rel="noopener" target="_blank">
+<img alt="" class="onebox-avatar-inline" data-dominant-color="878279" height="20" src="../../../images/b16993be788bf4ea0b27c9096c3fafb9c91f4fe4.jpeg" width="20"/>
+            TheJammiestDodger
+          </a>
+</div>
+<div class="lines" title="4 commits changed 3 files with 31 additions and 5 deletions">
+<a href="https://github.com/discourse/discourse-gamification/pull/114/files" rel="noopener" target="_blank">
+<span class="added">+31</span>
+<span class="removed">-5</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+<div class="github-row">
+<p class="github-body-container">Previously, post_created scoring excluded deleted posts, wiki posts, and persona<span class="show-more-container"><a class="show-more" href="https://github.com/discourse/discourse-gamification/pull/114" rel="noopener" target="_blank">…</a></span><span class="excerpt hidden">l messages from the scoring. This commit extends this to now also exclude:
+
+* Posts from deleted topics 
+* First posts (so as not to double-count them in conjunction with topic_created)
+* Small actions, moderator actions, and whispers
+* Hidden posts</span></p>
+</div>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 5">❤️ 5</span><span class="engagement-pill reaction-pill" title="confetti ball: 1">:confetti_ball: 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/440605_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">geoffau</div>
+          <div class="post_content">
+<p>This is great. A feature suggestion is to allow different scorable settings for each board so every board could be used for a separate community-driven competition.</p>
+<p>For example, a board for most posts this month would have the post created score value set to 1 while all others are 0. Where a best like of the month board would have like given score value set to 1 and all others set to 0.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554653_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Moin</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="396" data-topic="225916" data-username="geoffau">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" loading="lazy" src="../../../images/440605_2.png" width="24"/> Geoff:</div>
+<blockquote>
+<p>Where a best like of the month board would have like given score value set to 1 and all others set to 0</p>
+</blockquote>
+</aside>
+<p>Like this <a href="https://meta.discourse.org/u?order=likes_given&amp;period=monthly">/u?order=likes_given&amp;period=monthly</a>?</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/440605_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">geoffau</div>
+          <div class="post_content">
+<p>Yes, that is a similar idea but as part of the Gamification board, not the default user listing layout.</p>
+<p>The discourse user list (/u) can be displayed in different ways, such as the user card directory theme component which is good for the global site user list but does not look as good for a user ranking page. So the suggestion to have each gamification board use a separate setting is valid and makes more sense than using the discourse user list in this situation.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554803_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Lilly</div>
+          <div class="post_content">
+<p>A post was split to a new topic: <a href="/t/gamefication-scoring-for-portugese-forum/327994">Gamefication scoring for portugese forum?</a></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">JonahAragon1</div>
+          <div class="post_content">
+<p>How do I remove this leaderboard link from my sidebar? It seems to be automatically added, since it isn’t in the custom section links settings where I’d like it to be in order to move it to the More menu.</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/deMeLSTZ89UC2cd1LDjXYgRCZmS.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/5/c/c/5cc7e9a6a501fd26fc2a2556c0baf0c15ba96e1e.png" rel="noopener nofollow ugc" title="2024-11-02 at 15.35.26"><img alt="2024-11-02 at 15.35.26" data-base62-sha1="deMeLSTZ89UC2cd1LDjXYgRCZmS" height="201" src="../../../images/5cc7e9a6a501fd26fc2a2556c0baf0c15ba96e1e.png" width="265"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">2024-11-02 at 15.35.26</span><span class="informations">530×402 11.2 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>I see Meta has figured this out, but I don’t see a configurable setting anywhere on my end.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/198804_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">ondrej</div>
+          <div class="post_content">
+<p>As an admin on a site, you should be able to customise this section.</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/kOXqTh50m1HkaHIQanJnLvecoYn.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/9/1/e/91ee22659ab89d3b6c37238f37757a0747277adf.png" title="image"><img alt="image" data-base62-sha1="kOXqTh50m1HkaHIQanJnLvecoYn" data-dominant-color="282828" height="374" src="../../../images/91ee22659ab89d3b6c37238f37757a0747277adf_2_210x374.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/9/1/e/91ee22659ab89d3b6c37238f37757a0747277adf_2_210x374.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/9/1/e/91ee22659ab89d3b6c37238f37757a0747277adf_2_315x561.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/9/1/e/91ee22659ab89d3b6c37238f37757a0747277adf_2_420x748.png 2x" width="210"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">453×804 14.9 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">JonahAragon1</div>
+          <div class="post_content">
+<p>Exactly, I would <em>think</em> it should be listed there.</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/9X7Ag44ZCdYKERBBRnjFNYbg9xK.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/4/5/c/45c2770aeecc752983cbf2024f9c543666ac48c0.png" rel="noopener nofollow ugc" title="2024-11-02 at 16.23.12"><img alt="2024-11-02 at 16.23.12" data-base62-sha1="9X7Ag44ZCdYKERBBRnjFNYbg9xK" data-dominant-color="B4B4B8" height="429" src="../../../images/45c2770aeecc752983cbf2024f9c543666ac48c0_2_690x429.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/4/5/c/45c2770aeecc752983cbf2024f9c543666ac48c0_2_690x429.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/4/5/c/45c2770aeecc752983cbf2024f9c543666ac48c0_2_1035x643.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/4/5/c/45c2770aeecc752983cbf2024f9c543666ac48c0_2_1380x858.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">2024-11-02 at 16.23.12</span><span class="informations">2020×1258 263 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="eyes: 1">👀 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/198804_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">ondrej</div>
+          <div class="post_content">
+<p><span class="bbcode-s">You should be able to use the = to drag it into the ‘More’ section.</span></p>
+<p>Sorry I misread your post</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/179432_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Falco</div>
+          <div class="post_content">
+<p>2 posts were split to a new topic: <a href="/t/is-there-a-minimum-user-requirement-for-leaderboard-display/337161">Is There a Minimum User Requirement for Leaderboard Display?</a></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/179432_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Falco</div>
+          <div class="post_content">
+<p>A post was split to a new topic: <a href="/t/how-do-you-get-cheers/337156">How Do You Get Cheers?</a></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/179432_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Falco</div>
+          <div class="post_content">
+<p>2 posts were split to a new topic: <a href="/t/differences-in-score-ranking-options/340699">Differences in Score Ranking Options</a></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/270909_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">selase</div>
+          <div class="post_content">
+<p>A post was split to a new topic: <a href="/t/users-complaining-about-losing-points/344927">Users Complaining About Losing Points</a></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Kartoon</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="1" data-topic="225916" data-username="Discourse">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" loading="lazy" src="../../../images/148734_2.png" width="24"/> Discourse:</div>
+<blockquote>
+<p>Allow admins to award/remove arbitrary points to users to allow integration with out-of-Discourse scorable events</p>
+</blockquote>
+</aside>
+<p>I just noticed this has apparently been added at some point…how does one do this?</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/313494_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">NateDhaliwal</div>
+          <div class="post_content">
+<p><span class="mention">@Kartoon</span> I think this is what you are looking for:</p><aside class="quote quote-modified" data-post="1" data-topic="262968">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" loading="lazy" src="../../../images/148734_2.png" width="24"/>
+<a href="https://meta.discourse.org/t/how-to-integrate-discourse-gamification-with-an-external-system-redeem-and-award-points/262968">How to integrate Discourse Gamification with an external system (redeem and award points)</a> <a class="badge-category__wrapper" href="/c/documentation/integrations/167"><span class="badge-category --has-parent" data-category-id="167" data-drop-close="true" data-parent-category-id="10" style="--category-badge-color: #008040; --category-badge-text-color: #FFFFFF; --parent-category-badge-color: #00A94F;" title="Documentation about connecting Discourse with other platforms and services. (Index)"><span class="badge-category__name">Integrations</span></span></a>
+</div>
+<blockquote>
+    Since we launched <a href="https://meta.discourse.org/t/discourse-gamification/225916">Discourse Gamification</a> a year ago, one of the most requested features from our roadmap has been the ability to make it possible to integrate Discourse Gamification with external gamification system . Examples are plenty: 
+
+
+Integrate with existing gamification programs in companies 
+
+
+ability to award points for events that happen outside of Discourse, like IRL events, or elsewhere online, like being a customer in a community, or buying a product. 
+
+
+the ability to allow users …
+  </blockquote>
+</aside>
+
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/278482_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">albert_vu</div>
+          <div class="post_content">
+<p>Hi <span class="mention">@Discourse</span>, <img alt=":wave:" class="emoji" height="20" loading="lazy" src="../../../images/wave.png" title=":wave:" width="20"/></p>
+<p>I’m just wondering if the events that award cheers can be “undone”. For example, when I mark a reply of one of my forum members as a solution, they’d receive 5 cheers. However, later I decide that said reply wasn’t a solution and unmark it, then would they lose the 5 cheers that were awarded to them? <img alt=":thinking:" class="emoji" height="20" loading="lazy" src="../../../images/thinking.png" title=":thinking:" width="20"/></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/179432_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Falco</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="410" data-topic="225916" data-username="albert_vu">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" loading="lazy" src="../../../images/278482_2.png" width="24"/> Albert Vũ:</div>
+<blockquote>
+<p>I’m just wondering if the events that award cheers can be “undone”.</p>
+</blockquote>
+</aside>
+<p>Yes, but with a caveat that we only look 10 days behind when doing recalculations.</p>
+<p>Optionally, you can use the “Recalculate Scores” button on the admin UI to trigger a wider recalculation.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/486326_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Danny_Dainton</div>
+          <div class="post_content">
+<p>Hey folks,</p>
+<p>Is there a mechanism to inform users about where they are on the leaderboard or provide them with a mini summary of their weekly totals via email/dm?</p>
+<p>I have read the posts around the possibility to use a badge and the custom SQL to award this when they reach a certain total but I was also wondering if people had any other experiences of using method to inform users?</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/179432_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Falco</div>
+          <div class="post_content">
+<p>There is no automated notification system at the moment.</p>
+<p>What I’ve seen in the wild is communities establishing periods and doing a topic showcasing the top users at the end of each period, like quarterly, monthly, or annually.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/486326_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Danny_Dainton</div>
+          <div class="post_content">
+<p>Ah, that’s a good suggestion. Thank you. <img alt=":heart:" class="emoji" height="20" loading="lazy" src="../../../images/heart.png" title=":heart:" width="20"/></p>
+<p>Are there any plans from the team to include external (Email) or internal (PMs) notifications from the plugin?</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/179432_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Falco</div>
+          <div class="post_content">
+<p>Not currently, but if you have an idea of how that would work I’d love to see it posted as a feature request with details on <a class="hashtag-cooked" data-id="2" data-slug="feature" data-type="category" href="/c/feature/2"><span class="hashtag-icon-placeholder"><svg class="fa d-icon d-icon-square-full svg-icon svg-node"><use href="#square-full"></use></svg></span><span>Feature</span></a>.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/451930_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Elena</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="1" data-topic="225916" data-username="Discourse">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/148734_2.png" width="24"/> Discourse:</div>
+<blockquote>
+<p>Points are automatically updated every 5 minutes for events of the day, and we re-calculate scores from the last 10 days once a day.</p>
+</blockquote>
+</aside>
+<p>Regarding the new user invitation event, I encountered a minor issue during the actual operation. During the event, I set the invitation points value to 250 cheers. Some users invited 10 new members to join the community through the event and received 2500 cheers. However, after the event ended, I adjusted the invitation points back to the regular value of 50 cheers. As a result, the points of users who had already participated in the event and earned invitation points were also reduced from 2500 cheers to 500. Is there any way to avoid making such an adjustment?</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/480674_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">tvavrda</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="1" data-topic="225916" data-username="Discourse">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/148734_2.png" width="24"/> Discourse:</div>
+<blockquote>
+<p>Points are automatically updated every 5 minutes for events of the day, and we re-calculate scores from the last 10 days once a day.</p>
+</blockquote>
+</aside>
+<p>I guess if you would have waited for 10 days and THEN changing the points, the score would stay unchanged.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/362012_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Shauny</div>
+          <div class="post_content">
+<p>I’m a bit confused by something, can you please clarify this?</p>
+<p>I had “like receive score” at 0, and didn’t realise that an update 5 months ago added Discourse Reaction support and automatically added “reaction receive score” as 1.</p>
+<p>I just changed that to 0, and recalculated everything, but nothing has changed.</p>
+<p>Is that because in order for reaction to score, likes need a score? Have I not actually changed anything here?</p>
+<p>Thanks!</p>
+<p>Edit: never mind, just took a little while to change!</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/179432_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Falco</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="418" data-topic="225916" data-username="Shauny">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/362012_2.png" width="24"/> Shauny:</div>
+<blockquote>
+<p>Edit: never mind, just took a little while to change!</p>
+</blockquote>
+</aside>
+<p>Indeed, recalculating everything from the beginning, plus the time to recreate all our cached tables may take a while depending on the site activity and server specs.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/362012_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Shauny</div>
+          <div class="post_content">
+<p>Is there any way, maybe with <a href="https://meta.discourse.org/t/32566?silent=true">Data Explorer</a>, to figure out where someone gets all their points from?</p>
+<p>For example, see a user’s score and how many are from new topics, new posts, likes, reading, etc.?</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/254611_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">JammyDodger</div>
+          <div class="post_content">
+<p>There is this one <a class="inline-onebox" href="https://meta.discourse.org/t/gamification-calibration/283800">Gamification Calibration</a>, <em>but…</em> it needs updating to include the reaction and chat scores</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/502397_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">cnlanny</div>
+          <div class="post_content">
+<p>Why did I wait a long time and my scores didn’t update automatically?</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/539204_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">tobiaseigen</div>
+          <div class="post_content">
+<p>Hi cnlanny and welcome to our community! Scores are recalculated once a day via a background task.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/254611_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">JammyDodger</div>
+          <div class="post_content">
+<p>I think they’re updated more frequently than that for ‘current’ events, and the daily job does a double check of anything that may have changed over the last 10 days:</p>
+<aside class="quote no-group" data-post="1" data-topic="225916" data-username="Discourse">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/148734_2.png" width="24"/> Discourse:</div>
+<blockquote>
+<p>Points are automatically updated every 5 minutes for events of the day, and we re-calculate scores from the last 10 days once a day.</p>
+</blockquote>
+</aside>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span><span class="engagement-pill reaction-pill" title="100: 1">:100: 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/254611_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">JammyDodger</div>
+          <div class="post_content">
+<p>Having said that… I think the frequency of the ‘scores for today’ was updated to be hourly instead:</p>
+<aside class="onebox githubblob" data-onebox-src="https://github.com/discourse/discourse-gamification/blob/213af96acc1ff24ba61b93dff1dcea2791154511/jobs/scheduled/update_scores_for_today.rb#L5">
+<header class="source">
+<a href="https://github.com/discourse/discourse-gamification/blob/213af96acc1ff24ba61b93dff1dcea2791154511/jobs/scheduled/update_scores_for_today.rb#L5" rel="noopener" target="_blank">github.com/discourse/discourse-gamification</a>
+</header>
+<article class="onebox-body">
+<h4><a href="https://github.com/discourse/discourse-gamification/blob/213af96acc1ff24ba61b93dff1dcea2791154511/jobs/scheduled/update_scores_for_today.rb#L5" rel="noopener" target="_blank">jobs/scheduled/update_scores_for_today.rb</a></h4>
+<div class="git-blob-info">
+<a href="https://github.com/discourse/discourse-gamification/blob/213af96acc1ff24ba61b93dff1dcea2791154511/jobs/scheduled/update_scores_for_today.rb#L5" rel="noopener"><code>213af96ac</code></a>
+</div>
+<pre class="onebox"><code class="lang-rb">
+      <ol class="start lines" start="1" style="counter-reset: li-counter 0 ;">
+          <li># frozen_string_literal: true</li>
+          <li></li>
+          <li>module Jobs</li>
+          <li>  class UpdateScoresForToday &lt; ::Jobs::Scheduled</li>
+          <li class="selected">    every 1.hour</li>
+          <li></li>
+          <li>    def execute(args = nil)</li>
+          <li>      DiscourseGamification::GamificationScore.calculate_scores</li>
+          <li></li>
+          <li>      DiscourseGamification::LeaderboardCachedView.purge_all_stale</li>
+          <li>      DiscourseGamification::LeaderboardCachedView.refresh_all</li>
+          <li>      DiscourseGamification::LeaderboardCachedView.create_all</li>
+          <li>    end</li>
+          <li>  end</li>
+          <li>end</li>
+      </ol>
+    </code></pre>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+<p>Could someone check that and update the doc if needed?</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 5">❤️ 5</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/179432_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Falco</div>
+          <div class="post_content">
+<p>Updated the wiki at the OP.</p>
+<p>It’s an unfortunate trade-off. Previously we had quick updates, but the leaderboard view would be slow in very large sites.</p>
+<p>We made the leaderboard performance stay good at any size, but updates are now <em>much</em> more involved so we had to cut back the speed <img alt=":frowning:" class="emoji" height="20" loading="lazy" src="../../../images/frowning.png" title=":frowning:" width="20"/></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 5">❤️ 5</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/179432_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Falco</div>
+          <div class="post_content">
+<p>4 posts were split to a new topic: <a href="/t/troubleshooting-cheers-score-discrepancies/371488">Troubleshooting Cheers score discrepancies</a></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/539204_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">tobiaseigen</div>
+          <div class="post_content">
+<p><img alt=":partying_face:" class="emoji" height="20" loading="lazy" src="../../../images/partying_face.png" title=":partying_face:" width="20"/> This plugin is now bundled with Discourse core as part of <a class="inline-onebox" href="https://meta.discourse.org/t/bundling-more-popular-plugins-with-discourse-core/373574">Bundling more popular plugins with Discourse core</a>. If you are self-hosting and use the plugin, you need to remove it from your <code>app.yml</code> before your next upgrade.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/480115_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">CrazyCaliope</div>
+          <div class="post_content">
+<p>Just wondering, now that the plugin is part of the Discourse core ones, is there a way to create multiple leaderboards but for different sections on the forums?</p>
+<p><small> Also, happy birthday, <span class="mention">@tobiaseigen</span>!</small></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="hugs: 1">🤗 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/313494_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">NateDhaliwal</div>
+          <div class="post_content">
+<p>AFAIK there is no change to the plugin itself.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">jrgong</div>
+          <div class="post_content">
+<p>Is it possible to somehow manually reset or rewrite the Leaderboard URL? In our case we tested some leaderbaords, deleted them later.</p>
+<p>E.g. <code>/leaderboards/5</code> to <code>/leaderboards/1</code>.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/549022_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">gilles</div>
+          <div class="post_content">
+<p>Is it possible to award points to a user as an extra reward? <img alt=":grin:" class="emoji" height="20" loading="lazy" src="../../../images/grin.png" title=":grin:" width="20"/></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/313494_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">NateDhaliwal</div>
+          <div class="post_content">
+<p>You may want to see:</p><aside class="quote quote-modified" data-post="1" data-topic="308447">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/307951_2.png" width="24"/>
+<div class="quote-title__text-content">
+<a href="https://meta.discourse.org/t/how-to-adjust-gamification-points-without-retroactively-updating-point-values-for-old-score-able-actions/308447">How to adjust gamification points without retroactively updating point values for old score-able actions</a> <a class="badge-category__wrapper" href="/c/community-wiki/administrators/178"><span class="badge-category --style-square --has-parent" data-category-id="178" data-drop-close="true" data-parent-category-id="177" style="--category-badge-color: #ae1e7b; --category-badge-text-color: #FFFFFF; --parent-category-badge-color: #31ceb7;" title="Guides to help Discourse site owners manage their communities more effectively. (Index)"><span class="badge-category__name">Administrators</span></span></a>
+</div>
+</div>
+<blockquote>
+<a class="anchor" href="#p-1520193-problem-statement-1" name="p-1520193-problem-statement-1"></a>Problem statement
+If you use the <a href="https://meta.discourse.org/t/discourse-gamification-plugin/225916">Discourse Gamification Plugin</a> to award users points for contributing to your community, you may have come across a need to adjust point values based on emerging trends. In the <a href="https://developer.sailpoint.com/discuss" rel="noopener nofollow ugc">SailPoint Developer Community</a>, we use the Gamification Plugin to power our <a href="https://developer.sailpoint.com/ambassadors/" rel="noopener nofollow ugc">Ambassador program</a>. Users who make valuable contributions to our community earn points which in turn are used to determine the level of perks they receive. As our community has grown and the number of contributions…
+  </blockquote>
+</aside>
+<p>which has this curl request inside:</p>
+<pre><code class="lang-plaintext">curl --location 'https://my.discourse.com/admin/plugins/gamification/score_events' \
+--header 'Api-Key: &lt;your key&gt;' \
+--header 'Api-Username: &lt;your username&gt;' \
+--header 'Content-Type: application/json' \
+--data '{
+    "user_id": "101",
+    "date": "2024-05-15",
+    "points": "-141",
+    "description": "Gamification point adjustment"
+}'
+</code></pre>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/520198_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">elorze_ether</div>
+          <div class="post_content">
+<p>I enabled this plugin in admin, but the leaderboard tab did not automatically appear. I also added new leaderboards, but they did not show up. Why is this happening? Where should I look for these leaderboards?</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/313494_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">NateDhaliwal</div>
+          <div class="post_content">
+<p>I think you have to add them to the sidebar yourself <img alt=":thinking:" class="emoji" height="20" loading="lazy" src="../../../images/thinking.png" title=":thinking:" width="20"/>. The leaderboards are at <code>/leaderboard</code>, <code>/leaderboard/2</code>, <code>/leaderboard/3</code> etc.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">wangya123</div>
+          <div class="post_content">
+<p>Is it possible to create a leaderboard for a specific category or tag?</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/539204_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">tobiaseigen</div>
+          <div class="post_content">
+<p>Leaderboards are tied to groups. But you can specify which categories affect all the leaderboards in the gamification settings. Seems like an interesting idea to move that to the leaderboard, to for example have a <a class="hashtag-cooked" data-id="6" data-slug="support" data-style-type="square" data-type="category" href="/c/support/6"><span class="hashtag-icon-placeholder"><svg class="fa d-icon d-icon-square-full svg-icon svg-node"><use href="#square-full"></use></svg></span><span>Support</span></a> leaderboard here in this community.</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/p4JTMMuURnzrHD6EfNmBLjR1z9e.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/a/f/b/afbf86a4c27508ac1a2dd5d571d1cb0d289e10f0.png" title="Screenshot 2025-09-18 at 6.21.53 AM"><img alt="Screenshot 2025-09-18 at 6.21.53 AM" data-base62-sha1="p4JTMMuURnzrHD6EfNmBLjR1z9e" height="110" src="../../../images/afbf86a4c27508ac1a2dd5d571d1cb0d289e10f0.png" width="674"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2025-09-18 at 6.21.53 AM</span><span class="informations">674×110 6.64 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 4">❤️ 4</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/179432_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Falco</div>
+          <div class="post_content">
+<p>2 posts were split to a new topic: <a href="/t/reducing-points-for-flagged-users/386482">Reducing points for flagged users</a></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/490672_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Ari_Waller</div>
+          <div class="post_content">
+<p>Is there a way for me to exclude myself from the rankings?</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554803_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Lilly</div>
+          <div class="post_content">
+<p>yes add yourself to a new group (call it ‘leaderboard-exclusion’ or something) and then exclude the group in the plugin settings.</p>
+<p>edit: this will also easily allow you to exclude anyone else if you so wish at some point, by adding them to the same group. <img alt=":slight_smile:" class="emoji" height="20" loading="lazy" src="../../../images/slight_smile.png" title=":slight_smile:" width="20"/></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/490672_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Ari_Waller</div>
+          <div class="post_content">
+<p>Thank you so much.  That makes sense.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/532755_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">singi2016cn</div>
+          <div class="post_content">
+<p>After I upgraded to version 2026.1.0, I created a monthly leaderboard, and then accessing the following route caused an error:</p>
+<p><a href="http://localhost:4200/admin/plugins/discourse-gamification/leaderboards" rel="noopener nofollow ugc">http://localhost:4200/admin/plugins/discourse-gamification/leaderboards</a></p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/iSJdqUIUh9N0pgc7TX15jNiyQJP.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/8/4/5/8456e760e0fc07e64bbe4749270b0de587c78d19.png" title="image"><img alt="image" data-base62-sha1="iSJdqUIUh9N0pgc7TX15jNiyQJP" data-dominant-color="232323" height="338" src="../../../images/8456e760e0fc07e64bbe4749270b0de587c78d19_2_690x338.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/8/4/5/8456e760e0fc07e64bbe4749270b0de587c78d19_2_690x338.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/8/4/5/8456e760e0fc07e64bbe4749270b0de587c78d19_2_1035x507.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/8/4/5/8456e760e0fc07e64bbe4749270b0de587c78d19_2_1380x676.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1877×921 52.6 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>The error is as follows:</p>
+<pre data-code-wrap="javascript"><code class="lang-javascript">assert.js:40 
+ Uncaught (in promise) Error: Assertion Failed: You attempted to update `_value` on `TrackedStorageImpl`, but it had already been used previously in the same computation.  Attempting to update a value after using it in a computation can cause logical errors, infinite revalidation bugs, and performance issues, and is not supported.
+
+`_value` was first used:
+
+- While rendering:
+  {{outlet}} for -top-level
+    -top-level
+      {{outlet}} for application
+        application
+          DiscourseRoot
+            {{outlet}} for admin
+              admin
+                {{outlet}} for adminPlugins
+                  admin-plugins
+                    {{outlet}} for adminPlugins.show
+                      show
+                        AdminPluginConfigPage
+                          AdminPluginConfigArea
+                            {{outlet}} for adminPlugins.show.discourse-gamification-leaderboards
+                              adminPlugins.show.discourse-gamification-leaderboards
+                                {{outlet}} for adminPlugins.show.discourse-gamification-leaderboards.index
+                                  discourse-gamification-leaderboards
+                                    DPageSubheader
+                                      (result of a `unknown` helper)
+
+Stack trace for the update:
+    at TrackedArray._dirtyCollection2 (array.ts:163:13)
+    at Object.set (array.ts:126:15)
+    at Proxy.sort (&lt;anonymous&gt;)
+    at AdminPluginsShowDiscourseGamificationLeaderboardsIndexController.sortedLeaderboards (index.js:23:1)
+    at AdminPluginsShowDiscourseGamificationLeaderboardsIndexController.&lt;anonymous&gt; (handle-descriptor.js:67:17)
+</code></pre>
+<p>I located the problematic file as follows:</p>
+<pre data-code-wrap="plaintext"><code class="lang-plaintext">plugins/discourse-gamification/admin/assets/javascripts/discourse/controllers/admin-plugins/show/discourse-gamification-leaderboards/index.js
+</code></pre>
+<p>Specific code:</p>
+<pre data-code-wrap="glimmer-javascript"><code class="lang-glimmer-javascript">  @discourseComputed("model.leaderboards.@each.updatedAt")
+  sortedLeaderboards(leaderboards) {
+    return (
+      leaderboards?.sort((a, b) =&gt; compare(b?.updatedAt, a?.updatedAt)) || [] // line 22
+    );
+  }
+
+</code></pre>
+<p>The reason for the error is:</p>
+<p><strong>Ember.js (or more accurately, the Glimmer tracking system) assertion error in reactive state management.</strong> The core reason is: within the same computation cycle, you first read a <code>tracked</code> (tracked state) value, and then attempt to modify that value. This “use then update” operation can lead to logical confusion, infinite loops, or performance issues, so Ember directly prohibits this behavior.</p>
+<p>Key issue:</p>
+<ul>
+<li>
+<p><code>Array.sort()</code> <strong>modifies the original array in place</strong>, which updates the <code>@tracked</code> <code>leaderboards</code> state.</p>
+</li>
+<li>
+<p>The responsibility of a computed property (<code>sortedLeaderboards</code>) is to <strong>derive a new value</strong>, not to modify the original state; it should itself be a “pure function” (no side effects, does not modify the input source).</p>
+</li>
+</ul>
+<p>Here is the fix:</p>
+<pre data-code-wrap="glimmer-javascript"><code class="lang-glimmer-javascript">  @discourseComputed("model.leaderboards.@each.updatedAt")
+  sortedLeaderboards(leaderboards) {
+    return (
+      //leaderboards?.sort((a, b) =&gt; compare(b?.updatedAt, a?.updatedAt)) || []
+      leaderboards?.slice().sort((a, b) =&gt; compare(b?.updatedAt, a?.updatedAt)) || []
+    );
+  }
+</code></pre>
+<p>Screenshot after fixing:</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/pqKoCksh34QRxn2fnBnlFAwD9Ht.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/b/2/3/b23c6682b2028cf06246fe6988c362bc4947a3b3.png" title="image"><img alt="image" data-base62-sha1="pqKoCksh34QRxn2fnBnlFAwD9Ht" data-dominant-color="242425" height="335" src="../../../images/b23c6682b2028cf06246fe6988c362bc4947a3b3_2_690x335.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/b/2/3/b23c6682b2028cf06246fe6988c362bc4947a3b3_2_690x335.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/b/2/3/b23c6682b2028cf06246fe6988c362bc4947a3b3_2_1035x502.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/b/2/3/b23c6682b2028cf06246fe6988c362bc4947a3b3_2_1380x670.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1878×913 54.6 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>And this kind of similar issue doesn’t seem to be an isolated case. I suspect it’s an incompatibility issue caused by the emberjs upgrade. However, many places in plugins haven’t been modified to keep up with the upgrade, as this work is not as simple as it sounds.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">long</div>
+          <div class="post_content">
+<p>Question: Is there a delay as to when points are awarded. For example, new users are doing point paying things, like posting a new topic or giving a like, but their scores don’t show up. I have trust level 0 included in the settings, so I am assuming it’s just a delay in assigning points? If so, how often does it calculate and update? Thank you!</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554653_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Moin</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="1" data-topic="225916" data-username="Discourse">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/148734_2.png" width="24"/> Discourse:</div>
+<blockquote>
+<p>Points are automatically updated every hour for events of the day, and we re-calculate scores from the last 10 days once a day.</p>
+</blockquote>
+</aside>
+<p><span class="spoiler"></span></p>
+<p><span class="spoiler"></span></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 4">❤️ 4</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/352733_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Eviepayne</div>
+          <div class="post_content">
+<aside class="quote no-group quote-modified" data-post="440" data-topic="225916" data-username="tobiaseigen">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/539204_2.png" width="24"/> tobiaseigen:</div>
+<blockquote>
+<p>Seems like an interesting idea to move that (scorable categories) to the leaderboard, to for example have a <a class="hashtag-cooked" data-id="6" data-ref="support::category" data-slug="support" data-style-type="square" data-type="category" href="/c/support/6"><span class="hashtag-icon-placeholder"><svg class="fa d-icon d-icon-square-full svg-icon svg-node"><use href="#square-full"></use></svg></span><span>Support</span></a> leaderboard here in this community.</p>
+</blockquote>
+</aside>
+<p>I would like to revisit this idea. For now I’ve locked the leaderboards to 1 category but this being moved to an individual leaderboard would be better.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/179432_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Falco</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="451" data-topic="225916" data-username="Eviepayne">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/352733_2.png" width="24"/> Eviepayne:</div>
+<blockquote>
+<p>I would like to revisit this idea. For now I’ve locked the leaderboards to 1 category but this being moved to an individual leaderboard would be better.</p>
+</blockquote>
+</aside>
+<p>That is something we really wanna do, just a matter of finding time to do it or getting a customer to sponsor the effort.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 5">❤️ 5</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">james10</div>
+          <div class="post_content">
+<p>Hi there,</p>
+<p>I created a new leaderboard, but it wiped the settings from my original leaderboard.</p>
+<p>Is there a way to see select which leaderboard my users see front end?</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/549022_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">gilles</div>
+          <div class="post_content">
+<p>You can customize a section to go directly to the chosen ranking link.</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/4crUooSxXd7Qxpbzxrdl4M6ZVvW.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/1/d/7/1d70fb67c795421d305604e88bb806ba9c93f898.png" title="image"><img alt="image" data-base62-sha1="4crUooSxXd7Qxpbzxrdl4M6ZVvW" data-dominant-color="D6D9DA" height="500" src="../../../images/1d70fb67c795421d305604e88bb806ba9c93f898_2_431x500.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/1/d/7/1d70fb67c795421d305604e88bb806ba9c93f898_2_431x500.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/1/d/7/1d70fb67c795421d305604e88bb806ba9c93f898_2_646x750.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/1/d/7/1d70fb67c795421d305604e88bb806ba9c93f898.png 2x" width="431"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">676×783 56.4 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+
+    </div>
+  </body>
+</html>

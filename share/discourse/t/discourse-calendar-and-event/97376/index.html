@@ -1,0 +1,2665 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width">
+    <title>Discourse Calendar (and Event)</title>
+    <link rel="stylesheet" href="../../../archived.css" />
+    <script>
+      function findSageCodeBlocks() {
+        return Array.prototype.slice.call(
+          document.querySelectorAll(
+            "pre[data-code-wrap='sage'] > code, pre > code.lang-sage, pre > code.language-sage, pre > code.sage"
+          )
+        );
+      }
+
+      function loadScript(src) {
+        return new Promise(function (resolve, reject) {
+          var existing = document.querySelector("script[src='" + src + "']");
+          if (existing) {
+            if (existing.dataset.loaded === "true") {
+              resolve();
+              return;
+            }
+            existing.addEventListener("load", resolve, { once: true });
+            existing.addEventListener("error", reject, { once: true });
+            return;
+          }
+
+          var script = document.createElement("script");
+          script.src = src;
+          script.async = true;
+          script.addEventListener("load", function () {
+            script.dataset.loaded = "true";
+            resolve();
+          }, { once: true });
+          script.addEventListener("error", reject, { once: true });
+          document.head.appendChild(script);
+        });
+      }
+
+      function prepareSageCells() {
+        var sageBlocks = findSageCodeBlocks();
+        if (!sageBlocks.length) {
+          return Promise.resolve();
+        }
+
+        return loadScript("https://sagecell.sagemath.org/static/embedded_sagecell.js")
+          .then(function () {
+            if (!window.sagecell || !window.sagecell.makeSagecell) {
+              return;
+            }
+
+            sageBlocks.forEach(function (codeTag, index) {
+              var preTag = codeTag.parentElement;
+              if (!preTag || preTag.dataset.sageMounted === "true") {
+                return;
+              }
+
+              var host = document.createElement("div");
+              host.className = "sagecell-archive";
+
+              var source = document.createElement("script");
+              source.type = "text/x-sage";
+              source.text = codeTag.textContent || "";
+              host.appendChild(source);
+
+              preTag.insertAdjacentElement("afterend", host);
+              preTag.classList.add("sage-source-hidden");
+              preTag.dataset.sageMounted = "true";
+
+              window.sagecell.makeSagecell({
+                inputLocation: host,
+                autoeval: false,
+                evalButtonText: "Run",
+                languages: ["sage"]
+              });
+            });
+          })
+          .catch(function () {
+            // Leave the original code blocks visible if SageCell cannot load.
+          });
+      }
+
+      function preprocessDiscourseMath() {
+        document.querySelectorAll("span.math, div.math").forEach(function (node) {
+          var tex = node.textContent || "";
+          if (!tex.trim()) {
+            return;
+          }
+          if (node.tagName === "SPAN") {
+            node.textContent = "\\(" + tex + "\\)";
+          } else {
+            node.textContent = "\\[" + tex + "\\]";
+          }
+          node.classList.remove("math");
+        });
+      }
+
+      window.MathJax = {
+        tex: {
+          inlineMath: [["\\(", "\\)"]],
+          displayMath: [["\\[", "\\]"]]
+        },
+        startup: {
+          pageReady() {
+            preprocessDiscourseMath();
+            return MathJax.startup.defaultPageReady().then(function () {
+              return prepareSageCells();
+            });
+          }
+        }
+      };
+    </script>
+    <script async id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="title-span">
+        <a href="../../../">
+          <img src="../../../images/ad2526334012b2ad0c3421f9b6dd94bae2ede52f.svg" height="40" alt="Site Logo" id="site-logo" />
+        </a>
+      </div>
+    </header>
+
+    <div class="main">
+    <div class="archive-span"><a href='https://meta.discourse.org/'>Discourse Meta</a> archived in May, 2026</div>
+    <h1 class="topic-title">Discourse Calendar (and Event)</h1>
+            <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/148734_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Discourse</div>
+          <div class="post_content">
+<div class="md-table">
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><img alt=":discourse2:" class="emoji emoji-custom only-emoji" height="20" loading="lazy" src="../../../images/0e65eeb3631702ee91807a5f302a3f10f099dd11.png" title=":discourse2:" width="20"/></td>
+<td><strong>Summary</strong></td>
+<td>
+<strong>Discourse Calendar and Event</strong> adds dynamic and interactive calendar and event features to your Discourse site.</td>
+</tr>
+<tr>
+<td><img alt=":open_book:" class="emoji only-emoji" height="20" loading="lazy" src="../../../images/open_book.png" title=":open_book:" width="20"/></td>
+<td><strong>Install Guide</strong></td>
+<td>
+<strong>This plugin is  bundled with Discourse core</strong>. There is no need to install the plugin separately.</td>
+</tr>
+</tbody>
+</table>
+</div><aside class="quote no-group">
+<blockquote>
+<p><img alt=":discourse2:" class="emoji emoji-custom" height="20" loading="lazy" src="../../../images/0e65eeb3631702ee91807a5f302a3f10f099dd11.png" title=":discourse2:" width="20"/> As this is an <a class="hashtag-cooked" data-icon="tag" data-id="83" data-slug="official" data-style-type="icon" data-type="tag" href="/tag/official"><span class="hashtag-icon-placeholder"><svg class="fa d-icon d-icon-square-full svg-icon svg-node"><use href="#square-full"></use></svg></span><span>official</span></a> plugin maintained by the Discourse team, <a class="hashtag-cooked" data-id="6" data-slug="support" data-style-type="square" data-type="category" href="/c/support/6"><span class="hashtag-icon-placeholder"><svg class="fa d-icon d-icon-square-full svg-icon svg-node"><use href="#square-full"></use></svg></span><span>Support</span></a>, <a class="hashtag-cooked" data-id="1" data-slug="bug" data-style-type="square" data-type="category" href="/c/bug/1"><span class="hashtag-icon-placeholder"><svg class="fa d-icon d-icon-square-full svg-icon svg-node"><use href="#square-full"></use></svg></span><span>Bug</span></a>, <a class="hashtag-cooked" data-id="9" data-slug="ux" data-style-type="square" data-type="category" href="/c/ux/9"><span class="hashtag-icon-placeholder"><svg class="fa d-icon d-icon-square-full svg-icon svg-node"><use href="#square-full"></use></svg></span><span>UX</span></a>, and <a class="hashtag-cooked" data-id="2" data-slug="feature" data-style-type="square" data-type="category" href="/c/feature/2"><span class="hashtag-icon-placeholder"><svg class="fa d-icon d-icon-square-full svg-icon svg-node"><use href="#square-full"></use></svg></span><span>Feature</span></a> requests can be made in the respective categories here on Meta, and tagged with the appropriate plugin tag. Click on a link below to get one started. <img alt=":+1:" class="emoji" height="20" loading="lazy" src="../../../images/+1.png" title=":+1:" width="20"/></p>
+<p><kbd> <a href="https://meta.discourse.org/new-topic?category_id=6&amp;body=%3E%20Before%20asking,%20did%20you%20search%20first%3F%20Press%20%F0%9F%94%8D%20at%20the%20upper%20right%20to%20search.&amp;tags=calendar-and-event" title="Ask for support on configuring and using Discourse Calendar"><img alt=":question:" class="emoji" height="20" loading="lazy" src="../../../images/question.png" title=":question:" width="20"/> <strong>Support</strong></a> </kbd> <kbd> <a href="https://meta.discourse.org/new-topic?category_id=1&amp;tags=calendar-and-event" title="A bug report means something is broken, preventing normal/typical use of the plugin"><img alt=":bug:" class="emoji" height="20" loading="lazy" src="../../../images/bug.png" title=":bug:" width="20"/> <strong>Bug</strong></a> </kbd> <kbd> <a href="https://meta.discourse.org/new-topic?category_id=9&amp;tags=calendar-and-event" title="Discussion about the user interface of Discourse Calendar, and how features are presented (including language and UI elements)"><img alt=":eyes:" class="emoji" height="20" loading="lazy" src="../../../images/eyes.png" title=":eyes:" width="20"/> <strong>UX</strong></a> </kbd> <kbd> <a href="https://meta.discourse.org/new-topic?category_id=2&amp;tags=calendar-and-event" title="Discussion about how existing Discourse Calendar features can be improved or enhanced, and how proposed new features could work"><img alt=":bulb:" class="emoji" height="20" loading="lazy" src="../../../images/bulb.png" title=":bulb:" width="20"/> <strong>Feature</strong></a></kbd></p>
+</blockquote>
+</aside>
+<h3>
+<a aria-label="Heading link" class="anchor" href="#p-473517-enabling-calendar-and-event-1" name="p-473517-enabling-calendar-and-event-1"></a>Enabling Calendar (and Event)</h3>
+<p>The Calendar plugin can be enabled either by the toggle or from its settings, both accessible from your <code>admin/plugins</code> page:</p>
+<p><img alt="/admin/plugins" data-base62-sha1="b57mchOwiuJrLFZJQ8QiJq4gtSz" data-dominant-color="EEF6F3" height="36" src="../../../images/4dac0a190e8a2746e82be62abdfb253aa62ac36b.png" width="690"/></p>
+<h3>
+<a aria-label="Heading link" class="anchor" href="#p-473517-features-2" name="p-473517-features-2"></a>Features</h3>
+<p>Somewhat unsurprisingly, <strong>Discourse Calendar (and Event)</strong> adds both the calendar and event features to your Discourse site. With these, you can create individual topic calendars to track important occasions or timelines, display calendars in categories, add a holiday calendar to mark vacations, absences, or sick days, create interactive event topics, as well as show an easy-access calendar summary of all of your upcoming events.</p>
+<h3>
+<a aria-label="Heading link" class="anchor" href="#p-473517-calendars-3" name="p-473517-calendars-3"></a>Calendars</h3>
+<p>Bespoke calendars can be created in multiple topics, and ones you wish to give higher visibility to can be displayed above a category’s topic list.</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/br6CkDD3PS98I2BA0dJl1k9EPJV.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/5/0/2/502856276d85fc5088283c543ba40aa204aa7e7b.png" title="topic calendar"><img alt="topic calendar" data-base62-sha1="br6CkDD3PS98I2BA0dJl1k9EPJV" data-dominant-color="F9FAFA" height="500" src="../../../images/502856276d85fc5088283c543ba40aa204aa7e7b_2_510x500.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/5/0/2/502856276d85fc5088283c543ba40aa204aa7e7b_2_510x500.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/5/0/2/502856276d85fc5088283c543ba40aa204aa7e7b_2_765x750.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/5/0/2/502856276d85fc5088283c543ba40aa204aa7e7b.png 2x" width="510"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">topic calendar</span><span class="informations">766×750 25.2 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>You can find more detailed information on how to create and use calendars in:</p>
+<aside class="quote quote-modified" data-post="1" data-topic="283773">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/148734_2.png" width="24"/>
+<div class="quote-title__text-content">
+<a href="https://meta.discourse.org/t/create-calendars/283773">Creating and managing calendars</a> <a class="badge-category__wrapper" href="/c/documentation/using-discourse/126"><span class="badge-category --style-square --has-parent" data-category-id="126" data-drop-close="true" data-parent-category-id="10" style="--category-badge-color: #0088CC; --category-badge-text-color: #FFFFFF; --parent-category-badge-color: #00A94F;" title="Topics showing how to Discourse by reading and writing content, and navigating Discourse sites. (Index)"><span class="badge-category__name">Using Discourse</span></span></a>
+</div>
+</div>
+<blockquote>
+<img alt="bookmark" class="emoji" height="20" src="../../../images/bookmark.png" title="bookmark" width="20"/> This guide explains how to create and manage calendars in Discourse using the Calendar (and Event) plugin. 
+<img alt="person_raising_hand" class="emoji" height="20" src="../../../images/person_raising_hand.png" title="person_raising_hand" width="20"/> Required user level: All users 
+
+Calendars are a powerful feature in Discourse that allow you to organize and display events within your community. This guide will walk you through the process of creating calendars, adding events, and managing them effectively. 
+<a aria-label="Heading link" class="anchor" href="#p-1394170-summary-1" name="p-1394170-summary-1"></a>Summary
+
+Enable the Calendar plugin
+Create a calendar in a topic or category
+Add events to your…
+  </blockquote>
+</aside>
+<h3>
+<a aria-label="Heading link" class="anchor" href="#p-473517-events-4" name="p-473517-events-4"></a>Events</h3>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/jJPVGDJy0ksasI4op76ZgVdzLja.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/8/a/5/8a57c44dbcb11b1002035d5eadaef9f02c674578.png" title="event"><img alt="event" data-base62-sha1="jJPVGDJy0ksasI4op76ZgVdzLja" data-dominant-color="F9F9F9" height="340" src="../../../images/8a57c44dbcb11b1002035d5eadaef9f02c674578_2_690x340.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/8/a/5/8a57c44dbcb11b1002035d5eadaef9f02c674578_2_690x340.png, https://d11a6trkgmumsb.cloudfront.net/original/4X/8/a/5/8a57c44dbcb11b1002035d5eadaef9f02c674578.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/8/a/5/8a57c44dbcb11b1002035d5eadaef9f02c674578.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">event</span><span class="informations">1018×503 24.8 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>The Event feature allows interactive elements to be inserted into topics which your members can use to sign up to attend or participate in your community’s activities. These are all  summarised in a dedicated site-wide calendar, with the option to add an easy-access link to your navigation menu. You can find more information on how to create and use this feature in:</p>
+<aside class="quote quote-modified" data-post="1" data-topic="149964">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/148734_2.png" width="24"/>
+<div class="quote-title__text-content">
+<a href="https://meta.discourse.org/t/create-events/149964">Creating and managing events</a> <a class="badge-category__wrapper" href="/c/documentation/using-discourse/126"><span class="badge-category --style-square --has-parent" data-category-id="126" data-drop-close="true" data-parent-category-id="10" style="--category-badge-color: #0088CC; --category-badge-text-color: #FFFFFF; --parent-category-badge-color: #00A94F;" title="Topics showing how to Discourse by reading and writing content, and navigating Discourse sites. (Index)"><span class="badge-category__name">Using Discourse</span></span></a>
+</div>
+</div>
+<blockquote>
+<img alt="bookmark" class="emoji" height="20" src="../../../images/bookmark.png" title="bookmark" width="20"/> This guide explains how to create and manage events using the Calendar (and Event) plugin in Discourse. It covers how to create events, set event options, interact with events, and view the upcoming events calendar. 
+<img alt="person_raising_hand" class="emoji" height="20" src="../../../images/person_raising_hand.png" title="person_raising_hand" width="20"/> Required user level: All users (with appropriate permissions) 
+
+<a aria-label="Heading link" class="anchor" href="#p-743406-enabling-events-1" name="p-743406-enabling-events-1"></a>Enabling events
+Events are a feature of the <a href="https://meta.discourse.org/t/discourse-calendar-and-event/97376">Calendar (and Event) plugin</a>. To use this feature: 
+
+Enable the Calendar (and Event) plugin
+Configure related settings
+
+For detailed instructi…
+  </blockquote>
+</aside>
+<blockquote>
+<p><img alt=":exclamation:" class="emoji" height="20" loading="lazy" src="../../../images/exclamation.png" title=":exclamation:" width="20"/> This should not be confused with Pavilion’s <a href="https://meta.discourse.org/t/events-plugin/69776">Events plugin</a> (note the plural)</p>
+</blockquote>
+<h3>
+<a aria-label="Heading link" class="anchor" href="#p-473517-calendar-settings-5" name="p-473517-calendar-settings-5"></a>Calendar Settings</h3>
+<div class="md-table">
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>calendar enabled</td>
+<td>Enable the discourse-calendar plugin. This will add support for a [calendar][/calendar] tag in the first post of a topic.</td>
+</tr>
+<tr>
+<td>holiday calendar topic id</td>
+<td>Topic ID of staffs holiday / absence calendar.</td>
+</tr>
+<tr>
+<td>holiday status emoji</td>
+<td>Defines the emoji used for the holiday status.</td>
+</tr>
+<tr>
+<td>delete expired event posts after</td>
+<td>Posts with expired events will be automatically deleted after (n) hours. Set to -1 to disable deletion.</td>
+</tr>
+<tr>
+<td>all day event start time</td>
+<td>Events that do not have a start time specified will start at this time. Format is HH:mm. For 6:00 am, enter 06:00</td>
+</tr>
+<tr>
+<td>all day event end time</td>
+<td>Events that do not have a end time specified will end at this time. Format is HH:mm. For 6:00 pm, enter 18:00</td>
+</tr>
+<tr>
+<td>calendar categories</td>
+<td>Display a calendar at the top of a category. Mandatory settings are categoryId and postId. eg: categoryId=6;postId=453<sup class="footnote-ref"><a href="#footnote-473517-1" id="footnote-ref-473517-1">[1]</a></sup> Other valid settings: tzPicker<sup class="footnote-ref"><a href="#footnote-473517-2" id="footnote-ref-473517-2">[2]</a></sup>, weekends<sup class="footnote-ref"><a href="#footnote-473517-3" id="footnote-ref-473517-3">[3]</a></sup> and defaultView<sup class="footnote-ref"><a href="#footnote-473517-4" id="footnote-ref-473517-4">[4]</a></sup>.</td>
+</tr>
+<tr>
+<td>calendar categories outlet</td>
+<td>Allows to change which outlet should show the category calendar.</td>
+</tr>
+<tr>
+<td>working days</td>
+<td>Set working days. You can display the availability of a group using the <code>timezones</code> tag in a post, eg: <code>[timezones group=admins][timezones]</code>
+</td>
+</tr>
+<tr>
+<td>working day start hour</td>
+<td>Start time of the working day hours.</td>
+</tr>
+<tr>
+<td>working day end hour</td>
+<td>End time of the working day hours.</td>
+</tr>
+<tr>
+<td>close to working day hours extension</td>
+<td>Set extension time in working day hours to highlight the timezones.</td>
+</tr>
+<tr>
+<td>calendar automatic holidays enabled</td>
+<td>Automatically set holiday status based on a users region (note: you can disable specific automatic holidays in plugin settings)</td>
+</tr>
+<tr>
+<td>map events title</td>
+<td>Maps title of the sidebar calendar based on category. Defaults to “Upcoming events”</td>
+</tr>
+</tbody>
+</table>
+</div><h3>
+<a aria-label="Heading link" class="anchor" href="#p-473517-event-settings-6" name="p-473517-event-settings-6"></a>Event Settings</h3>
+<div class="md-table">
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>discourse post event enabled</td>
+<td>Enables the Event features. Note: also needs <code>calendar enabled</code> to be enabled.</td>
+</tr>
+<tr>
+<td>discourse post event allowed on groups</td>
+<td>Groups that are allowed to create events.</td>
+</tr>
+<tr>
+<td>displayed invitees limit</td>
+<td>Limits the numbers of invitees displayed on an event.</td>
+</tr>
+<tr>
+<td>display post event date on topic title</td>
+<td>Displays the date of the event after the topic title.</td>
+</tr>
+<tr>
+<td>use local event date</td>
+<td>Use local date after topic title instead of relative time.</td>
+</tr>
+<tr>
+<td>discourse post event edit notifications time extension</td>
+<td>Extends (in minutes) the period after the end of an event when <code>going</code> invitees are still being notified from edit in the original post.</td>
+</tr>
+<tr>
+<td>discourse post event allowed custom fields</td>
+<td>Allows to let each event to set the value of custom fields.</td>
+</tr>
+<tr>
+<td>events calendar categories</td>
+<td>Display an events calendar at the top of a category.</td>
+</tr>
+<tr>
+<td>sort categories by event start date enabled</td>
+<td>Enable the sorting of category topics by event start date.</td>
+</tr>
+<tr>
+<td>disable resorting on categories enabled</td>
+<td>Allow categories to disable the ability for users to sort on the event category.</td>
+</tr>
+<tr>
+<td>sidebar show upcoming events</td>
+<td>Show upcoming events link in the sidebar under ‘More’. Requires <code>post event enabled</code>
+</td>
+</tr>
+<tr>
+<td>map events to color</td>
+<td>Assigns an event color to a specified tag or category</td>
+</tr>
+</tbody>
+</table>
+</div><blockquote>
+<p><img alt=":information_source:" class="emoji" height="20" loading="lazy" src="../../../images/information_source.png" title=":information_source:" width="20"/> <img alt=":curling_stone:" class="emoji" height="20" loading="lazy" src="../../../images/curling_stone.png" title=":curling_stone:" width="20"/> The <code>discourse-post-event/events.json</code> endpoint now has an added parameter to switch between simple and detailed response. To get the detailed response you can add <code>?include_details=true</code>:</p>
+<p><code>/discourse-post-event/events.json?include_details=true</code></p>
+</blockquote>
+<h3>
+<a aria-label="Heading link" class="anchor" href="#p-473517-integrations-with-other-plugins-7" name="p-473517-integrations-with-other-plugins-7"></a>Integrations with Other Plugins</h3>
+<p>You can use a component from this plugin with <a href="https://github.com/discourse/discourse-right-sidebar-blocks">Right Sidebar Blocks</a>. You’ll want to ensure the desired route is enabled in the Right Sidebar Blocks component. The block name will be <code>upcoming-events-list</code>. Historically, there were additional settings required in the Calendar plugin itself, but this has been streamlined.</p>
+<p>This is how the sidebar calendar will appear by default.<br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/53BvT8a5Ur5qlChKIK4YupDPbb6.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/2/3/7/237331c496ef339a50336bb9cf0274066122dc14.png" title="Screenshot 2024-12-05 at 4.36.10 PM"><img alt="Screenshot 2024-12-05 at 4.36.10 PM" data-base62-sha1="53BvT8a5Ur5qlChKIK4YupDPbb6" height="279" src="../../../images/237331c496ef339a50336bb9cf0274066122dc14.png" width="256"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2024-12-05 at 4.36.10 PM</span><span class="informations">256×279 5.26 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>If you don’t want the time, you can add an empty <code>timeFormat</code> value in the component’s block setting.<br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/92ePnJA9bdOngGoTFJK1J1oOZKJ.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/3/f/5/3f545d12fadbaa1768df04bf9b7ee1ad028793d5.png" title="Screenshot 2024-12-05 at 4.36.42 PM"><img alt="Screenshot 2024-12-05 at 4.36.42 PM" data-base62-sha1="92ePnJA9bdOngGoTFJK1J1oOZKJ" height="296" src="../../../images/3f545d12fadbaa1768df04bf9b7ee1ad028793d5.png" width="286"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2024-12-05 at 4.36.42 PM</span><span class="informations">286×296 5.32 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<blockquote>
+<p><img alt=":discourse2:" class="emoji emoji-custom" height="20" loading="lazy" src="../../../images/0e65eeb3631702ee91807a5f302a3f10f099dd11.png" title=":discourse2:" width="20"/> Hosted by us? This plugin is available on our Business and Enterprise tiers <a class="inline-onebox" href="https://www.discourse.org/plugins/calendar.html">Calendar | Discourse - Civilized Discussion</a></p>
+</blockquote>
+<hr class="footnotes-sep"/>
+<ol class="footnotes-list">
+<li class="footnote-item" id="footnote-473517-1">
+<p>categoryId is the category the calendar will be displayed on top of.<br/>postId is the post in which you put the calendar in with <code>[calendar][/calendar]</code> <a class="footnote-backref" href="#footnote-ref-473517-1">↩︎</a></p>
+</li>
+<li class="footnote-item" id="footnote-473517-2">
+<p>it can display a time zone picker on the upper right of the calendar. False by default, you can enable it with <code>tzPicker=true</code> <a class="footnote-backref" href="#footnote-ref-473517-2">↩︎</a></p>
+</li>
+<li class="footnote-item" id="footnote-473517-3">
+<p>it can hide Saturdays and Sundays from the calendar. True by default. You can set it to false with <code>weekends=false</code>. <a class="footnote-backref" href="#footnote-ref-473517-3">↩︎</a></p>
+</li>
+<li class="footnote-item" id="footnote-473517-4">
+<p>defaultView will set the calendar’s view (day, week, etc;). It can be set as:<br/><br/>
+<code>defaultView=agendaDay</code><br/>
+<code>defaultView=agendaWeek</code><br/>
+<code>defaultView=month</code> (default)<br/>
+<code>defaultView=listNextYear</code> <a class="footnote-backref" href="#footnote-ref-473517-4">↩︎</a></p>
+</li>
+</ol><blockquote class="discourse-automation">
+<p>Last edited by <span class="mention">@tobiaseigen</span> <span class="discourse-local-date" data-date="2025-07-16" data-email-preview="Wednesday, July 16, 2025 9:10 PM UTC" data-time="21:10:06" data-timezone="UTC">2025-07-16T21:10:06Z</span></p>
+<details><summary>Check document</summary>Perform check on document: <input class="btn btn-checked" type="button" value="Done"/></details>
+</blockquote>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 98">❤️ 98</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/344874_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">martyn_thomas</div>
+          <div class="post_content">
+<p>This plugin is promising - but there’s some features that are missing that prevents us from jumping from Pavilion’s plugin</p>
+<ul>
+<li>
+<p>Display non-all-day events with the start time on the calendar, currently every event looks like an all day event.</p>
+</li>
+<li>
+<p>‘Add Event’ button in the composer next to the tag selector (not hidden in the cog)</p>
+</li>
+<li>
+<p>Limit which categories can have events, and if a events are compulsory in a category</p>
+</li>
+</ul>
+<p>Nice to haves:</p>
+<ul>
+<li>Event meta data in the topic only appears/is entered at the top of the topic (instead of where ever the curser is</li>
+<li>ability to limit which groups can make events in a category (for example - only ‘EventPlanners’ group can create events in the ‘Discussion’ category, but all users can create non-event topics (or edit topics if the topic is set to Wiki)</li>
+<li>change URL of /upcoming-events to /calendar</li>
+</ul>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 13">❤️ 13</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/254611_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">JammyDodger</div>
+          <div class="post_content">
+<p>2 posts were split to a new topic: <a href="/t/holiday-status-being-incorrectly-applied/305042">Holiday status being incorrectly applied</a></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/77900_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">pokapow</div>
+          <div class="post_content">
+<p>Hello there,<br/>
+Thank you for this work.</p>
+<p>I have 2 UX questions:</p>
+<ul>
+<li>
+<p>Is it possible to display “Add event” button next to “Add location” button in topic editor ? Like it was the case with pavillion plugin ?<br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/iLsVPBDPXpupVn3BEl065kbI0H4.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/8/3/8/8384bc3f268a72796cb212d3b844aadfbd2f0f7e.png" rel="noopener nofollow ugc" title="image"><img alt="image" data-base62-sha1="iLsVPBDPXpupVn3BEl065kbI0H4" data-dominant-color="1E2427" height="86" src="../../../images/8384bc3f268a72796cb212d3b844aadfbd2f0f7e.png" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">734×92 6.55 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+</li>
+<li>
+<p>Is there a possibility to add Calendar top menu entry ? I don’t find it in settings<br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/fJkoIcJ0OvelXFSlL3jgE4pXANQ.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/6/e/4/6e405a8251e0f9e8973bb0af951606d34a7fa3da.png" rel="noopener nofollow ugc" title="image"><img alt="image" data-base62-sha1="fJkoIcJ0OvelXFSlL3jgE4pXANQ" data-dominant-color="474320" height="151" src="../../../images/6e405a8251e0f9e8973bb0af951606d34a7fa3da_2_690x151.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/6/e/4/6e405a8251e0f9e8973bb0af951606d34a7fa3da_2_690x151.png, https://d11a6trkgmumsb.cloudfront.net/original/4X/6/e/4/6e405a8251e0f9e8973bb0af951606d34a7fa3da.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/6/e/4/6e405a8251e0f9e8973bb0af951606d34a7fa3da.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">803×176 6.58 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+</li>
+</ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/215041_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">AstonJ</div>
+          <div class="post_content">
+<p>This looks great! Some thoughts/questions:</p>
+<p>Am I correct in assuming that to create a calendar you simply create a new thread/topic, and paste the following into it:</p>
+<pre><code class="lang-plaintext">Name Of Calendar 
+
+[calendar]
+[/calendar]
+</code></pre>
+<p>Then to add entries to the calendar you simply make a new post in the sam thread with something like the following (by clicking on the <code>insert time/date</code> icon in the post options):</p>
+<pre><code class="lang-plaintext">Name of Event/Entry
+
+[date-range from=2024-04-18 to=2024-04-19 timezone="Europe/London"]
+</code></pre>
+<p>This adds the entry to the calendar which is great, however:</p>
+<ul>
+<li>Is there any way to add entries to a calendar but let those entires have a dedicated thread/topic as well? (I see you can add events in new threads, but there doesn’t appear to be any way to add those events to a calendar).</li>
+<li>Is there any way to feature ‘Upcoming Events’ from a specific calendar in the digest emails? Or maybe the left hand column, and with each entry linking to the dedicated thread for that entry?</li>
+</ul>
+<p>If this is not currently possible do you have any plans to add it?</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/381818_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">haozi</div>
+          <div class="post_content">
+<p><span class="mention">@vinothkannans</span> Could you help me review this pr?</p>
+<aside class="onebox githubpullrequest" data-onebox-src="https://github.com/discourse/discourse-calendar/pull/561">
+<header class="source">
+<a href="https://github.com/discourse/discourse-calendar/pull/561" rel="noopener nofollow ugc" target="_blank">github.com/discourse/discourse-calendar</a>
+</header>
+<article class="onebox-body">
+<div class="github-row --gh-status-closed" data-github-private-repo="false">
+<div class="github-icon-container" title="Closed Pull Request">
+<svg aria-hidden="true" class="github-icon" height="60" viewbox="0 0 12 16" width="60"><path d="M11 11.28V5c-.03-.78-.34-1.47-.94-2.06C9.46 2.35 8.78 2.03 8 2H7V0L4 3l3 3V4h1c.27.02.48.11.69.31.21.2.3.42.31.69v6.28A1.993 1.993 0 0 0 10 15a1.993 1.993 0 0 0 1-3.72zm-1 2.92c-.66 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2zM4 3c0-1.11-.89-2-2-2a1.993 1.993 0 0 0-1 3.72v6.56A1.993 1.993 0 0 0 2 15a1.993 1.993 0 0 0 1-3.72V4.72c.59-.34 1-.98 1-1.72zm-.8 10c0 .66-.55 1.2-1.2 1.2-.65 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2zM2 4.2C1.34 4.2.8 3.65.8 3c0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2z" fill-rule="evenodd"></path></svg>
+</div>
+<div class="github-info-container">
+<h4>
+<a href="https://github.com/discourse/discourse-calendar/pull/561" rel="noopener nofollow ugc" target="_blank">FEATURE: add China holidays and region</a>
+</h4>
+<div class="branches">
+<code>main</code> ← <code>devhaozi:main</code>
+</div>
+<div class="github-info">
+<div class="date">
+          closed <span class="discourse-local-date" data-date="2025-07-15" data-format="ll" data-time="12:10:42" data-timezone="UTC">12:10PM - 15 Jul 25 UTC</span>
+</div>
+<div class="user">
+<a href="https://github.com/devhaozi" rel="noopener nofollow ugc" target="_blank">
+<img alt="" class="onebox-avatar-inline" data-dominant-color="A39997" height="20" src="../../../images/60ec85f60956567e7295c3bd1af170293bc07ae5.png" width="20"/>
+            devhaozi
+          </a>
+</div>
+<div class="lines" title="2 commits changed 6 files with 456 additions and 0 deletions">
+<a href="https://github.com/discourse/discourse-calendar/pull/561/files" rel="noopener nofollow ugc" target="_blank">
+<span class="added">+456</span>
+<span class="removed">-0</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+<div class="github-row">
+<p class="github-body-container">This PR attempts to add China holidays and region definitions to discourse-calen<span class="show-more-container"><a class="show-more" href="https://github.com/discourse/discourse-calendar/pull/561" rel="noopener nofollow ugc" target="_blank">…</a></span><span class="excerpt hidden">dar plugin.
+
+I am a beginner in Ruby and discourse plugin development, if there is any problem please help me fix it. Thank you so much.</span></p>
+</div>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/370902_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">putty</div>
+          <div class="post_content">
+<p>Are there plans to add a URL feed that users can subscribe to? I’m sure it would be tricky for all events vs the ones they have RSVP’d to.</p>
+<p>Secondly, an additional layer would be amazing if it could recognize private events (or maybe that’s just a different URL feed per group).</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 6">❤️ 6</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/281428_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">jordan-violet</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="445" data-topic="97376" data-username="putty">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/370902_2.png" width="24"/> putty:</div>
+<blockquote>
+<p>Are there plans to add a URL feed that users can subscribe to? I’m sure it would be tricky for all events vs the ones they have RSVP’d to.</p>
+</blockquote>
+</aside>
+<aside class="quote quote-modified" data-post="1" data-topic="264134">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/148734_2.png" width="24"/>
+<div class="quote-title__text-content">
+<a href="https://meta.discourse.org/t/discourse-rss-feeds-list/264134">Finding Discourse RSS feeds</a> <a class="badge-category__wrapper" href="/c/documentation/using-discourse/126"><span class="badge-category --style-square --has-parent" data-category-id="126" data-drop-close="true" data-parent-category-id="10" style="--category-badge-color: #0088CC; --category-badge-text-color: #FFFFFF; --parent-category-badge-color: #00A94F;" title="Topics showing how to Discourse by reading and writing content, and navigating Discourse sites. (Index)"><span class="badge-category__name">Using Discourse</span></span></a>
+</div>
+</div>
+<blockquote>
+<img alt="bookmark" class="emoji" height="20" src="../../../images/bookmark.png" title="bookmark" width="20"/> A reference list of all the RSS feeds available in Discourse. 
+<img alt="person_raising_hand" class="emoji" height="20" src="../../../images/person_raising_hand.png" title="person_raising_hand" width="20"/> Required user level: All users 
+
+Here’s a list of most of the available RSS feeds in Discourse. <a href="https://en.wikipedia.org/wiki/RSS" rel="noopener nofollow ugc">RSS</a> is a standardised, computer-readable format for content that allows it to be shared between sites and platforms easily. 
+
+<img alt="information_source" class="emoji" height="20" src="../../../images/information_source.png" title="information_source" width="20"/> RSS links that contain an ID (categories, topics, badges, etc.) are defined by their ID. The links won’t break if the slug part of the URL changes, but the slug…
+  </blockquote>
+</aside>
+<p>There is no rss feed for the /upcoming-events url though—that would be a nice addition!</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/77900_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">pokapow</div>
+          <div class="post_content">
+<p>What about caldav sync ?</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 6">❤️ 6</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/389927_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Matthias_Schuster</div>
+          <div class="post_content">
+<p>That would also for me be a reason to switch, indeed.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/131899_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Heliosurge</div>
+          <div class="post_content">
+<p>This needs more updating as it mentions a. Event Insert in composer and adding event details not as pictured.  Unless Event was an add on?</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Isambard</div>
+          <div class="post_content">
+<p>I’ve installed the plug-in and the calendar tag works in the first post of a topic. But I don’t see any event or calendar options in the gear menu:</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/qtuQVu6kqtHCnkzCw1OABTmsKmm.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/b/9/8/b98e226a98deb0f2415bd5dc4491c15f90db1902.png" rel="noopener nofollow ugc" title="The image shows a calendar interface for the month of June 2024, set for the Europe/Zurich time zone, with the date 8th highlighted and options for formatting text, creating lists, tables, polls, and hiding content displayed below the calendar. (Captioned by AI)"><img alt="The image shows a calendar interface for the month of June 2024, set for the Europe/Zurich time zone, with the date 8th highlighted and options for formatting text, creating lists, tables, polls, and hiding content displayed below the calendar. (Captioned by AI)" data-base62-sha1="qtuQVu6kqtHCnkzCw1OABTmsKmm" data-dominant-color="262829" height="499" src="../../../images/b98e226a98deb0f2415bd5dc4491c15f90db1902_2_378x499.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/b/9/8/b98e226a98deb0f2415bd5dc4491c15f90db1902_2_378x499.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/b/9/8/b98e226a98deb0f2415bd5dc4491c15f90db1902_2_567x748.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/b/9/8/b98e226a98deb0f2415bd5dc4491c15f90db1902_2_756x998.png 2x" width="378"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">The image shows a calendar interface for the month of June 2024, set for the Europe/Zurich time zone, with the date 8th highlighted and options for formatting text, creating lists, tables, polls, and hiding content displayed below the calendar. (Captioned by AI)</span><span class="informations">982×1297 54.9 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>Can someone please explain what I need to do to get the event option in the gear menu?</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/254611_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">JammyDodger</div>
+          <div class="post_content">
+<p>You need to enable the Event portion of the plugin <code>discourse post event enabled</code></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Isambard</div>
+          <div class="post_content">
+<p>Thanks. I somehow missed this setting.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/131899_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Heliosurge</div>
+          <div class="post_content">
+<p>How do you get create event to show in a Category topic with replies being events?</p>
+<p>I see the create event works on creating new topics.  But looking to have a Calender in a topic with replies adding events.  It works partially with insert date but not as good as create event has more options.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/344604_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">eve</div>
+          <div class="post_content">
+<p>Currently users can set the region in their profile preferences.<br/>
+<img alt="grafik" data-base62-sha1="tgiTJByGKwKQtlRTFtFKcR9BkW9" height="256" src="../../../images/cd16e0f677252eefe0938501cf3f349388d0f52d.png" width="543"/></p>
+<p>I’d like to let them set their region during signup by showing this field in the registration form. Is that feasible?</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/334852_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">joo</div>
+          <div class="post_content">
+<p>Will a deleted reply still appear on the calendar?</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">tonninseteli</div>
+          <div class="post_content">
+<p>I can’t find any setting for changing first day of week to monday, is this trivial to implement if missing? <img alt=":thinking:" class="emoji" height="20" loading="lazy" src="../../../images/thinking.png" title=":thinking:" width="20"/></p>
+<p>Another issue is that that time &amp; date entry is broken, if it’s an all day event there should be an option to select it before the time entry fields mess up the dates, and the dates seem to change randomly when editing.</p>
+<p>Also noticed that it’s possible to enter 00:00 in both time &amp; date, (which sometimes works, sometimes doesn’t) leading to calendar giving an error which will then cause some conflict with drafts leading to a repeated 422 error until the page is rolled back to an earlier revision, then re-edited etc.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/334852_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">joo</div>
+          <div class="post_content">
+<aside class="quote no-group" data-full="true" data-post="10" data-topic="277113" data-username="joo">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" loading="lazy" src="../../../images/334852_2.png" width="24"/><a href="https://meta.discourse.org/t/setting-up-the-append-last-edited-by-automation/277113/10">Setting up the ‘Append last edited by’ automation</a></div>
+<blockquote>
+<p>When activating this automation, the “Last edited by” content is automatically added to Calendar. I’m seeking advice on whether this is a bug or if it’s an issue with my settings. Could anyone help clarify?</p>
+<p></p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/1GJlXeOe0G2qaYlUPlVvVWjoIL5.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/0/b/d/0bd6c043104bd973f8a7a07c7ba1589d7d5fdb07.png" rel="noopener nofollow ugc" title="chrome_2024-08-03_21-45-51"><img alt="chrome_2024-08-03_21-45-51" data-base62-sha1="1GJlXeOe0G2qaYlUPlVvVWjoIL5" data-dominant-color="303543" height="377" src="../../../images/0bd6c043104bd973f8a7a07c7ba1589d7d5fdb07_2_690x377.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/0/b/d/0bd6c043104bd973f8a7a07c7ba1589d7d5fdb07_2_690x377.png, https://d11a6trkgmumsb.cloudfront.net/original/4X/0/b/d/0bd6c043104bd973f8a7a07c7ba1589d7d5fdb07.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/0/b/d/0bd6c043104bd973f8a7a07c7ba1589d7d5fdb07.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">chrome_2024-08-03_21-45-51</span><span class="informations">857×469 22.1 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div><p></p>
+<p></p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/2Y9Q9qKNjALRAHLMpEZyMxtdXv0.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/1/4/d/14d13d1899574617ccbe33d0c985bb0a2f66a9b6.png" rel="noopener nofollow ugc" title="chrome_2024-08-03_21-58-06"><img alt="chrome_2024-08-03_21-58-06" data-base62-sha1="2Y9Q9qKNjALRAHLMpEZyMxtdXv0" data-dominant-color="333745" height="410" src="../../../images/14d13d1899574617ccbe33d0c985bb0a2f66a9b6_2_690x410.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/1/4/d/14d13d1899574617ccbe33d0c985bb0a2f66a9b6_2_690x410.png, https://d11a6trkgmumsb.cloudfront.net/original/4X/1/4/d/14d13d1899574617ccbe33d0c985bb0a2f66a9b6.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/1/4/d/14d13d1899574617ccbe33d0c985bb0a2f66a9b6.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">chrome_2024-08-03_21-58-06</span><span class="informations">999×594 25.5 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div><p></p>
+</blockquote>
+</aside>
+<p>Please refer here</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/192154_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Jagster</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="460" data-topic="97376" data-username="tonninseteli">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/48.png" width="24"/> se oli tonnin seteli:</div>
+<blockquote>
+<p>I can’t find any setting for changing first day of week to monday, is this trivial to implement if missing?</p>
+</blockquote>
+</aside>
+<p>There isn’t such setting and that’s why I don’t use it. And I bet the team would fix that error if it would  be trivial trick.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">alexis_bacots</div>
+          <div class="post_content">
+<p>I’m fairly new to Discourse, so apologies if this is not the right place for it. How can I support this feature (set the week starting date to Monday in calendars)?<br/>
+Starting on Sunday is really awkward and confusing for us.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/313494_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">NateDhaliwal</div>
+          <div class="post_content">
+<p>Make a topic in <a class="hashtag-cooked" data-id="2" data-slug="feature" data-type="category" href="/c/feature/2"><span class="hashtag-icon-placeholder"><svg class="fa d-icon d-icon-square-full svg-icon svg-node"><use href="#square-full"></use></svg></span><span>feature</span></a> with the tag <a class="hashtag-cooked" data-id="241" data-slug="calendar-and-event" data-type="tag" href="/tag/calendar-and-event"><span class="hashtag-icon-placeholder"><svg class="fa d-icon d-icon-square-full svg-icon svg-node"><use href="#square-full"></use></svg></span><span>calendar-and-event</span></a> , I think.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/192154_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Jagster</div>
+          <div class="post_content">
+<p>I don’t know how, because nowadays week starts from monday. Because it doesn’t follow my personal language setting then it may follow language of forum?</p>
+<p><strong>edit</strong></p>
+<p>And this I found.</p>
+<aside class="quote no-group" data-post="1" data-topic="283773" data-username="Discourse">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" loading="lazy" src="../../../images/148734_2.png" width="24"/><a href="https://meta.discourse.org/t/creating-and-managing-calendars/283773/1">Creating and managing calendars</a></div>
+<blockquote>
+<p>Monday is considered the first day of the week in Discourse calendars, regardless of the viewer’s locale settings. This is currently not configurable.</p>
+</blockquote>
+</aside>
+<p>So, if it shows sunday starting a week there is either a bug, forum is un-updated or you are usin some other calendar-plugin?</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">alexis_bacots</div>
+          <div class="post_content">
+<p>Hum, I have updated both discourse and the plugin yesterday, it’s the right plugin, and my weeks are still starting on Sunday. That’s weird.</p>
+<p>Edit: the category calendar starts on Sunday, but the calendar in the post starts on Monday. That’s probably a bug.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554653_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Moin</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="466" data-topic="97376" data-username="alexis_bacots">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" loading="lazy" src="../../../images/48.png" width="24"/> alexis_bacots:</div>
+<blockquote>
+<p>Edit: the category calendar starts on Sunday, but the calendar in the post starts on Monday. That’s probably a bug.</p>
+</blockquote>
+</aside>
+<p>I think it is expected to work like this</p><aside class="quote" data-post="5" data-topic="307785">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" loading="lazy" src="../../../images/254611_2.png" width="24"/>
+<a href="https://meta.discourse.org/t/choose-first-day-of-the-week-on-upcoming-events-calendar/307785/5">Choose first day of the week on Upcoming Events calendar</a> <a class="badge-category__wrapper" href="/c/feature/2"><span class="badge-category" data-category-id="2" data-drop-close="true" style="--category-badge-color: #0E76BD; --category-badge-text-color: #FFFFFF;" title="Discussion about existing Discourse features, how they can be improved or enhanced, and how proposed new features could work."><span class="badge-category__name">feature</span></span></a>
+</div>
+<blockquote>
+    I’m afraid I don’t think this is currently possible at the moment. The Upcoming Events calendar begins on Sunday, whereas the topic calendars start on Monday. 
+Depending on your use case, you could use the topic calendar instead and add it to a category view?
+  </blockquote>
+</aside>
+
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="cry: 1">😢 1</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/235063_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">nat</div>
+          <div class="post_content">
+<p>Ah, let me have a look since I’m in the vicinity.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span><span class="engagement-pill reaction-pill" title="hugs: 1">🤗 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/235063_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">nat</div>
+          <div class="post_content">
+<p>Just a small update that I took a look at “Monday”. It’s a little interesting because it looks like we’re doing all the correct things in setting up the calendar.</p>
+<p>Ideally what should happen now is that we use your site’s locale to set the calendar’s locale (not user’s locale). If we use “en-gb” for example, it should use Monday per <a class="inline-onebox" href="https://github.com/fullcalendar/fullcalendar/blob/v4.0.0-alpha.3/locales/en-gb.js">fullcalendar/locales/en-gb.js at v4.0.0-alpha.3 · fullcalendar/fullcalendar · GitHub</a>, though I am seeing that is not the case despite the docs saying so - <a class="inline-onebox" href="https://fullcalendar.io/docs/v4/weekNumberCalculation">weekNumberCalculation - Docs v4 | FullCalendar</a>.</p>
+<p>We can force a “Monday” by using an “ISO” setting on the calendar itself but it does not feel right.</p>
+<p>In any case stay tuned for an update. We are using a very old version and could use a refresh.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 4">❤️ 4</span><span class="engagement-pill reaction-pill" title="star struck: 1">:star_struck: 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/447830_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">satonotdead</div>
+          <div class="post_content">
+<p>Hello! I’m planning to integrate this plugin with events on Jitsi and I wonder if there is possible to display the birthdays of users as events?</p>
+<p>That should enable cool automations to engage <img alt=":slight_smile:" class="emoji" height="20" loading="lazy" src="../../../images/slight_smile.png" title=":slight_smile:" width="20"/></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/370902_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">putty</div>
+          <div class="post_content">
+<p>Have you seen the <a href="https://www.discourse.org/plugins/cakeday.html">Cakeday plugin</a>?</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/539204_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">tobiaseigen</div>
+          <div class="post_content">
+<p>It sounds to me like you are wanting an automation that creates a topic when a birthday rolls around with the event already added to the topic. That way people could be invited to join in a discussion to share pictures or whatever to celebrate a member’s birthday. And you could also schedule a birthday party using jitsi!</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/235063_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">nat</div>
+          <div class="post_content">
+<p>2 posts were merged into an existing topic: <a href="/t/bulk-invite-via-modal-only-allowing-one-user-and-not-displaying-correctly/306587/4">Bulk Invite via modal only allowing one user (and not displaying correctly)</a></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/381510_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">benji</div>
+          <div class="post_content">
+<p>Howdy, all! I’ve just fixed a small issue regarding the integration with the Right Sidebar Blocks component.</p>
+<p>Previously, a week-long event would only show the first day (even if it had passed) and no subsequent days:<br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/ld5QRjCFLfgSuM6FY0VoSjU672U.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/9/4/a/94a8953176fd98b1b5756bafc12eb14bf2501b40.png" title="Screenshot 2024-10-28 at 1.47.38 PM"><img alt="Screenshot 2024-10-28 at 1.47.38 PM" data-base62-sha1="ld5QRjCFLfgSuM6FY0VoSjU672U" height="219" src="../../../images/94a8953176fd98b1b5756bafc12eb14bf2501b40.png" width="296"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2024-10-28 at 1.47.38 PM</span><span class="informations">296×219 9.4 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div><br/>
+(Note: this was taken on the 28th, and the 15th is still hanging out)</p>
+<p>Now each day of the event from the current day forward will show up in the sidebar calendar:<br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/1ioaGWK0a5MLtVX7nayNSsisYqm.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/0/9/1/091658794af3d26515ea70beec17b418abaa4312.png" title="Screenshot 2024-10-28 at 1.36.43 PM"><img alt="Screenshot 2024-10-28 at 1.36.43 PM" data-base62-sha1="1ioaGWK0a5MLtVX7nayNSsisYqm" height="369" src="../../../images/091658794af3d26515ea70beec17b418abaa4312.png" width="283"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2024-10-28 at 1.36.43 PM</span><span class="informations">283×369 19.6 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 4">❤️ 4</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">dubwoc</div>
+          <div class="post_content">
+<p>Was it intentional to remove the “Invited Groups” field from the create event dialog? I looked through the commit history and didn’t see any mention of this desire but maybe I missed it. When I roll back a couple of weeks to commit: 54460416c2efe30f8265ed7b5aa06743f615e8b3 this functionality is restored.</p>
+<p>Example of previous behavior:<br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/oeHJGm0LuTNjjtcwSZClqcxrSEs.jpeg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/a/9/d/a9ddb9aeeee3bb800c262304852f3e6a78273d5c.jpeg" rel="noopener nofollow ugc" title="invited_groups"><img alt="invited_groups" data-base62-sha1="oeHJGm0LuTNjjtcwSZClqcxrSEs" height="446" src="../../../images/a9ddb9aeeee3bb800c262304852f3e6a78273d5c.jpeg" width="582"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">invited_groups</span><span class="informations">582×446 17.8 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>Current Behavior (commit: 588052ff0ddd6c399659f4545ef4525967a3a4e1):<br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/nHuxVG4AX7kIaoYqOjW8JE8ZPUO.jpeg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/a/6/1/a61c9b072a1b5d10e3b00e6f4f101bc43049df66.jpeg" rel="noopener nofollow ugc" title="no_invited_groups"><img alt="no_invited_groups" data-base62-sha1="nHuxVG4AX7kIaoYqOjW8JE8ZPUO" height="361" src="../../../images/a61c9b072a1b5d10e3b00e6f4f101bc43049df66.jpeg" width="591"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">no_invited_groups</span><span class="informations">591×361 14.5 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/290039_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">nathank</div>
+          <div class="post_content">
+<p>If you select “Private”, does the field reappear?</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">dubwoc</div>
+          <div class="post_content">
+<p>It does not, sorry, I should have included a screenshot with that exact state:</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/lgsuApr9Vo2aAOzQgUIKnv4qTyf.jpeg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/9/5/0/9509f71465439d4ab6d7080cf3d914a342862277.jpeg" rel="noopener nofollow ugc" title="private"><img alt="private" data-base62-sha1="lgsuApr9Vo2aAOzQgUIKnv4qTyf" height="365" src="../../../images/9509f71465439d4ab6d7080cf3d914a342862277.jpeg" width="592"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">private</span><span class="informations">592×365 14 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>You can observe the same behavior on the <a href="http://try.discourse.org">try.discourse.org</a> site.</p>
+<p>I confirmed that the commit directly after the good one I somewhat randomly picked introduces the change: b4c4e4e0bcc94b99ef8b582454e938a72389867d</p>
+<pre><code class="lang-plaintext">DEV: migrate post event to glimmer (#615)
+    
+    This commit is making two major changes:
+    
+    - Move all the post event widgets code to glimmer
+    - Implement tracked models to ensure reactivity, many paths didn't have real reactivity atm and were mostly working by luck or the fact that widgets re-render a lot
+</code></pre>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">elRicharde</div>
+          <div class="post_content">
+<p>Hi Everybody <img alt=":wave:" class="emoji" height="20" loading="lazy" src="../../../images/wave.png" title=":wave:" width="20"/></p>
+<p>we want to switch from <a href="https://meta.discourse.org/t/events-plugin/69776">eventPlugin</a> to this official plugin. Actually most of our requirements do work now completely with this plugin as well.</p>
+<p>I just saw one minor Bug:</p>
+<ul>
+<li>not going is not Counted in summary<br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/modItl9pXj9yZKFVNcxjbVCpriR.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/9/c/e/9cecbfb0003857bc72f8b19f13de2b721a2211b5.png" rel="noopener nofollow ugc" title="image"><img alt="image" data-base62-sha1="modItl9pXj9yZKFVNcxjbVCpriR" data-dominant-color="F4F3F3" height="408" src="../../../images/9cecbfb0003857bc72f8b19f13de2b721a2211b5.png" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">780×462 19.6 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></li>
+</ul>
+<p>And there is one requirement we´d love to have:</p>
+<ul>
+<li>we need to be able to force all topics in category need to be an event, in our forum we have separate calendar categories.</li>
+</ul>
+<p>If i can help with anything just let me know.</p>
+<p>Thanks for your time, cheers Richarde</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/309235_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">paulswithers</div>
+          <div class="post_content">
+<p>I’m using the calendar plugin with event colors. However, it only seems possible to set the background color to an explicit value. This means the same background color is used for dark and light mode, whereas the font color changes, resulting in some challenges for supporting accessibility.</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/tafLYOTnPdDcnPccJ3BoFlkHVZy.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/c/c/6/cc67ca57ec103390892645bdf4ee8832a2cbea54.png" rel="noopener nofollow ugc" title="The image depicts a screenshot of a computer screen with a white editing menu box partially overlaying the gray background, featuring a red box icon and text inputs for title and color. (Captioned by AI)"><img alt="The image depicts a screenshot of a computer screen with a white editing menu box partially overlaying the gray background, featuring a red box icon and text inputs for title and color. (Captioned by AI)" data-base62-sha1="tafLYOTnPdDcnPccJ3BoFlkHVZy" data-dominant-color="A9A8A8" height="500" src="../../../images/cc67ca57ec103390892645bdf4ee8832a2cbea54_2_513x500.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/c/c/6/cc67ca57ec103390892645bdf4ee8832a2cbea54_2_513x500.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/c/c/6/cc67ca57ec103390892645bdf4ee8832a2cbea54_2_769x750.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/c/c/6/cc67ca57ec103390892645bdf4ee8832a2cbea54.png 2x" width="513"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">The image depicts a screenshot of a computer screen with a white editing menu box partially overlaying the gray background, featuring a red box icon and text inputs for title and color. (Captioned by AI)</span><span class="informations">853×831 70.4 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>Looking at the source code, it appears to be managed by a JSON schema <a class="inline-onebox" href="https://github.com/discourse/discourse-calendar/blob/main/lib/discourse_calendar/site_settings/map_event_tag_colors_json_schema.rb#L5" rel="noopener nofollow ugc">discourse-calendar/lib/discourse_calendar/site_settings/map_event_tag_colors_json_schema.rb at main · discourse/discourse-calendar · GitHub</a>.</p>
+<p>Is there a way to set this to an SCSS variable defined in a color_definitions.scss, so it can use the <code>#dark-light-choose()</code> function to switch depending on mode? The editor allows switching between RGB, HSL and HEX, but HEX forces upper case and has a character limit, so can’t be used.</p>
+<p>Alternatively, would be it possible to define color as well as background color?</p>
+<p>I check to see if it added the relevant tag / category it’s using to the HTML tags, but it’s not. That would have allowed programmatic setting of the styling separate from the plugin settings.</p>
+<p>Any suggestions or feasibility of enhancements would be welcome.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/461503_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">We_the_Makers</div>
+          <div class="post_content">
+<p>Hello, is there a way to limit the amount of people  of seats for a puplic Meeting? If not is there a way to allow only specific groups to attend certain meetings? Thank you</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">omegerard</div>
+          <div class="post_content">
+<p>I’ve been using this plugin on a production (docker) site. No problem. Works as described. And it would solve one of the main problems of my client if the “event” component had one more feature.</p>
+<p>Missing feature: put members who say “Yes” to the invitation in a dedicated group.</p>
+<p>Intended solution:</p>
+<ul>
+<li>use the (event) custom field to enter the name of the dedicated group</li>
+<li>write a plugin that add everyone who clicks  “Yes” in that group</li>
+</ul>
+<p>My problem: I cannot start developing a plugin as the Calendar and Event plugin does not seem to work in my (non-docker) development server. Though the plugin appears to compile well, saving a topic takes a long time and end up with an internal error. But the topic itself seems to be stored in the database. If I click on it, I get this error message: “Sorry, we couldn’t load that topic”.</p>
+<p>Upon removing the Calendar plugin, the topics and posts can be accessed without any problem.</p>
+<p>Has anybody experienced a similar behaviour? How I can proceed best to get around this hurdle?</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/523140_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Aurora</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="482" data-topic="97376" data-username="We_the_Makers">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" loading="lazy" src="../../../images/461503_2.png" width="24"/> We the Makers:</div>
+<blockquote>
+<p>Hello, is there a way to limit the amount of people of seats for a puplic Meeting?</p>
+</blockquote>
+</aside>
+<p>We would need that too!</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/523140_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Aurora</div>
+          <div class="post_content">
+<p>I miss the function for repetitive events which in the rhythm “every 1. Monday of the month” take place.</p>
+<p>What can I do? Would there be another plugin that works better?</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 6">❤️ 6</span><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/459453_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">xErrorAmelie</div>
+          <div class="post_content">
+<p>Is there any way to manually force “Monday”, as the first day of the week, on our instance, for now?</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 4">❤️ 4</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/481386_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">DrekkSama</div>
+          <div class="post_content">
+<p>Does anyone know of a way for URL of the event to only show up when they click “going”? especially for Private events.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/370902_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">putty</div>
+          <div class="post_content">
+<p>Have you considered setting the event permissions to the intended groups?</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/aUQUsAOpnJ0HOtcX1EggcMmQ0Qy.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/4/c/8/4c82fad3a6a5e42609a78396a567b4cfa587f97a.png" rel="noopener nofollow ugc" title="CleanShot 2025-01-30 at 09.33.52"><img alt="CleanShot 2025-01-30 at 09.33.52" data-base62-sha1="aUQUsAOpnJ0HOtcX1EggcMmQ0Qy" height="312" src="../../../images/4c82fad3a6a5e42609a78396a567b4cfa587f97a.png" width="571"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">CleanShot 2025-01-30 at 09.33.52</span><span class="informations">571×312 8.42 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/480674_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">tvavrda</div>
+          <div class="post_content">
+<aside class="quote no-group" data-full="true" data-post="487" data-topic="97376" data-username="xErrorAmelie">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/459453_2.png" width="24"/> xErrorAmelie:</div>
+<blockquote>
+<p>Is there any way to manually force “Monday”, as the first day of the week, on our instance, for now?</p>
+</blockquote>
+</aside>
+<p>No, but <a href="https://meta.discourse.org/t/choose-first-day-of-the-week-on-upcoming-events-calendar/307785">you can vote for it</a>.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/523140_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Aurora</div>
+          <div class="post_content">
+<p>I have a problem. With recurring events, participants remain listed even after the event has ended. This makes it unclear whether they signed up for the past event or the next one.</p>
+<p>It’s possible to remove participants manually, but only if you have moderation rights.</p>
+<p>Is there a solution for this?</p>
+<p>The other problem: In the calendar, for recurring events, only the next upcoming event is displayed.</p>
+<p>This is also inconvenient—if I want to check which events are scheduled in May, I can’t see them.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/290039_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">nathank</div>
+          <div class="post_content">
+<p>Have you considered using <a class="inline-onebox" href="https://meta.discourse.org/t/events-plugin/69776">Events Plugin 📆</a> instead? It handles that particular issue nicely!</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/383632_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">renato</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="491" data-topic="97376" data-username="Aurora">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/523140_2.png" width="24"/> Aurora:</div>
+<blockquote>
+<p>The other problem: In the calendar, for recurring events, only the next upcoming event is displayed.</p>
+<p>This is also inconvenient—if I want to check which events are scheduled in May, I can’t see them.</p>
+</blockquote>
+</aside>
+<p>What Calendar are you seeing this behavior: the one within a category or the <code>/upcoming-events</code> calendar?</p>
+<p>Is your plugin up-to-date? We had a fix on early January for the <code>/upcoming-events</code> calendar.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/309235_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">paulswithers</div>
+          <div class="post_content">
+<p>I’ve enabled a calendar in a category. When I filter the category on a tag, the topics listed in the category are filtered. But the topics showing in the calendar for the category are not. I can’t see anything in the settings but maybe I’ve missed something. Or is this functionality not available?</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/181916_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Jim_Starkweather</div>
+          <div class="post_content">
+<p>Not sure if this is connected to the plugin or an issue with the greater Discourse translations at-large, but a user reported this missing variable for the Dutch translation in the events area.</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/y7ULZw09WA7JIOuTHSNgxLAFsX0.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/e/f/2/ef2efb693bd1b1aaebd4eb3805fff81d28387e12.png" rel="noopener nofollow ugc" title='The image shows a text-based GUI with a list of videos, each with a title, some debug information, and an "Endigt" link labeled as missing. (Captioned by AI)'><img alt='The image shows a text-based GUI with a list of videos, each with a title, some debug information, and an "Endigt" link labeled as missing. (Captioned by AI)' data-base62-sha1="y7ULZw09WA7JIOuTHSNgxLAFsX0" height="477" src="../../../images/ef2efb693bd1b1aaebd4eb3805fff81d28387e12.png" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">The image shows a text-based GUI with a list of videos, each with a title, some debug information, and an "Endigt" link labeled as missing. (Captioned by AI)</span><span class="informations">690×477 65.6 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/493345_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Milenski</div>
+          <div class="post_content">
+<p>This is a plugin I definitely needed! Thanks for the good work <img alt=":slight_smile:" class="emoji" height="20" loading="lazy" src="../../../images/slight_smile.png" title=":slight_smile:" width="20"/></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/86627_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">HAWK</div>
+          <div class="post_content">
+<p>A post was split to a new topic: <a href="/t/calendar-feature/358466">Calendar feature</a></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/539204_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">tobiaseigen</div>
+          <div class="post_content">
+<p>A post was split to a new topic: <a href="/t/creating-events-doesnt-respect-users-12-hour-time-locale/359845">Creating events doesn’t respect user’s 12 hour time locale</a></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/389881_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">bitmage</div>
+          <div class="post_content">
+<p>As an FYI to everyone using this plugin: If you want to give all logged in members access to this feature DO NOT use the <code>everyone</code> group, use <code>trust_level_0</code>.  It was non obvious to me until I read that <a href="https://meta.discourse.org/t/is-there-a-way-to-message-all-users-or-selected-groups/43264/3">the <code>everyone</code> group actually includes even non-logged in users</a> and that it’s generally not appropriate to attach permissions to this.  (In practice, associating the calendar permissions with <code>everyone</code> does nothing at all - new users will be unable to access the feature.)</p>
+<p>The plugin might do a better job of 1) eliminating <code>everyone</code> from the selection, 2) having some note to the admin to use <code>trust_level_0</code> if that is their intention.</p>
+<p>Or Discourse could change their APIs to remove the <code>everyone</code> selection to make it more natural for plugin developers to offer the right options.</p>
+<p>Cheers and thanks for the plugin.  Very useful in my community!</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554653_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Moin</div>
+          <div class="post_content">
+<p>It’s a mistake in the Dutch translation. In this case, the placeholder %{duration} was translated to %{duur}.<br/>
+<a class="inline-onebox" href="https://discourse.crowdin.com/editor/50/434/en-nl?view=comfortable#55668">Crowdin</a><br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/8sjoc8R2ydFFTyqjaLAMl8jqJJu.jpeg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/3/b/4/3b44b6d5f41c9f619fee49f19e0186fc0b0b7758.jpeg" title="Screenshot_20250426_004322_Chrome"><img alt="Screenshot_20250426_004322_Chrome" data-base62-sha1="8sjoc8R2ydFFTyqjaLAMl8jqJJu" data-dominant-color="FAFBFA" height="223" src="../../../images/3b44b6d5f41c9f619fee49f19e0186fc0b0b7758_2_345x223.jpeg" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/3/b/4/3b44b6d5f41c9f619fee49f19e0186fc0b0b7758_2_345x223.jpeg, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/3/b/4/3b44b6d5f41c9f619fee49f19e0186fc0b0b7758_2_517x334.jpeg 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/3/b/4/3b44b6d5f41c9f619fee49f19e0186fc0b0b7758_2_690x446.jpeg 2x" width="345"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot_20250426_004322_Chrome</span><span class="informations">707×459 52.3 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>It seems this has also happened on some other strings:<br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/3g186RT5ti6V0VJP3SaNuPhZYZ8.jpeg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/1/6/d/16d60ff628afe65b0846ee20018cc2528c6fd886.jpeg" title="Screenshot_20250426_004747_Chrome"><img alt="Screenshot_20250426_004747_Chrome" data-base62-sha1="3g186RT5ti6V0VJP3SaNuPhZYZ8" height="166" src="../../../images/16d60ff628afe65b0846ee20018cc2528c6fd886.jpeg" width="250"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot_20250426_004747_Chrome</span><span class="informations">501×332 42.9 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div><br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/iFUdYwSHeDOwWqJQQpTTNNEgojL.jpeg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/8/2/e/82e3d8273c93af891edc15c890107082334782c9.jpeg" title='The image is a screenshot showing a item marked with a green checkmark and two language options for the feature "%{group} availability". (Captioned by AI)'><img alt='The image is a screenshot showing a item marked with a green checkmark and two language options for the feature "%{group} availability". (Captioned by AI)' data-base62-sha1="iFUdYwSHeDOwWqJQQpTTNNEgojL" height="59" src="../../../images/82e3d8273c93af891edc15c890107082334782c9.jpeg" width="248"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">The image is a screenshot showing a item marked with a green checkmark and two language options for the feature "%{group} availability". (Captioned by AI)</span><span class="informations">497×119 16 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>I have tried to fix the placeholders, but because the old ones have already been approved, a new translation no longer overwrites the existing one. Someone with permission to approve the new translations is needed to get the changes to GitHub.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/290039_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">nathank</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="501" data-topic="97376" data-username="bitmage">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/389881_2.png" width="24"/> bitmage:</div>
+<blockquote>
+<p>As an FYI to everyone using this plugin: If you want to give all logged in members access to this feature DO NOT use the <code>everyone</code> group, use <code>trust_level_0</code>. It was non obvious to me until I read that <a href="https://meta.discourse.org/t/is-there-a-way-to-message-all-users-or-selected-groups/43264/3">the <code>everyone</code> group actually includes even non-logged in users</a> and that it’s generally not appropriate to attach permissions to this. (In practice, associating the calendar permissions with <code>everyone</code> does nothing at all - new users will be unable to access the feature.)</p>
+<p>The plugin might do a better job of 1) eliminating <code>everyone</code> from the selection, 2) having some note to the admin to use <code>trust_level_0</code> if that is their intention.</p>
+</blockquote>
+</aside>
+<p>This is an old bug:</p>
+<aside class="quote quote-modified" data-post="1" data-topic="279434">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/339122_2.png" width="24"/>
+<a href="https://meta.discourse.org/t/selecting-the-everyone-group-in-the-allowed-on-groups-setting-does-not-enable-event-creation/279434">Selecting the "everyone" group in the allowed_on_groups setting does not enable event creation</a> <a class="badge-category__wrapper" href="/c/bug/1"><span class="badge-category" data-category-id="1" data-drop-close="true" style="--category-badge-color: #ffef00; --category-badge-text-color: #000000;" title="A bug report means something is broken, preventing normal/typical use of Discourse. Do be sure to search prior to submitting bugs. Include repro steps, and only describe one bug per topic please."><span class="badge-category__name">Bug</span></span></a>
+</div>
+<blockquote>
+    The discourse post event allowed on groups setting drop down gives the “everyone” group as one of its options. When selected, the expectation is that everyone will be allowed to create events, but this is not the case. To allow any user on the forum to create an event, the trust_level_0 group would need to be selected. 
+ <a class="lightbox" data-download-href="/uploads/short-url/8YX01PBqPtzer3pmWiKkedhCd8t.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/3/e/f/3ef53a37b9c0812afdd3a4df331a99e519e8bd01.png" title="image">[image]</a> 
+I think that similar issues with the “everyone” group being included in settings dropdown menues has come up in the past. Probably the setting is just pulling in all gr…
+  </blockquote>
+</aside>
+
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/456727_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Nick_Stager</div>
+          <div class="post_content">
+<p>This appears to still be an issue, did you ever figure out a work around besides not setting an end date?</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/381510_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">benji</div>
+          <div class="post_content">
+<p>Hey Nick!</p>
+<p>I’m not sure what specifically you’re referring to. Happy to help if you’re able to share any other details.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/456727_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Nick_Stager</div>
+          <div class="post_content">
+<p>Hi Benji, I replied to your post which is what I was referring to, when I make an event that occurs over successive days (in this case an author AMA) the upcoming calendar sidebar view shows an event for each day (reposting your screenshot):</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/zm2A2F79zoAhi3DTXWBT0OMPzOz.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/f/7/c/f7c9efa56a9993cb6aa7cb541e3aafb1077a5f73.png" rel="noopener nofollow ugc" title="The image is a list of upcoming events with recurring &quot;Hey let's get tea&quot; meetings from October 28 to October 31, followed by a one-day event on Sunday, November 24, and an option to view all events. (Captioned by AI)"><img alt="The image is a list of upcoming events with recurring &quot;Hey let's get tea&quot; meetings from October 28 to October 31, followed by a one-day event on Sunday, November 24, and an option to view all events. (Captioned by AI)" data-base62-sha1="zm2A2F79zoAhi3DTXWBT0OMPzOz" height="369" src="../../../images/f7c9efa56a9993cb6aa7cb541e3aafb1077a5f73.png" width="283"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">The image is a list of upcoming events with recurring "Hey let's get tea" meetings from October 28 to October 31, followed by a one-day event on Sunday, November 24, and an option to view all events. (Captioned by AI)</span><span class="informations">283×369 19.7 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>In your screenshot your ‘hey let’s get tea’ event is duplicated four times, this happened to us as well and our solution was just to not have the calendar event include the start and end date, only the start date, but that’s not ideal.</p>
+<p>Did you ever figure out a solution for this so that you can keep an event with different start and end dates without the event being duplicated on ‘upcoming events?’</p>
+<p>It looks as though you thought the non-duplication was a bug, I guess it would be nice to have the option to have it be duplicative or not.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/381510_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">benji</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="506" data-topic="97376" data-username="Nick_Stager">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/456727_2.png" width="24"/> Nick_Stager:</div>
+<blockquote>
+<p>It looks as though you thought the non-duplication was a bug, I guess it would be nice to have the option to have it be duplicative or not.</p>
+</blockquote>
+</aside>
+<p>Ah, I see! Yeah, the non-duplication was a bug, but I see your point. I’ll pass this along to the team for you and see what they think. Thanks for the update!</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 4">❤️ 4</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">pbstgbr</div>
+          <div class="post_content">
+<p>same here!! It would be great if such function would exist!! additionally, a waiting list function would be also nice to have <img alt=":slight_smile:" class="emoji" height="20" loading="lazy" src="../../../images/slight_smile.png" title=":slight_smile:" width="20"/> thank you very much for this plugin!!</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/539204_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">tobiaseigen</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="506" data-topic="97376" data-username="Nick_Stager">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/456727_2.png" width="24"/> Nick_Stager:</div>
+<blockquote>
+<p>In your screenshot your ‘hey let’s get tea’ event is duplicated four times, this happened to us as well and our solution was just to not have the calendar event include the start and end date, only the start date, but that’s not ideal.</p>
+<p>Did you ever figure out a solution for this so that you can keep an event with different start and end dates without the event being duplicated on ‘upcoming events?’</p>
+</blockquote>
+</aside>
+<p>Hi Nick! The behavior you are seeing is intended, but I can see how it appears repetitive.</p>
+<p>Could you start a new topic in <a class="hashtag-cooked" data-id="2" data-slug="feature" data-style-type="square" data-type="category" href="/c/feature/2"><span class="hashtag-icon-placeholder"><svg class="fa d-icon d-icon-square-full svg-icon svg-node"><use href="#square-full"></use></svg></span><span>Feature</span></a> to lay out what you are looking to see changed in the way events with an end date are displayed? Ideally with a mockup and/or examples from other event platforms.</p>
+<p>We can then talk about it there and clean up the replies here.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="chefs kiss: 1">:chefs_kiss: 1</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/549022_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">gilles</div>
+          <div class="post_content">
+<p>Hello community, I am looking for a solution to see the participants who are attending the upcoming events on the events page. Thank you.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/539204_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">tobiaseigen</div>
+          <div class="post_content">
+<aside class="quote no-group quote-post-not-found" data-post="511" data-topic="97376" data-username="gilles">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/549022_2.png" width="24"/> gilles:</div>
+<blockquote>
+<p>Hello, I saw this</p>
+</blockquote>
+</aside>
+<p>The content in the red box in your pic shows the local time zones of all members in the specified group, using markdown like this in your post. See the settings in the first post above.</p>
+<pre><code>[timezones group="team"]timezones[/timezones]
+</code></pre>
+<aside class="quote no-group" data-post="512" data-topic="97376" data-username="gilles">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/549022_2.png" width="24"/> gilles:</div>
+<blockquote>
+<p>I am looking for a solution to see the participants who are attending the upcoming events on the events page.</p>
+</blockquote>
+</aside>
+<p>Can you share an example of what you are wanting this to look like? Each event does have a participants list which you can see on the events page, in a popup on the event menu, and export to csv.</p>
+<p>It might help us to help you if you can tell us some more about your site and what you are trying to do with this plugin.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/549022_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">gilles</div>
+          <div class="post_content">
+<p>Thanks Tobiaseigen<br/>
+I will try to explain. <img alt=":sweat_smile:" class="emoji" height="20" loading="lazy" src="../../../images/sweat_smile.png" title=":sweat_smile:" width="20"/><br/>
+I manage a board game association. I use events as game tables.<br/>
+Players participate in events (game tables) and I wanted to display the events with the participants to see the available spots for each event directly, to avoid having to look through each event. And I wanted to display this in upcoming events.<br/>
+I don’t know if I am very clear. <img alt=":sweat_smile:" class="emoji" height="20" loading="lazy" src="../../../images/sweat_smile.png" title=":sweat_smile:" width="20"/></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/501931_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">mpaulhac</div>
+          <div class="post_content">
+<p>Hi all! I’ve installed the Right Sidebar Blocks plugin to display upcoming events in the right  sidebar using the <code>upcoming-events-list</code> block. However, after creating an event, I keep getting an <strong>“Invalid date”</strong> error in the upcoming events list.</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/ic5OEDORI2kqXk4ojCErJK9rvaR.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/7/f/8/7f851b2270be3e53a8f6142d98661033764494d5.png" rel="noopener nofollow ugc" title="Capture d’écran 2025-06-17 à 12.14.30"><img alt="Capture d’écran 2025-06-17 à 12.14.30" data-base62-sha1="ic5OEDORI2kqXk4ojCErJK9rvaR" height="330" src="../../../images/7f851b2270be3e53a8f6142d98661033764494d5.png" width="389"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Capture d’écran 2025-06-17 à 12.14.30</span><span class="informations">389×330 6.57 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>Has anyone encountered this before? Any idea what I might be doing wrong?</p>
+<p>Thanks a lot in advance for your feedback and support!</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/445877_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Andrew_Rowe</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="515" data-topic="97376" data-username="mpaulhac">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/501931_2.png" width="24"/> mpaulhac:</div>
+<blockquote>
+<p>Has anyone encountered this before?</p>
+</blockquote>
+</aside>
+<p>no, and I have right side bar with upcoming events and it works</p>
+<aside class="quote no-group" data-post="515" data-topic="97376" data-username="mpaulhac">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/501931_2.png" width="24"/> mpaulhac:</div>
+<blockquote>
+<p>I keep getting an <strong>“Invalid date”</strong> error in the upcoming events list.</p>
+</blockquote>
+</aside>
+<p>is the event set to a proper time? Maybe show us the event</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/501931_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">mpaulhac</div>
+          <div class="post_content">
+<p>Hi Andrew, thanks for your answer! Here are screenshots of the event:</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/yjYhBR8cKqCZvLmOyZZH6zFHWy3.jpeg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/f/0/8/f08be13bf12c4efe3c2f0ec84645dddf53af17ff.jpeg" rel="noopener nofollow ugc" title="Capture d’écran 2025-06-18 à 10.40.44"><img alt="Capture d’écran 2025-06-18 à 10.40.44" data-base62-sha1="yjYhBR8cKqCZvLmOyZZH6zFHWy3" data-dominant-color="ECEEEF" height="347" src="../../../images/f08be13bf12c4efe3c2f0ec84645dddf53af17ff_2_690x347.jpeg" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/f/0/8/f08be13bf12c4efe3c2f0ec84645dddf53af17ff_2_690x347.jpeg, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/f/0/8/f08be13bf12c4efe3c2f0ec84645dddf53af17ff_2_1035x520.jpeg 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/f/0/8/f08be13bf12c4efe3c2f0ec84645dddf53af17ff_2_1380x694.jpeg 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Capture d’écran 2025-06-18 à 10.40.44</span><span class="informations">1920×966 160 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/vSKUrJ7X1TSKCtfhdkWNtgiUf9P.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/d/f/7/df73f4bab9a29bd40bba7975fc1502cf8ffdb5bd.png" rel="noopener nofollow ugc" title="Capture d’écran 2025-06-18 à 10.41.06"><img alt="Capture d’écran 2025-06-18 à 10.41.06" data-base62-sha1="vSKUrJ7X1TSKCtfhdkWNtgiUf9P" data-dominant-color="E8ECEF" height="500" src="../../../images/df73f4bab9a29bd40bba7975fc1502cf8ffdb5bd_2_544x500.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/d/f/7/df73f4bab9a29bd40bba7975fc1502cf8ffdb5bd_2_544x500.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/d/f/7/df73f4bab9a29bd40bba7975fc1502cf8ffdb5bd_2_816x750.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/d/f/7/df73f4bab9a29bd40bba7975fc1502cf8ffdb5bd_2_1088x1000.png 2x" width="544"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Capture d’écran 2025-06-18 à 10.41.06</span><span class="informations">1608×1476 352 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/445877_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Andrew_Rowe</div>
+          <div class="post_content">
+<p>huh… your event looks good to me and the date looks good in the upper left corner of your second screen shot so its working, just not on your right side bar<br/>
+here’s mine<br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/jMorIvUSfRX8P0NWoYfVN9NR6y0.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/8/a/a/8aa1c0ffe3c0a8902b5b2814737dd29b935e745c.png" title="image"><img alt="image" data-base62-sha1="jMorIvUSfRX8P0NWoYfVN9NR6y0" height="194" src="../../../images/8aa1c0ffe3c0a8902b5b2814737dd29b935e745c.png" width="216"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">289×259 23.4 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/501931_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">mpaulhac</div>
+          <div class="post_content">
+<p>I might have misconfigured the right sidebar plugin for the upcoming events list, could you perhaps share what settings you used?</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/445877_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Andrew_Rowe</div>
+          <div class="post_content">
+<p>here is the editor with the upcoming events block (it is the first one in my lists)<br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/3WRw4fGwIlmYTTSIiChZygm11N8.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/1/b/a/1badebf4d3109a41a6161b4fe33d1117f556f442.png" title="image"><img alt="image" data-base62-sha1="3WRw4fGwIlmYTTSIiChZygm11N8" data-dominant-color="282828" height="500" src="../../../images/1badebf4d3109a41a6161b4fe33d1117f556f442.png" width="547"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">638×583 6.53 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div><br/>
+and here is themes and components view<br/>
+Those two are the only settings I’ve changed. The first one launches the editor shown above. The second one is just what views the side bar shows in<br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/9fEUKbURvJTx4fRrPo6LM8GQyIW.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/4/0/d/40d8bcb3c448dd2c84fd767f47eb067f9d0bb3ea.png" title="image"><img alt="image" data-base62-sha1="9fEUKbURvJTx4fRrPo6LM8GQyIW" data-dominant-color="272726" height="500" src="../../../images/40d8bcb3c448dd2c84fd767f47eb067f9d0bb3ea.png" width="650"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">781×600 14.2 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/501931_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">mpaulhac</div>
+          <div class="post_content">
+<p>I tried changing my settings to match yours, but it’s still not working, I have no idea why! I think I’ll give up on this for now <img alt=":sweat_smile:" class="emoji" height="20" loading="lazy" src="../../../images/sweat_smile.png" title=":sweat_smile:" width="20"/><br/>
+Thanks so much anyway for your time and support, I really appreciate it!</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554653_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Moin</div>
+          <div class="post_content">
+<p>Hey <span class="mention">@mpaulhac</span></p>
+<p>It seems your forum is hosted by Discourse. Before you give up: have you tried contacting their support? Unlike support provided by the community, they can see your settings and can probably more easily find out what’s wrong.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/501931_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">mpaulhac</div>
+          <div class="post_content">
+<p>Hi <span class="mention">@Moin</span>! Thanks for the suggestion! We haven’t contacted their support yet, but that’s a great idea. We’ll reach out to them directly to see if they can help identify the issue more efficiently. Really appreciate your help!</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/492791_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Neil_Evans2</div>
+          <div class="post_content">
+<p>I’m seeing this too - but only for particular dates. If I move the event to another week, it works fine! It only seems to be a problem in Safari - it’s fine in Chrome, Firefox and Edge</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/501931_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">mpaulhac</div>
+          <div class="post_content">
+<p>Hi Niels! I’ve just checked and it works fine on Google Chrome, same as you. The problem is indeed with Safari <img alt=":thinking:" class="emoji" height="20" loading="lazy" src="../../../images/thinking.png" title=":thinking:" width="20"/></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Thorsten</div>
+          <div class="post_content">
+<p>We updated our forum to Discourse version 3.5.0.beta6 a few days ago. After the update the date of all events is no longer shown correctly in the posts.</p>
+<p>Here is an example:</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/p3Dsnpk31iY050y66vnev0DRcAo.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/a/f/9/af9f94b1f66023ae5ce2a0dfbdeb41fad8c9f688.png" rel="noopener nofollow ugc" title="image"><img alt="image" data-base62-sha1="p3Dsnpk31iY050y66vnev0DRcAo" data-dominant-color="F4F3F3" height="241" src="../../../images/af9f94b1f66023ae5ce2a0dfbdeb41fad8c9f688_2_690x241.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/a/f/9/af9f94b1f66023ae5ce2a0dfbdeb41fad8c9f688_2_690x241.png, https://d11a6trkgmumsb.cloudfront.net/original/4X/a/f/9/af9f94b1f66023ae5ce2a0dfbdeb41fad8c9f688.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/a/f/9/af9f94b1f66023ae5ce2a0dfbdeb41fad8c9f688.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">869×304 35.7 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>The event was created before the update and looks like this:</p>
+<pre><code class="lang-plaintext">[event start="2025-06-21 14:00" status="public" timezone="Europe/Berlin" end="2025-06-21 16:00" url="https://swisstesladay.ch/"allowedGroups="trust_level_0"]
+[/event]
+</code></pre>
+<p>The “format” parameter is not part of the event but is shown in the redered post.</p>
+<p>I saw that there are a few new commits for the calendar plugin. Do you think updating the plugin to the latest version would solve the problem?</p>
+<p>Thank you in advance for the support.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554653_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Moin</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="526" data-topic="97376" data-username="Thorsten">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/48.png" width="24"/> Thorsten:</div>
+<blockquote>
+<p>I saw that there are a few new commits for the calendar plugin. Do you think updating the plugin to the latest version would solve the problem?</p>
+</blockquote>
+</aside>
+<p>I think so. There was a fix within the last week</p><aside class="quote quote-modified" data-post="8" data-topic="371517">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/60297_2.png" width="24"/>
+<a href="https://meta.discourse.org/t/calendar-event-seems-broken/371517/8">Calendar event seems broken?</a> <a class="badge-category__wrapper" href="/c/bug/1"><span class="badge-category" data-category-id="1" data-drop-close="true" style="--category-badge-color: #ffef00; --category-badge-text-color: #000000;" title="A bug report means something is broken, preventing normal/typical use of Discourse. Do be sure to search prior to submitting bugs. Include repro steps, and only describe one bug per topic please."><span class="badge-category__name">Bug</span></span></a>
+</div>
+<blockquote>
+    We haven’t been able to repro this locally, but clearly this is related to german and typographic quotes. 
+Im attempting this fix: 
+
+
+Please let me know if it improves the situation for you.
+  </blockquote>
+</aside>
+
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Thorsten</div>
+          <div class="post_content">
+<p>Thank you for the reply and the link to the other thread.</p>
+<p>We will update to the latest version of the calendar plugin in the next days.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">opcourdis</div>
+          <div class="post_content">
+<p>Thanks a lot for the 06/2025 update bringing many new features. This plugin is really a base stone to build a community, I think any forum system should have such a feature but most of them don’t.<br/>
+Discourse developers are great at understanding fundamentals needs for communities ! You guys rock !</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span><span class="engagement-pill reaction-pill" title="hugs: 1">🤗 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/539204_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">tobiaseigen</div>
+          <div class="post_content">
+<p><img alt=":partying_face:" class="emoji" height="20" loading="lazy" src="../../../images/partying_face.png" title=":partying_face:" width="20"/> This plugin is now bundled with Discourse core as part of <a class="inline-onebox" href="https://meta.discourse.org/t/bundling-more-popular-plugins-with-discourse-core/373574">Bundling more popular plugins with Discourse core</a>. If you are self-hosting and use the plugin, you need to remove it from your <code>app.yml</code> before your next upgrade.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/523140_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Aurora</div>
+          <div class="post_content">
+<p>We really need the ability to <strong>limit the number of participants</strong> for events, as many of our events have <strong>limited capacity</strong>.</p>
+<p>Currently, the event system does not allow us to:</p>
+<ul>
+<li>set a maximum number of participants,</li>
+<li>see <strong>who signed up first</strong> (no registration timestamps),</li>
+<li>manage a <strong>waitlist</strong> or notify people when a spot opens up.</li>
+</ul>
+<p>We would find the following features very helpful:</p>
+<ol>
+<li>A participant limit (cap) that prevents more users from signing up once full.</li>
+<li>A <strong>waitlist</strong> for those who still want to attend after the event is full.</li>
+<li><strong>Automatic notifications</strong> when a spot becomes available.</li>
+<li>Optional <strong>timestamps</strong> to see the order of sign-ups (useful for fair prioritization).</li>
+</ol>
+<p>This would be incredibly useful for communities running in-person or capacity-limited events.</p>
+<p><strong>Is anything like this already planned or in development?</strong><br/>
+Or are there any known workarounds for this use case?</p>
+<p>Thanks so much in advance!</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 4">❤️ 4</span><span class="engagement-pill reaction-pill" title="exploding head: 1">:exploding_head: 1</span><span class="engagement-pill reaction-pill" title="eyes: 1">👀 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/522255_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Ethsim2</div>
+          <div class="post_content">
+<p>Thanks Aurora — really excited to hear that native calendar work is active again!</p>
+<p>We’d also like to surface one additional high-impact request that’s come up in a number of community discussions: iCal feed sync.</p>
+<p>This was broken out into its own dedicated topic here:</p><aside class="quote quote-modified" data-post="1" data-topic="376245">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/522255_2.png" width="24"/>
+<div class="quote-title__text-content">
+<a href="https://meta.discourse.org/t/support-ical-feed-sync-in-discourse-calendar-plugin-import-from-ics-urls/376245"><img alt="date" class="emoji" height="20" src="../../../images/date.png" title="date" width="20"/> Support iCal Feed Sync in Discourse Calendar Plugin (Import from .ics URLs)</a> <a class="badge-category__wrapper" href="/c/feature/2"><span class="badge-category --style-square" data-category-id="2" data-drop-close="true" style="--category-badge-color: #0E76BD; --category-badge-text-color: #FFFFFF;" title="Discussion about existing Discourse features, how they can be improved or enhanced, and how proposed new features could work."><span class="badge-category__name">Feature</span></span></a>
+</div>
+</div>
+<blockquote>
+    i have successfully rebuild my Discourse instance🥲 
+
+Discourse’s official discourse-calendar plugin already supports .ics export, which is extremely useful for sharing Discourse events externally. However, many communities — particularly in education, government, or enterprise — rely on external iCal feeds to publish event information (e.g. from Moodle, Office365, Google Calendar, or institutional CMS platforms). 
+At present, there is no built-in way to import or sync from .ics sources. This lim…
+  </blockquote>
+</aside>
+<p>The ability to subscribe to external .ics feeds (such as school timetables, civic calendars, or organizational events) and have them reflected in a Discourse topic calendar would make this feature vastly more useful for many real-world deployments. Without it, we’re forced to manually copy events over, which is error-prone and hard to maintain.</p>
+<p>We’d really appreciate any comment from the Discourse team about whether parts of that proposal — like one-way iCal sync, feed refresh interval settings, or optional event tagging — are in scope for the upcoming implementation.</p>
+<p>Either way, thanks again for breathing new life into Discourse Calendar — we’re looking forward to what’s ahead!</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span><span class="engagement-pill reaction-pill" title="100: 2">:100: 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">opcourdis</div>
+          <div class="post_content">
+<p>if you want to show the create event button from the composer directly like below , use the code below in your theme’s header. admin&gt;appearance&gt;theme&gt;edit&gt;edit code&gt;head(make sure it is placed between tags)</p>
+<p>Tested on discourse 3.5.0.beta9-dev on desktop in firefox</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/mZs5CkCIr4lP4DDin71lXHJldkk.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/a/1/2/a1222c9809ca681aae3119add4061bda8cd04b28.png" rel="noopener nofollow ugc" title="image"><img alt="image" data-base62-sha1="mZs5CkCIr4lP4DDin71lXHJldkk" data-dominant-color="F6F7F7" height="311" src="../../../images/a1222c9809ca681aae3119add4061bda8cd04b28_2_689x311.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/a/1/2/a1222c9809ca681aae3119add4061bda8cd04b28_2_689x311.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/a/1/2/a1222c9809ca681aae3119add4061bda8cd04b28_2_1033x466.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/a/1/2/a1222c9809ca681aae3119add4061bda8cd04b28.png 2x" width="689"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1374×620 52.4 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<pre data-code-wrap="javascript"><code class="lang-javascript"> &lt;!-- Custom Create Event Button (Icon-based, Language-proof) --&gt;
+&lt;script&gt;
+(()=&gt;{const e=".d-editor-button-bar",t=".btn.no-text.fk-d-menu__trigger.toolbar-menu__options-trigger.toolbar__button.options.toolbar-popup-menu-options",n=".fk-d-menu__inner-content",o=".d-modal.fk-d-menu-modal",c=e=&gt;{const t=e.querySelector('svg use[href="#calendar-day"]');return t?t.closest("button"):null},r=(e,t,n=4e3)=&gt;new Promise((o,c)=&gt;{const r=t(e);if(r)return o(r);const l=new MutationObserver(()=&gt;{const n=t(e);n&amp;&amp;(l.disconnect(),o(n))});l.observe(e,{childList:!0,subtree:!0}),setTimeout(()=&gt;{l.disconnect(),c()},n)}),l=(e=4e3)=&gt;{const t=new MutationObserver(()=&gt;{document.querySelector(o)&amp;&amp;t.disconnect()});t.observe(document.body,{childList:!0,subtree:!0}),setTimeout(()=&gt;t.disconnect(),e)},s=e=&gt;{if(e.querySelector(".custom-create-event-btn"))return;const o=document.createElement("button");o.className="btn no-text btn-icon toolbar__button link custom-create-event-btn",o.title="Create event",o.innerHTML='&lt;svg class="fa d-icon d-icon-calendar-day svg-icon"&gt;&lt;use href="#calendar-day"&gt;&lt;/use&gt;&lt;/svg&gt;',e.appendChild(o),o.addEventListener("click",async()=&gt;{const e=document.querySelector(t);if(!e)return;e.click();let o=document.querySelector(n);o||(await new Promise((e,t)=&gt;{const c=new MutationObserver(()=&gt;{(o=document.querySelector(n))&amp;&amp;(c.disconnect(),e())});c.observe(document.body,{childList:!0,subtree:!0}),setTimeout(()=&gt;{c.disconnect(),t()},2e3)}));try{(await r(o,c)).click(),l()}catch{}})},u=new MutationObserver(()=&gt;{const t=document.querySelector(e);t&amp;&amp;s(t)});u.observe(document.body,{childList:!0,subtree:!0});const d=document.querySelector(e);d&amp;&amp;s(d)})();
+&lt;/script&gt;
+
+</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/549022_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">gilles</div>
+          <div class="post_content">
+<p>I tried the script, the event creation button is created correctly, but when I click on it, I get the same contextual menu as the plus button. I may have made a mistake.<br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/2nP3xZHiAxuQ4KSv4suWyn7Lvn5.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/1/0/b/10b5c26794f49ac26eedced29ff74cf91c0c5dab.png" title="image"><img alt="image" data-base62-sha1="2nP3xZHiAxuQ4KSv4suWyn7Lvn5" data-dominant-color="2A2D2E" height="386" src="../../../images/10b5c26794f49ac26eedced29ff74cf91c0c5dab_2_690x386.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/1/0/b/10b5c26794f49ac26eedced29ff74cf91c0c5dab_2_690x386.png, https://d11a6trkgmumsb.cloudfront.net/original/4X/1/0/b/10b5c26794f49ac26eedced29ff74cf91c0c5dab.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/1/0/b/10b5c26794f49ac26eedced29ff74cf91c0c5dab.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">834×467 65.2 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="eyes: 1">👀 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/523140_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Aurora</div>
+          <div class="post_content">
+<p>After the update it has improved, it appears at least only “Create event”</p>
+<p>Screenshot is german, sorry.</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/zf0Nu4fg2XA05A7Zdnc0D4tWd3D.jpeg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/f/6/f/f6fe89298324f98833f413aceb09078bf0fb6d55.jpeg" rel="noopener nofollow ugc" title="IMG_1785"><img alt="IMG_1785" data-base62-sha1="zf0Nu4fg2XA05A7Zdnc0D4tWd3D" data-dominant-color="E1DFE0" height="500" src="../../../images/f6fe89298324f98833f413aceb09078bf0fb6d55_2_230x500.jpeg" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/f/6/f/f6fe89298324f98833f413aceb09078bf0fb6d55_2_230x500.jpeg, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/f/6/f/f6fe89298324f98833f413aceb09078bf0fb6d55_2_345x750.jpeg 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/f/6/f/f6fe89298324f98833f413aceb09078bf0fb6d55_2_460x1000.jpeg 2x" width="230"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">IMG_1785</span><span class="informations">1179×2556 203 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/1ICYk6Zwi1I3i4VGPCLfe0hEhjb.jpeg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/0/c/0/0c0da633950dd5251492634b26824b25e0504eb9.jpeg" rel="noopener nofollow ugc" title="IMG_1784"><img alt="IMG_1784" data-base62-sha1="1ICYk6Zwi1I3i4VGPCLfe0hEhjb" data-dominant-color="F3F4F6" height="500" src="../../../images/0c0da633950dd5251492634b26824b25e0504eb9_2_519x500.jpeg" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/0/c/0/0c0da633950dd5251492634b26824b25e0504eb9_2_519x500.jpeg, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/0/c/0/0c0da633950dd5251492634b26824b25e0504eb9_2_778x750.jpeg 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/0/c/0/0c0da633950dd5251492634b26824b25e0504eb9_2_1038x1000.jpeg 2x" width="519"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">IMG_1784</span><span class="informations">1179×1134 121 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">opcourdis</div>
+          <div class="post_content">
+<p>Hi,</p>
+<p>This works on the latest with 3.5.0.beta9-dev, I don’t know your version?</p>
+<p>And this is javascript so you should provide the JS error from the console when you press F12 in your broswer.(you may click on the button once the console is open and this should provide info over what happens at this moment)</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/549022_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">gilles</div>
+          <div class="post_content">
+<p>I have the same version 3.5.0.beta9-dev<br/>
+Here is the console message<br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/6NHBr6OwUTOOlIKHRPzk6xJenRF.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/2/f/a/2fab5f384d15b77689ec3f93fc4923a37caa2b1b.png" title="image"><img alt="image" data-base62-sha1="6NHBr6OwUTOOlIKHRPzk6xJenRF" height="403" src="../../../images/2fab5f384d15b77689ec3f93fc4923a37caa2b1b.png" width="538"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">538×403 20.8 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div><br/>
+I must be doing something wrong <img alt=":sweat_smile:" class="emoji" height="20" loading="lazy" src="../../../images/sweat_smile.png" title=":sweat_smile:" width="20"/></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">opcourdis</div>
+          <div class="post_content">
+<p>I don’t use Edge, can you try again with the script that I’ve just updated in the original post as I found mistakes that I corrected. If it does not work I will update later after I install Edge.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">opcourdis</div>
+          <div class="post_content">
+<p>I’ve just updated the script to be more mobile compatible, it should work now, please copy paste the script from the original post</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/q71unkNmBFWkQRomfvug2V8TEvR.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/b/7/0/b703c96190543abb5e977ec1a8f4580c91be357f.png" rel="noopener nofollow ugc" title="image"><img alt="image" data-base62-sha1="q71unkNmBFWkQRomfvug2V8TEvR" data-dominant-color="F2F3F3" height="222" src="../../../images/b703c96190543abb5e977ec1a8f4580c91be357f_2_690x222.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/b/7/0/b703c96190543abb5e977ec1a8f4580c91be357f_2_690x222.png, https://d11a6trkgmumsb.cloudfront.net/original/4X/b/7/0/b703c96190543abb5e977ec1a8f4580c91be357f.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/b/7/0/b703c96190543abb5e977ec1a8f4580c91be357f.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1034×334 33.8 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">opcourdis</div>
+          <div class="post_content">
+<p>I confirm the updated code works fine in edge. If you have something like ublock you may always disable it for your discourse page but I don’t think its related.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/549022_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">gilles</div>
+          <div class="post_content">
+<p>Sorry, still the same problem for me, I must be doing something wrong</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/2mYSC8Q7sadlESDUIfNiw7ijohb.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/1/0/9/109d6800da7fa9d86181a406e6cfbc18cf045331.png" title="image"><img alt="image" data-base62-sha1="2mYSC8Q7sadlESDUIfNiw7ijohb" height="328" src="../../../images/109d6800da7fa9d86181a406e6cfbc18cf045331.png" width="533"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">533×328 20.6 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>Yet I paste your script here correctly<br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/wEUXbjjUStj8RnqOVg5RPEsP4A5.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/e/4/e/e4e5ae93cf8f92619e98ad1117f4b3c099f2c435.png" title="image"><img alt="image" data-base62-sha1="wEUXbjjUStj8RnqOVg5RPEsP4A5" data-dominant-color="202423" height="500" src="../../../images/e4e5ae93cf8f92619e98ad1117f4b3c099f2c435_2_590x500.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/e/4/e/e4e5ae93cf8f92619e98ad1117f4b3c099f2c435_2_590x500.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/e/4/e/e4e5ae93cf8f92619e98ad1117f4b3c099f2c435_2_885x750.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/e/4/e/e4e5ae93cf8f92619e98ad1117f4b3c099f2c435.png 2x" width="590"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1009×854 67.8 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="discourse: 1">:discourse: 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">opcourdis</div>
+          <div class="post_content">
+<p>Allright, thanks to Gilles situation, I could setup a selector based on the .svg class of the icon that is unique instead of a title attribute that would vary according to language, the script is also now minified and IIFE wrapped.</p>
+<p>You may find the updated script here <a class="inline-onebox" href="https://meta.discourse.org/t/discourse-calendar-and-event/97376/535">Discourse Calendar (and Event) - #535 by opcourdis</a></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/549022_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">gilles</div>
+          <div class="post_content">
+<p>Thank you for your help <img alt=":+1:" class="emoji" height="20" loading="lazy" src="../../../images/+1.png" title=":+1:" width="20"/></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/290039_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">nathank</div>
+          <div class="post_content">
+<p>It would be very helpful to have your script wrapped up as a <a class="hashtag-cooked" data-id="120" data-slug="theme-component" data-style-type="square" data-type="category" href="/c/theme-component/120"><span class="hashtag-icon-placeholder"><svg class="fa d-icon d-icon-square-full svg-icon svg-node"><use href="#square-full"></use></svg></span><span>Theme component</span></a>, and have the categories where it applies be selectable.</p>
+<p>The use case I’ve got in mind is an ‘Events’ category, where I want to make event posting super-duper obvious.</p>
+<p>Perhaps this could also be wrapped up together with your other excellent enhancement.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">opcourdis</div>
+          <div class="post_content">
+<p>You may use what’s below and modify the first conditions to specify your categories, and to make the button more visible css will do it: <code>.btn.no-text.btn-icon.toolbar__button.link.custom-create-event-btn {</code><br/>
+<code>order: -1;</code><br/>
+<code>}</code></p>
+<pre data-code-wrap="javascript"><code class="lang-javascript">&lt;script&gt;(()=&gt;{if(!(document.body.classList.contains("category-events")||document.body.classList.contains("category-event2")||document.body.classList.contains("category-event3")))return;const e=".d-editor-button-bar",t=".btn.no-text.fk-d-menu__trigger.toolbar-menu__options-trigger.toolbar__button.options.toolbar-popup-menu-options",n=".fk-d-menu__inner-content",o=".d-modal.fk-d-menu-modal",c=e=&gt;{const t=e.querySelector('svg use[href="#calendar-day"]');return t?t.closest("button"):null},r=(e,t,n=4e3)=&gt;new Promise((o,c)=&gt;{const r=t(e);if(r)return o(r);const l=new MutationObserver(()=&gt;{const n=t(e);n&amp;&amp;(l.disconnect(),o(n))});l.observe(e,{childList:!0,subtree:!0}),setTimeout(()=&gt;{l.disconnect(),c()},n)}),l=(e=4e3)=&gt;{const t=new MutationObserver(()=&gt;{document.querySelector(o)&amp;&amp;t.disconnect()});t.observe(document.body,{childList:!0,subtree:!0}),setTimeout(()=&gt;t.disconnect(),e)},s=e=&gt;{if(e.querySelector(".custom-create-event-btn"))return;const o=document.createElement("button");o.className="btn no-text btn-icon toolbar__button link custom-create-event-btn",o.title="Create event",o.innerHTML='&lt;svg class="fa d-icon d-icon-calendar-day svg-icon"&gt;&lt;use href="#calendar-day"&gt;&lt;/use&gt;&lt;/svg&gt;',e.appendChild(o),o.addEventListener("click",async()=&gt;{const e=document.querySelector(t);if(!e)return;e.click();let o=document.querySelector(n);o||(await new Promise((e,t)=&gt;{const c=new MutationObserver(()=&gt;{(o=document.querySelector(n))&amp;&amp;(c.disconnect(),e())});c.observe(document.body,{childList:!0,subtree:!0}),setTimeout(()=&gt;{c.disconnect(),t()},2e3)}));try{(await r(o,c)).click(),l()}catch{}})},u=new MutationObserver(()=&gt;{const t=document.querySelector(e);t&amp;&amp;s(t)});u.observe(document.body,{childList:!0,subtree:!0});const d=document.querySelector(e);d&amp;&amp;s(d)})();&lt;/script&gt;
+
+
+
+</code></pre>
+<p>Thanks for the suggestion, I am still a bit new to discourse and will check the theme component, the button placement is better indeed but my other script for event participant limit might soon not be necessary because of this <a class="inline-onebox" href="https://github.com/discourse/discourse/pull/34313" rel="noopener nofollow ugc">FEATURE: introduce max attendees for events by SamSaffron · Pull Request #34313 · discourse/discourse · GitHub</a></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 4">❤️ 4</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/334852_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">joo</div>
+          <div class="post_content">
+<p>After upgrading to the latest version of Discourse and the <strong>discourse-calendar</strong> plugin, I am seeing the following warning as an admin:</p>
+<pre><code class="lang-plaintext">⚠️ Posts may not display correctly because one of the post content decorators on your site raised an error.
+Caused by plugin 'discourse-calendar'
+(this message is only shown to site administrators)
+</code></pre>
+<ul>
+<li>The calendar plugin is no longer working: calendar content and events are not displayed in topics.</li>
+<li>The plugin was working correctly prior to the recent upgrade.</li>
+<li>My Discourse site and all official plugins are now up-to-date.</li>
+</ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/498442_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">cuo_wu</div>
+          <div class="post_content">
+<p>We’re using the <strong>Discourse Post Event</strong> plugin on our forum.<br/>
+Currently, when a user <strong>joins (RSVPs)</strong> an event, the topic is automatically set to <strong>“Watching”</strong>, which means every new reply to the event topic triggers a notification to all participants.</p>
+<p>We’d like to <strong>keep the notification level as “Normal” by default</strong>, even after someone joins an event.</p>
+<p>I’ve checked the site settings but couldn’t find an option that works.<br/>
+Is there a way to disable or change this auto “Watching” behavior when users RSVP to an event?</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/290039_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">nathank</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="549" data-topic="97376" data-username="cuo_wu">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/498442_2.png" width="24"/> cuo_wu:</div>
+<blockquote>
+<p>Is there a way to disable or change this auto “Watching” behavior when users RSVP to an event?</p>
+</blockquote>
+</aside>
+<p>I don’t think so. But this would be a useful feature request.</p>
+<p>A useful workaround might be to close the topic to stop replies, but have a chat channel associated with it (these don’t notify by default).</p>
+<aside class="quote quote-modified" data-post="1" data-topic="367885">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/102149_2.png" width="24"/>
+<div class="quote-title__text-content">
+<a href="https://meta.discourse.org/t/event-chat-channels-now-available/367885">Event Chat Channels Now Available</a> <a class="badge-category__wrapper" href="/c/announcements/67"><span class="badge-category --style-emoji" data-category-id="67" data-drop-close="true" style="--category-badge-color: #ED207B; --category-badge-text-color: #000000;" title="Important News and Updates from Discourse"><img alt="megaphone" class="emoji" height="20" loading="lazy" src="../../../images/megaphone.png" title="megaphone" width="20"/><span class="badge-category__name">Announcements</span></span></a>
+</div>
+</div>
+<blockquote>
+    We’ve added the ability to create dedicated chat channels for calendar events. 
+What’s new: 
+
+Admins and moderators can enable chat integration when creating events
+A private chat channel is automatically created for the event
+Users who mark “Going” or “Interested” are automatically added to the channel
+Events display a link to their associated chat channel
+
+ <a class="lightbox" data-download-href="/uploads/short-url/at1lvvykCMR4QSJQM68K18DwzG5.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/4/9/5/495d942977ae1fdb6b18f5274992ba447663e56d.png" title='The image shows the "Edit Event" settings in an application, with "Public" selected and "Chat integration" enabled to create and manage an event-specific chat channel. (Captioned by AI)'>[The image shows the "Edit Event" settings in an application, with "Public" selected and "Chat integration" enabled to create and manage a…</a>
+</blockquote>
+</aside>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/468169_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">manuel</div>
+          <div class="post_content">
+<p>The label on the “Today” button can be misleading.</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/82taoO4qH5WDZX4pRGGF8IoRted.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/3/8/5/3858e1dcdc689e60240d7d3aa960659591667fbd.png" title="Screenshot 2025-11-07 at 11.45.39"><img alt="Screenshot 2025-11-07 at 11.45.39" data-base62-sha1="82taoO4qH5WDZX4pRGGF8IoRted" data-dominant-color="F4F6F8" height="102" src="../../../images/3858e1dcdc689e60240d7d3aa960659591667fbd_2_690x102.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/3/8/5/3858e1dcdc689e60240d7d3aa960659591667fbd_2_690x102.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/3/8/5/3858e1dcdc689e60240d7d3aa960659591667fbd_2_1035x153.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/3/8/5/3858e1dcdc689e60240d7d3aa960659591667fbd.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2025-11-07 at 11.45.39</span><span class="informations">1141×170 12.4 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>The button doesn’t actually navigate to the current day, it navigates to the current view of the active timeframe tab (Day/Week/Month/Year). On Day, Week and Month this does bring the current day into view. But on Year, it only navigates to the current year (which always starts in January).</p>
+<p>It should probably be</p>
+<ul>
+<li>renamed to more accurately describe it’s functionality, like “Current”</li>
+<li>or, maybe better, not only navigate to the current year, but scroll to the current day on the Year list</li>
+</ul>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/522255_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Ethsim2</div>
+          <div class="post_content">
+<p>it would make sense to implement <a class="inline-onebox" href="https://meta.discourse.org/t/add-admin-setting-to-change-default-calendar-view-month-week-year/387389">Add admin setting to change default Calendar view (Month / Week / Year)</a> after this</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="eyes: 1">👀 1</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">elRicharde</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="412" data-topic="97376" data-username="martyn_thomas">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/344874_2.png" width="24"/> martyn_thomas:</div>
+<blockquote>
+<p>Limit which categories can have events, and if a events are compulsory in a category</p>
+</blockquote>
+</aside>
+<p>I´ve made a<a href="https://meta.discourse.org/t/allow-events-only-in-some-topics/388283">feature-Request here</a> and would be happy for any upvotes.</p>
+<p>cheers Richarde</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/549022_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">gilles</div>
+          <div class="post_content">
+<p>Hello everyone,</p>
+<p>I was wondering if there is a way to display a bit more information in the selected event in the calendar (for example, display the description as well as the buttons to participate in the event and a small “more info” link to open the event topic, even though I know the title is a link to the topic)</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/6Xudcm5IQa4rwKBUE2BacyCplwf.jpeg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/3/0/c/30c681328d03bf832a411725742e412f4d84527b.jpeg" title="image"><img alt="image" data-base62-sha1="6Xudcm5IQa4rwKBUE2BacyCplwf" data-dominant-color="2E2E2A" height="334" src="../../../images/30c681328d03bf832a411725742e412f4d84527b_2_690x334.jpeg" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/3/0/c/30c681328d03bf832a411725742e412f4d84527b_2_690x334.jpeg, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/3/0/c/30c681328d03bf832a411725742e412f4d84527b_2_1035x501.jpeg 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/3/0/c/30c681328d03bf832a411725742e412f4d84527b.jpeg 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1169×567 65.3 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>Thank you <img alt=":sweat_smile:" class="emoji" height="20" loading="lazy" src="../../../images/sweat_smile.png" title=":sweat_smile:" width="20"/></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/540154_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">tmanpdx</div>
+          <div class="post_content">
+<p>I was looking at what is included as part of the various discourse licenses and am confused as several posts in the past have said that calendars and events are part of the discourse core, but when you look at the <a href="https://discourse.org/pricing">pricing plans</a>, calendar is only included at the business tier?</p>
+<p>Is this a typo?</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/523185_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">RGJ</div>
+          <div class="post_content">
+<p>From a development and self hosting point of view, the calendar plugin is bundled with the core codebase. But not all managed hosting providers offer all functionality and all plugins on all tiers, just like <a href="http://discourse.org">discourse.org</a> limits functionality like webhooks and API on the lower tiers.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/540154_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">tmanpdx</div>
+          <div class="post_content">
+<p>Ok, well that kills my idea of using Discourse for a community I am part of. I’ll abandon the idea of using Discourse. Thanks for the quick answer.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/290039_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">nathank</div>
+          <div class="post_content">
+<p>Have you considered self-hosting? While there is a learning curve, you can access virtually all functionality (including this plugin).</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 4">❤️ 4</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/540154_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">tmanpdx</div>
+          <div class="post_content">
+<p>I lack the technical  depth to do this. I was hoping  to get the community interested and there may be people in the community who would relish something like this - but while I would be willing to fund a $20/mo for 2-3 months  to get it set up &amp; working to try &amp; convince people, and thus might find someone like that, without calendar, there will be no interest.</p>
+<p>FYI - it’s a expat community in Mexico. They’re mostly on FB and I quit FB years ago. It’s an uphill climb, and without the community calendar, which is like 90% of what goes on FB, it’s a deal killer.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554653_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Moin</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="559" data-topic="97376" data-username="tmanpdx">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/540154_2.png" width="24"/> tmanpdx:</div>
+<blockquote>
+<p>I lack the technical depth to do this</p>
+</blockquote>
+</aside>
+<p>Then maybe another hosting provider is an option for you. Maybe you want to take a look at the pricing of <a href="https://www.communiteq.com/discoursehosting/pricing/">Communiteq</a>. They are one of the <a href="https://discourse.org/partners">partners</a> listed on <a>discourse.org</a> if none of their plans fit your budget.<br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/8ReETDNBzLJbc1iP39FxyqSWN40.jpeg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/3/e/1/3e15f6a478a4545eebe10961881f9e5cb0a2780c.jpeg" title="Screenshot_20260124_224437_Firefox"><img alt="Screenshot_20260124_224437_Firefox" data-base62-sha1="8ReETDNBzLJbc1iP39FxyqSWN40" data-dominant-color="EDECF1" height="175" src="../../../images/3e15f6a478a4545eebe10961881f9e5cb0a2780c_2_690x175.jpeg" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/3/e/1/3e15f6a478a4545eebe10961881f9e5cb0a2780c_2_690x175.jpeg, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/3/e/1/3e15f6a478a4545eebe10961881f9e5cb0a2780c_2_1035x262.jpeg 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/3/e/1/3e15f6a478a4545eebe10961881f9e5cb0a2780c_2_1380x350.jpeg 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot_20260124_224437_Firefox</span><span class="informations">1439×367 139 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">long</div>
+          <div class="post_content">
+<p>Is there a good tutorial on how to actually set this up?</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/180717_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">itsbhanusharma</div>
+          <div class="post_content">
+<p>As is the provided documentation is pretty clear to me, it’ll help if you share what’s not clear so it can be improved!</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">long</div>
+          <div class="post_content">
+<p>Thank you. It’s installed and I see the settings, but how do you actually get the calendar to display? I created an “Events” category. I want that category to be the only one where events are posted. Is this possible or am I way off thinking that it can be done like that?</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/180717_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">itsbhanusharma</div>
+          <div class="post_content">
+<p>Did you try asking at <a href="http://ask.discourse.org">ask.discourse.org</a>?</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">long</div>
+          <div class="post_content">
+<p>Yes, and tried this also:</p>
+<aside class="quote quote-modified" data-post="1" data-topic="283773">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/148734_2.png" width="24"/>
+<div class="quote-title__text-content">
+<a href="https://meta.discourse.org/t/creating-and-managing-calendars/283773">Creating and managing calendars</a> <a class="badge-category__wrapper" href="/c/documentation/using-discourse/126"><span class="badge-category --style-square --has-parent" data-category-id="126" data-drop-close="true" data-parent-category-id="10" style="--category-badge-color: #0088CC; --category-badge-text-color: #FFFFFF; --parent-category-badge-color: #00A94F;" title="Topics showing how to Discourse by reading and writing content, and navigating Discourse sites. (Index)"><span class="badge-category__name">Using Discourse</span></span></a>
+</div>
+</div>
+<blockquote>
+<img alt="bookmark" class="emoji" height="20" src="../../../images/bookmark.png" title="bookmark" width="20"/> This guide explains how to create and manage calendars in Discourse using the Calendar (and Event) plugin. 
+<img alt="person_raising_hand" class="emoji" height="20" src="../../../images/person_raising_hand.png" title="person_raising_hand" width="20"/> Required user level: All users 
+
+Calendars are a powerful feature in Discourse that allow you to organize and display events within your community. This guide will walk you through the process of creating calendars, adding events, and managing them effectively. 
+
+<a aria-label="Heading link" class="anchor" href="#p-1394170-summary-1" name="p-1394170-summary-1"></a>Summary
+
+Enable the Calendar plugin
+Create a calendar in a topic or category
+Add events to you…
+  </blockquote>
+</aside>
+<p>But this code doesn’t make the calendar show up:</p>
+<div class="math">
+calendar
+</div>
+<div class="math">
+/calendar
+</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/288324_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">asc</div>
+          <div class="post_content">
+<p>I believe you can only restrict events posting by groups, not by category. On my instance I set it up to have the calendar display on one category, but then have a separate category for posting events which is viewable to all users but can only have topics/replies created by a restricted group. But I believe that group can also post events outside of the designated category, I don’t think there’s anything restricting the category they can post events to if they have the ability to post events.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/445877_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Andrew_Rowe</div>
+          <div class="post_content">
+<p>I think you can have a category  that every post is an event and also create events in other regular categories. You can also restrict which users can create an event…. I think</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/290039_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">nathank</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="567" data-topic="97376" data-username="Andrew_Rowe">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/445877_2.png" width="24"/> Andrew_Rowe:</div>
+<blockquote>
+<p>I think you can have a category that every post is an event and also create events in other regular categories. You can also restrict which users can create an event…. I think</p>
+</blockquote>
+</aside>
+<p>Well, here is where the plugin is a bit messy. And that is mostly due to its history.</p>
+<p>It started out life as a plugin which enabled Topic calendars. In this case, every reply on the Topic was an event (if it included a date/time). The Holiday calendar is a great example / use-case of this.</p>
+<p>Subsequently, the ability to turn the OP of a Topic into an Event (displayed on a sitewide calendar) was bolted on; this has the somewhat odd name of <code>discourse_post_event</code>. This can be controlled per Category (in the Category settings) and restricted to groups via the site setting <code>discourse_post_event_allowed_on_groups</code>.</p>
+<p>Additionally, you can elect to display a Calendar of these OP events (‘post events’) above a specified Category (will have just the Events from that Category). You can also enable (via a site setting) some fancy sorting of the Topic list of any Category by Event - this is turned on via a Category setting.</p>
+<p>Judging by the recent chatter on <a href="http://meta.discourse.org">meta.discourse.org</a> about it, these per-Topic events now appear to be the dominant way to utilise the Plugin.</p>
+<p>Personally, I find the settings that govern all this a bit of a mish-mash, with some confusing cross-over between site settings, category settings, and terminology.</p>
+<p>I’d love to see this tidied up / rationalised.  As it covers a key functionality for most communities, I’d love to see the plugin made freely accessible to a wider range of Discourse users (currently it is quite paywalled unless you are self-hosting).</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 7">❤️ 7</span><span class="engagement-pill reaction-pill" title="100: 3">:100: 3</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/362012_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Shauny</div>
+          <div class="post_content">
+<p>On mobile there is no nice box around the extra text it adds to the topic title:</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/khEZepQTQ44HzoVRE36xaemjTx6.jpeg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/8/e/2/8e2a8fa6be3dd93029dc91ab62994cc6002acbe8.jpeg" rel="noopener nofollow ugc" title="IMG_0018"><img alt="IMG_0018" data-base62-sha1="khEZepQTQ44HzoVRE36xaemjTx6" data-dominant-color="F1F1F2" height="201" src="../../../images/8e2a8fa6be3dd93029dc91ab62994cc6002acbe8_2_689x201.jpeg" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/8/e/2/8e2a8fa6be3dd93029dc91ab62994cc6002acbe8_2_689x201.jpeg, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/8/e/2/8e2a8fa6be3dd93029dc91ab62994cc6002acbe8_2_1033x301.jpeg 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/8/e/2/8e2a8fa6be3dd93029dc91ab62994cc6002acbe8.jpeg 2x" width="689"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">IMG_0018</span><span class="informations">1206×352 55.3 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>(“3 days ago” should be in a box)</p>
+<p>Why is it missing? How can I add it in, do I just need to recreate the CSS?</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/326831_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">pHneutre</div>
+          <div class="post_content">
+<p>I’m trying to find what the latest version of this core plugin is. As it is included in core, there is no repo link anymore (btw the link <a href="https://www.discourse.org/plugins/calendar.html">here</a> is obsolete). How do I find this information?</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/485119_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">manut</div>
+          <div class="post_content">
+<p><span class="mention">@pHneutre</span>, we made our last contribs to this repo : <a class="inline-onebox" href="https://github.com/discourse/discourse-calendar" rel="noopener nofollow ugc">GitHub - discourse/discourse-calendar: Adds the ability to create a dynamic calendar in the first post of a topic. · GitHub</a></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/326831_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">pHneutre</div>
+          <div class="post_content">
+<p>Hey Manuel <img alt=":slight_smile:" class="emoji" height="20" loading="lazy" src="../../../images/slight_smile.png" title=":slight_smile:" width="20"/><br/>
+My question is, how do I find the latest version number of this plugin now?<br/>
+Or does this concept of version number not exist anymore?</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/523185_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">RGJ</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="572" data-topic="97376" data-username="pHneutre">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/326831_2.png" width="24"/> pHneutre:</div>
+<blockquote>
+<p>Or does this concept of version number not exist anymore?</p>
+</blockquote>
+</aside>
+<p>Exactly. Since the code is included in core, there is no separate version number anymore.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/485119_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">manut</div>
+          <div class="post_content">
+<p>Ahhhh, the version <em>number</em>, not the last version… <span class="mention">@RGJ</span> is right, there is no more version numbers for core plugins.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/212644_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">oshyan</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="568" data-topic="97376" data-username="nathank">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/290039_2.png" width="24"/> nathank:</div>
+<blockquote>
+<p>Personally, I find the settings that govern all this a bit of a mish-mash, with some confusing cross-over between site settings, category settings, and terminology.</p>
+</blockquote>
+</aside>
+<p>Couldn’t agree more! It’s an important area of functionality for many communities but this implementation is, sadly, IMO kind of a mess. I hate to say that, Discourse has really been taking some great strides in usability, design, etc. lately. But this is clearly far behind and seems to need a lot of work, if not a complete overhaul.</p>
+<p>So… I decided to try to make my own more event-focused plugin. Here’s a video demonstrating some of its features after 3 days of vibe coding.</p>
+<div class="youtube-onebox lazy-video-container" data-provider-name="youtube" data-video-id="n3zRBpNDjHc" data-video-start-time="" data-video-title="Discourse Calendar Plugin 5 min Demo">
+<a class="video-thumbnail" href="https://www.youtube.com/watch?v=n3zRBpNDjHc" rel="noopener nofollow ugc" target="_blank">
+<img class="youtube-thumbnail" data-dominant-color="A3A4A4" height="388" src="../../../images/929062a2e00ab23468e125e56dd9b29fd3e43f4c.jpeg" title="Discourse Calendar Plugin 5 min Demo" width="690"/>
+</a>
+</div>
+<p>All of this stuff works, though I’m sure there are a lot of bugs still (and definitely a ton of layout, styling, and visual polish to do). My hope is to iterate on it for a week or so, with a good portion of that being bug fix and polish (feature freeze planned for tomorrow), after which I hope to deploy it on my own instance for live use. If things work out maybe I’ll be able to share it later, with the giant caveats around it being entirely vibes. <img alt=":smile:" class="emoji" height="20" loading="lazy" src="../../../images/smile.png" title=":smile:" width="20"/></p>
+<p>Here’s a short list of most of what it does:</p>
+<ul>
+<li>Completely stand-alone events entities, with/without topics or chats (both work)</li>
+<li>Venue and room handling (rooms within venues)</li>
+<li>Room reservation with locations (multiple rooms per location), reservation contention handling, dedicated pages for locations and rooms, hours of operation for rooms, capacity, etc.</li>
+<li>Month, week, day, venue (events per venue), and list views with rich filters across all views</li>
+<li>Rich Event description editor and settings, repeat, All Day events, time zone support, event capacity, room capacity</li>
+<li>Location pages with maps, rooms-at-location list, events-at-location list</li>
+<li>Quick access to full event info from calendar and other views (pop-up details)</li>
+<li>Drag on day/week view to create events + times (auto-filled in new event form)</li>
+<li>Auto-filled event creation info depending on where/how the event is created, e.g. from a Room, that room is auto-filled</li>
+<li>Calendar (ICS) subscriptions at multiple levels (per-calendar, per-location, etc.)</li>
+<li>Permissions system for a variety of controls (who can create rooms/locations vs. events, etc.)</li>
+<li>Drafts and publish/unpublish state for events, locations, rooms (and canceled state for events)</li>
+<li>RSVP, event capacity, etc.</li>
+<li>Events list widget for sidebar, event list in Categories</li>
+<li>Most of this also works in mobile, though that’s still heavily WIP in particular</li>
+<li>Probably other stuff I’m forgetting</li>
+</ul>
+<p>Is it too much? Maybe! But I want to see what I’ll find useful before I prune. <img alt=":smile:" class="emoji" height="20" loading="lazy" src="../../../images/smile.png" title=":smile:" width="20"/></p>
+<p>I also hope to have a comprehensive range of settings in the back-end. If I can emulate some of what the existing official Events/Calendar plugin does with e.g. sorting topics by event date, I’ll try to do so.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 5">❤️ 5</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/549022_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">gilles</div>
+          <div class="post_content">
+<p>I find that interesting <img alt=":+1:" class="emoji" height="20" loading="lazy" src="../../../images/+1.png" title=":+1:" width="20"/>.</p>
+<p>In my opinion, it would be better to implement a complete event management system with parameters to enable or disable event modules to meet everyone’s needs. Currently, you always have to add different plugins to fulfill a request, so a very comprehensive plugin can only be beneficial for everyone <img alt=":sweat_smile:" class="emoji" height="20" loading="lazy" src="../../../images/sweat_smile.png" title=":sweat_smile:" width="20"/>.</p>
+<p>Which AI do you use for coding?</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/212644_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">oshyan</div>
+          <div class="post_content">
+<aside class="quote no-group quote-modified" data-post="576" data-topic="97376" data-username="gilles">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/549022_2.png" width="24"/> gilles:</div>
+<blockquote>
+<p>In my opinion, it would be better to implement a complete event management system with parameters to enable or disable event modules to meet everyone’s needs. Currently, you always have to add different plugins to fulfill a request, so a very comprehensive plugin can only be beneficial for everyone <img alt=":sweat_smile:" class="emoji" height="20" loading="lazy" src="../../../images/sweat_smile.png" title=":sweat_smile:" width="20"/>.</p>
+</blockquote>
+</aside>
+<p>That’s more or less what I intend. I want to make different functions configurable and enable/disable in settings, within reason. I haven’t designed the plugin as modular from the beginning, perhaps I should have. But the functions are interconnected enough and I didn’t want to have it require its <em>own</em> plugins.</p>
+<p>I use both Codex (OpenAI) and Claude (Anthropic, of course), both directly rather than through alternative harnesses/environments like Cursor. I get better use out of my subscription dollars this way, and in general I haven’t found the short-term advantages of other tools to make up for their various downsides. Staying in each respective company’s own native coding tools and ecosystem has served me better and better over time, and I use MCPs and skills to make up the difference (e.g. experimenting with novel memory skills backed by on-disk markdown files, or ygrep for file search, etc.).</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/290039_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">nathank</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="568" data-topic="97376" data-username="nathank">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/290039_2.png" width="24"/> nathank:</div>
+<blockquote>
+<p>Personally, I find the settings that govern all this a bit of a mish-mash, with some confusing cross-over between site settings, category settings, and terminology.</p>
+<p>I’d love to see this tidied up / rationalised.</p>
+</blockquote>
+</aside>
+<p>Delighted to see this happening:</p>
+<aside class="quote quote-modified" data-post="1" data-topic="401309">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/491371_2.png" width="24"/>
+<div class="quote-title__text-content">
+<a href="https://meta.discourse.org/t/easily-create-events-categories-using-the-events-and-calendar-plugin/401309">Easily create Events categories using the Events and Calendar plugin</a> <a class="badge-category__wrapper" href="/c/news-and-events/announcements/67"><span class="badge-category --style-emoji --has-parent" data-category-id="67" data-drop-close="true" data-parent-category-id="207" style="--category-badge-color: #ED207B; --category-badge-text-color: #000000; --parent-category-badge-color: #00AEEF;" title="Important updates from the Discourse team."><img alt="megaphone" class="emoji" height="20" loading="lazy" src="../../../images/megaphone.png" title="megaphone" width="20"/><span class="badge-category__name">Announcements</span></span></a>
+</div>
+</div>
+<blockquote>
+    It’s now much easier to create an events category in your community via the <a href="https://meta.discourse.org/t/discourse-calendar-and-event/97376">Discourse Calendar and Event</a> plugin. We’ve streamlined the setup process and pulled all the important settings into one place to help you get setup in moments. This is part of the same category setup initiative that brought you easier <a href="https://meta.discourse.org/t/easily-create-support-categories-using-the-discourse-solved-plugin/398338">support categories</a> and <a href="https://meta.discourse.org/t/easily-create-ideas-categories-using-the-topic-voting-plugin/399365">ideas categories</a>. 
+
+Note: On our hosting, Discourse Calendar and Events is available on the Business plan and above. 
+
+In this topic, we’ll review the major changes a…
+  </blockquote>
+</aside>
+
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+
+    </div>
+  </body>
+</html>

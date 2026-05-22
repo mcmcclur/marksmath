@@ -1,0 +1,1850 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width">
+    <title>Tag Icons</title>
+    <link rel="stylesheet" href="../../../archived.css" />
+    <script>
+      function findSageCodeBlocks() {
+        return Array.prototype.slice.call(
+          document.querySelectorAll(
+            "pre[data-code-wrap='sage'] > code, pre > code.lang-sage, pre > code.language-sage, pre > code.sage"
+          )
+        );
+      }
+
+      function loadScript(src) {
+        return new Promise(function (resolve, reject) {
+          var existing = document.querySelector("script[src='" + src + "']");
+          if (existing) {
+            if (existing.dataset.loaded === "true") {
+              resolve();
+              return;
+            }
+            existing.addEventListener("load", resolve, { once: true });
+            existing.addEventListener("error", reject, { once: true });
+            return;
+          }
+
+          var script = document.createElement("script");
+          script.src = src;
+          script.async = true;
+          script.addEventListener("load", function () {
+            script.dataset.loaded = "true";
+            resolve();
+          }, { once: true });
+          script.addEventListener("error", reject, { once: true });
+          document.head.appendChild(script);
+        });
+      }
+
+      function prepareSageCells() {
+        var sageBlocks = findSageCodeBlocks();
+        if (!sageBlocks.length) {
+          return Promise.resolve();
+        }
+
+        return loadScript("https://sagecell.sagemath.org/static/embedded_sagecell.js")
+          .then(function () {
+            if (!window.sagecell || !window.sagecell.makeSagecell) {
+              return;
+            }
+
+            sageBlocks.forEach(function (codeTag, index) {
+              var preTag = codeTag.parentElement;
+              if (!preTag || preTag.dataset.sageMounted === "true") {
+                return;
+              }
+
+              var host = document.createElement("div");
+              host.className = "sagecell-archive";
+
+              var source = document.createElement("script");
+              source.type = "text/x-sage";
+              source.text = codeTag.textContent || "";
+              host.appendChild(source);
+
+              preTag.insertAdjacentElement("afterend", host);
+              preTag.classList.add("sage-source-hidden");
+              preTag.dataset.sageMounted = "true";
+
+              window.sagecell.makeSagecell({
+                inputLocation: host,
+                autoeval: false,
+                evalButtonText: "Run",
+                languages: ["sage"]
+              });
+            });
+          })
+          .catch(function () {
+            // Leave the original code blocks visible if SageCell cannot load.
+          });
+      }
+
+      function preprocessDiscourseMath() {
+        document.querySelectorAll("span.math, div.math").forEach(function (node) {
+          var tex = node.textContent || "";
+          if (!tex.trim()) {
+            return;
+          }
+          if (node.tagName === "SPAN") {
+            node.textContent = "\\(" + tex + "\\)";
+          } else {
+            node.textContent = "\\[" + tex + "\\]";
+          }
+          node.classList.remove("math");
+        });
+      }
+
+      window.MathJax = {
+        tex: {
+          inlineMath: [["\\(", "\\)"]],
+          displayMath: [["\\[", "\\]"]]
+        },
+        startup: {
+          pageReady() {
+            preprocessDiscourseMath();
+            return MathJax.startup.defaultPageReady().then(function () {
+              return prepareSageCells();
+            });
+          }
+        }
+      };
+    </script>
+    <script async id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="title-span">
+        <a href="../../../">
+          <img src="../../../images/ad2526334012b2ad0c3421f9b6dd94bae2ede52f.svg" height="40" alt="Site Logo" id="site-logo" />
+        </a>
+      </div>
+    </header>
+
+    <div class="main">
+    <div class="archive-span"><a href='https://meta.discourse.org/'>Discourse Meta</a> archived in May, 2026</div>
+    <h1 class="topic-title">Tag Icons</h1>
+            <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/148734_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Discourse</div>
+          <div class="post_content">
+<div class="md-table">
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><img alt=":discourse2:" class="emoji emoji-custom only-emoji" height="20" loading="lazy" src="../../../images/0e65eeb3631702ee91807a5f302a3f10f099dd11.png" title=":discourse2:" width="20"/></td>
+<td><strong>Summary</strong></td>
+<td>
+<strong>Tag Icons</strong> allows tags to have an icon next to the tag label.</td>
+</tr>
+<tr>
+<td><img alt=":eyeglasses:" class="emoji only-emoji" height="20" loading="lazy" src="../../../images/eyeglasses.png" title=":eyeglasses:" width="20"/></td>
+<td><strong>Preview</strong></td>
+<td><a href="https://discourse.theme-creator.io/theme/Discourse/tag-icons">Preview on Discourse Theme Creator</a></td>
+</tr>
+<tr>
+<td><img alt=":hammer_and_wrench:" class="emoji only-emoji" height="20" loading="lazy" src="../../../images/hammer_and_wrench.png" title=":hammer_and_wrench:" width="20"/></td>
+<td><strong>Repository Link</strong></td>
+<td><a href="https://github.com/discourse/discourse-tag-icons">https://github.com/discourse/discourse-tag-icons</a></td>
+</tr>
+<tr>
+<td><img alt=":open_book:" class="emoji only-emoji" height="20" loading="lazy" src="../../../images/open_book.png" title=":open_book:" width="20"/></td>
+<td><strong>New to Discourse Themes?</strong></td>
+<td><a href="https://meta.discourse.org/t/beginners-guide-to-using-discourse-themes/91966">Beginner’s guide to using Discourse Themes</a></td>
+</tr>
+</tbody>
+</table>
+</div><div class="d-wrap" data-repo-name="Tag Icons" data-repo-url="https://github.com/discourse/discourse-tag-icons" data-wrap="theme-install-button">
+<p>Install this theme component</p>
+</div>
+<aside class="quote no-group">
+<blockquote>
+<p><img alt=":discourse2:" class="emoji emoji-custom" height="20" loading="lazy" src="../../../images/0e65eeb3631702ee91807a5f302a3f10f099dd11.png" title=":discourse2:" width="20"/> As this is an <a class="hashtag-cooked" data-icon="tag" data-id="83" data-slug="official" data-style-type="icon" data-type="tag" href="/tag/official"><span class="hashtag-icon-placeholder"><svg class="fa d-icon d-icon-square-full svg-icon svg-node"><use href="#square-full"></use></svg></span><span>official</span></a> theme component maintained by the Discourse team, <a class="hashtag-cooked" data-id="6" data-slug="support" data-style-type="square" data-type="category" href="/c/support/6"><span class="hashtag-icon-placeholder"><svg class="fa d-icon d-icon-square-full svg-icon svg-node"><use href="#square-full"></use></svg></span><span>Support</span></a>, <a class="hashtag-cooked" data-id="1" data-slug="bug" data-style-type="square" data-type="category" href="/c/bug/1"><span class="hashtag-icon-placeholder"><svg class="fa d-icon d-icon-square-full svg-icon svg-node"><use href="#square-full"></use></svg></span><span>Bug</span></a>, <a class="hashtag-cooked" data-id="9" data-slug="ux" data-style-type="square" data-type="category" href="/c/ux/9"><span class="hashtag-icon-placeholder"><svg class="fa d-icon d-icon-square-full svg-icon svg-node"><use href="#square-full"></use></svg></span><span>UX</span></a>, and <a class="hashtag-cooked" data-id="2" data-slug="feature" data-style-type="square" data-type="category" href="/c/feature/2"><span class="hashtag-icon-placeholder"><svg class="fa d-icon d-icon-square-full svg-icon svg-node"><use href="#square-full"></use></svg></span><span>Feature</span></a> requests can be made in the respective categories here on Meta, and tagged with the appropriate theme component tag. Click on a link below to get one started. <img alt=":+1:" class="emoji" height="20" loading="lazy" src="../../../images/+1.png" title=":+1:" width="20"/></p>
+<p><kbd> <a href="https://meta.discourse.org/new-topic?category_id=6&amp;tags=tag-icons" title="Ask for support on configuring and using Tag Icons"><img alt=":question:" class="emoji" height="20" loading="lazy" src="../../../images/question.png" title=":question:" width="20"/> <strong>Support</strong></a> </kbd> <kbd> <a href="https://meta.discourse.org/new-topic?category_id=1&amp;tags=tag-icons" title="A bug report means something is broken, preventing normal/typical use of the theme component"><img alt=":bug:" class="emoji" height="20" loading="lazy" src="../../../images/bug.png" title=":bug:" width="20"/> <strong>Bug</strong></a> </kbd> <kbd> <a href="https://meta.discourse.org/new-topic?category_id=9&amp;tags=tag-icons" title="Discussion about the user interface of Tag Icons, and how features are presented (including language and UI elements)"><img alt=":eyes:" class="emoji" height="20" loading="lazy" src="../../../images/eyes.png" title=":eyes:" width="20"/> <strong>UX</strong></a> </kbd> <kbd> <a href="https://meta.discourse.org/new-topic?category_id=2&amp;tags=tag-icons" title="Discussion about how existing Tag Icons features can be improved or enhanced, and how proposed new features could work"><img alt=":bulb:" class="emoji" height="20" loading="lazy" src="../../../images/bulb.png" title=":bulb:" width="20"/> <strong>Feature</strong></a></kbd></p>
+</blockquote>
+</aside>
+<h3>
+<a aria-label="Heading link" class="anchor" href="#p-539396-features-1" name="p-539396-features-1"></a>Features</h3>
+<p>Here is an example of how this would look, with tag style set to the default (simple):</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/mGXV8DUTQ6ogvuM7V0kbLmvBqSB.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/3X/9/f/9f0b34253dbed2a6f4cd8900959a98102fb026e9.png" title="image"><img alt="image" data-base62-sha1="mGXV8DUTQ6ogvuM7V0kbLmvBqSB" data-dominant-color="F1F1F0" height="79" src="../../../images/9f0b34253dbed2a6f4cd8900959a98102fb026e9_2_690x79.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/3X/9/f/9f0b34253dbed2a6f4cd8900959a98102fb026e9_2_690x79.png, https://d11a6trkgmumsb.cloudfront.net/optimized/3X/9/f/9f0b34253dbed2a6f4cd8900959a98102fb026e9_2_1035x118.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/3X/9/f/9f0b34253dbed2a6f4cd8900959a98102fb026e9_2_1380x158.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1566×180 31.5 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>Here is how this looks with tag style set to <code>box</code>:</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/4KIVecjXnVKchdYaFBujVvMI7V1.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/3X/2/1/2150d32bdb06f6377499235b9ff86bdc358fd16b.png" title="image"><img alt="image" data-base62-sha1="4KIVecjXnVKchdYaFBujVvMI7V1" data-dominant-color="E6E5E5" height="61" src="../../../images/2150d32bdb06f6377499235b9ff86bdc358fd16b_2_690x61.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/3X/2/1/2150d32bdb06f6377499235b9ff86bdc358fd16b_2_690x61.png, https://d11a6trkgmumsb.cloudfront.net/optimized/3X/2/1/2150d32bdb06f6377499235b9ff86bdc358fd16b_2_1035x91.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/3X/2/1/2150d32bdb06f6377499235b9ff86bdc358fd16b.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1364×122 30.3 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<h3>
+<a aria-label="Heading link" class="anchor" href="#p-539396-settings-2" name="p-539396-settings-2"></a>Settings</h3>
+<div class="md-table">
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>tag icon list</td>
+<td>Enter comma-delimited configuration for tags, in the format “tag-slug,icon,iconColor”. Icon color is optional.</td>
+</tr>
+<tr>
+<td>svg icons</td>
+<td>List of <a href="https://fontawesome.com/search?o=r&amp;m=free&amp;new=yes">FontAwesome 6</a> icons used in this theme component</td>
+</tr>
+</tbody>
+</table>
+</div><br/>
+<blockquote>
+<p><img alt=":discourse2:" class="emoji emoji-custom" height="20" loading="lazy" src="../../../images/0e65eeb3631702ee91807a5f302a3f10f099dd11.png" title=":discourse2:" width="20"/> <strong>Hosted by us?</strong> Theme components are available to use on our Standard, Business, and Enterprise plans.</p>
+</blockquote><blockquote class="discourse-automation">
+<p>Last edited by <span class="mention">@tobiaseigen</span> <span class="discourse-local-date" data-date="2025-08-27" data-email-preview="Wednesday, August 27, 2025 6:57 AM UTC" data-time="06:57:11" data-timezone="UTC">2025-08-27T06:57:11Z</span></p>
+<details><summary>Check document</summary>Perform check on document: <input class="btn btn-checked" type="button" value="Done"/></details>
+</blockquote>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 77">❤️ 77</span><span class="engagement-pill reaction-pill" title="+1: 2">👍 2</span><span class="engagement-pill reaction-pill" title="discourse: 1">:discourse: 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/247704_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">TheBestPessimist</div>
+          <div class="post_content">
+<p>Does this also work with custom svg?</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/119489_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">pmusaraj</div>
+          <div class="post_content">
+<p>Yes, but you would need to register the custom SVG in a plugin (themes should soon also be able to add custom icons to the SVG sprite set). See <a class="inline-onebox" href="https://meta.discourse.org/t/introducing-font-awesome-5-and-svg-icons/101643/61">Introducing Font Awesome 5 and SVG icons</a> for details.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 7">❤️ 7</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/119528_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">davidkingham</div>
+          <div class="post_content">
+<p>Now that custom icons in themes has been merged is it possible to use FA Pro icons with this or does the component need to be updated?</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/119489_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">pmusaraj</div>
+          <div class="post_content">
+<p>Component doesn’t need to be updated, if you add custom icons via theme/plugin they will be available to the component.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/119528_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">davidkingham</div>
+          <div class="post_content">
+<p>Could the icon be added to the dropdown menu as well?</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/ftu9autQW3vh758NtAouGRPKSV3.jpeg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/3X/6/c/6c75e4306bc3b104796cee128c6590112c7fa149.jpeg" rel="nofollow noopener" title="image.jpg"><img alt="image" data-base62-sha1="ftu9autQW3vh758NtAouGRPKSV3" data-small-upload="https://d11a6trkgmumsb.cloudfront.net/optimized/3X/6/c/6c75e4306bc3b104796cee128c6590112c7fa149_2_10x10.png" height="500" src="../../../images/6c75e4306bc3b104796cee128c6590112c7fa149_2_683x500.jpeg" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/3X/6/c/6c75e4306bc3b104796cee128c6590112c7fa149_2_683x500.jpeg, https://d11a6trkgmumsb.cloudfront.net/optimized/3X/6/c/6c75e4306bc3b104796cee128c6590112c7fa149_2_1024x750.jpeg 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/3X/6/c/6c75e4306bc3b104796cee128c6590112c7fa149.jpeg 2x" width="683"/><div class="meta">
+<svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use xlink:href="#far-image"></use></svg><span class="filename">image.jpg</span><span class="informations">1150×841 279 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use xlink:href="#discourse-expand"></use></svg>
+</div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 9">❤️ 9</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/186978_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">AntiMetaman</div>
+          <div class="post_content">
+<p>This allows one to add custom icons to tag, but what if I wanted to change the color of the box of the tag?</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/119489_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">pmusaraj</div>
+          <div class="post_content">
+<p>You can do that with CSS, for example, the code below will set the “theme-component” text color to red:</p>
+<pre><code>.extra-info-wrapper .discourse-tag[data-tag-name="theme-component"] {
+color: red !important;
+}
+</code></pre>
+<p>(This is just for illustrative purposes only, you’ll need to figure out your own CSS.)</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/186978_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">AntiMetaman</div>
+          <div class="post_content">
+<p>I see thanks. I just have to list every tag I have in the CSS by name and specify the color. Would be nice though if I could do this from the admin panel like with the theme components using a comma separated list and providing the hex code just like for the icons.</p>
+<p>Is there a way I can set a color for all tags in a tag group via CSS?</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 4">❤️ 4</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/192157_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">HeyRR</div>
+          <div class="post_content">
+<p>I ended up getting something like this: <img alt="image" data-base62-sha1="nL8s3c0zrXJOfm10GXhXda73u5V" height="54" src="../../../images/a6860bca49779619f3b6f6fa407b909a632714bf.png" width="279"/>   (The default tag icon is still here)</p>
+<p>Does anyone see this kind of result?</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/119489_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">pmusaraj</div>
+          <div class="post_content">
+<p>Look for “tag style” in your site settings, and change it to simple, that will remove the grey bullets.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/192157_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">HeyRR</div>
+          <div class="post_content">
+<p>I see, thanks, but I will need the default grey bullets for all other tags. I achieved this by remove that bullets for specific tag:</p>
+<pre><code class="lang-css">a[data-tag-name="test1"]::before {
+    display:none!important;
+}
+</code></pre>
+<p><img alt="image" data-base62-sha1="clTbw7yWRfT9kaHvg68BmwCQWOx" height="46" src="../../../images/56938cab27af2f2fecdda4fe935f8add5d1792e5.png" width="334"/></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/40415_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">sebastianh</div>
+          <div class="post_content">
+<p>Looks like a fantastic tweak. Question for advice to the author: I am thinking of pimping my bland tags, some of which I use to tag posts by language (so I have tags “castellano”, “deutsch” etc.), with little country flags. Would uploading a custom .svg as described above be the way or are there preconfigured iconsets or maybe discourse-built-in emoji-sets that could be used?</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/119489_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">pmusaraj</div>
+          <div class="post_content">
+<p>An emoji would make sense for country flags, but this component does not use emojis, it uses icons from an icon set like Font Awesome.</p>
+<p>You can try adding the emoji directly in the tag label. I tried this locally, and the tricky thing is that tags can’t have spaces. An example:</p>
+<p><img alt="image" data-base62-sha1="vXYILRxvWqbBrfWBNciSwOS1PrA" height="64" src="../../../images/e00b180f402cab57e349ce39d55783a4bfd8ff92.png" width="254"/></p>
+<p>If you are ok with the dash, that’s the way to go.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 4">❤️ 4</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/40415_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">sebastianh</div>
+          <div class="post_content">
+<p>Oh wow that is actually rather neat. Minus the dash <img alt=":slight_smile:" class="emoji" src="../../../images/slight_smile.png" title=":slight_smile:"/> but I could probably live with it. Might even be worth trying a tag that is just a flag emoji…</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/119489_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">pmusaraj</div>
+          <div class="post_content">
+<p>Yes, just an emoji is cool… but you won’t be able to easily find that from a search in the tag dropdown (when posting).</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/40415_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">sebastianh</div>
+          <div class="post_content">
+<p>Ok just one more semi-stupid question: how do I get the emoji to work as you did above with the francais? I tried creating a tag "<code>:sweden:-svenska"</code> but it doesn’t translate to the swedish flag</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/119489_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">pmusaraj</div>
+          <div class="post_content">
+<p>You need to use an emoji symbol (on mobile, for example, you would switch to the emoji keyboard).</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/40415_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">sebastianh</div>
+          <div class="post_content">
+<p>Ohhhh I thought the emojis in Discourse. Okay, need to switch to a mobile then. I thought I could somehow use these. It worked thanks!</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/383632_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">renato</div>
+          <div class="post_content">
+<aside class="quote group-team" data-post="6" data-topic="272374" data-username="pmusaraj">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/119489_2.png" width="24"/><a href="https://meta.discourse.org/t/tag-icons-working-with-tag-groups/272374/6">Tag Icons working with tag groups</a></div>
+<blockquote>
+<p>The tag groups feature is a nice-to-have for sure, it is a bit tricky and currently I don’t have the time to work on it.</p>
+</blockquote>
+</aside>
+<p>If I understood it right there isn’t an easy way of discovering the group a tag belongs to within the tag renderer?</p>
+<aside class="quote no-group" data-post="21" data-topic="109757" data-username="davidkingham">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/119528_2.png" width="24"/> davidkingham:</div>
+<blockquote>
+<p>Could the icon be added to the dropdown menu as well?</p>
+</blockquote>
+</aside>
+<p>This one would be great. I was using a custom CSS approach before and ditched it for this theme component with a <a href="https://github.com/renato/discourse-tag-icons/commit/b1b00720686a535235fdb2c1d0283fa082f6b4f6">fallback icon</a> for all non-set tags (at least before the support for tag groups) and this is the one thing I miss.</p>
+<p>Considering <code>discourse-category-icons</code> supports this, I’m guessing the renderer that <code>replaceCategoryLinkRenderer</code> replaces is used by the category dropdown while the renderer <code>replaceTagRenderer</code> replaces is NOT used by the tag dropdown, right? So maybe this would need a core change? The tag dropdown on the composer is using the replaced renderer, with icons.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/119489_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">pmusaraj</div>
+          <div class="post_content">
+<aside class="quote group-team" data-post="60" data-topic="109757" data-username="renato">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" loading="lazy" src="../../../images/383632_2.png" width="24"/> renato:</div>
+<blockquote>
+<p>If I understood it right there isn’t an easy way of discovering the group a tag belongs to within the tag renderer?</p>
+</blockquote>
+</aside>
+<p>Yes, that’s the issue with tag groups.</p>
+<aside class="quote group-team" data-post="60" data-topic="109757" data-username="renato">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" loading="lazy" src="../../../images/383632_2.png" width="24"/> renato:</div>
+<blockquote>
+<p>So maybe this would need a core change?</p>
+</blockquote>
+</aside>
+<p>Yes, I just had a look and this seems like a fairly simple fix, core needs to use the tag renderer in the filter dropdown (it would match the tag picker in the composer). I will look into it shortly.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/383632_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">renato</div>
+          <div class="post_content">
+<p>I just noticed that the category renderer is also replaced on the dropdown shown when <code>#mentioning</code> on the composer, showing the category icon from the theme component, but the tag renderer shows a renderer different from all other places, with a tag icon beside the tag name:<br/>
+<img alt="image" data-base62-sha1="yItH7gm7bAovnvm1EgaA3FCge8k" height="197" src="../../../images/f3510f582e00980f50eec6d16234633a054e65bc.png" width="286"/></p>
+<p><span class="mention">@pmusaraj</span> do you think it’s possible to make this renderer use the one replaced by the theme component too?</p>
+<p>Thanks.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/119489_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">pmusaraj</div>
+          <div class="post_content">
+<p>I think standardising this would make sense, yes. Are you interested in working on a PR for this <span class="mention">@renato</span>?</p>
+<p>(FYI, a <a href="https://github.com/discourse/discourse/pull/11378">PR is up</a> for the filter dropdown, will be merged probably sometime next week.)</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 4">❤️ 4</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/175682_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">sunjam</div>
+          <div class="post_content">
+<p>I’ve begun using this component to <a href="https://meta.discourse.org/t/adding-a-confirmation-to-particular-tag-groups-and-mentions/174213">visually alert users when applying a tag</a> will trigger a chat integration.</p>
+<p>Would it be possible to optionally color the tag text as well directly from this component?  I see a manual option on the forum <a href="https://meta.discourse.org/t/add-a-custom-fontawesome-icon-and-color-to-your-tag/67881/3">here</a>.  Thanks for the great component!</p>
+<p>edit:  It’d also be useful to add multiple icons to a tag.  Thanks for considering!</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/119489_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">pmusaraj</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="64" data-topic="109757" data-username="sunjam">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" loading="lazy" src="../../../images/175682_2.png" width="24"/> sunjam:</div>
+<blockquote>
+<p>Would it be possible to optionally color the tag text as well directly from this component?</p>
+</blockquote>
+</aside>
+<p>This can be done with SCSS in your theme, we don’t have plans to add this functionality to the component.</p>
+<p>No plans to allow multiple icons per tag, either.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">jrgong</div>
+          <div class="post_content">
+<p>Hey <span class="mention">@pmusaraj</span></p>
+<p>Is there any workaround to set a fallback icon per tag-group yet?</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/200014_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Ed_Bobkov</div>
+          <div class="post_content">
+<p>Is it possible to change icons on all tags? Instead of bullets to smth else? This component is only for listed tags if I got it right.</p>
+<p>Answer found:</p>
+<pre><code>.discourse-tags .bullet:before { 
+    background: transparent;
+    content: svg-uri('&lt;svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" version="1.1" style="shape-rendering:geometricPrecision;text-rendering:geometricPrecision;image-rendering:optimizeQuality;" viewBox="0 0 467 856.25" x="0px" y="0px" fill-rule="evenodd" clip-rule="evenodd"&gt;&lt;defs&gt;&lt;style type="text/css"&gt;.fil0 {fill:black}&lt;/style&gt;&lt;/defs&gt;&lt;g&gt;&lt;path class="fil0" d="M234 0c129,0 233,105 233,234 0,64 -26,122 -68,165l-165 286 -166 -286c-42,-43 -68,-101 -68,-165 0,-129 105,-234 234,-234zm0 125c50,0 90,40 90,90 0,50 -40,91 -90,91 -50,0 -91,-41 -91,-91 0,-50 41,-90 91,-90z"/&gt;&lt;/g&gt;&lt;/svg&gt;'); 
+    vertical-align:baseline;
+}
+</code></pre>
+<p>SVG icon images can be freely downloaded from sites such as <a href="https://thenounproject.com/" rel="noopener nofollow ugc">https://thenounproject.com/</a></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/247704_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">TheBestPessimist</div>
+          <div class="post_content">
+<h3>Bullet tags + tag-color</h3>
+<p>If you’re using bullet-style tags and</p>
+<ul>
+<li>you want to have the same <em>tag icon</em> and <em>tag text</em> colors</li>
+<li>you want to show the bullet only if there’s <em>no tag icon</em> set</li>
+</ul>
+<p>here’s how i did it for the tags <code>books</code> and <code>science-fiction</code>:</p>
+<p>End result:<br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/1XzwcRN1IJ4zqjC2ZhVZhmmDrzJ.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/3X/0/d/0dbe1c95fb6f31b0a2d7d721eb97cdec04be193b.png" rel="noopener nofollow ugc" title="image"><img alt="image" data-base62-sha1="1XzwcRN1IJ4zqjC2ZhVZhmmDrzJ" data-small-upload="https://d11a6trkgmumsb.cloudfront.net/optimized/3X/0/d/0dbe1c95fb6f31b0a2d7d721eb97cdec04be193b_2_10x10.png" height="81" src="../../../images/0dbe1c95fb6f31b0a2d7d721eb97cdec04be193b_2_690x81.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/3X/0/d/0dbe1c95fb6f31b0a2d7d721eb97cdec04be193b_2_690x81.png, https://d11a6trkgmumsb.cloudfront.net/original/3X/0/d/0dbe1c95fb6f31b0a2d7d721eb97cdec04be193b.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/3X/0/d/0dbe1c95fb6f31b0a2d7d721eb97cdec04be193b.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use xlink:href="#far-image"></use></svg><span class="filename">image</span><span class="informations">938×111 13.3 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use xlink:href="#discourse-expand"></use></svg></div></a></div></p>
+<ol>
+<li>Setup of <code>Tag icons</code> component (this component)</li>
+</ol>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/lElSL6dzDGywv9NIObA22W4j0WV.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/3X/9/7/97bd661b9737393c4710883d131c61d6335ded2d.png" rel="noopener nofollow ugc" title="image"><img alt="image" data-base62-sha1="lElSL6dzDGywv9NIObA22W4j0WV" data-small-upload="https://d11a6trkgmumsb.cloudfront.net/optimized/3X/9/7/97bd661b9737393c4710883d131c61d6335ded2d_2_10x10.png" height="376" src="../../../images/97bd661b9737393c4710883d131c61d6335ded2d_2_690x376.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/3X/9/7/97bd661b9737393c4710883d131c61d6335ded2d_2_690x376.png, https://d11a6trkgmumsb.cloudfront.net/optimized/3X/9/7/97bd661b9737393c4710883d131c61d6335ded2d_2_1035x564.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/3X/9/7/97bd661b9737393c4710883d131c61d6335ded2d_2_1380x752.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use xlink:href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1466×799 70.1 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use xlink:href="#discourse-expand"></use></svg></div></a></div></p>
+<ol start="2">
+<li>Setup of a secondary component that must be kept in sync with <code>Tag Icons</code><br/>
+In this component we’re doing 2 things:
+<ol>
+<li>Hide the bullet for specific tags</li>
+<li>Color the tag text with the same color as the icon</li>
+</ol>
+</li>
+</ol>
+<p>For this to work, we create a new theme component: <code>Tag Icons extra</code>.<br/>
+In the <code>Common/CSS section</code>:</p>
+<ol>
+<li>Add the following mixin (needed only once):</li>
+</ol>
+<pre><code class="lang-css">@mixin updateBulletTag ($col) {
+    &amp;.bullet {
+        color: $col !important;
+    }
+    &amp;.bullet::before {
+        content: none !important;
+    }
+}
+</code></pre>
+<ol start="2">
+<li>For every tag you want to edit, paste the following and replace <code>REPLACEMETAG</code> with the tag name and <code>REPLACEMECOLOR</code> with the same color as the icon:</li>
+</ol>
+<pre><code class="lang-css">[data-tag-name="REPLACEMETAG"] {
+    @include updateBulletTag(REPLACEMECOLOR);
+}
+</code></pre>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/ycSE2SmqQDi04AYxkQN6usNR3CV.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/3X/e/f/efbeae227166f9f0c1162da992c9a9c1ff5070e1.png" rel="noopener nofollow ugc" title="image"><img alt="image" data-base62-sha1="ycSE2SmqQDi04AYxkQN6usNR3CV" data-small-upload="https://d11a6trkgmumsb.cloudfront.net/optimized/3X/e/f/efbeae227166f9f0c1162da992c9a9c1ff5070e1_2_10x10.png" height="275" src="../../../images/efbeae227166f9f0c1162da992c9a9c1ff5070e1_2_690x275.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/3X/e/f/efbeae227166f9f0c1162da992c9a9c1ff5070e1_2_690x275.png, https://d11a6trkgmumsb.cloudfront.net/optimized/3X/e/f/efbeae227166f9f0c1162da992c9a9c1ff5070e1_2_1035x412.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/3X/e/f/efbeae227166f9f0c1162da992c9a9c1ff5070e1_2_1380x550.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use xlink:href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1554×621 41.4 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use xlink:href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 6">❤️ 6</span><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/247704_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">TheBestPessimist</div>
+          <div class="post_content">
+<p>Bug report: in the tag selector of a post, the icons are not colored:</p>
+<p>Here, the icons should have the same color as the text (text is my own custom css):<br/>
+<img alt="image" data-base62-sha1="ArLACaaRSgT76FtoPdj9CYQnblC" height="102" src="../../../images/ff71cf37b640725080f65d098ada14d7e2572470.png" width="341"/></p>
+<p>My config:<br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/d4IvVEmdQyRhbCd5SEMumSYlUkC.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/3X/5/b/5ba4cabf2377c537b5067437e1eb269380a7d7b6.png" rel="noopener nofollow ugc" title="image"><img alt="image" data-base62-sha1="d4IvVEmdQyRhbCd5SEMumSYlUkC" data-small-upload="https://d11a6trkgmumsb.cloudfront.net/optimized/3X/5/b/5ba4cabf2377c537b5067437e1eb269380a7d7b6_2_10x10.png" height="105" src="../../../images/5ba4cabf2377c537b5067437e1eb269380a7d7b6_2_690x105.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/3X/5/b/5ba4cabf2377c537b5067437e1eb269380a7d7b6_2_690x105.png, https://d11a6trkgmumsb.cloudfront.net/original/3X/5/b/5ba4cabf2377c537b5067437e1eb269380a7d7b6.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/3X/5/b/5ba4cabf2377c537b5067437e1eb269380a7d7b6.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use xlink:href="#far-image"></use></svg><span class="filename">image</span><span class="informations">955×146 9.98 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use xlink:href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/206391_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">MrDavis97</div>
+          <div class="post_content">
+<p><span class="mention">@pmusaraj</span> I have 50 or so tags that I put icons next to about two weeks ago. I check my list of tags now, and five of them don’t have icons anymore… And even if I delete them and re-enter them in, no cigar. I might try deleting all 50 of them and then re-entering them all in to see if that helps, but I wish I didn’t have to, since that’s a pain…</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/119489_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">pmusaraj</div>
+          <div class="post_content">
+<p>Can you post a screenshot of your settings pointing out the tags whose icons are no longer working?</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/206391_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">MrDavis97</div>
+          <div class="post_content">
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/raPBHjm3MpKjTfX67s2m76DsHSG.jpeg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/3X/b/e/be742afde5001a38cf909618387ead6d2f53347a.jpeg" rel="noopener nofollow ugc" title="tags_1"><img alt="tags_1" data-base62-sha1="raPBHjm3MpKjTfX67s2m76DsHSG" data-small-upload="https://d11a6trkgmumsb.cloudfront.net/optimized/3X/b/e/be742afde5001a38cf909618387ead6d2f53347a_2_10x10.png" height="388" src="../../../images/be742afde5001a38cf909618387ead6d2f53347a_2_690x388.jpeg" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/3X/b/e/be742afde5001a38cf909618387ead6d2f53347a_2_690x388.jpeg, https://d11a6trkgmumsb.cloudfront.net/optimized/3X/b/e/be742afde5001a38cf909618387ead6d2f53347a_2_1035x582.jpeg 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/3X/b/e/be742afde5001a38cf909618387ead6d2f53347a_2_1380x776.jpeg 2x" width="690"/><div class="meta">
+<svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use xlink:href="#far-image"></use></svg><span class="filename">tags_1</span><span class="informations">1920×1080 266 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use xlink:href="#discourse-expand"></use></svg>
+</div></a></div></p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/doBikPHDJ9WG4yf9O93ePBIAgta.jpeg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/3X/5/d/5de4302eb2d59c3cfbd694414fc604c848835b10.jpeg" rel="noopener nofollow ugc" title="tags_2"><img alt="tags_2" data-base62-sha1="doBikPHDJ9WG4yf9O93ePBIAgta" data-small-upload="https://d11a6trkgmumsb.cloudfront.net/optimized/3X/5/d/5de4302eb2d59c3cfbd694414fc604c848835b10_2_10x10.png" height="388" src="../../../images/5de4302eb2d59c3cfbd694414fc604c848835b10_2_690x388.jpeg" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/3X/5/d/5de4302eb2d59c3cfbd694414fc604c848835b10_2_690x388.jpeg, https://d11a6trkgmumsb.cloudfront.net/optimized/3X/5/d/5de4302eb2d59c3cfbd694414fc604c848835b10_2_1035x582.jpeg 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/3X/5/d/5de4302eb2d59c3cfbd694414fc604c848835b10_2_1380x776.jpeg 2x" width="690"/><div class="meta">
+<svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use xlink:href="#far-image"></use></svg><span class="filename">tags_2</span><span class="informations">1920×1080 281 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use xlink:href="#discourse-expand"></use></svg>
+</div></a></div></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/119489_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">pmusaraj</div>
+          <div class="post_content">
+<p>Hmm, it’s curious that the last five entries are not working. Can you try flipping an entry in the last 5 with another one above and see what happens? It looks like the setting value is getting truncated at some point…</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/206391_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">MrDavis97</div>
+          <div class="post_content">
+<p>Just so you know, it wasn’t <em>originally</em> the last five that started not to show up. It was five seemingly random ones, and then I went and deleted them and then re-entered them in to see if they would show up (which they didn’t), and that’s why it seems like they might not be showing up because they are the last few.</p>
+<p>With that said, I deleted the proof-verification tag, and re-entered it so that it’s at the front of the line. Was orange, and is still orange and showing up fine. Still seems to be just those five…</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">jrgong</div>
+          <div class="post_content">
+<p>Is there any way to use those color variables for the tag icon colors?</p><aside class="quote quote-modified" data-post="1" data-topic="77551">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/148734_2.png" width="24"/>
+<div class="quote-title__text-content">
+<a href="https://meta.discourse.org/t/how-to-use-discourse-core-variables-in-your-theme/77551">Use Discourse Core Variables in your Theme</a> <a class="badge-category__wrapper" href="/c/documentation/developer-guides/56"><span class="badge-category --style-square --has-parent" data-category-id="56" data-drop-close="true" data-parent-category-id="10" style="--category-badge-color: #00A94F; --category-badge-text-color: #FFFFFF; --parent-category-badge-color: #00A94F;" title="Documentation about extending Discourse with plugins, themes, and theme components, working with the core code, and using the Discourse API. (Index)"><span class="badge-category__name">Developer Guides</span></span></a>
+</div>
+</div>
+<blockquote>
+    Discourse is incredibly customizable! 
+The goal of this topic is to show you how make use of all the amazing options that are available to you as a theme developer. You know… so that you don’t have to reinvent the wheel <img alt="smile" class="emoji" height="20" src="../../../images/smile.png" title="smile" width="20"/>
+<a class="anchor" href="#p-368698-variables-what-variables-1" name="p-368698-variables-what-variables-1"></a>Variables? What variables?
+Variables cover a large number of things, from font sizes to colors to z-index values. You can use and override the vast majority of variables in your theme editor. 
+<a class="anchor" href="#p-368698-colors-2" name="p-368698-colors-2"></a>Colors
+There are many colors available for you to use or override in your them…
+  </blockquote>
+</aside>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/256632_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">daemon</div>
+          <div class="post_content">
+<p>You can use every color for the tag icons.<br/>
+<img alt="tagicons" data-base62-sha1="tRFDQZLyHRHYn84DWuYZhjFIBx" height="46" src="../../../images/036042efa898fb891942266b5dc7de6a38f979cf.png" width="420"/><br/>
+Or what do you mean?</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/119489_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">pmusaraj</div>
+          <div class="post_content">
+<p>Good question, yes, it looks like you can use CSS custom properties, this worked for me:</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/wSJaYnfyHxX5ChcQN5iX1AttXC2.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/3X/e/6/e6755224302dee077951166e9dd051be1b1ee94a.png" title="image"><img alt="image" data-base62-sha1="wSJaYnfyHxX5ChcQN5iX1AttXC2" data-small-upload="https://d11a6trkgmumsb.cloudfront.net/optimized/3X/e/6/e6755224302dee077951166e9dd051be1b1ee94a_2_10x10.png" height="112" src="../../../images/e6755224302dee077951166e9dd051be1b1ee94a_2_517x112.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/3X/e/6/e6755224302dee077951166e9dd051be1b1ee94a_2_517x112.png, https://d11a6trkgmumsb.cloudfront.net/optimized/3X/e/6/e6755224302dee077951166e9dd051be1b1ee94a_2_775x168.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/3X/e/6/e6755224302dee077951166e9dd051be1b1ee94a_2_1034x224.png 2x" width="517"/><div class="meta">
+<svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use xlink:href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1508×330 28.4 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use xlink:href="#discourse-expand"></use></svg>
+</div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">jrgong</div>
+          <div class="post_content">
+<p>Ah my mistake. Just found my error and it’s working just fine.<br/>
+Awesome that it’s possible!</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/222185_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">DogeRTX</div>
+          <div class="post_content">
+<p>any way to use a png for the icon? I have all my images I want to use as png images and converting them to svg just ruins them and when I do convert I can’t get the icons to load anyways.</p>
+<p>Iv got over 400+ images that I would need to convert and seeing that I can’t even get one conversion to work it would be nice to be able to just use the pngs I already have.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/119489_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">pmusaraj</div>
+          <div class="post_content">
+<p>This component isn’t meant to be used with pngs. You can probably just use css in your case.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/222185_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">DogeRTX</div>
+          <div class="post_content">
+<p>Ok, iv gotten it to fit in the tag box how it looks nice but that’s for every tags box, iv found how to target specific tags but what would be the right way of selecting that tags box to put in the png icon?</p>
+<p>trying to select one -</p>
+<pre><code>.tag-question::before {
+    content: url(https://s2.coinmarketcap.com/static/img/coins/16x16/1.png);
+    width: 8px;
+    height: 4px;
+    margin-right: 10px;
+    margin-top: 3px;
+    display:inline-block;
+}
+</code></pre>
+<p>Selecting all -</p>
+<pre><code>a.discourse-tag.box::before {
+    content: url(https://s2.coinmarketcap.com/static/img/coins/16x16/1.png);
+    width: 8px;
+    height: 4px;
+    margin-right: 10px;
+    margin-top: 3px;
+    display:inline-block;
+}
+</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/121814_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">jimkleiber</div>
+          <div class="post_content">
+<p>If you’re still looking, I found this site has lots of flag SVG icons and there may be a way to upload them as custom SVG icons on Discourse, not yet sure.</p>
+<aside class="onebox allowlistedgeneric" data-onebox-src="https://www.flaticon.com/packs/search?word=flags&amp;shape=lineal-color&amp;order_by=4&amp;type=icon">
+<header class="source">
+<img class="site-icon" height="32" src="../../../images/5721b872fb39a6af704ac5d4d9df267948b0e3d3.png" width="32"/>
+<a href="https://www.flaticon.com/packs/search?word=flags&amp;shape=lineal-color&amp;order_by=4&amp;type=icon" rel="noopener nofollow ugc" target="_blank">Flaticon</a>
+</header>
+<article class="onebox-body">
+<div class="aspect-image" style="--aspect-ratio:690/388;"><img class="thumbnail" data-small-upload="https://d11a6trkgmumsb.cloudfront.net/optimized/3X/0/4/04d3e0e4e7714f2ef8d0d0fcfa02e77f51b56f0d_2_10x10.png" height="388" src="../../../images/04d3e0e4e7714f2ef8d0d0fcfa02e77f51b56f0d_2_690x388.jpeg" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/3X/0/4/04d3e0e4e7714f2ef8d0d0fcfa02e77f51b56f0d_2_690x388.jpeg, https://d11a6trkgmumsb.cloudfront.net/optimized/3X/0/4/04d3e0e4e7714f2ef8d0d0fcfa02e77f51b56f0d_2_1035x582.jpeg 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/3X/0/4/04d3e0e4e7714f2ef8d0d0fcfa02e77f51b56f0d_2_1380x776.jpeg 2x" width="690"/></div>
+<h3><a href="https://www.flaticon.com/packs/search?word=flags&amp;shape=lineal-color&amp;order_by=4&amp;type=icon" rel="noopener nofollow ugc" target="_blank">133 icon packs of flags</a></h3>
+<p>Millions of vector icons in SVG, PSD, PNG, EPS format or as webfonts</p>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/255461_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">balupton</div>
+          <div class="post_content">
+<p>Working great! Here’s a few feature requests:</p>
+<ol>
+<li>Auto-suggest adding the svg-icons automatically by the tag icon list inputs</li>
+<li>Convert the tag icon list into a 3 column table, where there can be autocompletion on tags and font-awesome v5 icons</li>
+<li>Add a link to <a class="inline-onebox" href="https://fontawesome.com/v5/search" rel="noopener nofollow ugc">Search v5 Icons | Font Awesome</a> as turns out I was searching the latest font awesome (current v6) and wondering why my inputs weren’t working.</li>
+<li>Adopt font awesome v6</li>
+</ol>
+<p>Thank you for this.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/222392_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">undasein</div>
+          <div class="post_content">
+<p>Any idea why I havent a space between tags? Only happens on mobile</p>
+<details>
+<summary>
+Screenshot</summary>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/2B12zy9f5zmMWw9gWrxAAvgsrv7.jpeg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/1/2/3/12338cfff78044288a0e9d8a103d194a44547335.jpeg" rel="noopener nofollow ugc" title="photo_2022-07-23_21-03-10"><img alt="photo_2022-07-23_21-03-10" data-base62-sha1="2B12zy9f5zmMWw9gWrxAAvgsrv7" data-small-upload="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/1/2/3/12338cfff78044288a0e9d8a103d194a44547335_2_10x10.png" height="500" src="../../../images/12338cfff78044288a0e9d8a103d194a44547335_2_450x500.jpeg" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/1/2/3/12338cfff78044288a0e9d8a103d194a44547335_2_450x500.jpeg, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/1/2/3/12338cfff78044288a0e9d8a103d194a44547335_2_675x750.jpeg 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/1/2/3/12338cfff78044288a0e9d8a103d194a44547335_2_900x1000.jpeg 2x" width="450"/><div class="meta">
+<svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">photo_2022-07-23_21-03-10</span><span class="informations">1080×1198 153 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg>
+</div></a></div></p>
+</details>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/201966_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">AquaL1te</div>
+          <div class="post_content">
+<p>2 created tags are not working for some reason, could this be a bug? I created the tag <code>interview</code> with the SVG logo <code>microphone-stand</code> and the tag <code>lecture</code> with the SVG logo <code>camcorder</code>. Both remain blank.</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/qLNmxhsGQuOdutvPPBghe62WSRt.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/b/b/9/bb9fa9be2109bbca8e74a7bb64ea4b72210de05b.png" rel="noopener nofollow ugc" title="Screenshot 2022-08-27 at 18-57-23 Tags - TZM Community Forum"><img alt="Screenshot 2022-08-27 at 18-57-23 Tags - TZM Community Forum" data-base62-sha1="qLNmxhsGQuOdutvPPBghe62WSRt" data-dominant-color="242424" height="100" src="../../../images/bb9fa9be2109bbca8e74a7bb64ea4b72210de05b_2_690x100.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/b/b/9/bb9fa9be2109bbca8e74a7bb64ea4b72210de05b_2_690x100.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/b/b/9/bb9fa9be2109bbca8e74a7bb64ea4b72210de05b_2_1035x150.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/b/b/9/bb9fa9be2109bbca8e74a7bb64ea4b72210de05b.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2022-08-27 at 18-57-23 Tags - TZM Community Forum</span><span class="informations">1090×159 5.01 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div><br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/2mZKl69Bvfhv0PAoj5klUXUTRhw.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/1/0/9/109dcf8b01cbefe2a7f28a94c97789efd2aee4fa.png" rel="noopener nofollow ugc" title="Screenshot 2022-08-27 at 18-57-56 Admin - TZM Community Forum"><img alt="Screenshot 2022-08-27 at 18-57-56 Admin - TZM Community Forum" data-base62-sha1="2mZKl69Bvfhv0PAoj5klUXUTRhw" data-dominant-color="262626" height="371" src="../../../images/109dcf8b01cbefe2a7f28a94c97789efd2aee4fa.png" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2022-08-27 at 18-57-56 Admin - TZM Community Forum</span><span class="informations">741×399 24.5 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>It does work when I set both tags to use the <code>film</code> SVG logo, which I already used for another tag. So for some reason the 2 initial logos I want to use don’t get accepted.</p>
+<p>Can someone reproduce this issue? I could just reproduce it in a clean dev environment with just with this theme component installed. How can I see which version of FontAwesome is in use. Maybe I’m just selecting icons that aren’t included in the version on Discourse. I guess it’s version <a href="https://github.com/discourse/discourse/blob/main/package.json#L10" rel="noopener nofollow ugc">5.15</a>. Since these icons were included in 5.11 or 6.0, it should be included.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/254611_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">JammyDodger</div>
+          <div class="post_content">
+<p>I can’t get them to work either, so it may be a case of them not being included in the available set.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/263313_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">ALDT_nè</div>
+          <div class="post_content">
+<p>Hi! <img alt=":wave:t2:" class="emoji" height="20" loading="lazy" src="../../../images/2.png" title=":wave:t2:" width="20"/></p>
+<p>I wonder Can I use some icons with images like nature?</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/131899_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Heliosurge</div>
+          <div class="post_content">
+<p>Does this work with tags in tag groups?</p>
+<p>I just ran a test in a private category with your tag1 and it works.  However tags in a tag group seem to not work?</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/131899_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Heliosurge</div>
+          <div class="post_content">
+<p>I am having a similar issue.  It seems when a tag exceeds 10 chars the icons do not display.</p>
+<p>Figured out tag group issue.  seems needed to add tags from groups directly to category vs adding tag group?</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/335774_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Darojax</div>
+          <div class="post_content">
+<p>I cant get the tag icons to appear anywhere but in the sidebar. Anyone has any idea why this is the case? Tried reinstalling the component, using only that component together with the default theme, still no joy.</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/zOANhewfmSNJka9YKtBjtZfC5TO.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/f/b/0/fb042d6073d052f288313aca8c5c83957c77ff78.png" rel="noopener nofollow ugc" title="image"><img alt="image" data-base62-sha1="zOANhewfmSNJka9YKtBjtZfC5TO" data-dominant-color="D2D1CF" height="182" src="../../../images/fb042d6073d052f288313aca8c5c83957c77ff78_2_690x182.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/f/b/0/fb042d6073d052f288313aca8c5c83957c77ff78_2_690x182.png, https://d11a6trkgmumsb.cloudfront.net/original/4X/f/b/0/fb042d6073d052f288313aca8c5c83957c77ff78.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/f/b/0/fb042d6073d052f288313aca8c5c83957c77ff78.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">815×215 15.2 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/465200_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Firepup650</div>
+          <div class="post_content">
+<p>Just to check, you added the icons to the <code>svg icons</code> setting in the theme component?</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/335774_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Darojax</div>
+          <div class="post_content">
+<p>Yeah I did, you can see that the icons themselves appear to the left in the sidebar, but they do not appear anywhere else:</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/h0uVm6kvTdVkHlJyhgx47pralk0.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/7/7/3/77336443c03f630c2c14ba7b879303f35d36cd2c.png" rel="noopener nofollow ugc" title="image"><img alt="image" data-base62-sha1="h0uVm6kvTdVkHlJyhgx47pralk0" data-dominant-color="292A2A" height="213" src="../../../images/77336443c03f630c2c14ba7b879303f35d36cd2c_2_690x213.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/7/7/3/77336443c03f630c2c14ba7b879303f35d36cd2c_2_690x213.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/7/7/3/77336443c03f630c2c14ba7b879303f35d36cd2c_2_1035x319.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/7/7/3/77336443c03f630c2c14ba7b879303f35d36cd2c.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1372×425 45.7 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/298682_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Arkshine</div>
+          <div class="post_content">
+<p>Hi, Darojax, welcome <img alt=":wave:" class="emoji" height="20" loading="lazy" src="../../../images/wave.png" title=":wave:" width="20"/></p>
+<p>I am unable to reproduce this on my side. <img alt=":thinking:" class="emoji" height="20" loading="lazy" src="../../../images/thinking.png" title=":thinking:" width="20"/></p>
+<p>Unless CSS is involved or templates are overwritten, the tags are rendered the same way everywhere.</p>
+<p>If possible, can you share your forum URL?</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/335774_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Darojax</div>
+          <div class="post_content">
+<p>Hello, thanks for your reply. Unfortunately at this stage the forum is still in development and not open on internet. I’ll get back to you once we go public, or if the issue is resolved.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/298682_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Arkshine</div>
+          <div class="post_content">
+<p>Alright, it’s fine. Can you provide your current Discourse version strictly and list the active plugins/components? Maybe it could give us a hint.</p>
+<p>I would try to enable only the Tag Icons component with the default theme without any CSS modifications to see if the issue appears. If not, from that, you can figure out what the culprit is.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/335774_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Darojax</div>
+          <div class="post_content">
+<p>Of course:</p>
+<p><strong>Discourse Version Installed</strong><br/>
+3.2.0.beta2<br/>
+(<a href="https://github.com/discourse/discourse/commits/be04154838c2e5a38cd544770d3290a9e2801241" rel="noopener nofollow ugc">be04154838</a>)</p>
+<p><strong>Latest</strong><br/>
+3.2.0.beta2</p>
+<p>I’ve created a fresh Default theme and am only using the Tag icons component installed directly via github:</p><aside class="onebox githubrepo" data-onebox-src="https://github.com/discourse/discourse-category-icons">
+<header class="source">
+<a href="https://github.com/discourse/discourse-category-icons" rel="noopener nofollow ugc" target="_blank">github.com</a>
+</header>
+<article class="onebox-body">
+<div class="github-row" data-github-private-repo="false">
+<img class="thumbnail" data-dominant-color="F0F0EB" height="344" src="../../../images/4b488227414e31e76af6aac6fdc4a4ceebcf9fb4_2_690x344.png" width="690"/>
+<h3><a href="https://github.com/discourse/discourse-category-icons" rel="noopener nofollow ugc" target="_blank">GitHub - discourse/discourse-category-icons: A theme component to display icons next to...</a></h3>
+<p><span class="github-repo-description">A theme component to display icons next to category links in Discourse.</span></p>
+</div>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+<p>along with two plugins:<br/>
+<div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/nO8LOYWg83JDr6umo140QTeexa1.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/a/6/d/a6dd027fd05589ba85cd84eabd28e64574f85081.png" rel="noopener nofollow ugc" title="image"><img alt="image" data-base62-sha1="nO8LOYWg83JDr6umo140QTeexa1" data-dominant-color="F7F6F6" height="119" src="../../../images/a6dd027fd05589ba85cd84eabd28e64574f85081_2_690x119.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/a/6/d/a6dd027fd05589ba85cd84eabd28e64574f85081_2_690x119.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/a/6/d/a6dd027fd05589ba85cd84eabd28e64574f85081_2_1035x178.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/a/6/d/a6dd027fd05589ba85cd84eabd28e64574f85081.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1111×192 20.5 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>discourse-landing-pages</p><aside class="onebox githubrepo" data-onebox-src="https://github.com/paviliondev/discourse-landing-pages">
+<header class="source">
+<a href="https://github.com/paviliondev/discourse-landing-pages" rel="noopener nofollow ugc" target="_blank">github.com</a>
+</header>
+<article class="onebox-body">
+<div class="github-row" data-github-private-repo="false">
+<img class="thumbnail" data-dominant-color="F5F1F0" height="344" src="../../../images/fdcae83522b1a58652a6051a60732875e324126e_2_690x344.png" width="690"/>
+<h3><a href="https://github.com/paviliondev/discourse-landing-pages" rel="noopener nofollow ugc" target="_blank">GitHub - paviliondev/discourse-landing-pages: Adds landing pages to Discourse</a></h3>
+<p><span class="github-repo-description">Adds landing pages to Discourse</span></p>
+</div>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+<p>docker_manager</p><aside class="onebox githubrepo" data-onebox-src="https://github.com/discourse/docker_manager">
+<header class="source">
+<a href="https://github.com/discourse/docker_manager" rel="noopener nofollow ugc" target="_blank">github.com</a>
+</header>
+<article class="onebox-body">
+<div class="github-row" data-github-private-repo="false">
+<img class="thumbnail" data-dominant-color="ECEBE9" height="344" src="../../../images/d5b16ed6de886fc0606cc0198551bc0d8f20f402_2_690x344.png" width="690"/>
+<h3><a href="https://github.com/discourse/docker_manager" rel="noopener nofollow ugc" target="_blank">GitHub - discourse/docker_manager: Plugin for use with discourse docker image</a></h3>
+<p><span class="github-repo-description">Plugin for use with discourse docker image</span></p>
+</div>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+<p>No other CSS or html or other customisations have been made.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/335774_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Darojax</div>
+          <div class="post_content">
+<p>OK I have found the issue. The plugin doesn’t seem able to handle tags that begin with capital letters. I changed the tag names to all lower case and now it works as intended. Tags starting with capital letters look more tidy in my opinion, would be great if this issue could be handled. : ) But still thanks for a great component.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/298682_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Arkshine</div>
+          <div class="post_content">
+<p>I’m glad it’s working now. However, how did you create those tags? They are normally forced to be lowercase.<img alt=":thinking:" class="emoji" height="20" loading="lazy" src="../../../images/thinking.png" title=":thinking:" width="20"/></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/335774_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Darojax</div>
+          <div class="post_content">
+<p>There is a setting for this in the admin panel:</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/oRLQtRtOFX6WMEeIa5fuPEV9CeK.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/a/e/4/ae483c9e9dffe44991fdf231bbbbf60b72d24a32.png" rel="noopener nofollow ugc" title="image"><img alt="image" data-base62-sha1="oRLQtRtOFX6WMEeIa5fuPEV9CeK" data-dominant-color="313638" height="136" src="../../../images/ae483c9e9dffe44991fdf231bbbbf60b72d24a32.png" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">723×143 7.04 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/298682_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Arkshine</div>
+          <div class="post_content">
+<p>You’re right, my bad, I forgot about this setting. <img alt=":smile:" class="emoji" height="20" loading="lazy" src="../../../images/smile.png" title=":smile:" width="20"/></p>
+<p>I know where the issue is, I will propose a fix later. <img alt=":+1:" class="emoji" height="20" loading="lazy" src="../../../images/+1.png" title=":+1:" width="20"/></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/335774_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Darojax</div>
+          <div class="post_content">
+<p>Cheers! <img alt=":+1:" class="emoji" height="20" loading="lazy" src="../../../images/+1.png" title=":+1:" width="20"/></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/222392_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">undasein</div>
+          <div class="post_content">
+<p>When an icon is added to the tags, the bullet tag style icon is still displayed. Is it just me?</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/1KDAXuzvCW2XAAylLJdTIqda9fT.jpeg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/0/c/4/0c47d1106450e4daa9699dcbdb202b7688e0ecbd.jpeg" rel="noopener nofollow ugc" title="Screenshot_20231102-183653_Kiwi Browser~2"><img alt="Screenshot_20231102-183653_Kiwi Browser~2" data-base62-sha1="1KDAXuzvCW2XAAylLJdTIqda9fT" data-dominant-color="322E2E" height="500" src="../../../images/0c47d1106450e4daa9699dcbdb202b7688e0ecbd_2_225x500.jpeg" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/0/c/4/0c47d1106450e4daa9699dcbdb202b7688e0ecbd_2_225x500.jpeg, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/0/c/4/0c47d1106450e4daa9699dcbdb202b7688e0ecbd_2_337x750.jpeg 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/0/c/4/0c47d1106450e4daa9699dcbdb202b7688e0ecbd_2_450x1000.jpeg 2x" width="225"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot_20231102-183653_Kiwi Browser~2</span><span class="informations">1080×2400 171 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/335774_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Darojax</div>
+          <div class="post_content">
+<p>Make sure tag style is set to “simple”</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/vLemeqCGg1rtZzm50Cz3EN1woDO.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/d/e/9/de9a31c9884432a418989acd2e91d0744725de74.png" rel="noopener nofollow ugc" title="image"><img alt="image" data-base62-sha1="vLemeqCGg1rtZzm50Cz3EN1woDO" data-dominant-color="28292A" height="352" src="../../../images/de9a31c9884432a418989acd2e91d0744725de74_2_690x352.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/d/e/9/de9a31c9884432a418989acd2e91d0744725de74_2_690x352.png, https://d11a6trkgmumsb.cloudfront.net/original/4X/d/e/9/de9a31c9884432a418989acd2e91d0744725de74.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/d/e/9/de9a31c9884432a418989acd2e91d0744725de74.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">935×478 20 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/298682_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Arkshine</div>
+          <div class="post_content">
+<p>That means you will lose the bullet style everywhere.</p>
+<p>A new setting allowing users to choose whether to overwrite the <code>tag style</code> setting would be nice, I think.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/192154_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Jagster</div>
+          <div class="post_content">
+<p>With this componen it should be <code>box</code> if I’m remembering right.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/298682_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Arkshine</div>
+          <div class="post_content">
+<p>Here is a quick &amp; dirty CSS to hide the bullet. <img alt=":+1:" class="emoji" height="20" loading="lazy" src="../../../images/+1.png" title=":+1:" width="20"/><br/>
+You can add it in your theme CSS or a component.</p>
+<pre><code class="lang-css">a.discourse-tag.bullet:has(span.tag-icon):before {
+   display: none;
+}
+</code></pre>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/222392_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">undasein</div>
+          <div class="post_content">
+<p>It works, thank you so much!</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/428592_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">gormus</div>
+          <div class="post_content">
+<p><em>Feature request:</em> Could it be possible to add partial slug support similar to Category Icons component?</p>
+<p>I have multiple groups of tags, I could easily set an icon for each because the tags share the same prefixes.</p>
+<p>For example;</p>
+<p><code>acme-2023</code>, <code>acme-2022</code>, <code>acme-2021</code> …</p>
+<p>If I could select tags starting with <code>acme-</code> and assign the same icon to them, that would simplify so many things for me.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 5">❤️ 5</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/175682_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">sunjam</div>
+          <div class="post_content">
+<p>I’m curious about flag emojis as tag icons. Following earlier threads on it from past years.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/205701_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">ncaming215</div>
+          <div class="post_content">
+<p>Is there an easy’ish fix to get this component to recognize tags written in sentence case? As of now, it doesn’t work if it isn’t lowercase.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/377822_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">bryce</div>
+          <div class="post_content">
+<p>How are you able to create tags with uppercase characters? When I go to create a tag, it automatically converts it to <code>kebab-case</code>:<br/>
+<img alt="image" data-base62-sha1="ygF97YqxU7txJ95l4yBlp3oR0Fq" height="128" src="../../../images/f02c220686f5b7f2c59bb3ae54e9c8d06ee57940.png" width="380"/></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/465200_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Firepup650</div>
+          <div class="post_content">
+<p>Probably just disable this site setting:<br/>
+<img alt="image" data-base62-sha1="9qRQNpAscr5GcJ7NuiYM0ZhzOTU" height="31" src="../../../images/421d18a67bc459901fa18314803f96d542d839aa.png" width="532"/></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 4">❤️ 4</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/377822_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">bryce</div>
+          <div class="post_content">
+<p>Thanks Firepup, I didn’t know that was an option <img alt=":grin:" class="emoji" height="20" loading="lazy" src="../../../images/grin.png" title=":grin:" width="20"/></p>
+<p><span class="mention">@ncaming215</span> It looks like the component converts existing tags to lowercase before comparing them to the tag-slug part in the settings. I was able to get it to work by using a lowercase version of the tag in the theme component settings.</p>
+<p><img alt="image" data-base62-sha1="aIRRCI6OazH0QWfF52JC8NygtwK" height="70" src="../../../images/4b282a6ba129ffa0571c978c4f67b934c50bdee2.png" width="628"/></p>
+<hr/>
+<p><img alt="image" data-base62-sha1="iOQtGbgcD6kv0rmAaMeeNkZrbrc" height="54" src="../../../images/83e68a4a1e2589cdeb4a54c91b0047458c0f307a.png" width="262"/></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 4">❤️ 4</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/298682_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Arkshine</div>
+          <div class="post_content">
+<p>I created a PR a while ago for that issue (<a href="https://meta.discourse.org/t/tag-icons/109757/119">reported by another user</a>)</p>
+<aside class="onebox githubpullrequest" data-onebox-src="https://github.com/discourse/discourse-tag-icons/pull/14">
+<header class="source">
+<a href="https://github.com/discourse/discourse-tag-icons/pull/14" rel="noopener" target="_blank">github.com/discourse/discourse-tag-icons</a>
+</header>
+<article class="onebox-body">
+<div class="github-row --gh-status-merged" data-github-private-repo="false">
+<div class="github-icon-container" title="Merged Pull Request">
+<svg aria-hidden="true" class="github-icon" height="60" viewbox="0 0 12 16" width="60"><path d="M11 11.28V5c-.03-.78-.34-1.47-.94-2.06C9.46 2.35 8.78 2.03 8 2H7V0L4 3l3 3V4h1c.27.02.48.11.69.31.21.2.3.42.31.69v6.28A1.993 1.993 0 0 0 10 15a1.993 1.993 0 0 0 1-3.72zm-1 2.92c-.66 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2zM4 3c0-1.11-.89-2-2-2a1.993 1.993 0 0 0-1 3.72v6.56A1.993 1.993 0 0 0 2 15a1.993 1.993 0 0 0 1-3.72V4.72c.59-.34 1-.98 1-1.72zm-.8 10c0 .66-.55 1.2-1.2 1.2-.65 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2zM2 4.2C1.34 4.2.8 3.65.8 3c0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2z" fill-rule="evenodd"></path></svg>
+</div>
+<div class="github-info-container">
+<h4>
+<a href="https://github.com/discourse/discourse-tag-icons/pull/14" rel="noopener" target="_blank">FIX:  Icon not appearing with uppercase tag.</a>
+</h4>
+<div class="branches">
+<code>main</code> ← <code>Arkshine:fix/uppercase-tag</code>
+</div>
+<div class="github-info">
+<div class="date">
+          merged <span class="discourse-local-date" data-date="2025-02-27" data-format="ll" data-time="01:43:58" data-timezone="UTC">01:43AM - 27 Feb 25 UTC</span>
+</div>
+<div class="user">
+<a href="https://github.com/Arkshine" rel="noopener" target="_blank">
+<img alt="" class="onebox-avatar-inline" data-dominant-color="4E425C" height="20" src="../../../images/d0fb107c1fe6d4e3386688e7ee4922b441d6f5e0.jpeg" width="20"/>
+            Arkshine
+          </a>
+</div>
+<div class="lines" title="5 commits changed 6 files with 825 additions and 230 deletions">
+<a href="https://github.com/discourse/discourse-tag-icons/pull/14/files" rel="noopener" target="_blank">
+<span class="added">+825</span>
+<span class="removed">-230</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+<div class="github-row">
+<p class="github-body-container">Meta: https://meta.discourse.org/t/tag-icons/109757/119?u=arkshine
+
+With the `<span class="show-more-container"><a class="show-more" href="https://github.com/discourse/discourse-tag-icons/pull/14" rel="noopener" target="_blank">…</a></span><span class="excerpt hidden">force_lowercase_tags` setting on false, the user can create tags in uppercase. 
+This fixes the issue where a tag is not matched.
+
+I'm not used to writing tests, and I'm unsure if it is needed. Let me know if I need to correct something.</span></p>
+</div>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+<p>It looks like I will need to update it to match the core change, though. Hopefully, once it is fixed, it will get some attention.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 9">❤️ 9</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/298682_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Arkshine</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="143" data-topic="109757" data-username="Arkshine">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" loading="lazy" src="../../../images/298682_2.png" width="24"/> Arkshine:</div>
+<blockquote>
+<p>It looks like I will need to update it to match the core change, though. Hopefully, once it is fixed, it will get some attention</p>
+</blockquote>
+</aside>
+<p>This should be done now. <img alt=":+1:" class="emoji" height="20" loading="lazy" src="../../../images/+1.png" title=":+1:" width="20"/></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/553057_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">David_Ghost</div>
+          <div class="post_content">
+<p>IS there a way to have all the tags in the same style?</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/198804_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">ondrej</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="1" data-topic="109757" data-username="Discourse">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" loading="lazy" src="../../../images/148734_2.png" width="24"/> Discourse:</div>
+<blockquote>
+<p>List of FontAwesome 5 icons</p>
+</blockquote>
+</aside>
+<p>This confused me yesterday when I created a new tag and by default I went to FA5 instead of 6 after the update.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554803_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Lilly</div>
+          <div class="post_content">
+<p>Thanks for pointing that out <span class="mention">@ondrej</span>. I have updated the OP.  Apologies for any confusion there.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span><span class="engagement-pill reaction-pill" title="rocket: 1">🚀 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554653_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Moin</div>
+          <div class="post_content">
+<p>I created a PR which changes the descriptions in the component (and moves them to locales/en.yml)</p><aside class="onebox githubpullrequest" data-onebox-src="https://github.com/discourse/discourse-tag-icons/pull/22">
+<header class="source">
+<a href="https://github.com/discourse/discourse-tag-icons/pull/22" rel="noopener" target="_blank">github.com/discourse/discourse-tag-icons</a>
+</header>
+<article class="onebox-body">
+<div class="github-row --gh-status-merged" data-github-private-repo="false">
+<div class="github-icon-container" title="Merged Pull Request">
+<svg aria-hidden="true" class="github-icon" height="60" viewbox="0 0 12 16" width="60"><path d="M11 11.28V5c-.03-.78-.34-1.47-.94-2.06C9.46 2.35 8.78 2.03 8 2H7V0L4 3l3 3V4h1c.27.02.48.11.69.31.21.2.3.42.31.69v6.28A1.993 1.993 0 0 0 10 15a1.993 1.993 0 0 0 1-3.72zm-1 2.92c-.66 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2zM4 3c0-1.11-.89-2-2-2a1.993 1.993 0 0 0-1 3.72v6.56A1.993 1.993 0 0 0 2 15a1.993 1.993 0 0 0 1-3.72V4.72c.59-.34 1-.98 1-1.72zm-.8 10c0 .66-.55 1.2-1.2 1.2-.65 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2zM2 4.2C1.34 4.2.8 3.65.8 3c0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2z" fill-rule="evenodd"></path></svg>
+</div>
+<div class="github-info-container">
+<h4>
+<a href="https://github.com/discourse/discourse-tag-icons/pull/22" rel="noopener" target="_blank">DEV: Move settings descriptions to locales/en.yml</a>
+</h4>
+<div class="branches">
+<code>main</code> ← <code>moin-Jana:fa6+move-setting-description</code>
+</div>
+<div class="github-info">
+<div class="date">
+          merged <span class="discourse-local-date" data-date="2024-10-11" data-format="ll" data-time="14:03:11" data-timezone="UTC">02:03PM - 11 Oct 24 UTC</span>
+</div>
+<div class="user">
+<a href="https://github.com/moin-Jana" rel="noopener" target="_blank">
+<img alt="" class="onebox-avatar-inline" data-dominant-color="C2C2E4" height="20" src="../../../images/3ba0c699153f9bebf05d87f87a93cf30e56ada11.png" width="20"/>
+            moin-Jana
+          </a>
+</div>
+<div class="lines" title="1 commits changed 2 files with 5 additions and 2 deletions">
+<a href="https://github.com/discourse/discourse-tag-icons/pull/22/files" rel="noopener" target="_blank">
+<span class="added">+5</span>
+<span class="removed">-2</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+<div class="github-row">
+<p class="github-body-container">This makes translations of strings with Crowdin possible.
+Also updated setting <span class="show-more-container"><a class="show-more" href="https://github.com/discourse/discourse-tag-icons/pull/22" rel="noopener" target="_blank">…</a></span><span class="excerpt hidden">descriptions to Font Awesome 6</span></p>
+</div>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span><span class="engagement-pill reaction-pill" title="rocket: 1">🚀 1</span><span class="engagement-pill reaction-pill" title="star struck: 1">:star_struck: 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/465129_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">hhf.technology</div>
+          <div class="post_content">
+<p>how to get my custom technology icons imported in this component. eg. like cisco, dell</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">jrgong</div>
+          <div class="post_content">
+<p>I have had the issue for a while: the tag icon is displayed in bigger size in header tag icons in topic view:</p>
+<p>screenshot from tc’s preview:</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/cDAaiuOHXJU9TcaYXaAUyN76tUH.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/5/8/9/58938fb3aaf0e2c50b990e598a193dfefe99b1cf.png" rel="noopener nofollow ugc" title="Screenshot 2025-02-20 at 21.39.17"><img alt="Screenshot 2025-02-20 at 21.39.17" data-base62-sha1="cDAaiuOHXJU9TcaYXaAUyN76tUH" height="154" src="../../../images/58938fb3aaf0e2c50b990e598a193dfefe99b1cf.png" width="412"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2025-02-20 at 21.39.17</span><span class="informations">412×154 8.91 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/298682_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Arkshine</div>
+          <div class="post_content">
+<p>Core has a rule that increases specifically the house icon:</p>
+<p><img alt="image" data-base62-sha1="olVmgIOKtgg44noTXqAnaQdKlzc" height="76" src="../../../images/aaaea6cbc150e6c4277e64d1beb78a1d854d19ba.png" width="598"/></p>
+<p>You can overwrite it like:</p>
+<pre data-code-wrap="css"><code class="lang-css">.d-header .discourse-tags .d-icon-house {
+    font-size: var(--font-0);
+}
+</code></pre>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 5">❤️ 5</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/119489_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">pmusaraj</div>
+          <div class="post_content">
+<p>Oh, interesting. I believe the core rule is there when the house icon is used as the site logo. We could update core to increase the specificity and target the logo icon, thus leaving the tag/category icons alone.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 4">❤️ 4</span><span class="engagement-pill reaction-pill" title="100: 1">:100: 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/492709_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">alltiagocom</div>
+          <div class="post_content">
+<p>I noticed that there are 2 places where the icons don’t show: the dropdown and in the tag banner</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/lVoq0hl8McwwKnQOwAHRLZqcREe.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/9/9/a/99aa8896d3a65a100b9e184d7c6e79635d00bb72.png" rel="noopener nofollow ugc" title="image"><img alt="image" data-base62-sha1="lVoq0hl8McwwKnQOwAHRLZqcREe" height="378" src="../../../images/99aa8896d3a65a100b9e184d7c6e79635d00bb72.png" width="581"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">581×378 18.8 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">jrgong</div>
+          <div class="post_content">
+<p><span class="mention">@Arkshine</span> <span class="mention">@pmusaraj</span> FYI we just reproduced the same issue in search modal. But your CSS workaround fixed it, too <img alt=":heart:" class="emoji" height="20" loading="lazy" src="../../../images/heart.png" title=":heart:" width="20"/></p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/k2IPssdHdSlrHfQigppP9hVU73b.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/8/c/7/8c7a47bb3021f8743ff8bdda86a1cff7a16e1d51.png" rel="noopener nofollow ugc" title="tag icons zu gross search"><img alt="tag icons zu gross search" data-base62-sha1="k2IPssdHdSlrHfQigppP9hVU73b" data-dominant-color="F5F3F2" height="500" src="../../../images/8c7a47bb3021f8743ff8bdda86a1cff7a16e1d51.png" width="328"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">tag icons zu gross search</span><span class="informations">542×825 36.1 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">jrgong</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="151" data-topic="109757" data-username="Arkshine">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/298682_2.png" width="24"/> Arkshine:</div>
+<blockquote>
+<pre><code class="lang-plaintext">.d-header .discourse-tags .d-icon-house {
+    font-size: var(--font-0);
+}
+</code></pre>
+</blockquote>
+</aside>
+<p>for some reason this override CSS wasn’t sufficient since 3.6.0.beta1</p>
+<p>I adjusted it to the following and it did the trick:</p>
+<pre data-code-wrap="css"><code class="lang-css">.d-header .search-result-tag .d-icon-house {
+    font-size: var(--font-0);
+}
+</code></pre>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/45.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Hyteller</div>
+          <div class="post_content">
+<p>Can you please add option to set default tag icon for all tags that do not have a specific icon?</p>
+<p>Also, would be great to have integration with <a class="inline-onebox" href="https://meta.discourse.org/t/tag-banners/124240">Tag Banners</a></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/539204_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">tobiaseigen</div>
+          <div class="post_content">
+<p>That’s a nice idea, Hyteller! I’m not a programmer so don’t have that power, but if you suggest it in a new <a class="hashtag-cooked" data-id="2" data-slug="feature" data-style-type="square" data-type="category" href="/c/feature/2"><span class="hashtag-icon-placeholder"><svg class="fa d-icon d-icon-square-full svg-icon svg-node"><use href="#square-full"></use></svg></span><span>Feature</span></a> topic we could discuss what that might look like and it might be considered by the team. Would be nice if you could provide some more detail from your end about why you think it is a good idea.</p>
+<p>Personally I’d love to see tag icons be included in core discourse instead of having to be added as a theme component.</p>
+<p>Welcome to our community! <img alt=":sunflower:" class="emoji" height="20" loading="lazy" src="../../../images/sunflower.png" title=":sunflower:" width="20"/></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/501520_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">祁同伟</div>
+          <div class="post_content">
+<p>After today’s update, the forum homepage layout is messy:</p><aside class="quote" data-post="1" data-topic="394394">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/501520_2.png" width="24"/>
+<div class="quote-title__text-content">
+<a href="https://meta.discourse.org/t/discourse/394394">Discourse更新后，主页排版混乱</a> <a class="badge-category__wrapper" href="/c/support/6"><span class="badge-category --style-square" data-category-id="6" data-drop-close="true" style="--category-badge-color: #ce96c9; --category-badge-text-color: #000000;" title="Before posting here, please try searching, reading the documentation and asking our AI bot. To help others help you, include as much detail as you can about the issue, what you have tried, and what is occurring."><span class="badge-category__name">Support</span></span></a>
+</div>
+</div>
+<blockquote>
+<a class="lightbox" data-download-href="/uploads/short-url/gAorQekmJJr56X7Wu3g2pYRFbjR.jpeg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/7/4/3/743ff9347a33450bca0b4bae184bc76513b9fec3.jpeg" rel="noopener nofollow ugc" title="Screenshot_20260127_083531_Chrome Beta">[Screenshot_20260127_083531_Chrome Beta]</a> 
+域名：<a href="http://qingju.me" rel="noopener nofollow ugc">qingju.me</a>
+</blockquote>
+</aside>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/515028_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">jdc20181</div>
+          <div class="post_content">
+<p>It seems this component is broken. It shows up on the sidebar, but does not show up on posts. Perhaps I am missing something.</p>
+<p><img alt="image" data-base62-sha1="ty2AAIHncRToJ4ao8sgC7Xf33Bc" height="60" src="../../../images/cf1827ea39179cf526a5d5a60e8a55664aad9346.png" width="378"/></p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/r9dAzAY5xPHhUSrAI7Y5T6G47Qf.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/b/e/4/be457c1c8b9f71f78ad3b8004b7472737fb304c3.png" rel="noopener nofollow ugc" title="image"><img alt="image" data-base62-sha1="r9dAzAY5xPHhUSrAI7Y5T6G47Qf" data-dominant-color="292A2A" height="500" src="../../../images/be457c1c8b9f71f78ad3b8004b7472737fb304c3.png" width="173"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">279×803 13.4 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554653_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Moin</div>
+          <div class="post_content">
+<p>It seems to work fine on this topic<br/>
+<img alt="Screenshot_20260303_231615_Firefox" data-base62-sha1="rCgZtazfrLCVZVVrzygkvmm2rEw" data-dominant-color="EBEBEC" height="86" src="../../../images/c18e486ac6239c35b794956fd69661c1f1a6098c_2_690x86.jpeg" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/c/1/8/c18e486ac6239c35b794956fd69661c1f1a6098c_2_690x86.jpeg, https://d11a6trkgmumsb.cloudfront.net/original/4X/c/1/8/c18e486ac6239c35b794956fd69661c1f1a6098c.jpeg 1.5x, https://d11a6trkgmumsb.cloudfront.net/original/4X/c/1/8/c18e486ac6239c35b794956fd69661c1f1a6098c.jpeg 2x" width="690"/><br/>
+I cannot spot the tag from your first screenshot in your sidebar screenshot. Can you share the configuration of the theme component for the “Itaa” tag?</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/515028_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">jdc20181</div>
+          <div class="post_content">
+<blockquote>
+<p><strong>Figured it out. It conflicts with the <a href="https://meta.discourse.org/t/remove-dashes-from-tag-names/285684">“Remove dashes from tags”</a> component.</strong><br/>
+Edit 2: The issue still does not change the color, but the icon does appear now.<br/>
+I have a lot of tags, which is why they are not all visible.</p>
+</blockquote>
+<p>I tried on different themes, and between the different tag styles available for use. I even disabled other components just to be sure.</p>
+<aside class="onebox pastebin" data-onebox-src="https://pastebin.com/B5r6cjTe">
+<header class="source">
+<a href="https://pastebin.com/B5r6cjTe" rel="noopener nofollow ugc" target="_blank">pastebin.com</a>
+</header>
+<article class="onebox-body">
+<h4><a href="https://pastebin.com/B5r6cjTe" rel="noopener nofollow ugc" target="_blank">https://pastebin.com/B5r6cjTe</a></h4>
+<pre><code class="lang-auto"></code></pre>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/k15ibuvhtGkfYwuQ7bzVepWDMgo.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/8/c/4/8c4ae367d426418f846a8e38289819a2bae7ad00.png" rel="noopener nofollow ugc" title="image"><img alt="image" data-base62-sha1="k15ibuvhtGkfYwuQ7bzVepWDMgo" data-dominant-color="292C2E" height="133" src="../../../images/8c4ae367d426418f846a8e38289819a2bae7ad00_2_690x133.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/8/c/4/8c4ae367d426418f846a8e38289819a2bae7ad00_2_690x133.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/8/c/4/8c4ae367d426418f846a8e38289819a2bae7ad00_2_1035x199.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/8/c/4/8c4ae367d426418f846a8e38289819a2bae7ad00_2_1380x266.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1731×336 33.3 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/kJBhsmQJtNzWG06W52zslU3m1am.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/9/1/5/91531a7cdbec4e77264455c8c60afdb1c61bde46.png" rel="noopener nofollow ugc" title="image"><img alt="image" data-base62-sha1="kJBhsmQJtNzWG06W52zslU3m1am" data-dominant-color="272727" height="302" src="../../../images/91531a7cdbec4e77264455c8c60afdb1c61bde46.png" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">1016×446 14.8 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/445877_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Andrew_Rowe</div>
+          <div class="post_content">
+<p>5 posts were split to a new topic: <a href="/t/tag-icons-component-bug/403428">Tag Icons component bug</a></p>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+  </body>
+</html>

@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width">
+    <title>Im struggling to recover deleted post, how to fix?</title>
+    <link rel="stylesheet" href="../../../archived.css" />
+    <script>
+      function findSageCodeBlocks() {
+        return Array.prototype.slice.call(
+          document.querySelectorAll(
+            "pre[data-code-wrap='sage'] > code, pre > code.lang-sage, pre > code.language-sage, pre > code.sage"
+          )
+        );
+      }
+
+      function loadScript(src) {
+        return new Promise(function (resolve, reject) {
+          var existing = document.querySelector("script[src='" + src + "']");
+          if (existing) {
+            if (existing.dataset.loaded === "true") {
+              resolve();
+              return;
+            }
+            existing.addEventListener("load", resolve, { once: true });
+            existing.addEventListener("error", reject, { once: true });
+            return;
+          }
+
+          var script = document.createElement("script");
+          script.src = src;
+          script.async = true;
+          script.addEventListener("load", function () {
+            script.dataset.loaded = "true";
+            resolve();
+          }, { once: true });
+          script.addEventListener("error", reject, { once: true });
+          document.head.appendChild(script);
+        });
+      }
+
+      function prepareSageCells() {
+        var sageBlocks = findSageCodeBlocks();
+        if (!sageBlocks.length) {
+          return Promise.resolve();
+        }
+
+        return loadScript("https://sagecell.sagemath.org/static/embedded_sagecell.js")
+          .then(function () {
+            if (!window.sagecell || !window.sagecell.makeSagecell) {
+              return;
+            }
+
+            sageBlocks.forEach(function (codeTag, index) {
+              var preTag = codeTag.parentElement;
+              if (!preTag || preTag.dataset.sageMounted === "true") {
+                return;
+              }
+
+              var host = document.createElement("div");
+              host.className = "sagecell-archive";
+
+              var source = document.createElement("script");
+              source.type = "text/x-sage";
+              source.text = codeTag.textContent || "";
+              host.appendChild(source);
+
+              preTag.insertAdjacentElement("afterend", host);
+              preTag.classList.add("sage-source-hidden");
+              preTag.dataset.sageMounted = "true";
+
+              window.sagecell.makeSagecell({
+                inputLocation: host,
+                autoeval: false,
+                evalButtonText: "Run",
+                languages: ["sage"]
+              });
+            });
+          })
+          .catch(function () {
+            // Leave the original code blocks visible if SageCell cannot load.
+          });
+      }
+
+      function preprocessDiscourseMath() {
+        document.querySelectorAll("span.math, div.math").forEach(function (node) {
+          var tex = node.textContent || "";
+          if (!tex.trim()) {
+            return;
+          }
+          if (node.tagName === "SPAN") {
+            node.textContent = "\\(" + tex + "\\)";
+          } else {
+            node.textContent = "\\[" + tex + "\\]";
+          }
+          node.classList.remove("math");
+        });
+      }
+
+      window.MathJax = {
+        tex: {
+          inlineMath: [["\\(", "\\)"]],
+          displayMath: [["\\[", "\\]"]]
+        },
+        startup: {
+          pageReady() {
+            preprocessDiscourseMath();
+            return MathJax.startup.defaultPageReady().then(function () {
+              return prepareSageCells();
+            });
+          }
+        }
+      };
+    </script>
+    <script async id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="title-span">
+        <a href="../../../">
+          <img src="../../../images/ad2526334012b2ad0c3421f9b6dd94bae2ede52f.svg" height="40" alt="Site Logo" id="site-logo" />
+        </a>
+      </div>
+    </header>
+
+    <div class="main">
+    <div class="archive-span"><a href='https://meta.discourse.org/'>Discourse Meta</a> archived in May, 2026</div>
+    <h1 class="topic-title">Im struggling to recover deleted post, how to fix?</h1>
+            <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554302_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Prempavee</div>
+          <div class="post_content">
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/1g70GtO7zo76hqUCQONBcPeHAAg.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/0/8/d/08d4758064fb18d498fc6cf2580e4b6e13b95900.png" rel="noopener nofollow ugc" title="Screenshot 2026-05-16 230643"><img alt="Screenshot 2026-05-16 230643" data-base62-sha1="1g70GtO7zo76hqUCQONBcPeHAAg" data-dominant-color="211E3B" height="481" src="../../../images/08d4758064fb18d498fc6cf2580e4b6e13b95900_2_690x481.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/0/8/d/08d4758064fb18d498fc6cf2580e4b6e13b95900_2_690x481.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/0/8/d/08d4758064fb18d498fc6cf2580e4b6e13b95900_2_1035x721.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/0/8/d/08d4758064fb18d498fc6cf2580e4b6e13b95900_2_1380x962.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2026-05-16 230643</span><span class="informations">2108×1471 315 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div> does not give any option, so I tried from log but seems impossible</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/mUXBgCVbLXaVj2YX1hIejofTOrN.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/a/0/a/a0a030ae1ce231bf4f66b81859603a952506a27b.png" rel="noopener nofollow ugc" title="Screenshot 2026-05-16 230807"><img alt="Screenshot 2026-05-16 230807" data-base62-sha1="mUXBgCVbLXaVj2YX1hIejofTOrN" data-dominant-color="242425" height="307" src="../../../images/a0a030ae1ce231bf4f66b81859603a952506a27b_2_690x307.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/a/0/a/a0a030ae1ce231bf4f66b81859603a952506a27b_2_690x307.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/a/0/a/a0a030ae1ce231bf4f66b81859603a952506a27b_2_1035x460.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/a/0/a/a0a030ae1ce231bf4f66b81859603a952506a27b_2_1380x614.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2026-05-16 230807</span><span class="informations">2036×908 99 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/ty892MToZx8PIkVrS03MnzRrjiB.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/c/f/1/cf1abfbf8d780f5f961cdb87936c7863185b15a5.png" rel="noopener nofollow ugc" title="Screenshot 2026-05-16 230820"><img alt="Screenshot 2026-05-16 230820" data-base62-sha1="ty892MToZx8PIkVrS03MnzRrjiB" data-dominant-color="1F1F23" height="283" src="../../../images/cf1abfbf8d780f5f961cdb87936c7863185b15a5_2_690x283.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/c/f/1/cf1abfbf8d780f5f961cdb87936c7863185b15a5_2_690x283.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/c/f/1/cf1abfbf8d780f5f961cdb87936c7863185b15a5_2_1035x424.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/c/f/1/cf1abfbf8d780f5f961cdb87936c7863185b15a5_2_1380x566.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2026-05-16 230820</span><span class="informations">1680×691 30.1 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554803_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Lilly</div>
+          <div class="post_content">
+<p>use the admin wrench not the bulk actions</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/mmASUCQ1qHD7bnt8Ygsh07EyxJ1.jpeg?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/9/c/b/9cbdaf9b7f3c35613bac808d77b34dcd8ecb307b.jpeg" title="IMG5286"><img alt="IMG5286" data-base62-sha1="mmASUCQ1qHD7bnt8Ygsh07EyxJ1" data-dominant-color="F5F3F3" height="500" src="../../../images/9cbdaf9b7f3c35613bac808d77b34dcd8ecb307b_2_350x500.jpeg" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/9/c/b/9cbdaf9b7f3c35613bac808d77b34dcd8ecb307b_2_350x500.jpeg, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/9/c/b/9cbdaf9b7f3c35613bac808d77b34dcd8ecb307b_2_525x750.jpeg 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/9/c/b/9cbdaf9b7f3c35613bac808d77b34dcd8ecb307b_2_700x1000.jpeg 2x" width="350"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">IMG5286</span><span class="informations">1290×1842 145 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 4">❤️ 4</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554302_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Prempavee</div>
+          <div class="post_content">
+<p>Where is this , I cannot find</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554803_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Lilly</div>
+          <div class="post_content">
+<p>go to the bottom of the topic where the footer buttons are if you don’t see it beside the timeline</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/dg9guMClaGpj2qVD5lrEBfkGfYZ.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/5/c/e/5cef996149d6a8ce4b552588fb2c8a42f7361a51.png" title="Screenshot 2026-05-16 at 10.16.50 AM"><img alt="Screenshot 2026-05-16 at 10.16.50 AM" data-base62-sha1="dg9guMClaGpj2qVD5lrEBfkGfYZ" data-dominant-color="FBF9F9" height="375" src="../../../images/5cef996149d6a8ce4b552588fb2c8a42f7361a51_2_258x375.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/5/c/e/5cef996149d6a8ce4b552588fb2c8a42f7361a51_2_258x375.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/5/c/e/5cef996149d6a8ce4b552588fb2c8a42f7361a51_2_387x562.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/5/c/e/5cef996149d6a8ce4b552588fb2c8a42f7361a51_2_516x750.png 2x" width="258"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2026-05-16 at 10.16.50 AM</span><span class="informations">720×1042 32.1 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/xghfoMqKV53gsAcRjOlcp4gzVlf.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/e/9/1/e91ecde24c379a7b3ce18a7a0f351b8839001ab1.png" title="Screenshot 2026-05-16 at 10.16.12 AM"><img alt="Screenshot 2026-05-16 at 10.16.12 AM" data-base62-sha1="xghfoMqKV53gsAcRjOlcp4gzVlf" data-dominant-color="F9F7F8" height="198" src="../../../images/e91ecde24c379a7b3ce18a7a0f351b8839001ab1_2_517x198.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/e/9/1/e91ecde24c379a7b3ce18a7a0f351b8839001ab1_2_517x198.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/e/9/1/e91ecde24c379a7b3ce18a7a0f351b8839001ab1_2_775x297.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/e/9/1/e91ecde24c379a7b3ce18a7a0f351b8839001ab1_2_1034x396.png 2x" width="517"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">Screenshot 2026-05-16 at 10.16.12 AM</span><span class="informations">1854×714 91.7 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554302_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Prempavee</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="4" data-topic="403161" data-username="Lilly">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/554803_2.png" width="24"/> Lilly:</div>
+<blockquote>
+<p>go to the bottom of the topic where the footer buttons are if you don’t see it beside the timeline</p>
+</blockquote>
+</aside>
+<p>The problem is that it doesnt allow me to open the topic</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554302_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Prempavee</div>
+          <div class="post_content">
+<p>it gives me error 500</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554803_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Lilly</div>
+          <div class="post_content">
+<p>please provide more information in your op when asking for assistance.</p>
+<aside class="quote no-group" data-full="true" data-post="6" data-topic="403161" data-username="Prempavee">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/554302_2.png" width="24"/> Prempavee:</div>
+<blockquote>
+<p>it gives me error 500</p>
+</blockquote>
+</aside>
+<p>talk to your admin then</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554302_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Prempavee</div>
+          <div class="post_content">
+<p>Im the admin</p>
+<p>(adding letters to 20)</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554803_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Lilly</div>
+          <div class="post_content">
+<p>what happens in <a href="https://meta.discourse.org/t/53504?silent=true">safe mode</a>? are there any console errors?</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554302_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Prempavee</div>
+          <div class="post_content">
+<p>same</p>
+<p>1234567890-1234567890</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554803_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Lilly</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="10" data-topic="403161" data-username="Prempavee">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/554302_2.png" width="24"/> Prempavee:</div>
+<blockquote>
+<p>1234567890-1234567890</p>
+</blockquote>
+</aside>
+<p>so are there any console errors?</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/179432_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Falco</div>
+          <div class="post_content">
+<p>This appears to be a bug when trying to visit a deleted nested topic. I can take a look at it on Monday.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span><span class="engagement-pill reaction-pill" title="100: 1">:100: 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554803_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Lilly</div>
+          <div class="post_content">
+<p>oh wait i know that forum.  i bet this is an topic with nesting.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554302_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Prempavee</div>
+          <div class="post_content">
+<p>no this is just me tiping numbers because cannot answer with less than 20 letters</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554302_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Prempavee</div>
+          <div class="post_content">
+<p>Thankyou will be so useful</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/179432_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Falco</div>
+          <div class="post_content">
+<aside class="onebox githubpullrequest" data-onebox-src="https://github.com/discourse/discourse/pull/40134">
+<header class="source">
+<a href="https://github.com/discourse/discourse/pull/40134" rel="noopener" target="_blank">github.com/discourse/discourse</a>
+</header>
+<article class="onebox-body">
+<div class="github-row --gh-status-merged" data-github-private-repo="false">
+<div class="github-icon-container" title="Merged Pull Request">
+<svg aria-hidden="true" class="github-icon" height="60" viewbox="0 0 12 16" width="60"><path d="M11 11.28V5c-.03-.78-.34-1.47-.94-2.06C9.46 2.35 8.78 2.03 8 2H7V0L4 3l3 3V4h1c.27.02.48.11.69.31.21.2.3.42.31.69v6.28A1.993 1.993 0 0 0 10 15a1.993 1.993 0 0 0 1-3.72zm-1 2.92c-.66 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2zM4 3c0-1.11-.89-2-2-2a1.993 1.993 0 0 0-1 3.72v6.56A1.993 1.993 0 0 0 2 15a1.993 1.993 0 0 0 1-3.72V4.72c.59-.34 1-.98 1-1.72zm-.8 10c0 .66-.55 1.2-1.2 1.2-.65 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2zM2 4.2C1.34 4.2.8 3.65.8 3c0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2z" fill-rule="evenodd"></path></svg>
+</div>
+<div class="github-info-container">
+<h4>
+<a href="https://github.com/discourse/discourse/pull/40134" rel="noopener" target="_blank">FIX: Allow staff to view deleted topics in nested replies (#40134)</a>
+</h4>
+<div class="branches">
+<code>main</code> ← <code>fix-nested-replies-deleted-topic</code>
+</div>
+<div class="github-info">
+<div class="date">
+          merged <span class="discourse-local-date" data-date="2026-05-18" data-format="ll" data-time="18:45:14" data-timezone="UTC">06:45PM - 18 May 26 UTC</span>
+</div>
+<div class="user">
+<a href="https://github.com/xfalcox" rel="noopener" target="_blank">
+<img alt="" class="onebox-avatar-inline" data-dominant-color="9E5E3B" height="20" src="../../../images/25100c2e80d45282f06ae85af1968253a8145295.jpeg" width="20"/>
+            xfalcox
+          </a>
+</div>
+<div class="lines" title="1 commits changed 2 files with 37 additions and 1 deletions">
+<a href="https://github.com/discourse/discourse/pull/40134/files" rel="noopener" target="_blank">
+<span class="added">+37</span>
+<span class="removed">-1</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+<div class="github-row">
+<p class="github-body-container">## Summary
+
+`NestedReplies::TreeLoader#op_post` loaded the OP via `topic.posts`,<span class="show-more-container"><a class="show-more" href="https://github.com/discourse/discourse/pull/40134" rel="noopener" target="_blank">…</a></span><span class="excerpt hidden"> whose default scope (from `Trashable`) excludes rows with `deleted_at` set. When a topic is trashed its OP is trashed too, so the lookup returned `nil` and the `/n/...` request crashed in `PostPreloader#prepare` with `undefined method 'user_id' for nil` — preventing staff from reaching the page to recover the topic.
+
+Fix: apply the existing visibility helper (which already unscopes `deleted_at`) on the OP query. The serializer's `deleted_post_placeholder` path preserves content for staff and hides it for everyone else, matching the flat topic view.
+
+- non-staff still 404 via the earlier guardian check on the topic itself, so this does not change their visibility
+- both the `show` and `context` endpoints share the same loader, so both paths are fixed
+
+## Test plan
+
+- [x] `bin/rspec spec/requests/nested_topics_controller_spec.rb` (100 examples, 0 failures), with new cases for staff `show`, staff `context`, and non-staff 404 on a fully-deleted topic
+- [x] `bin/rspec spec/lib/nested_replies/ spec/services/nested_topic/` (127 examples, 0 failures)
+- [ ] Manually: as admin, delete a topic that uses nested replies, then navigate to `/n/&lt;slug&gt;/&lt;id&gt;` — page renders with the deleted OP placeholder and the admin menu's Recover Topic action works</span></p>
+</div>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554302_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Prempavee</div>
+          <div class="post_content">
+<p>Falco why when I click on topics it open them always at the bottom?</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/179432_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Falco</div>
+          <div class="post_content">
+<p>It opens topics at the last post you’ve read. It’s how Discourse works. You may want to visit some Discourse sites, and use the search here to become familiar with the software.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="100: 1">:100: 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554302_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Prempavee</div>
+          <div class="post_content">
+<p>I tried here but it behave differently</p>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+  </body>
+</html>

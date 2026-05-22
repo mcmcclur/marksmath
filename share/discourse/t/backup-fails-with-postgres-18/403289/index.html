@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width">
+    <title>Backup fails with postgres 18</title>
+    <link rel="stylesheet" href="../../../archived.css" />
+    <script>
+      function findSageCodeBlocks() {
+        return Array.prototype.slice.call(
+          document.querySelectorAll(
+            "pre[data-code-wrap='sage'] > code, pre > code.lang-sage, pre > code.language-sage, pre > code.sage"
+          )
+        );
+      }
+
+      function loadScript(src) {
+        return new Promise(function (resolve, reject) {
+          var existing = document.querySelector("script[src='" + src + "']");
+          if (existing) {
+            if (existing.dataset.loaded === "true") {
+              resolve();
+              return;
+            }
+            existing.addEventListener("load", resolve, { once: true });
+            existing.addEventListener("error", reject, { once: true });
+            return;
+          }
+
+          var script = document.createElement("script");
+          script.src = src;
+          script.async = true;
+          script.addEventListener("load", function () {
+            script.dataset.loaded = "true";
+            resolve();
+          }, { once: true });
+          script.addEventListener("error", reject, { once: true });
+          document.head.appendChild(script);
+        });
+      }
+
+      function prepareSageCells() {
+        var sageBlocks = findSageCodeBlocks();
+        if (!sageBlocks.length) {
+          return Promise.resolve();
+        }
+
+        return loadScript("https://sagecell.sagemath.org/static/embedded_sagecell.js")
+          .then(function () {
+            if (!window.sagecell || !window.sagecell.makeSagecell) {
+              return;
+            }
+
+            sageBlocks.forEach(function (codeTag, index) {
+              var preTag = codeTag.parentElement;
+              if (!preTag || preTag.dataset.sageMounted === "true") {
+                return;
+              }
+
+              var host = document.createElement("div");
+              host.className = "sagecell-archive";
+
+              var source = document.createElement("script");
+              source.type = "text/x-sage";
+              source.text = codeTag.textContent || "";
+              host.appendChild(source);
+
+              preTag.insertAdjacentElement("afterend", host);
+              preTag.classList.add("sage-source-hidden");
+              preTag.dataset.sageMounted = "true";
+
+              window.sagecell.makeSagecell({
+                inputLocation: host,
+                autoeval: false,
+                evalButtonText: "Run",
+                languages: ["sage"]
+              });
+            });
+          })
+          .catch(function () {
+            // Leave the original code blocks visible if SageCell cannot load.
+          });
+      }
+
+      function preprocessDiscourseMath() {
+        document.querySelectorAll("span.math, div.math").forEach(function (node) {
+          var tex = node.textContent || "";
+          if (!tex.trim()) {
+            return;
+          }
+          if (node.tagName === "SPAN") {
+            node.textContent = "\\(" + tex + "\\)";
+          } else {
+            node.textContent = "\\[" + tex + "\\]";
+          }
+          node.classList.remove("math");
+        });
+      }
+
+      window.MathJax = {
+        tex: {
+          inlineMath: [["\\(", "\\)"]],
+          displayMath: [["\\[", "\\]"]]
+        },
+        startup: {
+          pageReady() {
+            preprocessDiscourseMath();
+            return MathJax.startup.defaultPageReady().then(function () {
+              return prepareSageCells();
+            });
+          }
+        }
+      };
+    </script>
+    <script async id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="title-span">
+        <a href="../../../">
+          <img src="../../../images/ad2526334012b2ad0c3421f9b6dd94bae2ede52f.svg" height="40" alt="Site Logo" id="site-logo" />
+        </a>
+      </div>
+    </header>
+
+    <div class="main">
+    <div class="archive-span"><a href='https://meta.discourse.org/'>Discourse Meta</a> archived in May, 2026</div>
+    <h1 class="topic-title">Backup fails with postgres 18</h1>
+            <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/423597_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Thomas_Rother</div>
+          <div class="post_content">
+<p>The database of our discourse instance is not a local container, instead we use a central database cluster. Recently the central postgresql was updated to version 18.3. I noticed that the discourse backup now fails:</p>
+<pre><code class="lang-plaintext">[2026-05-19 03:37:37] [STARTED]
+[2026-05-19 03:37:37] 'system' has started the backup!
+[2026-05-19 03:37:37] Marking backup as running...
+[2026-05-19 03:37:37] Making sure '/var/www/discourse/tmp/backups/default/2026-05-19-033737' exists...
+[2026-05-19 03:37:37] Making sure '/var/www/discourse/public/backups/default' exists...
+[2026-05-19 03:37:37] Updating metadata...
+[2026-05-19 03:37:37] Dumping the public schema of the database...
+[2026-05-19 03:37:37] pg_dump: error: aborting because of server version mismatch
+[2026-05-19 03:37:37] pg_dump: detail: server version: 18.3 (Ubuntu 18.3-1.pgdg24.04+1); pg_dump version: 15.15 (Debian 15.15-1.pgdg12+1)
+[2026-05-19 03:37:37] EXCEPTION: pg_dump failed
+[2026-05-19 03:37:37] /var/www/discourse/lib/backup_restore/creator.rb:173:in 'BackupRestore::Creator#dump_public_schema'
+/var/www/discourse/lib/backup_restore/creator.rb:36:in 'BackupRestore::Creator#run'
+/var/www/discourse/lib/backup_restore.rb:13:in 'BackupRestore.backup!'
+/var/www/discourse/app/jobs/regular/create_backup.rb:10:in 'Jobs::CreateBackup#execute'
+</code></pre>
+<p>Any ideas how to fix this?</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/522255_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Ethsim2</div>
+          <div class="post_content">
+<p>This looks like a PostgreSQL client/server version mismatch.</p>
+<p>The backup is being run from the Discourse container, where <code>pg_dump</code> is version <code>15.15</code>, but the external PostgreSQL server is <code>18.3</code>:</p>
+<pre><code class="lang-plaintext">server version: 18.3; pg_dump version: 15.15
+</code></pre>
+<p>I’d be cautious about modifying the Discourse container unless the Discourse team recommends that. My first instinct would be to keep the external database cluster aligned with the PostgreSQL version Discourse currently expects/supports.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/423597_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Thomas_Rother</div>
+          <div class="post_content">
+<p>OK, understood. In this case I had no choice as we needed 18 for another project which uses the same database cluster. Hmm, sounds like we would need a separate database server with 15 exclusively for discourse.</p>
+<p>Any comments from CDCK side?</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 2">❤️ 2</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/176214_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">merefield</div>
+          <div class="post_content">
+<p>Might be possible to upgrade the client in place?</p>
+<p>Given you seem to have proved compatibility with PG 18 as you are using it as the production database this would seem low risk.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/423597_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Thomas_Rother</div>
+          <div class="post_content">
+<p>I made a quick  test with an external postgres 18 and a dummy discourse installation before, it showed no issues. But, to be honest, this was only “quick and dirty”, not a “deep” test. Anyway, it runs since 2 weeks, so I assume its fine. The Discourse-internal backup is the only issue so far. On the other hand, the database server itself (running on LXC) is also backuped separately.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/176214_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">merefield</div>
+          <div class="post_content">
+<p>(post deleted by author)</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/283882_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">ted</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="3" data-topic="403289" data-username="Thomas_Rother">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/423597_2.png" width="24"/> Thomas_Rother:</div>
+<blockquote>
+<p>Any comments from CDCK side?</p>
+</blockquote>
+</aside>
+<p>The policy in the past has been to upgrade every other version. However, it has been 1.5 years since PostgreSQL 17 was released and the official Docker image still uses 15, so I’m not sure this is still the case.</p>
+<p>There are almost identical topics in the past you can reference, e.g.: <a class="inline-onebox" href="https://meta.discourse.org/t/any-chance-to-upgrade-the-postgres-client-version/215063">Any chance to upgrade the postgres-client version?</a></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/176214_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">merefield</div>
+          <div class="post_content">
+<p>just a thought - can you dump directly from the command line from the pg server?</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/120154_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">pfaffman</div>
+          <div class="post_content">
+<p>You can add code to your <code>app.yml</code> to update postgres to the matching version. I’ve done it before, but can’t find my notes. The easiest thing to do is go into the container, issue the <code>apt</code> commands to get the right postgres clients installed and then try the backup. Once that works, you add those commands to <code>exec</code> commands in your <code>app.yml</code> so that it’ll work after the next rebuild.</p>
+<p>If you need someone to walk you though it, you can email me or post in <a class="hashtag-cooked" data-emoji="shopping_cart" data-id="14" data-slug="marketplace" data-style-type="emoji" data-type="category" href="/c/marketplace/14"><span class="hashtag-icon-placeholder"><svg class="fa d-icon d-icon-square-full svg-icon svg-node"><use href="#square-full"></use></svg></span><span>Marketplace</span></a>.</p>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+  </body>
+</html>

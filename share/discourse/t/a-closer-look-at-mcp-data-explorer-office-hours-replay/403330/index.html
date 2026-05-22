@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width">
+    <title>A Closer Look at MCP + Data Explorer - Office Hours Replay</title>
+    <link rel="stylesheet" href="../../../archived.css" />
+    <script>
+      function findSageCodeBlocks() {
+        return Array.prototype.slice.call(
+          document.querySelectorAll(
+            "pre[data-code-wrap='sage'] > code, pre > code.lang-sage, pre > code.language-sage, pre > code.sage"
+          )
+        );
+      }
+
+      function loadScript(src) {
+        return new Promise(function (resolve, reject) {
+          var existing = document.querySelector("script[src='" + src + "']");
+          if (existing) {
+            if (existing.dataset.loaded === "true") {
+              resolve();
+              return;
+            }
+            existing.addEventListener("load", resolve, { once: true });
+            existing.addEventListener("error", reject, { once: true });
+            return;
+          }
+
+          var script = document.createElement("script");
+          script.src = src;
+          script.async = true;
+          script.addEventListener("load", function () {
+            script.dataset.loaded = "true";
+            resolve();
+          }, { once: true });
+          script.addEventListener("error", reject, { once: true });
+          document.head.appendChild(script);
+        });
+      }
+
+      function prepareSageCells() {
+        var sageBlocks = findSageCodeBlocks();
+        if (!sageBlocks.length) {
+          return Promise.resolve();
+        }
+
+        return loadScript("https://sagecell.sagemath.org/static/embedded_sagecell.js")
+          .then(function () {
+            if (!window.sagecell || !window.sagecell.makeSagecell) {
+              return;
+            }
+
+            sageBlocks.forEach(function (codeTag, index) {
+              var preTag = codeTag.parentElement;
+              if (!preTag || preTag.dataset.sageMounted === "true") {
+                return;
+              }
+
+              var host = document.createElement("div");
+              host.className = "sagecell-archive";
+
+              var source = document.createElement("script");
+              source.type = "text/x-sage";
+              source.text = codeTag.textContent || "";
+              host.appendChild(source);
+
+              preTag.insertAdjacentElement("afterend", host);
+              preTag.classList.add("sage-source-hidden");
+              preTag.dataset.sageMounted = "true";
+
+              window.sagecell.makeSagecell({
+                inputLocation: host,
+                autoeval: false,
+                evalButtonText: "Run",
+                languages: ["sage"]
+              });
+            });
+          })
+          .catch(function () {
+            // Leave the original code blocks visible if SageCell cannot load.
+          });
+      }
+
+      function preprocessDiscourseMath() {
+        document.querySelectorAll("span.math, div.math").forEach(function (node) {
+          var tex = node.textContent || "";
+          if (!tex.trim()) {
+            return;
+          }
+          if (node.tagName === "SPAN") {
+            node.textContent = "\\(" + tex + "\\)";
+          } else {
+            node.textContent = "\\[" + tex + "\\]";
+          }
+          node.classList.remove("math");
+        });
+      }
+
+      window.MathJax = {
+        tex: {
+          inlineMath: [["\\(", "\\)"]],
+          displayMath: [["\\[", "\\]"]]
+        },
+        startup: {
+          pageReady() {
+            preprocessDiscourseMath();
+            return MathJax.startup.defaultPageReady().then(function () {
+              return prepareSageCells();
+            });
+          }
+        }
+      };
+    </script>
+    <script async id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="title-span">
+        <a href="../../../">
+          <img src="../../../images/ad2526334012b2ad0c3421f9b6dd94bae2ede52f.svg" height="40" alt="Site Logo" id="site-logo" />
+        </a>
+      </div>
+    </header>
+
+    <div class="main">
+    <div class="archive-span"><a href='https://meta.discourse.org/'>Discourse Meta</a> archived in May, 2026</div>
+    <h1 class="topic-title">A Closer Look at MCP + Data Explorer - Office Hours Replay</h1>
+            <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/537380_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Danielle</div>
+          <div class="post_content">
+<p>We recently announced <a href="https://blog.discourse.org/2025/10/discourse-mcp-is-here/">Discourse MCP</a>, a new way to connect AI assistants directly to your Discourse community data.</p>
+<p>Recently, we hosted a live Office Hours session with <span class="mention">@falco</span>, who walked through a deep dive of MCP + <a href="https://meta.discourse.org/t/32566?silent=true">Data Explorer</a> in action.</p>
+<p>And honestly, this session was one of those moments where you really have to <em>see it</em> to fully understand the possibilities.</p>
+<p>Because yes, the technology behind it is powerful and technical. But the experience itself can feel surprisingly natural.</p>
+<p>Imagine being able to ask your community data questions the same way you’d ask a teammate:</p>
+<ul>
+<li>“What topics generated the most replies this month?”</li>
+<li>“Are there any trends in user engagement?”</li>
+<li>“Which tags have grown the fastest?”</li>
+<li>“What conversations are driving the most activity?”</li>
+<li>“Can you generate a report on this for leadership?”</li>
+</ul>
+<p>That’s exactly what we explored in this session!</p>
+<h2><a aria-label="Heading link" class="anchor" href="#p-1983102-watch-the-replay-1" name="p-1983102-watch-the-replay-1"></a>Watch the Replay</h2>
+<div class="youtube-onebox lazy-video-container" data-provider-name="youtube" data-video-id="binJVmoPPiA" data-video-start-time="" data-video-title="A Closer Look at Discourse MCP + Data Explorer">
+<a class="video-thumbnail" href="https://www.youtube.com/watch?v=binJVmoPPiA" rel="noopener" target="_blank">
+<img class="youtube-thumbnail" data-dominant-color="DED8ED" height="388" src="../../../images/499fa96d1d18f02b8c1190a367e5c045110b265b.jpeg" title="A Closer Look at Discourse MCP + Data Explorer" width="690"/>
+</a>
+</div>
+<h2><a aria-label="Heading link" class="anchor" href="#p-1983102-what-mcp-data-explorer-actually-makes-possible-2" name="p-1983102-what-mcp-data-explorer-actually-makes-possible-2"></a>What MCP + <a href="https://meta.discourse.org/t/32566?silent=true">Data Explorer</a> Actually Makes Possible</h2>
+<p>Throughout the session, Falco demonstrated how MCP can work alongside <a href="https://meta.discourse.org/t/32566?silent=true">Data Explorer</a> to make community analytics dramatically more accessible for both technical and non-technical teams.</p>
+<p>Instead of manually writing SQL queries, participants watched AI assistants:</p>
+<ul>
+<li>Generate <a href="https://meta.discourse.org/t/32566?silent=true">Data Explorer</a> queries automatically</li>
+<li>Analyze topic and user growth trends</li>
+<li>Break down activity by category and tag</li>
+<li>Explore moderation and engagement patterns</li>
+<li>Identify trends across AI discussions</li>
+<li>Generate visual reports and summaries</li>
+<li>Create presentation-ready dashboards and exports</li>
+</ul>
+<p>One of the most interesting parts of the session was how conversational the workflow became.</p>
+<p>Rather than navigating dozens of reports manually, Falco simply asked questions in plain English and iterated naturally from there.</p>
+<h2><a aria-label="Heading link" class="anchor" href="#p-1983102-a-few-highlights-from-the-session-3" name="p-1983102-a-few-highlights-from-the-session-3"></a>A Few Highlights From the Session</h2>
+<ul>
+<li>“The goal is to make analytics faster and more accessible.”</li>
+<li>“Your boss will always ask for the exact report that doesn’t exist yet.”</li>
+<li>“This gives people the ability to self-serve instead of waiting days or weeks for reports.”</li>
+<li>“You don’t need to know SQL to start exploring your data.”</li>
+<li>“The feedback loop becomes incredibly fast.”</li>
+<li>“Sometimes you don’t even know what question to ask until you start exploring.”</li>
+<li>“Flexibility is king for this kind of workflow.”</li>
+<li>“You can go from idea → analysis → presentation in minutes.”</li>
+<li>“This is one of the clearest examples of AI actually removing friction.”</li>
+</ul>
+<h2><a aria-label="Heading link" class="anchor" href="#p-1983102-some-especially-cool-moments-4" name="p-1983102-some-especially-cool-moments-4"></a>Some Especially Cool Moments</h2>
+<p>A few standout moments from the walkthrough included:</p>
+<h3><a aria-label="Heading link" class="anchor" href="#p-1983102-ai-generated-sql-queries-5" name="p-1983102-ai-generated-sql-queries-5"></a>AI-Generated SQL Queries</h3>
+<p>Falco demonstrated how MCP can automatically create and run <a href="https://meta.discourse.org/t/32566?silent=true">Data Explorer</a> queries based entirely on natural language prompts.</p>
+<h3><a aria-label="Heading link" class="anchor" href="#p-1983102-interactive-reports-6" name="p-1983102-interactive-reports-6"></a>Interactive Reports</h3>
+<p>The AI generated fully formatted HTML reports with charts, trend analysis, summaries, and visualizations based on live community data.</p>
+<h3><a aria-label="Heading link" class="anchor" href="#p-1983102-tag-category-trend-analysis-7" name="p-1983102-tag-category-trend-analysis-7"></a>Tag + Category Trend Analysis</h3>
+<p>The session explored how admins could identify evolving conversation trends, feature adoption patterns, support pain points, and product discussion shifts over time.</p>
+<h3><a aria-label="Heading link" class="anchor" href="#p-1983102-future-native-integrations-8" name="p-1983102-future-native-integrations-8"></a>Future Native Integrations</h3>
+<p>One of the biggest crowd reactions came from an early preview of native AI-powered analytics directly inside the Discourse admin experience.</p>
+<h2><a aria-label="Heading link" class="anchor" href="#p-1983102-making-community-insights-more-accessible-9" name="p-1983102-making-community-insights-more-accessible-9"></a>Making Community Insights More Accessible</h2>
+<p>For many teams, community data is incredibly valuable, but actually accessing and interpreting that data can still feel intimidating or time-consuming.</p>
+<p>This session showed a future where exploring community insights becomes far more conversational, iterative, and approachable.</p>
+<p>Not just for engineers or SQL experts. But for community teams, support teams, moderators, product teams, leadership, and beyond.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 6">❤️ 6</span><span class="engagement-pill reaction-pill" title="exploding head: 1">:exploding_head: 1</span></div>
+        </div>
+      </div>
+
+
+    </div>
+  </body>
+</html>

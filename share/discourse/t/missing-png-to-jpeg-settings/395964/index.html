@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width">
+    <title>Missing PNG to JPEG settings</title>
+    <link rel="stylesheet" href="../../../archived.css" />
+    <script>
+      function findSageCodeBlocks() {
+        return Array.prototype.slice.call(
+          document.querySelectorAll(
+            "pre[data-code-wrap='sage'] > code, pre > code.lang-sage, pre > code.language-sage, pre > code.sage"
+          )
+        );
+      }
+
+      function loadScript(src) {
+        return new Promise(function (resolve, reject) {
+          var existing = document.querySelector("script[src='" + src + "']");
+          if (existing) {
+            if (existing.dataset.loaded === "true") {
+              resolve();
+              return;
+            }
+            existing.addEventListener("load", resolve, { once: true });
+            existing.addEventListener("error", reject, { once: true });
+            return;
+          }
+
+          var script = document.createElement("script");
+          script.src = src;
+          script.async = true;
+          script.addEventListener("load", function () {
+            script.dataset.loaded = "true";
+            resolve();
+          }, { once: true });
+          script.addEventListener("error", reject, { once: true });
+          document.head.appendChild(script);
+        });
+      }
+
+      function prepareSageCells() {
+        var sageBlocks = findSageCodeBlocks();
+        if (!sageBlocks.length) {
+          return Promise.resolve();
+        }
+
+        return loadScript("https://sagecell.sagemath.org/static/embedded_sagecell.js")
+          .then(function () {
+            if (!window.sagecell || !window.sagecell.makeSagecell) {
+              return;
+            }
+
+            sageBlocks.forEach(function (codeTag, index) {
+              var preTag = codeTag.parentElement;
+              if (!preTag || preTag.dataset.sageMounted === "true") {
+                return;
+              }
+
+              var host = document.createElement("div");
+              host.className = "sagecell-archive";
+
+              var source = document.createElement("script");
+              source.type = "text/x-sage";
+              source.text = codeTag.textContent || "";
+              host.appendChild(source);
+
+              preTag.insertAdjacentElement("afterend", host);
+              preTag.classList.add("sage-source-hidden");
+              preTag.dataset.sageMounted = "true";
+
+              window.sagecell.makeSagecell({
+                inputLocation: host,
+                autoeval: false,
+                evalButtonText: "Run",
+                languages: ["sage"]
+              });
+            });
+          })
+          .catch(function () {
+            // Leave the original code blocks visible if SageCell cannot load.
+          });
+      }
+
+      function preprocessDiscourseMath() {
+        document.querySelectorAll("span.math, div.math").forEach(function (node) {
+          var tex = node.textContent || "";
+          if (!tex.trim()) {
+            return;
+          }
+          if (node.tagName === "SPAN") {
+            node.textContent = "\\(" + tex + "\\)";
+          } else {
+            node.textContent = "\\[" + tex + "\\]";
+          }
+          node.classList.remove("math");
+        });
+      }
+
+      window.MathJax = {
+        tex: {
+          inlineMath: [["\\(", "\\)"]],
+          displayMath: [["\\[", "\\]"]]
+        },
+        startup: {
+          pageReady() {
+            preprocessDiscourseMath();
+            return MathJax.startup.defaultPageReady().then(function () {
+              return prepareSageCells();
+            });
+          }
+        }
+      };
+    </script>
+    <script async id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="title-span">
+        <a href="../../../">
+          <img src="../../../images/ad2526334012b2ad0c3421f9b6dd94bae2ede52f.svg" height="40" alt="Site Logo" id="site-logo" />
+        </a>
+      </div>
+    </header>
+
+    <div class="main">
+    <div class="archive-span"><a href='https://meta.discourse.org/'>Discourse Meta</a> archived in May, 2026</div>
+    <h1 class="topic-title">Missing PNG to JPEG settings</h1>
+            <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/500788_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Jeto</div>
+          <div class="post_content">
+<p>I have been trying to troubleshoot the issue where PNGs are uploaded as JPEGs and everyone mentions these File settings (below)</p>
+<p><img alt="image" data-base62-sha1="o8bVg6YkgbpBLuljVwaa8uDIPwG" height="68" src="../../../images/a9213f315861a4c020a8b458cefdbdc3991b6a06.png" width="632"/></p>
+<p>but when I navigate through all my File settings, this doesn’t come up and searching for ‘quality’ also does not bring up any results.</p>
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/zielTNYgnRczRZQNPHp3awZvZ4x.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/f/7/5/f75bad6d3b47a99eec6c46543c6c3b34ff2400e5.png" rel="noopener nofollow ugc" title="image"><img alt="image" data-base62-sha1="zielTNYgnRczRZQNPHp3awZvZ4x" height="216" src="../../../images/f75bad6d3b47a99eec6c46543c6c3b34ff2400e5.png" width="551"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">image</span><span class="informations">551×216 6.87 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>Is this a limitation with the type of account you have or a feature you need to switch on?</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554653_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Moin</div>
+          <div class="post_content">
+<p>This is now a hidden site setting</p>
+<aside class="onebox githubblob" data-onebox-src="https://github.com/discourse/discourse/blob/d979f3573d37c83b442a856d33a1a7d2dcb041f7/config/site_settings.yml#L2338-L2342">
+<header class="source">
+<a href="https://github.com/discourse/discourse/blob/d979f3573d37c83b442a856d33a1a7d2dcb041f7/config/site_settings.yml#L2338-L2342" rel="noopener" target="_blank">github.com/discourse/discourse</a>
+</header>
+<article class="onebox-body">
+<h4><a href="https://github.com/discourse/discourse/blob/d979f3573d37c83b442a856d33a1a7d2dcb041f7/config/site_settings.yml#L2338-L2342" rel="noopener" target="_blank">config/site_settings.yml</a></h4>
+<div class="git-blob-info">
+<a href="https://github.com/discourse/discourse/blob/d979f3573d37c83b442a856d33a1a7d2dcb041f7/config/site_settings.yml#L2338-L2342" rel="noopener"><code>d979f3573</code></a>
+</div>
+<pre class="onebox"><code class="lang-yml">
+      <ol class="start lines" start="2338" style="counter-reset: li-counter 2337 ;">
+          <li>png_to_jpg_quality:</li>
+          <li>  default: 0</li>
+          <li>  min: 0</li>
+          <li>  max: 100</li>
+          <li>  hidden: true</li>
+      </ol>
+    </code></pre>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+<aside class="quote quote-modified" data-post="1" data-topic="308773">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/148734_2.png" width="24"/>
+<div class="quote-title__text-content">
+<a href="https://meta.discourse.org/t/using-hidden-site-settings/308773">Using Hidden Site Settings</a> <a class="badge-category__wrapper" href="/c/documentation/self-hosting/55"><span class="badge-category --style-square --has-parent" data-category-id="55" data-drop-close="true" data-parent-category-id="10" style="--category-badge-color: #ffd200; --category-badge-text-color: #000000; --parent-category-badge-color: #00A94F;" title="Documentation and guides for people who self-host their Discourse sites. (Index)"><span class="badge-category__name">Self-Hosting</span></span></a>
+</div>
+</div>
+<blockquote>
+<img alt="bookmark" class="emoji" height="20" src="../../../images/bookmark.png" title="bookmark" width="20"/> This is a <a class="hashtag-cooked" data-icon="tag" data-id="478" data-slug="how-to" data-style-type="icon" data-type="tag" href="/tag/how-to"><span class="hashtag-icon-placeholder"><svg class="fa d-icon d-icon-square-full svg-icon svg-node"><use href="#square-full"></use></svg></span>how-to</a> guide about Hidden Site Settings, how to enable them, and why you might want to adjust them. 
+<img alt="person_raising_hand" class="emoji" height="20" src="../../../images/person_raising_hand.png" title="person_raising_hand" width="20"/> Required user level: Administrator 
+<img alt="warning" class="emoji" height="20" src="../../../images/warning.png" title="warning" width="20"/> Important: Console access is required for some steps. 
+
+In Discourse, hidden site settings refer to configuration options that are not readily visible or accessible through the standard admin dashboard interface. These settings are part of the backend configuration that can control various advanced or potent…
+  </blockquote>
+</aside>
+<p>For reference the reason why it was hidden<sup class="footnote-ref"><a href="#footnote-1937139-1" id="footnote-ref-1937139-1">[1]</a></sup>:</p>
+<blockquote>
+<p>In our efforts to increase the signal-to-noise ratio and discoverability of site settings, we’re hiding overly technical settings that few users override.</p>
+</blockquote>
+<hr class="footnotes-sep"/>
+<ol class="footnotes-list">
+<li class="footnote-item" id="footnote-1937139-1"><p><a href="https://github.com/discourse/discourse/pull/35197">https://github.com/discourse/discourse/pull/35197</a> <a class="footnote-backref" href="#footnote-ref-1937139-1">↩︎</a></p>
+</li>
+</ol>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 3">❤️ 3</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/500788_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Jeto</div>
+          <div class="post_content">
+<p>Ah, unfortunately I do not have the means to access our server via SSH</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/120154_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">pfaffman</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="3" data-topic="395964" data-username="Jeto">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/500788_2.png" width="24"/> Jeto:</div>
+<blockquote>
+<p>do not have the means to access our server via SSH</p>
+</blockquote>
+</aside>
+<p>Someone does. You could ask them to change it.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/290039_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">nathank</div>
+          <div class="post_content">
+<p>Why has this been made hidden? It makes it impossible to share .png files via Discourse. I struggle to see how this is a ‘feature’.</p>
+<p>It hamstrings using Discourse as a repository of .png files, and means reverting to email / Google Drive / some other platform for the pedestrian task of sharing images with a transparent background.</p>
+<p>This seems quite nuts to me. At least I’m self-hosted, and can change this quite easily.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/529329_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">jack222</div>
+          <div class="post_content">
+<p>Most modern browsers now support WebP. If you’re looking to save storage space, converting PNG images to WebP today might be a good option.</p>
+<p>In the past, storage space was a bigger concern. Today, server storage capacity is growing significantly, so there may be no need to compromise image quality just to save space.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 1">❤️ 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/290039_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">nathank</div>
+          <div class="post_content">
+<aside class="quote no-group" data-post="5" data-topic="395964" data-username="nathank">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/290039_2.png" width="24"/> nathank:</div>
+<blockquote>
+<p>It hamstrings using Discourse as a repository of .png files, and means reverting to email / Google Drive / some other platform for the pedestrian task of sharing images with a transparent background.</p>
+</blockquote>
+</aside>
+<p>On mucking about with it, I see that only .png files without transparency are converted to .jpg - now that makes more sense!!!</p>
+<p>So maybe this is actually pretty sweet and I’ll turn that setting back on.</p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="laughing: 1">😆 1</span></div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/529329_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">jack222</div>
+          <div class="post_content">
+<p>Hello, could you please let me know where to set this?</p>
+<p>I tested uploading a transparent PNG, and it was automatically converted to JPEG.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/290039_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">nathank</div>
+          <div class="post_content">
+<p>Maybe I got that observation wrong then - it seemed to be the case, but I didn’t test it in detail.</p>
+<p>The setting referred to above is a <strong>Hidden Site Setting</strong>. See this post:</p>
+<aside class="quote quote-modified" data-post="2" data-topic="395964">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" class="avatar" height="24" src="../../../images/554653_2.png" width="24"/>
+<div class="quote-title__text-content">
+<a href="https://meta.discourse.org/t/missing-png-to-jpeg-settings/395964/2">Missing PNG to JPEG settings</a> <a class="badge-category__wrapper" href="/c/support/6"><span class="badge-category --style-icon" data-category-id="6" data-drop-close="true" style="--category-badge-color: #ce96c9; --category-badge-text-color: #000000;" title="Ask the community for help with anything related to Discourse.To help others help you, share as much detail as you can about the issue and what is occurring, including what you have tried so far from searching, reading the documentation or asking our AI bot."><svg aria-hidden="true" class="fa d-icon svg-icon svg-node"><svg id="circle-question" viewbox="0 0 512 512">
+<path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM169.8 165.3c7.9-22.3 29.1-37.3 52.8-37.3l58.3 0c34.9 0 63.1 28.3 63.1 63.1c0 22.6-12.1 43.5-31.7 54.8L280 264.4c-.2 13-10.9 23.6-24 23.6c-13.3 0-24-10.7-24-24l0-13.5c0-8.6 4.6-16.5 12.1-20.8l44.3-25.4c4.7-2.7 7.6-7.7 7.6-13.1c0-8.4-6.8-15.1-15.1-15.1l-58.3 0c-3.4 0-6.4 2.1-7.5 5.3l-.4 1.2c-4.4 12.5-18.2 19-30.6 14.6s-19-18.2-14.6-30.6l.4-1.2zM224 352a32 32 0 1 1 64 0 32 32 0 1 1 -64 0z"></path>
+</svg></svg>
+<span class="badge-category__name">Support</span></span></a>
+</div>
+</div>
+<blockquote>
+    This is now a hidden site setting 
+
+
+
+
+For reference the reason why it was hidden<a href="#footnote-1937139-1" id="footnote-ref-1937139-1">[1]</a>: 
+
+In our efforts to increase the signal-to-noise ratio and discoverability of site settings, we’re hiding overly technical settings that few users override. 
+
+
+
+
+<a href="https://github.com/discourse/discourse/pull/35197">https://github.com/discourse/discourse/pull/35197</a> <a class="footnote-backref" href="#footnote-ref-1937139-1"><img alt="right_arrow_curving_left" class="emoji" height="20" src="../../../images/right_arrow_curving_left.png" title="right_arrow_curving_left" width="20"/>︎</a>
+</blockquote>
+</aside>
+
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="+1: 1">👍 1</span></div>
+        </div>
+      </div>
+
+
+    </div>
+  </body>
+</html>

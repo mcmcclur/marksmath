@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width">
+    <title>Adding Discourse sites without rebuilding the app and multisite.yml question</title>
+    <link rel="stylesheet" href="../../../archived.css" />
+    <script>
+      function findSageCodeBlocks() {
+        return Array.prototype.slice.call(
+          document.querySelectorAll(
+            "pre[data-code-wrap='sage'] > code, pre > code.lang-sage, pre > code.language-sage, pre > code.sage"
+          )
+        );
+      }
+
+      function loadScript(src) {
+        return new Promise(function (resolve, reject) {
+          var existing = document.querySelector("script[src='" + src + "']");
+          if (existing) {
+            if (existing.dataset.loaded === "true") {
+              resolve();
+              return;
+            }
+            existing.addEventListener("load", resolve, { once: true });
+            existing.addEventListener("error", reject, { once: true });
+            return;
+          }
+
+          var script = document.createElement("script");
+          script.src = src;
+          script.async = true;
+          script.addEventListener("load", function () {
+            script.dataset.loaded = "true";
+            resolve();
+          }, { once: true });
+          script.addEventListener("error", reject, { once: true });
+          document.head.appendChild(script);
+        });
+      }
+
+      function prepareSageCells() {
+        var sageBlocks = findSageCodeBlocks();
+        if (!sageBlocks.length) {
+          return Promise.resolve();
+        }
+
+        return loadScript("https://sagecell.sagemath.org/static/embedded_sagecell.js")
+          .then(function () {
+            if (!window.sagecell || !window.sagecell.makeSagecell) {
+              return;
+            }
+
+            sageBlocks.forEach(function (codeTag, index) {
+              var preTag = codeTag.parentElement;
+              if (!preTag || preTag.dataset.sageMounted === "true") {
+                return;
+              }
+
+              var host = document.createElement("div");
+              host.className = "sagecell-archive";
+
+              var source = document.createElement("script");
+              source.type = "text/x-sage";
+              source.text = codeTag.textContent || "";
+              host.appendChild(source);
+
+              preTag.insertAdjacentElement("afterend", host);
+              preTag.classList.add("sage-source-hidden");
+              preTag.dataset.sageMounted = "true";
+
+              window.sagecell.makeSagecell({
+                inputLocation: host,
+                autoeval: false,
+                evalButtonText: "Run",
+                languages: ["sage"]
+              });
+            });
+          })
+          .catch(function () {
+            // Leave the original code blocks visible if SageCell cannot load.
+          });
+      }
+
+      function preprocessDiscourseMath() {
+        document.querySelectorAll("span.math, div.math").forEach(function (node) {
+          var tex = node.textContent || "";
+          if (!tex.trim()) {
+            return;
+          }
+          if (node.tagName === "SPAN") {
+            node.textContent = "\\(" + tex + "\\)";
+          } else {
+            node.textContent = "\\[" + tex + "\\]";
+          }
+          node.classList.remove("math");
+        });
+      }
+
+      window.MathJax = {
+        tex: {
+          inlineMath: [["\\(", "\\)"]],
+          displayMath: [["\\[", "\\]"]]
+        },
+        startup: {
+          pageReady() {
+            preprocessDiscourseMath();
+            return MathJax.startup.defaultPageReady().then(function () {
+              return prepareSageCells();
+            });
+          }
+        }
+      };
+    </script>
+    <script async id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="title-span">
+        <a href="../../../">
+          <img src="../../../images/ad2526334012b2ad0c3421f9b6dd94bae2ede52f.svg" height="40" alt="Site Logo" id="site-logo" />
+        </a>
+      </div>
+    </header>
+
+    <div class="main">
+    <div class="archive-span"><a href='https://meta.discourse.org/'>Discourse Meta</a> archived in May, 2026</div>
+    <h1 class="topic-title">Adding Discourse sites without rebuilding the app and multisite.yml question</h1>
+            <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/554981_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">ScrapBlox</div>
+          <div class="post_content">
+<p>Started messing around with a multisite instance of discourse and was wondering instead of defining sites in app.yml hooks is there a way to make this an external file (like the multisite.yml only on the host VPS not in the docker container, at least configurable from the host) or have an sh file define discourse forums in a db table.</p>
+<p>I would also like to know is there a command line or something I can run to add a new site without rebuilding the whole app?</p>
+<pre data-code-wrap="yaml"><code class="lang-yaml">hooks:
+  after_postgres:
+     # this would have to be set for each sitedb somehow instead of b_discourse
+     - exec: sudo -u postgres createdb b_discourse || exit 0
+     - exec:
+          stdin: |
+            grant all privileges on database b_discourse to discourse;
+          cmd: sudo -u postgres psql b_discourse
+          raise_on_fail: false
+
+     - exec: /bin/bash -c 'sudo -u postgres psql b_discourse &lt;&lt;&lt; "alter schema public owner to discourse;"'
+     - exec: /bin/bash -c 'sudo -u postgres psql b_discourse &lt;&lt;&lt; "create extension if not exists hstore;"'
+     - exec: /bin/bash -c 'sudo -u postgres psql b_discourse &lt;&lt;&lt; "create extension if not exists pg_trgm;"'
+
+  after_code:
+    - exec:
+        cd: $home/plugins
+        cmd:
+          - mkdir -p plugins
+          - git clone https://github.com/discourse/docker_manager.git
+  before_bundle_exec:
+    - file:
+        path: $home/config/multisite.yml
+        contents: |
+         secondsite:
+           adapter: postgresql
+           database: b_discourse
+           pool: 25
+           timeout: 5000
+           host_names:
+             - sub.domain.tld
+
+  after_bundle_exec:
+    - exec: cd /var/www/discourse &amp;&amp; sudo -H -E -u discourse bundle exec rake multisite:migrate
+</code></pre>
+<p>Discourse multisites are new for me, but I have setup and am comfortable in MediaWiki multisties.</p>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+  </body>
+</html>

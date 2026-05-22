@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="150px" height="150px">
+  <defs>
+    <style>
+      
+      .discourse-loader {
+        display: block;
+        margin: auto;
+      }
+      .petal {
+        transform-origin: 50px 50px;
+        animation: pulse-petal 1.5s infinite ease-in-out;
+      }
+      
+      .green {
+        fill: #00A94F;
+        animation-delay: 0s;
+      }
+      .blue {
+        fill: #2F70D5;
+        animation-delay: 0.5s;
+      }
+      .orange {
+        fill: #F15D22;
+        animation-delay: 1.0s;
+      }
+
+      @keyframes pulse-petal {
+        0%, 100% { 
+          transform: scale(0.95); 
+          opacity: 0.6; 
+        }
+        33% { 
+          transform: scale(1.05); 
+          opacity: 1; 
+        }
+      }
+
+      .shadow-layer {
+        filter: drop-shadow(0px 3px 4px rgba(0, 0, 0, 0.15));
+      }
+    </style>
+  </defs>
+
+  <g class="discourse-loader shadow-layer">
+    <path class="petal green" d="M 47 12 A 38 38 0 0 0 16 68 L 47 48 Z"/>
+    
+    <path class="petal blue" d="M 53 12 A 38 38 0 0 1 84 68 L 53 48 Z"/>
+    
+    <path class="petal orange" d="M 20 71.6 A 38 38 0 0 0 65 86 Q 80 92 92 92 Q 85 82 80 71.6 L 50 52 Z"/>
+  </g>
+</svg>

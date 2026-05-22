@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width">
+    <title>Wibiblio Discourse based community building for libraries at Re:publica Berlin</title>
+    <link rel="stylesheet" href="../../../archived.css" />
+    <script>
+      function findSageCodeBlocks() {
+        return Array.prototype.slice.call(
+          document.querySelectorAll(
+            "pre[data-code-wrap='sage'] > code, pre > code.lang-sage, pre > code.language-sage, pre > code.sage"
+          )
+        );
+      }
+
+      function loadScript(src) {
+        return new Promise(function (resolve, reject) {
+          var existing = document.querySelector("script[src='" + src + "']");
+          if (existing) {
+            if (existing.dataset.loaded === "true") {
+              resolve();
+              return;
+            }
+            existing.addEventListener("load", resolve, { once: true });
+            existing.addEventListener("error", reject, { once: true });
+            return;
+          }
+
+          var script = document.createElement("script");
+          script.src = src;
+          script.async = true;
+          script.addEventListener("load", function () {
+            script.dataset.loaded = "true";
+            resolve();
+          }, { once: true });
+          script.addEventListener("error", reject, { once: true });
+          document.head.appendChild(script);
+        });
+      }
+
+      function prepareSageCells() {
+        var sageBlocks = findSageCodeBlocks();
+        if (!sageBlocks.length) {
+          return Promise.resolve();
+        }
+
+        return loadScript("https://sagecell.sagemath.org/static/embedded_sagecell.js")
+          .then(function () {
+            if (!window.sagecell || !window.sagecell.makeSagecell) {
+              return;
+            }
+
+            sageBlocks.forEach(function (codeTag, index) {
+              var preTag = codeTag.parentElement;
+              if (!preTag || preTag.dataset.sageMounted === "true") {
+                return;
+              }
+
+              var host = document.createElement("div");
+              host.className = "sagecell-archive";
+
+              var source = document.createElement("script");
+              source.type = "text/x-sage";
+              source.text = codeTag.textContent || "";
+              host.appendChild(source);
+
+              preTag.insertAdjacentElement("afterend", host);
+              preTag.classList.add("sage-source-hidden");
+              preTag.dataset.sageMounted = "true";
+
+              window.sagecell.makeSagecell({
+                inputLocation: host,
+                autoeval: false,
+                evalButtonText: "Run",
+                languages: ["sage"]
+              });
+            });
+          })
+          .catch(function () {
+            // Leave the original code blocks visible if SageCell cannot load.
+          });
+      }
+
+      function preprocessDiscourseMath() {
+        document.querySelectorAll("span.math, div.math").forEach(function (node) {
+          var tex = node.textContent || "";
+          if (!tex.trim()) {
+            return;
+          }
+          if (node.tagName === "SPAN") {
+            node.textContent = "\\(" + tex + "\\)";
+          } else {
+            node.textContent = "\\[" + tex + "\\]";
+          }
+          node.classList.remove("math");
+        });
+      }
+
+      window.MathJax = {
+        tex: {
+          inlineMath: [["\\(", "\\)"]],
+          displayMath: [["\\[", "\\]"]]
+        },
+        startup: {
+          pageReady() {
+            preprocessDiscourseMath();
+            return MathJax.startup.defaultPageReady().then(function () {
+              return prepareSageCells();
+            });
+          }
+        }
+      };
+    </script>
+    <script async id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="title-span">
+        <a href="../../../">
+          <img src="../../../images/ad2526334012b2ad0c3421f9b6dd94bae2ede52f.svg" height="40" alt="Site Logo" id="site-logo" />
+        </a>
+      </div>
+    </header>
+
+    <div class="main">
+    <div class="archive-span"><a href='https://meta.discourse.org/'>Discourse Meta</a> archived in May, 2026</div>
+    <h1 class="topic-title">Wibiblio Discourse based community building for libraries at Re:publica Berlin</h1>
+            <div class="post_container">
+        <div class="avatar_container">
+          <img src="../../../images/423597_2.png" class="avatar" />
+        </div>
+        <div class="post">
+          <div class="user_name">Thomas_Rother</div>
+          <div class="post_content">
+<p><div class="lightbox-wrapper"><a class="lightbox" data-download-href="/uploads/short-url/t6i5k0olybiuHM9MglIJZz9qCh2.png?dl=1" href="https://d11a6trkgmumsb.cloudfront.net/original/4X/c/b/f/cbf51dc8d43f556ce0f34a273e4c71f06ea746d8.png" rel="noopener nofollow ugc" title="grafik"><img alt="grafik" data-base62-sha1="t6i5k0olybiuHM9MglIJZz9qCh2" data-dominant-color="C4F4F4" height="152" src="../../../images/cbf51dc8d43f556ce0f34a273e4c71f06ea746d8_2_690x152.png" srcset="https://d11a6trkgmumsb.cloudfront.net/optimized/4X/c/b/f/cbf51dc8d43f556ce0f34a273e4c71f06ea746d8_2_690x152.png, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/c/b/f/cbf51dc8d43f556ce0f34a273e4c71f06ea746d8_2_1035x228.png 1.5x, https://d11a6trkgmumsb.cloudfront.net/optimized/4X/c/b/f/cbf51dc8d43f556ce0f34a273e4c71f06ea746d8_2_1380x304.png 2x" width="690"/><div class="meta"><svg aria-hidden="true" class="fa d-icon d-icon-far-image svg-icon"><use href="#far-image"></use></svg><span class="filename">grafik</span><span class="informations">1432×316 23.2 KB</span><svg aria-hidden="true" class="fa d-icon d-icon-discourse-expand svg-icon"><use href="#discourse-expand"></use></svg></div></a></div></p>
+<p>To whom it may concern:</p>
+<p>Today at 16:45 CEST, Ralf Stockmann, Director for digital development at the central Berlin State Library, will present their new, Discourse-based community building project at the Re:publica26 conference in Berlin:</p>
+<aside class="onebox allowlistedgeneric" data-onebox-src="https://www.re-publica.com/en/node/11244">
+<header class="source">
+<img alt="" class="site-icon" data-dominant-color="D5D500" height="256" src="../../../images/2e6c447961ff2684344dda9204392d0ee4bf4a96.png" width="256"/>
+<a href="https://www.re-publica.com/en/node/11244" rel="noopener nofollow ugc" target="_blank">republica</a>
+</header>
+<article class="onebox-body">
+<div class="aspect-image" style="--aspect-ratio:690/387;"><img alt="" class="thumbnail" data-dominant-color="B2B3B3" height="388" src="../../../images/5c18e2abbd6916a81e20925a90d80e824606cd18_2_690x388.png" width="690"/></div>
+<h3><a href="https://www.re-publica.com/en/node/11244" rel="noopener nofollow ugc" target="_blank">wiblio - hyperlokale Online Communities eurer Berliner Bibliotheken | re:publica</a></h3>
+<p>Die re:publica Berlin ist das Festival für die digitale Gesellschaft und die größte Konferenz ihrer Art in Europa. Die Teilnehmer*innen der re:publica bilden einen Querschnitt unserer (digitalen) Gesellschaft.</p>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+<aside class="onebox allowlistedgeneric" data-onebox-src="https://www.wiblio.org/">
+<header class="source">
+<img alt="" class="site-icon" data-dominant-color="" height="105" src="../../../images/5b01422161afa04ce49304775f951b4543c38f96.svg" width="105"/>
+<a href="https://www.wiblio.org/" rel="noopener nofollow ugc" target="_blank">Wiblio</a>
+</header>
+<article class="onebox-body">
+<div class="aspect-image" style="--aspect-ratio:500/220;"><img alt="" class="thumbnail" data-dominant-color="181818" height="220" src="../../../images/9507bf5a779168a8191b7a835cb0cc99a439f784.png" width="500"/></div>
+<h3><a href="https://www.wiblio.org/" rel="noopener nofollow ugc" target="_blank">Wiblio</a></h3>
+<p>Bibliotheken neu gedacht: Community, Events, Austausch</p>
+</article>
+<div class="onebox-metadata">
+</div>
+<div style="clear: both"></div>
+</aside>
+<p>Fediverse Link: <a class="inline-onebox" href="https://sueden.social/@rstockm@chaos.social" rel="noopener nofollow ugc">sueden.social</a></p>
+          </div>
+          <div class="post_engagement"><span class="engagement-pill reaction-pill" title="heart: 4">❤️ 4</span><span class="engagement-pill reaction-pill" title="clap: 2">👏 2</span><span class="engagement-pill reaction-pill" title="eyes: 1">👀 1</span></div>
+        </div>
+      </div>
+
+
+    </div>
+  </body>
+</html>
