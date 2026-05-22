@@ -1,5 +1,4 @@
 export function little_julia(target = "#homepage-julia", fillStyle) {
-  console.log(['fillStyle is ', fillStyle])
   const complexDynamics = globalThis.complex_dynamics;
   const d3 = complexDynamics?.d3;
   if (!d3) {
@@ -16,7 +15,6 @@ export function little_julia(target = "#homepage-julia", fillStyle) {
 
   const canvas = d3.select(canvasNode);
   const opts = { algorithm: "inverse_iteration", fill_size: 1, trail: false, fillStyle };
-  console.log(['opts are', opts])
   let timer = null;
   let startTime = 0;
   let transitionFrom = null;
