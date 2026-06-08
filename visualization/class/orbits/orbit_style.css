@@ -5,9 +5,6 @@
 .observablehq--undefined {
   display: none;
 }
-input[type="number"] {
-  display: none
-}
 p, .p {
   max-width: 850px;
 }
@@ -19,11 +16,14 @@ p, .p {
   max-width: 1000px;
   margin: 0 auto;
 }
-.controls .cell-output {
-  display: inline-block;
-  margin-right: 8px;
-  max-width: 260px;
+.controls .cell-output form {
+  /* display: inline-block;
+  margin-right: 8px; */
+  width: 500px;
 }
+.controls .cell-output input[type="number"] {
+  width: 200px;
+ }
 .controls .cell-output:last-child {
   max-width: 180px;
 }
