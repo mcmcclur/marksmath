@@ -1,5 +1,5 @@
 ---
-title: Compensation issues at UNCA
+title: Compensation issues at UNCA 
 subtitle: Past and present explorations of compensation for faculty and staff at UNCA
 date: 2025-10-25
 date-format: "MMM, YYYY"
@@ -132,9 +132,14 @@ Here are all the written reports on compensation at UNCA that I'm aware of order
 
 As far as I know, the Compensation Committee has not met since Spring of 2023. I vaguely recall being told that I was on that committee the following year. I think my response was something along the lines of "The hell I am".
 
-## Current situation 
+## Updates
 
-Since I was reappointed to the damn committee again this year, I thought I'd gather the most recent data and take a quick look at compensation across the UNC System. The visualization below is the result. It shows average salaries for various groups of non-medical faculty across the UNC System. 
+Here are a few updates to some of my previous work to account for data through the 2025/2026 academic year.
+
+### Salaries across the UNC System
+
+The visualization below shows average salaries for various groups of non-medical faculty across the UNC System. You can explore the different faculty groups and adjust for cost of living (CoL) or not. When adjusted for CoL, UNCA ranks dead last by pay for every group. Even when not cost adjusted, UNCA ranks in the bottom third for all groups but lecturers.
+
 
 ```{ojs}
 viewof group = Inputs.radio(
@@ -145,33 +150,150 @@ viewof sort_by = Inputs.radio(["Avg Salary", "Name"], {label: "Sort by:", value:
 viewof col_adjust = Inputs.toggle({label: "CoL Adjust:", value: true})
 ```
 
+::: {#fig-interactive_plot fig-cap="Interactive salary bar charts"} 
+
 ```{ojs}
 summary_data = summarize_data(data, group, sort_by, col_adjust)
-make_salary_viz(summary_data);
+make_salary_viz(summary_data); 
 ```
 
-You can explore the different faculty groups and adjust for cost of living (CoL) or not. When adjusted for CoL, UNCA ranks dead last by pay for every group. Even when not cost adjusted, UNCA ranks in the bottom third for all groups but lecturers.
+:::
 
-## Further comments
+### Salary compression
 
-### Data sources
+Salary compression is the presence of relatively small differences in pay between groups with significantly different levels of experience or rank. It's a natural equity issue leading to problems with morale and retention, as well as promoting "quiet quitting".
 
-The salary data here comes from the [UNC Salary Information Database](https://uncdm.northcarolina.edu/salaries/index.php){target=_blank}. The UNC Database provides microdata on salaries for all employees of the UNC System. It's updated quarterly so it makes for an excellent resource that's detailed and current.
+One way to measure salary compression at an institution of higher learning is to compute the ratio of the average assistant professor salary divided by the average full professor salary. The larger that number, the more salary compression we have. The value of a healthy ratio might not be immediately clear but we can at least compare that ratio across a number of institutions. Let's call this number the *compression ratio*.
 
-The Cost of Living (CoL) data comes from [Best Places](https://www.bestplaces.net){target=_blankl} used here was recorded in October of 2025. Here, for example, is [Best Places CoL page on Asheville](https://www.bestplaces.net/cost_of_living/city/nc/asheville), which indicates that Asheville has a CoL of 105.8.
+There are 570 public, four year institutions where IPEDS provides sufficent data to compute the compression ratio. The average value of those compression ratios is 0.71214 with a standard deviation of 0.083474. UNCA's compression ratio is 0.812445, which puts us 1.20163 standard deviations past the mean. Not ideal
 
-At any point in time, the overall CoL for the US is set to 100. Thus, Asheville's CoL of 105.8 indicates that the general cost of living in Asheville is about 5.8% higher than the national average. The adjusted salaries are computed by
-$$
-\text{adjusted salary} = \text{raw salary}\times\frac{100}{\text{CoL}}.
-$$
+Here's a histogram of all the compression ratios with a dashed line for UNCA:
 
-### Potential further work 
+::: {#fig-national_salary_compression fig-cap="Salary compression at public, four-year institutions"} 
 
-- The interactive tool above suggests that relative salary situation at UNCA is worst for Full Professors with a CoL adjusted salary over $18,000 lower than the next lowest school. No other faculty group is nearly so low, suggesting that salary compression may be a serious issue. That could easily be studied directly.
+```{ojs}
+compression_ratios = await FileAttachment("./data/compression_ratios.csv")
+  .csv({typed: true})
 
-- It would also be nice to include staff in this study. The data is not particularly clean, though, and employee positions aren't described in as much detail as I'd like. It was reasonably easy to separate out the non-medical faculty and classify them as I've done here. There are many, many more staff members, though. Perhaps, I'll look at *all* staff at some point, but I don't know of a reasonable way to separate natural subgroups of staff at the moment.
+unca_compression_ratio = {
+  const unca = compression_ratios.find(o => o.UnitID === 199111);
+  if (!unca) throw new Error("Could not find UNCA in compression_ratios.csv");
+  return unca.CompressionRatio;
+}
 
-- Finally, I might incorporate IPEDS data - a nationwide data source for all schools in higher education going back to 1980. IPEDS provides very clean and fairly reliable summary data on a huge range of issues, including faculty and staff salary information. It's provided by the federal government via the Department of Education and is still available, though data collection has recently stopped. Data dissemination has always lagged a bit so it's not always the best source for the most current information. Nonetheless, it's the only source that provides longitudinal data for virtually all schools in the US.
+Plot.plot({
+  height: 360,
+  marginLeft: 52,
+  y: {
+    grid: true,
+    label: "Institutions"
+  },
+  x: {
+    domain: [0.45, 1.01],
+    label: "Compression Ratio"
+  },
+  marks: [
+    Plot.rectY(
+      compression_ratios,
+      Plot.binX(
+        {y: "count"},
+        {x: "CompressionRatio", fill: "steelblue"}
+      )
+    ),
+    Plot.ruleY([0]),
+    Plot.ruleX([unca_compression_ratio], {
+      stroke: "black",
+      strokeWidth: 2,
+      strokeDasharray: "3,5"
+    })
+  ]
+})
+```
+
+:::
+
+We can also check where UNCA's compression ratio lies in the UNC system. UNCA has the second highest compression ratio in the UNC System; only Fayetteville State has a higher compression ratio. Chapel Hill has the lowest compression ratio, followed by NC State.
+
+::: {#fig-system_salary_compression fig-cap="Salary compression in the UNC System"} 
+
+```{ojs}
+nc_compression_ratios = await FileAttachment("./data/NCCompression.csv")
+  .csv({typed: true});
+Plot.plot({
+    color: { type: "identity" },
+    x: {
+      domain: d3.sort(nc_compression_ratios, (d) => -d.CompressionRatio).map((d) => d.UnitID),
+      tickFormat: (d) => {
+        const abbr = nc_compression_ratios.filter(o => o.UnitID == parseInt(d))[0].abbr;
+        return abbr
+      },
+        label: "School"
+    },
+    y: {
+      grid: true
+    },
+    width: width,
+    height: 0.4 * width,
+    marginLeft: 70,
+    marks: [
+      Plot.barY(nc_compression_ratios, {
+        x: "UnitID",
+        y: "CompressionRatio",
+        fill: (d) => (d.UnitID == 199111 ? "#003DA5" : "lightblue"),
+      })
+    ]
+  });
+```
+
+:::
+
+### My salary
+
+Let's take a look at my own salary history - in part, because this a personal matter for me and, also, because I happen to have access to my own salary history. I generated the chart below based on that data.
+
+I started in academic year 1997/1998 with a salary of $34,000 a year. My salary has generally gone up, though, sometimes faster than others. During my first 11 years, my salary increased from $34,000 to $65,052; that's an effective annual rate of just over 6%.
+
+Assuming I had consistent annual increases of 6% since I started at UNCA, my salary now would be
+$$\$34,000 \times (1.06)^{29} = \$184,225.$$
+Instead, my salary is $92,007 - almost half of what I might've expected to make but not quite.
+
+::: {#fig-my_salary fig-cap="My salary history"} 
+
+
+```{ojs}
+import {prepare_my_salaries, make_my_salary_viz} from './components/my_salary_viz.js';
+viewof my_salary_inflation = Inputs.toggle({label: "Inflation:"})
+```
+
+```{ojs}
+my_salary_data = {
+  const salaries = await FileAttachment("./data/my_salaries.csv").csv({typed: true});
+  const inflation_multipliers = await FileAttachment("./data/inflation_multipliers.csv")
+    .csv({typed: true});
+  return prepare_my_salaries(salaries, inflation_multipliers);
+}
+
+my_salary_chart = make_my_salary_viz(my_salary_data)
+``` 
+
+```{ojs}
+my_salary_update = my_salary_chart.update(my_salary_inflation)
+```
+
+:::
+
+You can click the "Inflation" checkbox to adjust for inflation; it's not nice. I have, in fact, less purchasing power now than I had 18 years ago in 2007.
+
+
+## Data sources
+
+Salary data for the UNC System comes from the [UNC Salary Information Database](https://uncdm.northcarolina.edu/salaries/index.php){target=_blank}. The UNC Database provides microdata on salaries for all employees of the UNC System. It's updated quarterly so it makes for an excellent resource that's detailed and current.
+
+The Cost of Living (CoL) data comes from [Best Places](https://www.bestplaces.net){target=_blankl} used here was recorded in October of 2025. Here, for example, is [Best Places CoL page on Asheville](https://www.bestplaces.net/cost_of_living/city/nc/asheville), which indicates that Asheville has a CoL of 105.8 or about 5.8% higher than the national average.
+
+Average salary data by rank for the 570 public, four-year institutions comes from [IPEDS](https://nces.ed.gov/ipeds){target=_blank}. While not as current, it's really the only publicly available source of data of that breadth.
+
+The inflation data is compute from CPI for Urban areas in the South, which can be obtained from the [Federal Reserve Bank of St Louis](https://fred.stlouisfed.org/series/CUUR0300SA0){target=_blank}.
 
 
 ```{ojs}
