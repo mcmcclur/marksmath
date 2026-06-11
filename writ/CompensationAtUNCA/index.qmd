@@ -1,13 +1,10 @@
 ---
 title: Compensation issues at UNCA 
-subtitle: Past and present explorations of compensation for faculty and staff at UNCA
-date: 2025-10-25
-date-format: "MMM, YYYY"
+date: 2026-06-10
+date-format: "MMMM, YYYY"
 author:
   - family: McClure
     given: Mark
-resources:
-  - ./documents/unca_enrollment_comps.html
 
 format:
   html: 
@@ -17,38 +14,61 @@ format:
       echo: false
     css:
       - https://unpkg.com/tippy.js@6/themes/light-border.css
-      - styles.css 
+      - styles.css
+  pdf: 
+    toc: false
+    output-file: CompensationAtUNCA
+    echo: false
 ---
 
-::: {#fig-simple_plot fig-cap="Average faculty salaries across the UNC System adjusted by CoL; more detail below."} 
+::: {#fig-unc_salary_map fig-cap="UNC System Schools: Size and shade scaled by faculty salary adjusted by cost of living."}
+
+::::: {.content-visible when-format="html"}
 
 ```{ojs}
-import {summarize_data, make_salary_viz} from './components/system_salary_viz.js';
-small_summary_salaries = await (await FileAttachment("./data/small_summary_data.csv")
-    .csv({typed: true}));
-make_salary_viz(small_summary_salaries, {animate: true, tooltips: false})
+import {make_map} from "./components/unc_salary_map.js";
+
+unc_salary_map_topo = await FileAttachment("./data/nc.json").json()
+unc_salary_map_cohort = await FileAttachment("./data/projected_cohorts2@1.csv")
+  .csv({typed: true})
+
+make_map(unc_salary_map_topo, unc_salary_map_cohort)
 ```
+
+:::::
+
+::::: {.content-visible when-format="pdf"}
+
+![](./images/unc_salary_map.png)
+
+:::::
 
 :::
 
-UNCA has long been underfunded but things seem to have taken a turn for the worse around 2013. Since 2015, several committees, task forces, and other groups have studied the issue and produced reports, with a particular interest on how it relates to faculty and staff compensation. As a member of Faculty Senate during part of that time who also works with data, I became involved with some of those groups. Since I was recently reappointed to the standing committee on compensation, I thought it might be a good time to gather some of that old material in one place and to start to put some new material together.
- 
-## Past reports 
+## Intro
 
-Here are all the written reports on compensation at UNCA that I'm aware of ordered chronologically by release date. There's also a little of my own commentary.
+UNCA has long been underfunded but things seem to have taken a turn for the worse around 2008 and then again around 2013. Since 2015, several committees, task forces, and other groups have studied the issue and produced reports, with a particular interest on how it relates to faculty and staff compensation. As a member of Faculty Senate during part of that time who also works with data, I became involved with some of those groups. 
 
-0. [Task Force on Faculty Salary and Equity](./documents/SalaryAndEquityReportJan2018.pdf) - Jan 2018  
+One response to those past reports was the creation of a standing committee on compensation. This past year, I was asked again to serve on that committee. We didn't do much but we did, at least, gather past reports and update some of the data. This document gathers all that past work and presents the updates.
+
+## Past reports
+
+Here are all the written reports on compensation at UNCA that I'm aware of, ordered chronologically by release date. There's also a little of my own commentary.
+
+Note that, with the exception of a couple of things that I wrote, these reports are generally PDFs lying on UNCA's Google Drive.
+
+0. [Task Force on Faculty Salary and Equity](https://drive.google.com/file/d/1W4T64jRPmX6uAsou9K9f0ktizBhU-IIw/view?usp=drive_link){target=_blank} - Jan 2018  
    <div class="note-comments">
    
     This $\text{zero}^{\text{th}}$ report predates my participation and is a bit different from the remaining documents in that it is not primarily motivated by concern with the level of compensation at UNCA. It focuses more on equity between and within departments and with procedures for maintaining fairness moving forward. The report does note, however, that "substantive salary increases had not been available for several years".
 
    </div>
-1. [Task Force on Total Compensation](./documents/TaskForceReportMay2019.pdf) - May 2019  
+1. [Task Force on Total Compensation](https://drive.google.com/file/d/116rwbrxLTb8bJqdNji5lSnAYNxLAULkw/view?usp=drive_link){target=_blank} - May 2019  
     <div class="note-comments">
 
      By Fall of 2018, concern over the *level* of compensation at UNCA had grown and a new task force to study that specific issue was formed. I was appointed to that task force as a member of the Institutional Development Committee of Faculty Senate.
 
-     This report focused on salary and benefits for both faculty and staff at UNCA. It compared that compensation to cost of living as measured by consumer price index for Southeast urban areas. We had good data on both of those going back a couple of decades so we were able to illustrate how our effective compensation has decreased over time.
+     This report focused on salary and benefits for both faculty and staff at UNCA. It compared that compensation to the cost of living as measured by the consumer price index for Southeast urban areas. We had good data on both of those going back a couple of decades so we were able to illustrate how our effective compensation has decreased over time.
 
      There were several issues with this study, such as 
 
@@ -57,33 +77,35 @@ Here are all the written reports on compensation at UNCA that I'm aware of order
     
     </div>
 
-2. [UNCA Salaries and Housing in Asheville](./documents/SalariesAndHousingJune2019.pdf) - June 2019  
+2. [UNCA Salaries and Housing in Asheville](https://drive.google.com/file/d/1MCtSX_TIy-50uICnoeBjNd-aL510HFBZ/view?usp=drive_link){target=_blank} - June 2019  
    <div class="note-comments">
 
-   When the work of the prior Task Force on Total Compensation was nearing completion, I happened to stumble upon some outstanding data on housing costs in Asheville via personal relationship with people at Mosaic Realty. I used that data to compare the rate of growth of compensation at UNCA with the cost of home ownership going back a decade and a half. This document is the result of that work.
+   When the work of the prior Task Force on Total Compensation was nearing completion, I happened to stumble upon some outstanding data on housing costs in Asheville via a personal relationship with people at Mosaic Realty. I used that data to compare the rate of growth of compensation at UNCA with the cost of home ownership going back a decade and a half. This document is the result of that work.
 
    While this work was too late to appear in the immediately preceding task force report, it does appear as an addendum.
 
    </div>
 
-3. [Informal report on Faculty Compensation](./documents/InformalReportFeb2022.pdf) - Feb 2022  
+\newpage 
+
+3. [Informal report on Faculty Compensation](https://drive.google.com/file/d/1GL8LWyk4u2_JML-D61Ww2utJ0i0pFLe0/view?usp=drive_link){target=_blank} - Feb 2022  
    <div class="note-comments">
 
    In November of 2021, Chancellor Cable announced the "historic" news that the newly passed state budget included a 7% raise to be split over the next two years. Unfortunately, the truly "historic" part was that a budget had finally been passed, we had not received raises for some time, and that 7% over two years did not even keep up with inflation. After email discussions over these issues, as was common on faculty_official@unca.edu at that time, a group of faculty formed an independent working group to study and make a stronger statement on these issues.
 
-   This report was presented to to FWDC in Feb 2022 and 
+   This report was presented to FWDC in Feb 2022 and 
    - Focuses on faculty, while acknowledging the situation is dire for staff as well,
    - Is a stronger statement, describing the situation as a "crisis",
    - Refers to the prior task force data on salaries and provides new assessments using BLS data,
    - Addresses morale via surveys like [Harvard's COACHE](https://coache.gse.harvard.edu/faculty-job-satisfaction-survey){target=_blank} and the UNC System Employee Engagement Survey,
-   - Contains a lists of asks of the administration including 
+   - Contains a list of asks of the administration including 
      - the commitment to secure cost-of-living adjustments and 
      - to develop the means to improve salaries at UNC Asheville
    
    The authors of this report are not identified, though it's signed by 58 faculty members.
 
    </div>
-4. [UNCA Faculty Salaries](./documents/UNCAFacultySalariesApr2022.html) - Apr 2022  
+4. [UNCA Faculty Salaries](https://marksmath.org/writ/UNCAFacultySalariesApr2022.html){target=_blank} - Apr 2022  
    <div class="note-comments">
 
    I was a member of the informal working group and contributed a fair amount of data and analysis. This webpage represents my own analysis of the issues with a focus on
@@ -92,16 +114,18 @@ Here are all the written reports on compensation at UNCA that I'm aware of order
    - salary compression (it sucks being old, you know).
 
    </div>
-5. [Revitalization Plan](./documents/UNCA Revitalization8-22v15.pdf) - Sep 2022  
+5. [Revitalization Plan](https://drive.google.com/file/d/1rl1Ew5Yj2Jky5fjTLO8RXuSiMTh7LB_y/view?usp=drive_link){target=_blank} - Sep 2022  
    <div class="note-comments">
 
-   The compensation issues at UNCA are part of broader financial issues involving enrollment, tuition, state appropriations and other issues generally at the state level. Spearheaded by former Chancellor Nancy Cable, former Provost Kai Campbell, and former VC for Financial Affairs John Pierce, the "Revitalization Plan" was an attempt to address all these. This is their presentation document as of Sep 2022.
+   The compensation issues at UNCA are part of broader financial issues involving enrollment, tuition, state appropriations and other issues generally at the state level. Spearheaded by former Chancellor Nancy Cable, former Provost Kai Campbell, and former VC for Financial Affairs John Pierce, the "Revitalization Plan" was an attempt to address all of these. This is their presentation document as of Sep 2022.
 
    This document states several challenges that UNCA has faced historically including 
    - turnover in leadership,
    - biases in the funding model, and
    - cost of living in Asheville.
 
+   \newpage
+   
    The document also proposes a comprehensive plan involving 
    - increased enrollment,
    - replacement of key staff members,
@@ -109,13 +133,13 @@ Here are all the written reports on compensation at UNCA that I'm aware of order
    - a fundraising campaign, and 
    - investment from the state.
 
-   Two years of significant state funding were obtained and towards something, I guess. The Asheville Ideas Fest arose from philanthropic donations.
+   Two years of significant state funding were obtained and put toward something, I guess. The Asheville Ideas Fest arose from philanthropic donations.
   <div style="font-size: 1.25em; padding: 10px;">
    *Note*: While enrollment is part of this strategy, it's important to note that the plan states quite clearly that "enrollment alone won't provide the net revenue to close the shortfall". It goes further to say "Enrollment up to 4,000 students will yield roughly $5M towards a $24M shortfall." This statement is based on a detailed study by John Pierce and does not appear to be accounted for in current strategies. According to a recent conversation I had with John, enrollment up to 5000 still comes nowhere close to closing the shortfall.
   </div>
    </div>
 
-6. [First Compensation Committee report](./documents/CommitteeReport2023.pdf) - Feb 2023  
+6. [First Compensation Committee report](https://drive.google.com/file/d/1Xw1s8al40-dzUccnilEseeu3_BPtJMFp/view?usp=drive_link){target=_blank} - Feb 2023  
    <div class="note-comments">
 
    In response to the informal working group, a standing committee was formed to continue to monitor salaries and compensation at UNCA. I was the first chair of that committee and this is our first report.
@@ -123,14 +147,16 @@ Here are all the written reports on compensation at UNCA that I'm aware of order
    We generally approved of the Revitalization Plan and endorsed it. We particularly liked the fact that the plan makes a strong case that UNCA is simply underfunded by the state. We were also happy to see two years of investment coming to UNCA but were deeply disappointed to see absolutely no investment in current faculty and staff.
 
    </div>
-7. [Slides for committee presentation to Staff Council](./documents/CommitteeSlides2023.html) - Mar 2023  
+7. [Slides for committee presentation to Staff Council](https://marksmath.org/presentations/CompensationSlides2023/){target=_blank} - Mar 2023  
    <div class="note-comments">
    
    As chair of the Compensation Committee, I presented our findings to both Faculty Senate and Staff Council. These are the slides I used for those presentations.
 
    </div>
 
-As far as I know, the Compensation Committee has not met since Spring of 2023. I vaguely recall being told that I was on that committee the following year. I think my response was something along the lines of "The hell I am".
+As far as I know, the Compensation Committee did not meet during academic year 2023/2024 or 2024/2025. This current document is the committee's meager output of 2025/2026.
+
+\newpage
 
 ## Updates
 
@@ -138,8 +164,10 @@ Here are a few updates to some of my previous work to account for data through t
 
 ### Salaries across the UNC System
 
-The visualization below shows average salaries for various groups of non-medical faculty across the UNC System. You can explore the different faculty groups and adjust for cost of living (CoL) or not. When adjusted for CoL, UNCA ranks dead last by pay for every group. Even when not cost adjusted, UNCA ranks in the bottom third for all groups but lecturers.
+The visualization below shows average salaries for various groups of non-medical faculty across the UNC System. You can explore the different faculty groups and adjust for cost of living (CoL) or not. When adjusted for CoL, UNCA ranks dead last by pay for every group. Even when not cost-adjusted, UNCA ranks in the bottom third for all groups but lecturers.
 
+::: {#fig-system_salary_bar_chart fig-cap="Salary bar chart"} 
+::::: {.content-visible when-format="html"}
 
 ```{ojs}
 viewof group = Inputs.radio(
@@ -150,13 +178,18 @@ viewof sort_by = Inputs.radio(["Avg Salary", "Name"], {label: "Sort by:", value:
 viewof col_adjust = Inputs.toggle({label: "CoL Adjust:", value: true})
 ```
 
-::: {#fig-interactive_plot fig-cap="Interactive salary bar charts"} 
-
 ```{ojs}
+import {summarize_data, make_salary_viz} from './components/system_salary_viz.js';
+small_summary_salaries = await (await FileAttachment("./data/small_summary_data.csv")
+    .csv({typed: true}));
 summary_data = summarize_data(data, group, sort_by, col_adjust)
 make_salary_viz(summary_data); 
 ```
+:::::
 
+::::: {.content-visible when-format="pdf"}
+![](./images/system_salary_bar_chart.png)
+:::::
 :::
 
 ### Salary compression
@@ -165,11 +198,14 @@ Salary compression is the presence of relatively small differences in pay betwee
 
 One way to measure salary compression at an institution of higher learning is to compute the ratio of the average assistant professor salary divided by the average full professor salary. The larger that number, the more salary compression we have. The value of a healthy ratio might not be immediately clear but we can at least compare that ratio across a number of institutions. Let's call this number the *compression ratio*.
 
-There are 570 public, four year institutions where IPEDS provides sufficent data to compute the compression ratio. The average value of those compression ratios is 0.71214 with a standard deviation of 0.083474. UNCA's compression ratio is 0.812445, which puts us 1.20163 standard deviations past the mean. Not ideal
+There are 570 public, four-year institutions where IPEDS provides sufficient data to compute the compression ratio. The average value of those compression ratios is 0.71214 with a standard deviation of 0.083474. UNCA's compression ratio is 0.812445, which puts us 1.20163 standard deviations past the mean. Not ideal.
+
+\newpage 
 
 Here's a histogram of all the compression ratios with a dashed line for UNCA:
 
 ::: {#fig-national_salary_compression fig-cap="Salary compression at public, four-year institutions"} 
+::::: {.content-visible when-format="html"}
 
 ```{ojs}
 compression_ratios = await FileAttachment("./data/compression_ratios.csv")
@@ -209,12 +245,16 @@ Plot.plot({
   ]
 })
 ```
-
+:::::
+::::: {.content-visible when-format="pdf"}
+![](./images/national_salary_compression.png)
+:::::
 :::
 
-We can also check where UNCA's compression ratio lies in the UNC system. UNCA has the second highest compression ratio in the UNC System; only Fayetteville State has a higher compression ratio. Chapel Hill has the lowest compression ratio, followed by NC State.
+We can also check where UNCA's compression ratio lies in the UNC System. UNCA has the second highest compression ratio in the UNC System; only Fayetteville State has a higher compression ratio. Chapel Hill has the lowest compression ratio, followed by NC State.
 
 ::: {#fig-system_salary_compression fig-cap="Salary compression in the UNC System"} 
+::::: {.content-visible when-format="html"}
 
 ```{ojs}
 nc_compression_ratios = await FileAttachment("./data/NCCompression.csv")
@@ -245,11 +285,17 @@ Plot.plot({
   });
 ```
 
+:::::
+::::: {.content-visible when-format="pdf" fig-pos="H"}
+![](./images/system_compression_ratios.png)
+:::::
 :::
+
+\newpage 
 
 ### My salary
 
-Let's take a look at my own salary history - in part, because this a personal matter for me and, also, because I happen to have access to my own salary history. I generated the chart below based on that data.
+Let's take a look at my own salary history - in part, because this is a personal matter for me and, also, because I happen to have access to my own salary history but no one else's. I generated the chart below based on that data.
 
 I started in academic year 1997/1998 with a salary of $34,000 a year. My salary has generally gone up, though, sometimes faster than others. During my first 11 years, my salary increased from $34,000 to $65,052; that's an effective annual rate of just over 6%.
 
@@ -258,7 +304,7 @@ $$\$34,000 \times (1.06)^{29} = \$184,225.$$
 Instead, my salary is $92,007 - almost half of what I might've expected to make but not quite.
 
 ::: {#fig-my_salary fig-cap="My salary history"} 
-
+::::: {.content-visible when-format="html"}
 
 ```{ojs}
 import {prepare_my_salaries, make_my_salary_viz} from './components/my_salary_viz.js';
@@ -280,10 +326,16 @@ my_salary_chart = make_my_salary_viz(my_salary_data)
 my_salary_update = my_salary_chart.update(my_salary_inflation)
 ```
 
+:::::
+
+::::: {.content-visible when-format="pdf"}
+![](./images/my_salary_time_series.png)
+:::::
 :::
 
-You can click the "Inflation" checkbox to adjust for inflation; it's not nice. I have, in fact, less purchasing power now than I had 18 years ago in 2007.
+When adjusted for inflation, the situation is clearly worse. I have, in fact, less purchasing power now than I had 18 years ago in 2007.
 
+\newpage 
 
 ## Data sources
 
@@ -293,8 +345,9 @@ The Cost of Living (CoL) data comes from [Best Places](https://www.bestplaces.ne
 
 Average salary data by rank for the 570 public, four-year institutions comes from [IPEDS](https://nces.ed.gov/ipeds){target=_blank}. While not as current, it's really the only publicly available source of data of that breadth.
 
-The inflation data is compute from CPI for Urban areas in the South, which can be obtained from the [Federal Reserve Bank of St Louis](https://fred.stlouisfed.org/series/CUUR0300SA0){target=_blank}.
+The inflation data is computed from CPI for Urban areas in the South, which can be obtained from the [Federal Reserve Bank of St Louis](https://fred.stlouisfed.org/series/CUUR0300SA0){target=_blank}.
 
+::::: {.content-visible when-format="html"}
 
 ```{ojs}
 data = {
@@ -315,3 +368,4 @@ data = {
   return salaries
 }
 ```
+:::::
