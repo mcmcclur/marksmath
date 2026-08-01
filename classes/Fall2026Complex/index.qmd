@@ -1,0 +1,40 @@
+---
+title: Complex Variables
+css: styles.css
+---
+
+::: {.grid}
+::::: {.g-col-12 .g-col-md-8}
+Math 398 
+Spring 2026  
+with professor [Mark McClure](https://marksmath.org/)
+
+## Handy links
+
+- [Syllabus](syllabus.qmd)
+- [Course Calendar](./calendar.qmd)
+- [The Textbook](https://complexanalysis.org/web/root-1-2-2.html){target=_blank}
+- [Writetech](https://math.writetech.ai){target=_blank}
+- [The Math Lab!](https://www.unca.edu/math/math-lab/){target=_blank}
+
+## Demos
+
+
+## Notes
+
+## Handouts
+
+:::::
+
+::::: {.g-col-md-4 .d-none .d-md-block transform="translate(0,125px)"}
+<div id='side_pic'></div>
+:::::
+:::
+
+::: {style="display: none"}
+```{ojs}
+//| echo: false
+import {interactiveFunPic} from './components/complexMark.js';
+interactiveFunPic("side_pic")
+```
+:::
