@@ -1,0 +1,449 @@
+---
+title: "Next-Token Visualizer"
+format:
+  html:
+    embed-resources: true
+    toc: false
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+Enter some text and hit the "Next tokens" button to see some possible completions.
+
+<div id="ntv-app" class="ntv-shell">
+<label class="ntv-field">
+<span>Text prompt</span>
+<textarea id="prompt-text" rows="6" spellcheck="true">I really like math because it is so</textarea>
+</label>
+
+<div class="ntv-actions">
+<button id="next-token-button" type="button">Next tokens</button>
+<button id="clear-button" type="button" class="ntv-secondary">Clear</button>
+</div>
+
+<div id="status" class="ntv-status" role="status" aria-live="polite">Ready.</div>
+
+<div class="ntv-table-wrap">
+<table id="tokens-table">
+<thead>
+<tr>
+<th scope="col">Rank</th>
+<th scope="col">Continuation</th>
+<th scope="col">Probability</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="3" class="ntv-empty">Run a request to see next-token candidates.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<style>
+  .ntv-shell {
+    border: 1px solid #d7dde8;
+    border-radius: 8px;
+    padding: 1rem;
+    background: #fbfcfe;
+  }
+
+  .ntv-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 0.85rem;
+  }
+
+  .ntv-field {
+    display: grid;
+    gap: 0.35rem;
+    margin-bottom: 0.85rem;
+    font-weight: 650;
+  }
+
+  .ntv-field input,
+  .ntv-field textarea {
+    width: 100%;
+    border: 1px solid #bcc7d7;
+    border-radius: 6px;
+    padding: 0.65rem 0.7rem;
+    background: #fff;
+    color: #162033;
+    font: inherit;
+    font-weight: 400;
+  }
+
+  .ntv-field textarea {
+    resize: vertical;
+    min-height: 9rem;
+  }
+
+  .ntv-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0.35rem 0 0.75rem;
+  }
+
+  .ntv-actions button {
+    border: 1px solid #24324a;
+    border-radius: 6px;
+    padding: 0.58rem 0.8rem;
+    background: #24324a;
+    color: #fff;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .ntv-actions button:disabled {
+    cursor: wait;
+    opacity: 0.72;
+  }
+
+  .ntv-actions .ntv-secondary {
+    background: #fff;
+    color: #24324a;
+  }
+
+  .ntv-status {
+    min-height: 1.5rem;
+    margin-bottom: 0.7rem;
+    color: #3d4b63;
+  }
+
+  .ntv-status.ntv-error {
+    color: #9a1c1c;
+    font-weight: 650;
+  }
+
+  .ntv-table-wrap {
+    overflow-x: auto;
+  }
+
+  #tokens-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+  }
+
+  #tokens-table th,
+  #tokens-table td {
+    border-bottom: 1px solid #e4e8f0;
+    padding: 0.6rem 0.65rem;
+    text-align: left;
+    vertical-align: top;
+  }
+
+  #tokens-table th {
+    background: #eef2f7;
+    color: #24324a;
+    font-weight: 750;
+  }
+
+  #tokens-table code {
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  .ntv-empty {
+    color: #5d6b7f;
+    text-align: center;
+  }
+
+  @media (max-width: 720px) {
+    .ntv-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<script>
+(() => {
+  const endpoint = "https://faas-nyc1-2ef2e6cc.doserverless.co/api/v1/web/fn-1721edac-5db5-46c0-9e15-4bbf2cee7297/default/next-token";
+
+  const promptInput = document.getElementById("prompt-text");
+  const nextButton = document.getElementById("next-token-button");
+  const clearButton = document.getElementById("clear-button");
+  const statusEl = document.getElementById("status");
+  const tableBody = document.querySelector("#tokens-table tbody");
+
+  let activeController = null;
+
+  function setStatus(message, isError = false) {
+    statusEl.textContent = message;
+    statusEl.classList.toggle("ntv-error", isError);
+  }
+
+  function renderEmpty(message) {
+    tableBody.innerHTML = "";
+    const row = document.createElement("tr");
+    const cell = document.createElement("td");
+    cell.colSpan = 3;
+    cell.className = "ntv-empty";
+    cell.textContent = message;
+    row.appendChild(cell);
+    tableBody.appendChild(row);
+  }
+
+  function formatToken(token) {
+    if (token === undefined || token === null) return "";
+    return String(token)
+      .replaceAll("\n", "\\n")
+      .replaceAll("\r", "\\r")
+      .replaceAll("\t", "\\t");
+  }
+
+  function probabilityFromLogprob(logprob) {
+    if (typeof logprob !== "number" || !Number.isFinite(logprob)) return null;
+    return Math.exp(logprob);
+  }
+
+  function formatProbability(probability) {
+    if (probability === null) return "n/a";
+    if (probability >= 0.001) return `${(probability * 100).toFixed(3)}%`;
+    return `${(probability * 100).toExponential(3)}%`;
+  }
+
+  function containsControlCharacter(text) {
+    return /[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/u.test(text);
+  }
+
+  function looksLikeSpecialToken(text) {
+    return /^<[^>\s]+>$/u.test(text) || text.includes("<turn|>") || text.includes("<|");
+  }
+
+  function shouldFilterToken(item) {
+    const token = item.token;
+    if (!token) return true;
+    if (item.special) return true;
+    if (token.includes("\ufffd")) return true;
+    if (containsControlCharacter(token)) return true;
+    if (looksLikeSpecialToken(token)) return true;
+
+    // This visualizer is tuned for English prose. Remove clearly non-ASCII
+    // tokens that usually come from multilingual tails in the distribution.
+    if (/[^\x09\x0a\x0d\x20-\x7e]/u.test(token)) return true;
+
+    return false;
+  }
+
+  function visibleContinuation(prompt, token) {
+    if (/\s$/u.test(prompt)) {
+      return token.replace(/^\s+/u, "");
+    }
+    return token;
+  }
+
+  function cleanAndMergeCandidates(prompt, items) {
+    const merged = new Map();
+
+    items.forEach((item) => {
+      if (shouldFilterToken(item)) return;
+
+      const continuation = visibleContinuation(prompt, item.token);
+      if (!continuation || /^\s+$/u.test(continuation)) return;
+
+      const probability = probabilityFromLogprob(item.logprob);
+      if (probability === null) return;
+
+      const key = continuation.replace(/\s+/gu, " ");
+      const existing = merged.get(key);
+
+      if (existing) {
+        existing.probability += probability;
+        existing.logprob = Math.log(existing.probability);
+        existing.rawTokens.push(item.token);
+      } else {
+        merged.set(key, {
+          continuation,
+          probability,
+          logprob: item.logprob,
+          rawTokens: [item.token]
+        });
+      }
+    });
+
+    return Array.from(merged.values()).sort((a, b) => b.probability - a.probability);
+  }
+
+  function renderRows(items) {
+    tableBody.innerHTML = "";
+
+    items.slice(0, 10).forEach((item, index) => {
+      const row = document.createElement("tr");
+
+      const rankCell = document.createElement("td");
+      rankCell.textContent = String(index + 1);
+
+      const continuationCell = document.createElement("td");
+      const continuationCode = document.createElement("code");
+      continuationCode.textContent = formatToken(item.continuation);
+      continuationCell.appendChild(continuationCode);
+
+      const probabilityCell = document.createElement("td");
+      probabilityCell.textContent = formatProbability(item.probability);
+
+      row.append(rankCell, continuationCell, probabilityCell);
+      tableBody.appendChild(row);
+    });
+  }
+
+  function normalizeTopLogprobs(rawItems) {
+    if (!Array.isArray(rawItems)) return [];
+
+    return rawItems
+      .map((item) => {
+        if (!item || typeof item !== "object") return null;
+        return {
+          token:
+            item.token ??
+            (Array.isArray(item.bytes)
+              ? new TextDecoder().decode(new Uint8Array(item.bytes))
+              : ""),
+          logprob: item.logprob,
+          special: item.special === true
+        };
+      })
+      .filter((item) => item && typeof item.logprob === "number")
+      .sort((a, b) => b.logprob - a.logprob);
+  }
+
+  function extractTopLogprobs(data) {
+    const choice = data?.choices?.[0];
+    const logprobs = choice?.logprobs;
+
+    if (!logprobs) {
+      throw new Error("The response did not include logprobs. Try the paid fallback model or another provider route that supports logprobs.");
+    }
+
+    if (Array.isArray(logprobs.content) && logprobs.content.length > 0) {
+      const firstPosition = logprobs.content.find((entry) => Array.isArray(entry?.top_logprobs));
+      return normalizeTopLogprobs(firstPosition?.top_logprobs);
+    }
+
+    if (Array.isArray(logprobs.top_logprobs) && logprobs.top_logprobs.length > 0) {
+      const firstPosition = logprobs.top_logprobs[0];
+      if (Array.isArray(firstPosition)) {
+        return normalizeTopLogprobs(firstPosition);
+      }
+      if (firstPosition && typeof firstPosition === "object") {
+        return normalizeTopLogprobs(
+          Object.entries(firstPosition).map(([token, logprob]) => ({ token, logprob }))
+        );
+      }
+    }
+
+    throw new Error("The response used an unexpected logprobs shape. Open the browser console to inspect the raw response.");
+  }
+
+  async function readErrorMessage(response) {
+    const fallback = `${response.status} ${response.statusText}`.trim();
+
+    try {
+      const data = await response.json();
+      return data?.error?.message || data?.message || fallback;
+    } catch (_error) {
+      try {
+        return (await response.text()) || fallback;
+      } catch (_textError) {
+        return fallback;
+      }
+    }
+  }
+
+  function statusHint(status) {
+    if (status === 401 || status === 403) return "The token service is not authorized.";
+    if (status === 404) return "The token service was not found.";
+    if (status === 413) return "Try a shorter prompt.";
+    if (status === 429) return "The token service is being rate-limited. Wait a bit and try again.";
+    if (status >= 500) return "The token service or upstream model is having trouble. Retry in a moment.";
+    return "Review the settings and try again.";
+  }
+
+  async function fetchNextTokens() {
+    const prompt = promptInput.value;
+
+    if (!prompt.trim()) {
+      setStatus("Enter some text to continue.", true);
+      promptInput.focus();
+      return;
+    }
+
+    if (activeController) activeController.abort();
+    activeController = new AbortController();
+
+    nextButton.disabled = true;
+    clearButton.disabled = true;
+    setStatus("Requesting next-token candidates...");
+    renderEmpty("Loading...");
+
+    try {
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ prompt }),
+        signal: activeController.signal
+      });
+
+      if (!response.ok) {
+        const message = await readErrorMessage(response);
+        throw new Error(`${message} ${statusHint(response.status)}`);
+      }
+
+      const data = await response.json();
+      console.debug("OpenRouter response:", data);
+
+      const items = extractTopLogprobs(data);
+      if (!items.length) {
+        throw new Error("The model returned logprobs, but no top token alternatives were present.");
+      }
+
+      const cleanedItems = cleanAndMergeCandidates(prompt, items);
+      if (!cleanedItems.length) {
+        throw new Error("All returned token alternatives were filtered out. Try a different model or prompt.");
+      }
+
+      renderRows(cleanedItems);
+      setStatus(
+        `Showing ${Math.min(cleanedItems.length, 10)} likely next-token candidates.`
+      );
+    } catch (error) {
+      if (error.name === "AbortError") {
+        setStatus("Request cancelled.", true);
+      } else {
+        console.error(error);
+        renderEmpty("No token candidates to display.");
+        setStatus(error.message || "Something went wrong.", true);
+      }
+    } finally {
+      nextButton.disabled = false;
+      clearButton.disabled = false;
+      activeController = null;
+    }
+  }
+
+  nextButton.addEventListener("click", fetchNextTokens);
+
+  clearButton.addEventListener("click", () => {
+    promptInput.value = "";
+    renderEmpty("Run a request to see next-token candidates.");
+    setStatus("Ready.");
+    promptInput.focus();
+  });
+
+  promptInput.addEventListener("keydown", (event) => {
+    if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
+      event.preventDefault();
+      fetchNextTokens();
+    }
+  });
+
+})();
+</script>
