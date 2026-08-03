@@ -1,0 +1,159 @@
+@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css");
+.ntv-shell {
+border: 1px solid #d7dde8;
+border-radius: 8px;
+padding: 1rem;
+background: #fbfcfe;
+}
+
+.ntv-grid {
+display: grid;
+grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+gap: 0.85rem;
+}
+
+.ntv-field {
+display: grid;
+gap: 0.35rem;
+margin-bottom: 0.85rem;
+font-weight: 650;
+}
+
+.ntv-field input,
+.ntv-field textarea {
+width: 100%;
+border: 1px solid #bcc7d7;
+border-radius: 6px;
+padding: 0.65rem 0.7rem;
+background: #fff;
+color: #162033;
+font: inherit;
+font-weight: 400;
+}
+
+.ntv-field textarea {
+resize: vertical;
+min-height: 9rem;
+}
+
+.ntv-actions {
+display: flex;
+flex-wrap: wrap;
+align-items: center;
+gap: 0.5rem;
+margin: 0.35rem 0 0.75rem;
+}
+
+.ntv-actions button {
+border: 1px solid #24324a;
+border-radius: 6px;
+padding: 0.58rem 0.8rem;
+background: #24324a;
+color: #fff;
+font: inherit;
+font-weight: 700;
+cursor: pointer;
+}
+
+.ntv-actions button:disabled {
+cursor: wait;
+opacity: 0.72;
+}
+
+.ntv-actions .ntv-secondary {
+background: #fff;
+color: #24324a;
+}
+
+.ntv-status {
+min-height: 1.5rem;
+margin-bottom: 0.7rem;
+color: #3d4b63;
+}
+
+.ntv-status.ntv-error {
+color: #9a1c1c;
+font-weight: 650;
+}
+
+.ntv-tokenized-wrap {
+margin: 0 0 0.85rem;
+}
+
+.ntv-panel-heading {
+margin-bottom: 0.35rem;
+color: #24324a;
+font-weight: 750;
+}
+
+.ntv-tokenized {
+min-height: 3rem;
+border: 1px solid #d7dde8;
+border-radius: 6px;
+padding: 0.7rem;
+background: #fff;
+color: #162033;
+line-height: 2.15;
+white-space: pre-wrap;
+word-break: break-word;
+}
+
+.ntv-tokenized-empty {
+color: #5d6b7f;
+line-height: 1.45;
+}
+
+.ntv-token {
+display: inline;
+border-radius: 4px;
+padding: 0.12rem 0.18rem;
+box-decoration-break: clone;
+-webkit-box-decoration-break: clone;
+}
+
+.ntv-token-0 { background: #dff3ff; }
+.ntv-token-1 { background: #e9f8df; }
+.ntv-token-2 { background: #fff0bf; }
+.ntv-token-3 { background: #ffe0d6; }
+.ntv-token-4 { background: #eadfff; }
+.ntv-token-5 { background: #dff7ef; }
+
+.ntv-table-wrap {
+overflow-x: auto;
+}
+
+#tokens-table {
+width: 100%;
+border-collapse: collapse;
+background: #fff;
+}
+
+#tokens-table th,
+#tokens-table td {
+border-bottom: 1px solid #e4e8f0;
+padding: 0.6rem 0.65rem;
+text-align: left;
+vertical-align: top;
+}
+
+#tokens-table th {
+background: #eef2f7;
+color: #24324a;
+font-weight: 750;
+}
+
+#tokens-table code {
+white-space: pre-wrap;
+word-break: break-word;
+}
+
+.ntv-empty {
+color: #5d6b7f;
+text-align: center;
+}
+
+@media (max-width: 720px) {
+.ntv-grid {
+    grid-template-columns: 1fr;
+}
+}
