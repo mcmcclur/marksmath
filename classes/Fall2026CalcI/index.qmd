@@ -1,0 +1,35 @@
+---
+title: Calculus I
+css: styles.css
+---
+
+::: {.grid}
+::::: {.g-col-12 .g-col-md-8}
+Math 191  
+Fall 2026  
+with professor [Mark McClure](https://marksmath.org/)
+
+## Handy links
+
+- [Syllabus](syllabus.qmd)
+- [Course Calendar](calendar.qmd)
+- [APEX Calculus Textbook](https://opentext.uleth.ca/apex-calculus/apex-calculus.html){target=_blank}
+- [WriteTech](https://math.writetech.ai){target=_blank}
+- [The Math Lab!](https://math.unca.edu/learn/math-lab/){target=_blank}
+
+<!--
+## Handouts
+
+## Demos
+
+## Class Notes
+-->
+
+:::::
+::::: {.g-col-md-4 .d-none .d-md-block}
+```{ojs}
+import {side_pic} from './components/difference_quotient-side_pic.js'
+side_pic();
+```
+:::::
+:::

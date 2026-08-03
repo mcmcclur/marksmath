@@ -1,0 +1,119 @@
+---
+title: Course Calendar
+subtitle: "Math 191 - Fall 2026"
+sidebar: CalcIFall2026
+---
+
+<div id="cal"></div>
+
+
+```{ojs}
+{
+  const events = [
+    {
+      title: 'Classes Begin',
+      start: '2026-08-17',
+      color: 'green'
+    },
+    {
+      title  : 'Labor Day',
+      start  : '2026-09-07',
+      color: 'gray',
+    },
+    {
+      title  : 'Fall break',
+      start  : '2026-10-05',
+      end: '2026-10-07',
+      color: 'gray',
+    },
+    {
+      title  : 'Thanksgiving',
+      classNames: ['no_class'],
+      start  : '2026-11-25',
+      end: '2026-11-28',
+      color: 'gray',
+    },
+    {
+      title  : 'Last day of class',
+      start  : '2026-12-01',
+      color: '#880000',
+    },
+    {
+      title  : 'Exam 1',
+      start  : '2026-09-18',
+      color: '#511d66',
+    },
+    {
+      title  : 'Exam 2',
+      start  : '2026-10-16',
+      color: '#511d66',
+    },
+    {
+      title  : 'Exam 3',
+      start  : '2026-11-20',
+      color: '#511d66',
+    },    {
+      title  : 'Quiz 1',
+      start  : '2026-08-28',
+      color: '#9a4eae',
+    },
+    {
+      title  : 'Quiz 2',
+      start  : '2026-10-02',
+      color: '#9a4eae',
+    },
+    {
+      title  : 'Quiz 3',
+      start  : '2026-10-30',
+      color: '#9a4eae',
+    },
+    {
+      title  : 'Final Exam 1',
+      start  : '2026-12-04T08:00',
+      color: '#9a4eae',
+    },
+    {
+      title  : 'Final Exam 2',
+      start  : '2026-12-07T08:00',
+      color: '#9a4eae',
+    }
+  ]; 
+  
+  const calendar = new FullCalendar.
+    Calendar(document.getElementById('cal'), {
+    initialView: 'dayGridMonth',
+    fixedWeekCount: false,
+    showNonCurrentDates: false,
+    // initialDate: '2026-08-04',
+    hiddenDays: [0,6],
+    height: 'auto',
+    events,
+    eventDidMount: function(arg) {
+      if(arg.event.extendedProps.hover) {
+        tippy(arg.el, {
+          content: arg.event.extendedProps.hover
+        })
+      }
+      else if(arg.event.backgroundColor == 'gray') {
+        tippy(arg.el, {
+          content: 'No class'
+        })
+      }
+    },
+  });
+  calendar.render();
+  return md``;
+}
+```
+
+```{ojs}
+FullCalendar = import("https://cdn.skypack.dev/fullcalendar@6.0");
+YAML = import("https://cdn.skypack.dev/yaml");
+tippy = require("tippy.js@6")
+```
+
+<style>
+table * {
+  all: revert;
+}
+</style>
