@@ -52,5 +52,7 @@ format:
     css: styles.css
     page-layout: full
     echo: false
-    execute:
-      freeze: auto
+
+execute:
+  freeze: auto
+
