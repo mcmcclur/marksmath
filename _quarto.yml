@@ -55,4 +55,4 @@ format:
 
 execute:
   freeze: auto
-
+  keep-ipynb: false

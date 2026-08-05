@@ -16,4 +16,6 @@ classes/*/_exams_and_quizzes/
 
 /.quarto/
 
+**/*.quarto_ipynb*
+
 **/*.quarto_ipynb
