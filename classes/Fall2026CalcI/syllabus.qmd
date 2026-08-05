@@ -13,7 +13,7 @@ format:
 ---
 
 Math 191: Calculus I  
-Fall 2026
+Fall 2026  
 MWF 8:00-9:15 and 9:30-10:45  
 RRO 212
 
@@ -41,13 +41,15 @@ Calculus was first developed in the late 17th century by Isaac Newton. Newton de
     - [Print ($16 from Amazon)](https://www.amazon.com/APEX-Calculus-v4-0/dp/1719219591){target=_blank}[: https://www.amazon.com/APEX-Calculus-v4-0/dp/1719219591]{.content-visible when-format="pdf"}  
   
   The text is also available in the Math Lab so you certainly don't need to purchase the Print version. You may, though, if you like having a book in your hand. The HTML and PDF versions are free and we might occasionally refer to the HTML version in class. We hope to get through most of chapter 1-5 of the text.
-- **MyOpenMath**: We will have regular auto-graded homework using MyOpenMath. You should receive login credentials directly from me.
-- **Computers**: In addition to accessing course materials, like the text, homework, we'll use computers for their originally intended purpose: computing. More on this below.
+- **Computers**: You'll use a computer to some extent in just about every course you take at UNCA; you'll probably use a computer for this class more than most.
+  - Class information like this syllabus, our course calendar, and many handouts will be distributed via our class webpage.
+  - Homework will be submitted online.
+  - At times, we'll use computers for their originally intended purpose - computing.
 
-There are some tools that we will not use:
+There are also some tools that we will not use:
 
 - **Calculators**: While we will use computers for visualization and serious computation, the use of hand held calculators generally obscure the main conceptual points of mathematics. We will not use them on exams.
-- **Moodle**: All material will be disseminated via our class web page.
+- **Canvas**: All material will be disseminated via our class web page.
 
 
 ## Grades
@@ -67,7 +69,7 @@ Your grades will be based on the following components:
   - Friday, August 28,
   - Friday, October 2,  and
   - Friday, October 30.
-- **HW**: We will have regular, online HW assignments via [MyOpenMath](https://myopenmath.com) that's automatically graded. I anticipate that this will contribute around another 100 points to your overall grade.
+- **HW**: We will have regular, online HW assignments that's automatically graded. I anticipate that this will contribute around another 100 points to your overall grade.
 - **Participation**: You’ll accumulate 40 points throughout the semester just by coming to class and participating in class activities regularly.
 
 ### How grades are determined
@@ -76,9 +78,9 @@ Your grade will be determined by a scale not harder than 90-80-70-60.
 That is,
 
 -   90% will guarantee an A-,
--   80% will guarantee an B-,
--   70% will guarantee an C-,
--   60% will guarantee an passing grade.
+-   80% will guarantee a B-,
+-   70% will guarantee a C-,
+-   60% will guarantee a passing grade.
 
 I will also take a look at the overall class distribution and determine
 if I feel the need to adjust the scale down. I’ll go through that
@@ -109,18 +111,33 @@ performance.
 You are expressly permitted to discuss questions and problems arising
 from homework or lab assignments with your classmates.
 
-Exams are expected to be your work and yours alone. In addition, the
-expectation is that there will be no computational assistance, unless
-expressly permitted in limited situations. Please don’t cheat; I simply
-refer such cases to the administration.
+Quizzes and exams are expected to be your work and yours alone. In addition, the expectation is that there will be no computational assistance, unless expressly permitted in limited situations. Please don’t cheat; I simply refer such cases to the administration.
+
+### Computational tools
+
+::: {.callout-note appearance="minimal"}
+<p style="font-size: 120%">
+Computational tools (including phones or calculators) will **not** be permitted on quizzes or exams.
+</p>
+:::
+
+While computational tools are not permitted on in class assessments, I do generally encourage folks to explore mathematics from multiple directions. As such, you are free to use all kinds computational tools on your homework, including 
+
+ - [Desmos](https://www.desmos.com/){target=_blank} or [Geogebra](https://www.geogebra.org/){target=_blank} for graphing,
+ - [Sympy](https://live.sympy.org/){target=_blank} or [SageMath](https://sagecell.sagemath.org/){target=_blank} for computation, or 
+ - commercial products like [Matlab](https://kb.unca.edu/kb/matlab-campus-license){target=_blank} or [Mathematica](https://kb.unca.edu/kb/mathematica-installation-and-licensing){target=_blank} for highly polished computational tools.
+
+ Always keep in mind, though, that your main responsibility is to learn the material well enough to be able to solve problems on quizzes and exams where computational tools are no longer permitted. Thus, you should use computational tools as a back up to double check your work or to examine a graph or something similar
+
+
 
 ### Generative AI 
 
-You are expressly permitted to use AI Chatbots like ChatGPT, Google Gemini, and more on homework and other learning tasks outside of the classroom. You may not use them for in class quizzes or exams, though, so you should carefully consider how their use on homework might impact your knowledge of the material. 
+I consider generative AI to be just another tool to help us understand mathematics (along with many other things). Thus, you are expressly permitted to use generative AI tools like Chat GPT, Claude, Google Gemini, and more. 
 
-Some folks might not want use generative AI at all due to its definite negative impact on the environment and potential negative impact on you. Thus, the of generative AI is definitely not a requirement for this class.  
+Again, though, it is your responsibility to learn the material well enough to pass quizzes and exams. If your first step in approaching a problem is ask a chat bot how to do it, you are not preparing yourself for success.
 
-We will spend some class time talking about how to use AI effectively and how it might lead you astray.
+Our online HW system uses generative AI to help you along. We'll see how well it works!
 
 ### Further information
 
