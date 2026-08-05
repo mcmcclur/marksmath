@@ -1,0 +1,142 @@
+---
+title: Syllabus 
+background: "light"
+format:
+  html:
+    page-layout: article
+    toc: true
+  pdf:
+    mainfont: "Times New Roman"
+    include-in-header:
+      text: |
+        \pagenumbering{gobble}
+---
+
+Math 398: Complex Variables  
+Fall 2026  
+MW 12:30-1:45  
+RRO 211
+
+Professor: Mark McClure  
+Office: 325 Robinson Hall  
+email: mcmcclur@unca.edu  
+Office hours: MWF 10:50-11:30
+
+## Course purpose
+
+Although this class is a major elective, the subject is really required knowledge for mathematicians. The complex numbers complete the reals in a very real sense and Calculus is in many ways most natural in this context. In this class we will:
+
+- Improve our philosophical understanding of numbers,
+- Explore the complex numbers algebraically and geometrically,
+- Expand our understanding of calculus, and
+- See some very cool contemporary mathematics.
+
+## Materials
+
+- **The text**: We will use the textbook *Complex Analysis* by Russell W. Howell and John H. Mathews. This is an outstanding, freely available, open source text that you can browse online. It is available in several formats:
+    - [HTML](https://complexanalysis.org/web/root-1-2-2.html){target=_blank}[: https://complexanalysis.org/web/root-1-2-2.html]{.content-visible when-format="pdf"}
+    - [PDF](https://complexanalysis.org/howell-complex-analysis-web.pdf){target=_blank}[: https://complexanalysis.org/howell-complex-analysis-web.pdf]{.content-visible when-format="pdf"}
+    - [Print ($36)](https://www.619wreath.com/complex-analysis.html){target=_blank}[: https://www.619wreath.com/complex-analysis.html]{.content-visible when-format="pdf"}  
+  
+  The text is also available in the Math Lab so you certainly don't need to purchase the Print version. You may, though, if you like having a book in your hand. The HTML and PDF versions are free and we might occasionally refer to the HTML version in class. We hope to get through most of chapter 1-5 of the text.
+- **Computers**: You'll use a computer to some extent in just about every course you take at UNCA; you'll probably use a computer for this class more than most.
+  - Class information like this syllabus, our course calendar, and many handouts will be distributed via our class webpage.
+  - Some homework will be submitted online.
+  - At times, we'll use computers for their originally intended purpose - computing.
+
+There are also some tools that we will not use:
+
+- **Calculators**: While we will use computers for visualization and serious computation, the use of hand held calculators generally obscure the main conceptual points of mathematics. We will not use them on exams.
+- **Canvas**: All material will be disseminated via our class web page.
+
+
+## Grades
+
+### Components contributing to your grade
+
+Your grades will be based on the following components:
+
+- **Exams**: There are w exams scheduled during the term each worth about 100 points. There will also be a final exam worth around 150 points. While subject to change, these are are listed on [our course calendar](calendar.qmd) and currently scheduled for 
+  - Wednesday, September 30,
+  - Wednesday, November 18, and
+  - The final exam will be scheduled during finals week.
+
+  Note that calculators and/or computers will not be allowed on exams.
+- **Quizzes**: We will have three quizzes that will be worth anywhere from 15 to 25 points. Like the exams, these are also listed on [our course calendar](calendar.qmd) and currently scheduled for 
+  - Wednesday, September 2,  and
+  - Wednesday, October 21.
+- **HW**: We will have some online HW assignments that are automatically graded. This might contribute up to another 100 points to your overall grade. It's a bit experimental, though, and we'll adjust expectations as we progress
+- **Participation**: You’ll accumulate 50 points throughout the semester just by coming to class and participating in class activities regularly.
+
+### How grades are determined
+
+Your grade will be determined by a scale not harder than 90-80-70-60.
+That is,
+
+-   90% will guarantee an A-,
+-   80% will guarantee a B-,
+-   70% will guarantee a C-,
+-   60% will guarantee a passing grade.
+
+I will also take a look at the overall class distribution and determine
+if I feel the need to adjust the scale down. I’ll go through that
+process after each exam and notify you of your status after each exam.
+
+## Advice
+
+- **Learning mathematics**: I expect that you wouldn't be in calculus if you didn't already know that mathematical study is a challenging, yet worthwhile endeavor. Mathematics is the most natural language with which we describe the world around us and, I believe, this this helps us better comprehend and enjoy the world. However, understanding this deep language has a price - it's hard and takes loads of work! I suggest that you spend at least 1.5 hours between classes and at least 3 hours over the weekend studying each math class. Remember that college is a full time job!
+- **The typical day**: Class is 75 minutes long and will often focus lecture, though, there will be occasional in class problem sessions.
+- **Exam week**: Problems for the exams will be taken from homework, in class sheets, quizzes, and a small collection of review problems. The review problems will typically be available the five days before an exam and we will discuss them the period before the exam. You will have plenty of material to study and I can't overemphasize how important it is to do so!
+- **Help**: You are not undertaking this challenging task alone. Here are a few sources of assistance:
+  - *Me*: I like to talk to people about mathematics! That's why I chose this profession. My schedule is posted on my webpage, including an office hour just after this class, but I'm around much more regularly than that. Please feel free to approach me any time you have questions.
+  - *Your classmates*: Most people learn mathematics best by talking it through with others. You will find that you can both learn from and help your fellow classmates. In particular, if your classmate is explaining a fine point to you, then you are helping them!
+  - *The Math Lab*: We all know the Math Lab rocks! It's open long hours and is located right across the hall from my office. You will be welcome there and will definitely find people to talk to about mathematics.  
+    This class is a bit advanced for the math lab but I think it's still a great resource and a central part of our community.
+
+
+## Course policies
+
+### Attendance
+
+I don’t take daily attendance. Missing class with any regularity,
+however, will affect your course grade directly through the class
+participation grade and indirectly through its impact on your
+performance.
+
+### Academic integrity
+
+You are expressly permitted to discuss questions and problems arising
+from homework or lab assignments with your classmates.
+
+Quizzes and exams are expected to be your work and yours alone. In addition, the expectation is that there will be no computational assistance, unless expressly permitted in limited situations. Please don’t cheat; I simply refer such cases to the administration.
+
+### Computational tools
+
+::: {.callout-note appearance="minimal"}
+<p style="font-size: 120%">
+Computational tools (including phones or calculators) will **not** be permitted on quizzes or exams.
+</p>
+:::
+
+While computational tools are not permitted on in class assessments, I do generally encourage folks to explore mathematics from multiple directions. As such, you are free to use all kinds computational tools on your homework, including 
+
+ - [Desmos](https://www.desmos.com/){target=_blank} or [Geogebra](https://www.geogebra.org/){target=_blank} for graphing,
+ - [Sympy](https://live.sympy.org/){target=_blank} or [SageMath](https://sagecell.sagemath.org/){target=_blank} for computation, or 
+ - commercial products like [Matlab](https://kb.unca.edu/kb/matlab-campus-license){target=_blank} or [Mathematica](https://kb.unca.edu/kb/mathematica-installation-and-licensing){target=_blank} for highly polished computational tools.
+
+ Always keep in mind, though, that your main responsibility is to learn the material well enough to be able to solve problems on quizzes and exams where computational tools are no longer permitted. Thus, you should use computational tools as a back up to double check your work or to examine a graph or something similar
+
+
+
+### Generative AI 
+
+I consider generative AI to be just another tool to help us understand mathematics (along with many other things). Thus, you are expressly permitted to use generative AI tools like Chat GPT, Claude, Google Gemini, and more. 
+
+Again, though, it is your responsibility to learn the material well enough to pass quizzes and exams. If your first step in approaching a problem is ask a chat bot how to do it, you are not preparing yourself for success.
+
+Our online HW system uses generative AI to help you along. We'll see how well it works!
+
+### Further information
+
+You can find more information on dealing with special challenges here:  
+[https://marksmath.org/OfficialPolicies/](/OfficialPolicies)
