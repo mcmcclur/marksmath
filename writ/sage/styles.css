@@ -1,0 +1,120 @@
+.sage {
+    margin: 15px;
+}
+
+.notebook-version {
+    margin: 0 0 1rem;
+    font-size: 0.9rem;
+}
+
+.notebook-version a {
+    font-weight: 600;
+}
+
+.sage button {
+    transition: background-color 120ms ease, border-color 120ms ease, box-shadow 120ms ease;
+}
+
+body.quarto-light .sage button:hover,
+body.quarto-light .sage button:focus {
+    background-color: #f3f6f8;
+    border-color: #b8c2cc;
+    box-shadow: 0 0 0 0.12rem rgba(44, 62, 80, 0.08);
+}
+
+body.quarto-dark .sage .sagecell,
+body.quarto-dark .sage .sagecell_input,
+body.quarto-dark .sage .sagecell_sessionOutput,
+body.quarto-dark .sage .sagecell_output {
+    background: var(--bs-body-bg);
+    color: var(--bs-body-color);
+    border-color: var(--bs-border-color);
+}
+
+body.quarto-dark .sage .CodeMirror {
+    background: var(--bs-secondary-bg);
+    color: var(--bs-body-color);
+    border-color: var(--bs-border-color);
+}
+
+body.quarto-dark .sage .CodeMirror-gutters {
+    background: var(--bs-tertiary-bg);
+    border-right-color: var(--bs-border-color);
+}
+
+body.quarto-dark .sage .CodeMirror-cursor {
+    border-left-color: var(--bs-body-color);
+}
+
+body.quarto-dark .sage .CodeMirror-selected,
+body.quarto-dark .sage .CodeMirror-focused .CodeMirror-selected {
+    background: rgba(125, 162, 255, 0.28);
+}
+
+body.quarto-dark .sage .CodeMirror-linenumber,
+body.quarto-dark .sage .CodeMirror-matchingbracket,
+body.quarto-dark .sage .CodeMirror-nonmatchingbracket {
+    color: var(--bs-secondary-color);
+}
+
+body.quarto-dark .sage .cm-comment {
+    color: #8fb996;
+}
+
+body.quarto-dark .sage .cm-keyword,
+body.quarto-dark .sage .cm-builtin {
+    color: #ffb86c;
+}
+
+body.quarto-dark .sage .cm-string {
+    color: #a5d6ff;
+}
+
+body.quarto-dark .sage .cm-number,
+body.quarto-dark .sage .cm-atom {
+    color: #d2a8ff;
+}
+
+body.quarto-dark .sage .cm-def,
+body.quarto-dark .sage .cm-variable,
+body.quarto-dark .sage .cm-variable-2,
+body.quarto-dark .sage .cm-property {
+    color: var(--bs-body-color);
+}
+
+body.quarto-dark .sage .cm-operator {
+    color: #ff7b72;
+}
+
+body.quarto-dark .sage button,
+body.quarto-dark .sage select,
+body.quarto-dark .sage textarea,
+body.quarto-dark .sage input {
+    background-color: var(--bs-secondary-bg);
+    color: var(--bs-body-color);
+    border-color: var(--bs-border-color);
+}
+
+body.quarto-dark .sage button:hover,
+body.quarto-dark .sage button:focus {
+    background-color: #343a40;
+    border-color: #6c757d;
+    color: var(--bs-body-color);
+    box-shadow: 0 0 0 0.12rem rgba(173, 181, 189, 0.12);
+}
+
+body.quarto-dark .sage pre,
+body.quarto-dark .sage .sagecell_stdout,
+body.quarto-dark .sage .sagecell_stderr {
+    background: var(--bs-secondary-bg);
+    color: var(--bs-body-color);
+    border-color: var(--bs-border-color);
+}
+
+body.quarto-dark .sage .sagecell_stderr {
+    color: #ffb4ab;
+}
+
+button.sagecell_fullScreen {
+    display: none !important;
+}

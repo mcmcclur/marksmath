@@ -1,0 +1,69 @@
+---
+title: SageMath in Quarto
+format:
+    html:
+        page-layout: article
+        toc: true
+        css: styles.css
+        include-in-header: 
+            text: |
+                <script src="https://sagecell.sagemath.org/static/embedded_sagecell.js"></script>
+                <script>sagecell.makeSagecell({"inputLocation": ".sage", linked: true});</script>
+                <link rel="stylesheet" type="text/css" href="https://sagecell.sagemath.org/static/sagecell_embed.css">
+---
+
+SageMath (or just Sage) is free, open-source mathematical software built on top of Python. You might think of it as Python plus a huge number of open source libraries built in. For those familiar with Python, the basic language and idioms should seem familiar. In addition, though, there are a great many commands for performing mathematical tasks that are pre-imported into the namespsace.
+
+## First steps with Sage
+
+There are several ways to use Sage. By far the easiest, though, is via the [Sage Cell Server](https://sagecell.sagemath.org/){target=_blank}. If you navigate to that webpage, you'll find a code input box where you can just type code and press "Evaluate".
+
+Even better, it's easy to embed those code boxes into any webpage. So, for example, you can press the evaluate button below to add 2 and 3:
+
+
+<div class="sage">
+  <script type="text/x-sage">
+s = 2+3
+print("2+3 =", s)
+  </script>
+</div>
+
+The box is editable so that you can change it to add 3 and 4 or to solve differential equations or whatever. Here, for example, is how to solve a non-linear system of equations:
+
+<div class="sage">
+  <script type="text/x-sage">
+x,y = var('x,y')
+solve([x^2-3*x*y-1, y^2-3*x*y-1], [x,y])
+  </script>
+</div>
+
+Now, that we see a couple of real solutions, we can plot those curves together with the solutions:
+
+<div class="sage">
+  <script type="text/x-sage">
+p1 = implicit_plot(x^2 - 3*x*y - 1, (-1.6,1.6), (-1.6,1.6), fill=False)
+p2 = implicit_plot(y^2 - 3*x*y - 1, (-1.6,1.6), (-1.6,1.6), fill=False)
+p1+p2 + point([(-1/2,1/2), (1/2,-1/2)], size=50)  </script>
+</div>
+
+## Authoring Sage pages from notebooks
+
+Writing longer Sage documents directly in Quarto is possible, but a Jupyter notebook is often a nicer authoring environment. The notebook `ComplexCubics.ipynb` was written that way, then converted into the live SageCell-powered page [ComplexCubics/index.qmd](ComplexCubics/index.qmd).
+
+The converter in this directory reads a SageMath notebook, keeps the markdown cells as markdown, turns code cells into SageCell HTML blocks, and drops saved notebook outputs so the published page stays active:
+
+```bash
+./ipynb-to-sagecell-qmd.py ComplexCubics.ipynb
+```
+
+By default, the output is written to an `index.qmd` file in a folder named for the notebook. Thus, the command above writes `ComplexCubics/index.qmd`. It also copies the original notebook to `ComplexCubics/ComplexCubics.ipynb`, adds a "Notebook version" link in the right margin, and copies local files referenced by markdown cells into the same folder.
+
+The first level-one markdown heading in the notebook becomes the Quarto page title. If you want to keep that heading in the page body too, run:
+
+```bash
+./ipynb-to-sagecell-qmd.py ComplexCubics.ipynb --keep-title-heading
+```
+
+The generated page includes the Sage Cell Server scripts automatically. If a folder eventually uses shared Quarto metadata for those scripts, use `--no-header` to leave them out of the generated document. Use `--no-copy-notebook` or `--no-notebook-link` if you want to skip those parts of the packaging.
+
+This can also be folded into the Quarto build with a project `pre-render` script. If we do that, the cleanest long-term pattern is to keep source notebooks in an underscore-prefixed folder such as `_notebooks/`, or otherwise exclude source and copied notebooks from Quarto's render targets, so Quarto renders the generated `.qmd` pages rather than also rendering the notebooks directly.
