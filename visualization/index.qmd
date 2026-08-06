@@ -79,6 +79,17 @@ layout: article
  </div>
 </div>
 :::::
+::::: {.g-col-12 .g-col-sm-4}
+<div class="card text-bg-light mb-3">
+ <img class="light-content" src="data/NextTokenVisualizer/image-light.png" class="card-img-top" alt="Next Token Visualizer">
+ <img class="dark-content" src="data/NextTokenVisualizer/image-dark.png" class="card-img-top" alt="Next Token Visualizer">
+ <div class="card-body text-center">
+  <a href="./data/NextTokenVisualizer/" class="btn btn-primary">
+    Next tokens
+  </a>
+ </div>
+</div>
+:::::
 :::
 
 

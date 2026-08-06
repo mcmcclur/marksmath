@@ -2,8 +2,7 @@
 title: "LLM tokenization visualization"
 format:
   html:
-    toc: true
-    page-layout: article
+    page-layout: full
     css: styles.css
 execute:
   echo: false
@@ -17,14 +16,14 @@ This tool allows you to visualize one step of this process by taking input text 
 1. Breaking it into tokens and
 2. Listing the 10 most likely next tokens according to one LLM.
 
-## The visualizer
+## The visualizer 
 
 Enter some text and hit the "Tokenate it!" button to see token chunks and possible completions.
 
 <div id="ntv-app" class="ntv-shell">
 <div class="ntv-field">
 <label for="prompt-text">Prompt</label>
-<textarea id="prompt-text" rows="6" spellcheck="true">Mathematics is fairly challenging because of the </textarea>
+<textarea id="prompt-text" rows="2" spellcheck="true">Mathematics is fairly challenging because of the </textarea>
 </div>
 
 <div class="ntv-actions">
@@ -72,7 +71,7 @@ Gemma probably uses somewhat different tokens than those produced by js-tiktoken
 
 Today's large language models are effectively very large neural networks with specialized architecture. An example of a much simpler neural network is illustrated below.
 
-![Image of a neural network](./neural_network.png){fig-align="center" fig-alt="A neural network"}
+![Image of a neural network](./neural_network.png){.ntv-network-img fig-align="center" fig-alt="A neural network"}
 
 Each $x_{0,i}$ on the left represents an input and each $x_{3,j}$ on the right represents an output. In the context of a large language model, the input nodes might represent a sequence of input tokens (represented as numerical vectors) and the output nodes might correspond to potential next tokens. The idea is to assign a numerical probability to each potential output.
 
