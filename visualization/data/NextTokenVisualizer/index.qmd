@@ -64,7 +64,7 @@ The tokenizer uses [js-tiktoken](https://github.com/openai/tiktoken){target=_bla
 
 The next token predictions are obtained from Google's [Gemma 4 26B A4B](https://huggingface.co/google/gemma-4-26B-A4B-it){target=_blank}, a 26 billion parameter model with about 4 billion active parameters per token. This model is open source and provides `logprobs` and `top_logprobs`, which are essential for this demo.
 
-Gemma probably uses somewhat different tokens than those produced by js-tiktoken. This page is meant to provide an educational illustration of a couple important LLM concepts, though. The tokenizer and predictor are chosen more convenience than perfection.
+Gemma probably uses somewhat different tokens than those produced by js-tiktoken. This page is meant to provide an educational illustration of a couple important LLM concepts, though. The tokenizer and predictor are chosen more for convenience than perfection.
 
 
 ## Some mathematical comments
@@ -79,7 +79,9 @@ Once we've assigned an input, that input propagates from left to right through t
 
 $$x_{i,k} = g_i\left(\sum_{j=0}^{n_{i-1}} w_{i-1,j,k} \times x_{i-1,j}\right).$$
 
-Each $w_{i-1,j,k}$ is called a *weight* or *parameter* and associated with an edge; a few edges are labeled with their weights in the diagram.
+Each $w_{i-1,j,k}$ is called a *weight* or *parameter* and associated with an edge; a few edges are labeled with their weights in the diagram. The $g_i$ is called an *activation*. In the context of a predictor, the last activation translates numerical scores to probabilities using a formula like so:
+
+$$P_k = g_i(z_k) = \frac{e^{z_k}}{\sum_j e^{z_j}}.$$
 
 ::: {.callout-note  appearance=minimal}
 <p style="font-size: 120%">
