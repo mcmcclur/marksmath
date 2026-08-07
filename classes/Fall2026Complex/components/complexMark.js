@@ -1,5 +1,5 @@
 // Draws a groovy interactive complex plot of
-// (z^3-1)/(z-(a+bi))
+// (z^3-1)/(z-(a+bi))^2
 // where a and b are chosen by mouse position.
 // 
 // Domain coloring code taken from
