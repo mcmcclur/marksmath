@@ -1,0 +1,39 @@
+---
+title: "A test notebook"
+resources:
+  - "Scratch.ipynb"
+  - "styles.css"
+margin-header: |
+  <p class="notebook-version"><a href="Scratch.ipynb?download=1">Notebook version</a></p>
+format:
+  html:
+    page-layout: article
+    toc: true
+    css: styles.css
+    include-in-header:
+      text: |
+        <script src="https://sagecell.sagemath.org/static/embedded_sagecell.js"></script>
+        <script>sagecell.makeSagecell({"inputLocation": ".sage", "linked": true});</script>
+        <link rel="stylesheet" type="text/css" href="https://sagecell.sagemath.org/static/sagecell_embed.css">
+---
+
+Just a test
+
+<div class="sage">
+  <script type="text/x-sage">
+x,y = var('x,y')
+eqs = [x^2-3*x*y==1, y^2-3*x*y==1]
+sols = solve(eqs, [x,y])
+sols = [tuple([s.rhs() for s in sol]) for sol in sols
+    if all(eq.rhs().is_real() for eq in sol)]
+sols
+  </script>
+</div>
+
+<div class="sage">
+  <script type="text/x-sage">
+p1 = implicit_plot(eqs[0], (-1.6,1.6), (-1.6,1.6))
+p2 = implicit_plot(eqs[1], (-1.6,1.6), (-1.6,1.6), color='red')
+p1+p2 + point(sols, size=50, color='black')
+  </script>
+</div>
