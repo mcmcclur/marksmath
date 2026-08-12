@@ -41,8 +41,9 @@ website:
       - href: mailto:mcmcclur@unca.edu
         text: <i class="fa fa-regular fa-envelope"></i>
 
-format:
+format: 
   html:
+    include-in-header: mathjax-config.html
     toc: false
     anchor-sections: false
     respect-user-color-scheme: true
