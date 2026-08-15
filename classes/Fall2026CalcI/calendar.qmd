@@ -15,6 +15,11 @@ subtitle: "Math 191 - Fall 2026"
       color: 'green'
     },
     {
+      title  : 'No class',
+      start  : '2026-08-24',
+      color: 'gray',
+    },
+    {
       title  : 'Labor Day',
       start  : '2026-09-07',
       color: 'gray',
@@ -53,7 +58,7 @@ subtitle: "Math 191 - Fall 2026"
       color: '#511d66',
     },    {
       title  : 'Quiz 1',
-      start  : '2026-08-28',
+      start  : '2026-09-04',
       color: '#9a4eae',
     },
     {
