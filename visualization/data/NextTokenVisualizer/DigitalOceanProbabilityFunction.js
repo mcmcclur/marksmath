@@ -1,5 +1,8 @@
+// Should be uploaded as a DigitalOcean function.
+// cloud.digitalocean.com/functions/fn-1721edac-5db5-46c0-9e15-4bbf2cee7297/_/next-token/source
+
 const OPENROUTER_ENDPOINT = "https://openrouter.ai/api/v1/chat/completions";
-const MODEL = "google/gemma-4-26b-a4b-it:free";
+const MODEL = "google/gemma-4-26b-a4b-it";
 const MAX_PROMPT_CHARS = 1000;
 
 function response(statusCode, body) {
@@ -37,7 +40,8 @@ function buildPayload(prompt) {
     logprobs: true,
     top_logprobs: 20,
     provider: {
-      require_parameters: true
+      require_parameters: true,
+      only: ["Cloudflare"] // Seems reliable.
     }
   };
 }
