@@ -1,0 +1,22 @@
+---
+title: Solving a cubic
+subtitle: A real, yet complex solution
+echo: false
+format:
+  html:
+    page-layout: article
+  pdf:
+    mainfont: "Times New Roman"
+    output-file: "SolvinACubic.pdf"
+    include-in-header:
+      text: |
+        \usepackage[bottom=0.1in, top=0.4in, left=1.1in, right=1.1in]{geometry}
+        \pagenumbering{gobble}
+---
+
+Here's one problem on solving cubics.
+
+## The problem
+
+1. Use the code shown in [Example 2 of our notes on complex cubics](../../notes/ComplexCubics/#example-2) to find a solution of
+$$z^3 - 4z + 2 = 0.$$
