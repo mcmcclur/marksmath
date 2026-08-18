@@ -1,0 +1,90 @@
+---
+title: A tricky limit
+page-layout: article
+---
+
+Here's the graph of 
+
+$$f(x)=\frac{2^x - 1}{x}:$$
+
+```{ojs}
+viewof trace = Inputs.toggle({ label: "Trace point:", value: false })
+```
+
+```{ojs}
+viewof x = {
+  let range = Inputs.range([-2.5, 2.5], {
+    value: 1,
+    step: 0.01,
+    disabled: !trace
+  });
+  d3.select(range).select("input").remove();
+  return range;
+}
+```
+
+```{ojs}
+graph = {
+  let pts = d3.range(-3, 3, 0.011).map((x) => [x, f(x)]);
+  let w = 800;
+  let h = 500;
+  let marks = [
+    Plot.axisY({ x: 0 }),
+    Plot.ruleX([0]),
+    Plot.line(pts),
+    Plot.dot([[0, Math.log(2)]], { r: 4, fill: "white", stroke: "black" }),
+    Plot.ruleY([0]),
+    Plot.axisX({ y: 0 })
+  ];
+  if (trace) {
+    marks.push(Plot.dot([[x, f(x)]], { r: 5, fill: "black" }));
+    marks.push(Plot.text([{t: `f(0)≈f(${x})=${d3.format('0.4f')(f(x))}`, x: -3, y: 2}], {x: 'x', y: 'y', text: 't', fontSize: 18, textAnchor: 'start'}))
+  }
+  return Plot.plot({
+    marks: marks
+  });
+}
+```
+
+```{ojs}
+F = (x) => 2 ** x
+f = (x) => (F(x) - 1) / x
+```
+
+Note that, if we plug $x=0$ into $f$, we get the dreaded expressions $0/0$, which is nonsensical. In math speak, $f$ is not defined at $x=0$ or, equivalently, zero is not in the *domain* of $f$. This is indicated by the hole we see in the graph. Note that you probably won't see this behavior in most computer generated graphs (like [this Desmos graph](https://www.desmos.com/calculator/tlajh3ma8x)), unless you add it explicitly.
+
+While we can't compute $f(0)$, we might hope to estimate the limit as $x\to0$ of $f(x)$, i.e. we can ask
+$$\lim\limits_{x\to0}f(x) = ?$$
+
+That's part of the point behind the "Trace point" toggle and slider. To be more precise, we might systematically plug in points that get closer and closer to zero and examine the values coming out That's part of the point behind the following table:
+
+```{ojs}
+html`<table>
+  <tr style="border-bottom: solid 1px black !important">
+    <td style="border-right: solid 0.6px black">${tex`x`.outerHTML}</td>${d3
+  .range(7)
+  .map(
+    (n) =>
+      `<td style="border-left: solid 1px black !important">${10 ** -n}</td>`
+  )
+  .join("")}
+  </tr>
+  <tr>
+    <td style="border-right: solid 0.6px black">${tex`f(x)`.outerHTML}</td>${d3
+  .range(7)
+  .map(
+    (n) =>
+      `<td style="border-left: solid 1px black">${d3.format("0.7f")(
+        f(10 ** -n)
+      )}</td>`
+  )
+  .join("")}
+  </tr>
+</table>`
+```
+
+I guess this suggests that 
+$$\lim\limits_{x\to0}f(x) \approx 0.69314.$$
+Note that I did *not* include digits that don't appear to have settled down just yet.
+
+I do wonder, *why might we go through all this*??

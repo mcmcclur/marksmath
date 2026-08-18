@@ -1,0 +1,20 @@
+---
+title: The graph of the sine function
+page-layout: article
+---
+
+
+The graph of the sine function arises from its definition in terms of the unit circle.
+An angle $\theta$ subtends an arc length from the right most point on the unit circle to a terminal point on the same circle. That terminal point is shown in red on the shifted unit circle below and the arc is shown in green. By definition, the $y$-coordinate of the red point is $\sin(\theta)$ and its magnitude is represented by the orange line segment.
+
+
+If we take that green arc and lay it out on the $x$ axis with its initial point at
+the origin, then its terminal point determines an $x$ value. If we plot the point with
+that $x$ value and whose $y$ value is given by that same orange segment, we obtain a
+point on the graph of $y=\sin(x)$. As we vary $\theta$, the graph of the sine function
+is traced out.
+
+
+::: {style="width: 800px; margin: 0 auto"}
+<iframe src="https://www.desmos.com/calculator/xn9akfsqwe?embed" width="800" height="300" style="border: 2px solid #333" frameborder=0></iframe>
+:::

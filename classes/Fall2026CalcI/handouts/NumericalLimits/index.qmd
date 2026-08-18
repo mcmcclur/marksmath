@@ -1,0 +1,40 @@
+---
+title: A couple numerical limits
+echo: false
+format:
+  html:
+    page-layout: article
+    toc: true
+    crossrefs-hover: false
+  pdf:
+    mainfont: "Times New Roman"
+    output-file: "NumericalLimits.pdf"
+    include-in-header:
+      text: |
+        \usepackage[bottom=0.1in, top=0.4in, left=1.1in, right=1.1in]{geometry}
+        \pagenumbering{gobble}
+---
+
+Here are a couple of numerical limit problems, like the problems we discussed in our second day of class.
+
+## The problems
+
+1. @tbl-table below shows some values of $f(x)$ near $x=3$. Use that table to give your best estimate of $\lim_{x\to3} f(x)$. Be sure to provide a number of digits that you can justify and explain your justification.
+
+   ::: {#tbl-table style="max-width: 400px"}
+
+   | $x$ | $f(x)$ |
+   |:---:|:---:|
+   | 3.1 | 1.74618943088019 |
+   | 3.01 | 1.62245912673256 |
+   | 3.001 | 1.61073375272935 |
+   | 3.0001 | 1.60956743390228 |
+   | 3.00001 | 1.60945086395969 |
+   
+   :::
+
+2. Let $f(x) = (4^x-1)/x$. Compute the values of $f(x)$ at 
+$$x = 0.1,\, 0.01,\, 0.001,\, 0.0001, \text{ and } 0.00001$$
+and list those results in a table. Use your table to give your best estimate of 
+$$\lim_{x\to0} \frac{4^x-1}{x}.$$ 
+Again, be sure to provide a number of digits that you can justify and explain your justification.
