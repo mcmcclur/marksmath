@@ -1,7 +1,32 @@
 ---
 title: A tricky limit
 page-layout: article
+toc: true
+css: /callout-styles.css
 ---
+
+Here's just a little discussion of limits including notation, meaning, and a numerical example.
+
+## What even *is* a limit?
+
+Here's a little bit of slightly heavy notation:
+$$\lim_{x\to a}f(x) = L.$$
+
+We read this as:
+
+::: {.callout-note appearance=minimal}
+The limit as $x$ goes to $a$ of $f(x)$ equals $L$.
+:::
+
+But, what do we mean?
+
+::: {.callout-note appearance=minimal}
+$\lim_{x\to a}f(x) = L$ means that we can make the value of $f(x)$ as close as we like to $L$ by taking the value of $x$ as close as necessary to $a$, but not equal to $a$.
+:::
+
+What could be easier?
+
+## Example
 
 Here's the graph of 
 
