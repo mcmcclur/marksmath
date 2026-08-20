@@ -356,7 +356,7 @@ void main() {
   float la = 1.5/2.5;
   float ac = r0*(1.0-2.0*abs(la-0.5));
   vec3 lc = oklab2rgb(vec3(la,ac*ca,ac*sa));
-  col = mix(col,lc,line(ang/TAU*4.0)*0.5);
+  col = mix(col,lc,line(ang/TAU*6.0)*0.5);
 
   fragColor = vec4(col,1);
 }`;
