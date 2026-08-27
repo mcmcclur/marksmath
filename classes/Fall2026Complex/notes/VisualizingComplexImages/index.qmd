@@ -1,0 +1,275 @@
+---
+title: "Visualizing complex functions"
+format:
+  html:
+    page-layout: article
+    toc: true
+    css: styles.css
+---
+
+In this set of class notes, we're going to take a look at an important way to visualize complex functions to, hopefully, generate some intuition about how they operate.
+
+## Why not graphs??
+
+I guess the most basic way to visualize a function is via a *graph*. We're certainly all familiar with the graph of $f(x)=x^2$:
+
+```{ojs}
+just_graph()
+```
+
+Note that this function, like most of the functions that you study in calculus, maps $\mathbb R \to \mathbb R$. We say that the point $(x,y)$ is on the graph of $y=f(x)$. Thus, the graph lives in $\mathbb R^2$.
+
+Now, if $f:\mathbb{C}\to\mathbb{C}$, then perhaps its graph lives in $\mathbb{C}^2$. Unfortunately, each copy of $\mathbb{C}$ requires two real dimensions to draw. Thus, our image would look four dimensional.
+
+I guess we'll need another approach.
+
+
+### Lineland
+
+In search of an alternative, let's suppose we live in one-dimensional space (called *lineland* in Edwin Abbott's classic *flatland*) and wish to visualize a function $f:\mathbb R \to \mathbb R$. One way to do so might be to illustrate the effect of $f$ by viewing before and after images of natural sets in the line. We might even do so via an animation, like so:
+
+```{ojs}
+viewof update_lineland = Inputs.toggle({label: "Apply:"})
+```
+
+```{ojs}
+lineland = make_lineland()
+```
+
+Back here in our universe, we might realize that what we are effectively doing is examining the image of the set on the $x$-axis after it's been mapped to the $y$-axis.
+
+```{ojs}
+graph_with_points()
+```
+
+## Complex functions
+
+The analogous approach for complex functions goes like so:
+
+1. Pick a domain $D\subset\mathbb{C}$, then
+2. Plot $\{f(z)\in\mathbb{C}: z\in D\}$.
+
+Often, it helps to shade and place a mesh on $D$ to help see more precisely what maps to what.
+
+### The effect of $z^2$ on a square
+
+The image below shows the complex square
+$$\{z\in\mathbb{C}: 0\leq \text{Re}(z) \leq 2, \: 0 \leq \text{Im}(z) \leq 2\}.$$
+You can hit the play button to see the effect of the complex square function $f(z)=z^2$ on this square - or, actually, the effect of $f_p(z) = z^p$, as $t$ ranges from $p=1$ to $p=2$.
+
+::: {class="scrubber-container"}
+```{ojs}
+viewof t1 = Scrubber(d3.range(1,2.005, 0.01), {
+    format: t => `p = ${d3.format("0.2f")(t)}`,
+    autoplay: false,
+    delay: 0,
+    loop: false
+})
+```
+:::
+
+
+```{ojs}
+Plot.plot({
+    width: 500,
+    aspectRatio: 1,
+    y: {domain: [-0.1,8.1], label: "Im"},
+    x: {domain: [-4.1, 4.1], label: "Re"},
+    marks: [
+        complexCartesianMark(`z^${t1}`, [0, 2], [0, 2]),
+        Plot.axisX({ y: 0 }),
+        Plot.axisY({ x: 0, ticks: 4 }),
+        Plot.ruleX([0]),
+        Plot.ruleY([0])
+    ]
+})
+```
+
+To understand this, it helps to consider the images of the sides. For example, you might consider the right side
+$$S = \{2+t\,i: 0\leq t \leq 2\}.$$
+Note that 
+$$(2+t\,i)^2 = (4-t^2) + 4t\,i.$$
+As $t$ ranges from 0 to 2, this traces out a parabolic arc that moves from $4$ to $8i$. That's exactly the right side that you see after the deformation.
+
+### The exponential function
+
+Here's a similar animation for the exponential function applied to the unit square
+$$\{z\in\mathbb{C}: 0\leq \text{Re}(z) \leq 1, \: 0 \leq \text{Im}(z) \leq 1\}.$$
+Now, we see the unit square morph into its image under the exponential $z\to e^z$.
+
+
+::: {class="scrubber-container"}
+```{ojs}
+viewof t2 = Scrubber(d3.range(0,1.005, 0.01), {
+    format: t => `t = ${d3.format("0.2f")(t)}`,
+    autoplay: false,
+    delay: 0,
+    loop: false
+})
+```
+:::
+
+```{ojs}
+Plot.plot({
+        aspectRatio: 1,
+        y: {domain: [-0.1,2.4], label: "Im"},
+        x: {domain: [-0.1, 3.1], label: "Re"},
+        marks: [
+            complexCartesianMark(`(1-${t2})z + ${t2}exp(z)`, [0, 1], [0, 1]),
+            Plot.axisX({ y: 0 }),
+            Plot.axisY({ x: 0, ticks: 4 }),
+            Plot.ruleX([0]),
+            Plot.ruleY([0])
+        ]
+})
+```
+
+It again helps to consider how each side is determined.
+
+### The reciprocal function
+
+This example shows how the image of the unit square morphs under application of $f_p(z) = t^p$, as $p$ ranges from $1$ down to $-1$. The final result should be the image of the unit square under the application of the reciprocal.
+
+::: {class="scrubber-container"}
+```{ojs}
+viewof t0 = Scrubber(d3.range(1,-1.005, -0.01), {
+    format: t => `p = ${d3.format("0.2f")(t)}`,
+    autoplay: false,
+    delay: 0,
+    loop: false
+})
+```
+:::
+
+```{ojs}
+Plot.plot({
+    width: 500,
+    aspectRatio: 1,
+    y: {domain: [-4.1,4.1], label: "Im"},
+    x: {domain: [-4.1, 4.1], label: "Re"},
+    marks: [
+        complexCartesianMark(`z^${t0}`, [0.0,1], [0.0,1]),
+        Plot.axisX({ y: 0 }),
+        Plot.axisY({ x: 0, ticks: 4 }),
+        Plot.ruleX([0]),
+        Plot.ruleY([0])
+    ]
+})
+```
+
+The straight sides should make sense. The others might be tricky.
+
+## Polar domains
+
+In principle, you can try this with any input domain that you want. I've only programmed it for both Cartesian rectangles and polar wedges, though. The latter has the form
+$$\{re^{i\theta}: a\leq r \leq b \text{ and } \alpha\leq\theta\leq\beta\}.$$
+
+### Power functions
+In the image below, $a=1/2$, $b=2$, $\alpha=0$, and $\beta=\pi/2$. The slider controls the value of $p$ in $f_p(z) = z^p$ and that value ranges from $1$ to $2$. Thus, the image morphs from the initial wedge to its image under the square function as $p$ ranges from $1$ to $2$
+
+::: {class="scrubber-container"}
+```{ojs}
+viewof t3 = Scrubber(d3.range(1,2.005, 0.01), {
+    format: t => `p = ${d3.format("0.2f")(t)}`,
+    autoplay: false,
+    delay: 0,
+    loop: false
+})
+```
+:::
+
+```{ojs}
+Plot.plot({
+    width: 500,
+    aspectRatio: 1,
+    y: {domain: [-0.1,4.1], label: "Im"},
+    x: {domain: [-4.1, 4.1], label: "Re"},
+    marks: [
+        complexPolarMark(`z^${t3}`, [1/2, 2], [0, Math.PI/2]),
+        Plot.axisX({ y: 0 }),
+        Plot.axisY({ x: 0, ticks: 4 }),
+        Plot.ruleX([0]),
+        Plot.ruleY([0])
+    ]
+    })
+```
+
+This one seems eminently easy to reason with because the action of a power function interacts so naturally with the shape of the region. We have
+$$r \, e^{i\theta} \to r^2 e^{2i\theta}.$$
+Thus, the distance of any point to the origin is squared and its argument doubles.
+
+### A Mobius transformation
+
+We'll have fun with these. This one shows the image of the unit circle under the function
+$$f(z) = i\frac{1-z}{1+z}.$$
+
+```{ojs}
+Plot.plot({
+    width: 500,
+    aspectRatio: 1,
+    y: {domain: [-2.1,4.1], label: "Im"},
+    x: {domain: [-4.1, 4.1], label: "Re"},
+    marks: [
+        complexPolarMark(`i*(1+z)/(1-z)`, [0,1], [0.0001, 2*Math.PI-0.0001]),
+        Plot.axisX({ y: 0 }),
+        Plot.axisY({ x: 0, ticks: 4 }),
+        Plot.ruleX([0]),
+        Plot.ruleY([0])
+    ]
+    })
+```
+
+## Not so nice
+
+Things can get confusing when the function is not one-to-one on its domain.
+
+::: {class="scrubber-container"}
+```{ojs}
+viewof t4 = Scrubber(d3.range(1,5.005, 0.01), {
+    format: t => `p = ${d3.format("0.2f")(t)}`,
+    autoplay: false,
+    delay: 0,
+    loop: false
+})
+```
+:::
+
+```{ojs}
+Plot.plot({
+    width: 500,
+    aspectRatio: 1,
+    y: {domain: [-4.1,4.1], label: "Im"},
+    x: {domain: [-4.1, 4.1], label: "Re"},
+    marks: [
+        complexPolarMark(`z^${t4}`, [1/2, 2], [0, Math.PI/2]),
+        Plot.axisX({ y: 0 }),
+        Plot.axisY({ x: 0, ticks: 4 }),
+        Plot.ruleX([0]),
+        Plot.ruleY([0])
+    ]
+})
+```
+
+
+<!-- Imports and updates  -->
+
+```{ojs}
+import {
+  just_graph, 
+  graph_with_points, 
+  make_lineland
+} from './components/graphs.js' 
+import {
+    complexCartesianMark, 
+    complexPolarMark
+} from "../../components/complexImageMarks.js";
+import {Scrubber} from "@mbostock/scrubber";
+```
+
+::: {style="display: none"}
+
+```{ojs}
+  lineland.update(update_lineland);
+```
+
+:::
