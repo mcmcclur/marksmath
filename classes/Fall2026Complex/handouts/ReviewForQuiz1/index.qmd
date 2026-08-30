@@ -1,0 +1,62 @@
+---
+title: Review for quiz 1
+date: 2025-08-30
+echo: false 
+format:
+  html:
+    page-layout: article
+    toc: true
+  pdf:
+    mainfont: "Times New Roman"
+    include-in-header:
+      text: |
+        \pagenumbering{gobble}
+---
+
+We have our first quiz in just a couple of days - on Wednesday, September 2nd. The problems on the quiz will be a subset of variations of these problems.
+
+## Problems 
+
+1. Write down the following definitions
+
+   a. The set $\mathbb{C}$ of complex numbers, together with addition and multiplication of complex numbers.  
+   Your definition should be expressed in terms of real numbers and ordered pairs (which we take for granted), as described in the first paragraph of [Section 1.2](https://complexanalysis.org/web/sec_algebra-1.html){target=_blank}. The definitions of addition and multiplication are stated in [Definition 1.2.1](https://complexanalysis.org/web/sec_algebra-1.html#def_addition){target=_blank} and [Definition 1.2.4](https://complexanalysis.org/web/sec_algebra-1.html#def_multiplication){target=_blank}.
+
+   b. Euler's formula  
+   [Formula 1.4.6](https://complexanalysis.org/web/sec_geometry-2.html#Euler_s_Formula){target=_blank} of our text
+
+   c. Domain  
+   [Literally, this exact sentence](https://complexanalysis.org/web/sec_topology.html#:~:text=We%20call%20a%20connected%20open%20set%20a%20domain){target=_blank}
+
+2. Show that the addition of complex numbers is commutative.
+
+3. Describe the image of the rectangle 
+$$R = \{z\in\mathbb{C}: -1<\text{Re}(z)<1 \text{ and } 0<\text{Im}(z)<\pi\}.$$
+in set theoretic notation. Draw a picture of it as well.
+
+4. Use the exponential function to express all the roots of $f(z) = z^{10} - 1024$ in polar form.
+
+5. Suppose I tell you that $z_1 = -1+2i$ is a root of 
+$$f(z) = z^5+2 z^4+5 z^3-z^2-2 z-5.$$
+Give me one more root and explain how you know.
+
+
+<!-- 
+::: {.content-visible when-format="html"}
+
+## Questions
+
+If you'd like to ask a question about or reply to a question on this sheet, you can do so by pressing the "Reply on Discourse" button below.
+
+```{ojs}
+embedDiscourseMathTopic(23)
+```
+
+```{ojs}
+import {embedDiscourseMathTopic} from '/components/EmbedDiscourseMathTopics/embedDiscourseMathTopic.js';
+```
+
+:::
+
+-->
+
