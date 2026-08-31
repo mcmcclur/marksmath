@@ -6,6 +6,7 @@ format:
   html:
     page-layout: article
     toc: true
+    css: /components/EmbedDiscourseMathTopics/embedDiscourseMathTopic.css
   pdf:
     mainfont: "Times New Roman"
     include-in-header:
@@ -41,15 +42,14 @@ $$f(z) = z^5+2 z^4+5 z^3-z^2-2 z-5.$$
 Give me one more root and explain how you know.
 
 
-<!-- 
 ::: {.content-visible when-format="html"}
 
 ## Questions
 
-If you'd like to ask a question about or reply to a question on this sheet, you can do so by pressing the "Reply on Discourse" button below.
+Follow the "Reply on WriteTech" button to ask a question on or make a comment about this review sheet. Your questions and comments will auto-magically appear below. You can feel free to respond to other students questions and comments. I might chime in as well.
 
 ```{ojs}
-embedDiscourseMathTopic(23)
+embedDiscourseMathTopic(830)
 ```
 
 ```{ojs}
@@ -58,5 +58,6 @@ import {embedDiscourseMathTopic} from '/components/EmbedDiscourseMathTopics/embe
 
 :::
 
--->
+
+
 
