@@ -1,3 +1,25 @@
-div.lightbox-wrapper div.meta {
-    display: none;
+.post-container .lightbox-wrapper {
+  margin: 0.9rem 0;
+  text-align: center;
+}
+
+.post-container .lightbox-wrapper .lightbox {
+  display: inline-block;
+  max-width: 100%;
+  text-decoration: none;
+  color: inherit;
+}
+
+.post-container .lightbox-wrapper img {
+  display: block;
+  max-width: min(100%, 720px);
+  height: auto;
+  margin: 0 auto;
+  border: 1px solid #d0d7de;
+  border-radius: 6px;
+  background: #fff;
+}
+
+.post-container .lightbox-wrapper .meta {
+  display: none;
 }
