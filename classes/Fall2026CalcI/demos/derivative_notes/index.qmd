@@ -1,0 +1,134 @@
+---
+title: Notes on the derivative
+page-layout: article
+toc: true
+---
+
+I'm going to keep some notes on the derivative here. This page should grow while we discuss the basics of the derivative.
+
+## What is a derivative?
+
+Given a function $f:[a,b]\to\mathbb{R}$, the derivative of $f$ is a new function $f'$ that tells us some important information about the original - in particular, $f'$ tells us the instantaneous rate of change of its output relative to its input.
+
+## Interpretations of the derivative
+
+### Slope
+
+If $y=f(x)$ defines a graph in the plane, the $f'(x)$ tells us the rate of change of $y$ with respect to $x$ right at a single point. We can think of this as slope of a tangent line.
+
+```{ojs}
+{
+    const fpts = d3.range(-1,5.5,0.01).map(x => [x,(x**2 - 3*x)/4])
+    const l = x => 1 + 1.25*(x-4);
+    const lpts = d3.range(2,6.5,1).map(x => [x,l(x)])
+
+    return Plot.plot({
+    y: {domain: [-1.2,3.8]},
+    x: {domain: [-1.2,5.8]},
+    marks: [
+        Plot.line(fpts, {strokeWidth: 3}),
+        Plot.line(lpts, {strokeWidth: 2}),
+        Plot.dot([[4,1]], {fill: 'gray', r: 5, stroke: 'currentColor'}),
+        Plot.ruleX([0]),
+        Plot.ruleY([0]),
+        Plot.axisX({y:0, ticks: [-1,1,2,3,4,5], tickFormat: d => parseInt(d)}),
+        Plot.axisY({x:0, ticks: [-1,1,2,3], tickFormat: d => parseInt(d)}),
+    ]
+    })
+}
+```
+
+### Velocity and acceleration
+
+Suppose an object moves along a horizontal axis and it's position $x$ is given by a function $x(t)$ of time $t$. Then $x'(t)$ tells us the instantaneous rate of change of the position with respect to time. This is called the *velocity*.
+
+If we denote the velocity $v$ as a function of time $t$ by $v(t)$, then we can apply the derivative again to get $v'(t)$. This is called the *acceleration*.
+
+## The definition of the derivative
+
+Given a function $f$ of the variable $x$, it's derivative $f'(x)$ is defined by
+$$
+f'(x) = \lim_{h\to0}\frac{f(x+h)-f(x)}{h}.
+$$
+
+The expression
+$$
+\frac{f(x+h)-f(x)}{h}
+$$
+is called the *difference quotient* of the function $f$.
+
+### An example
+
+Suppose that $f(x) = 3x^2 - x$. Then, its difference quotient is
+$$
+\frac{(3(x+h)^2 - (x+h)) - (3x^2 - x)}{h}.
+$$
+If we fully expand the numerator, we get
+$$
+\frac{3x^2 + 6xh + 3h^2 - x-h - 3x^2 + x}{h}.
+$$
+If we cancel terms and factor an $h$ out of the numerator, we get
+$$
+\frac{6xh + 3h^2 - h}{h} = \frac{(6x + 3h - 1)h}{h}.
+$$
+At that point, we can cancel the $h$ to get an expression whose limit is easy to compute:
+$$
+(6x+3h-1) \to 6x-1 \text{ as } h\to0.
+$$
+
+We can string that into a whole sequence of equalities like so:
+
+$$
+\begin{aligned}
+f'(x) &= \lim_{h\to0} \frac{(3(x+h)^2 - (x+h)) - (3x^2 - x)}{h} \\
+ &= \lim_{h\to0} \frac{3(x^2 + 2xh + h^2) - x-h - 3x^2 + x}{h} \\ 
+ &= \lim_{h\to0} \frac{3x^2 + 6xh + 3h^2 - x-h - 3x^2 + x}{h} \\ 
+ &= \lim_{h\to0} \frac{6xh + 3h^2 - h}{h} = \lim_{h\to0} \frac{(6x + 3h - 1)h}{h} \\
+ &= \lim_{h\to0} (6x+3h-1) = 6x-1.
+\end{aligned}
+$$
+
+## Differentiation rules
+
+Differentiation rules are tools to help us compute derivatives efficiently. They come in two main classes:
+
+- *Basic rules* that tell us how to compute the derivative of a single function (like $\sin(x)$) or family of functions dependant on a parameter (like $x^n$).
+- *Combination rules* that tell us how to compute the derivative of a function formed by algebraically combining functions whose derivatives we know.
+
+
+### Basic rules
+
+This list will grow!
+
+#### The power rule
+
+> If $n\in\mathbb{N}$, then $\frac{d}{dx} x^n = nx^{n-1}$
+
+**Example**: $\frac{d}{dx}x^{42} = 42x^{41}$
+
+
+### Combination rules
+
+This list will also grow!
+
+
+#### The constant multiple rule
+
+> If $f$ is a differentiable function and $c\in\mathbb{R}$, then $\frac{d}{dx} c f(x) = c f'(x)$.
+
+**Example**: $\frac{d}{dx}(2x^{42}) = 84x^{41}$
+
+#### The constant multiple rule
+
+> If $f$ and $g$ are differentiable functions, then $\frac{d}{dx} (f(x)+g(x)) = f'(x) + g'(x)$.
+
+**Example**: $\frac{d}{dx}(x^{42} + x^2) = 42x^{41} + 2x$
+
+## More examples
+
+- $\frac{d}{dx}(2x^{42} + 3x^2) = 84x^{41} + 6x$
+
+
+## Proofs
+
+The differentiation rules can all be proved using the definition of the derivative!!
