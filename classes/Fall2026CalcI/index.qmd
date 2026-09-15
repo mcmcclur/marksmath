@@ -33,15 +33,34 @@ with professor [Mark McClure](https://marksmath.org/)
 
 ## Homework
 
-These links point to automatically graded homework with instant AI feedback on WriteTech. You do need to be logged on to access it, though.
+Here's a [link to all your homework assignments on WriteTech AI](https://math.writetech.ai/c/calc-i-assignments). These are automatically graded assignments that provide instant AI feedback.
 
-- [Homework 1](https://math.writetech.ai/tag/calc-assignment-1/){target=_blank}
-- [Homework 2](https://math.writetech.ai/tag/calc-assignment-2/){target=_blank}
-- [Homework 3](https://math.writetech.ai/tag/calc-assignment-3/){target=_blank}
-- [Homework 4](https://math.writetech.ai/tag/calc-assignment-4/){target=_blank}
-- [Homework 5](https://math.writetech.ai/tag/calc-assignment-5/){target=_blank}
-- [Homework 6](https://math.writetech.ai/tag/calc-assignment-6/){target=_blank}
-- [Homework 7](https://math.writetech.ai/tag/calc-assignment-7/){target=_blank}
+Alternatively, you can browse specific assignments via the following drop down menu:
+
+```{ojs}
+import { getCategoryAssignments } from "/components/GetDiscourseTags/GetDiscourseTags.js";
+viewof assignment = {
+    const tags = await getCategoryAssignments("calc-i-assignments");
+    let tag_objects = [{format: "---"}];
+    tag_objects = tag_objects.concat(tags.map(function(t) {
+        const n = t.split("-").slice(-1)[0];
+        return ({format: `Assignment ${n}`, value: t})
+    }));
+    return Inputs.select(tag_objects, {
+        label: "View:", format: t => t.format
+    })
+}
+```
+
+```{ojs}
+{
+    if(assignment.value) {
+        window.open(`https://math.writetech.ai/tag/${assignment.value}`)
+    }
+}
+```
+
+Note that you may need to allow popups for the dropdown menu to work and, in both cases, you'll need to be logged onto WriteTech to view your assignments.
 
 
 <!--
