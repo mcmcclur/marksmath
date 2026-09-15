@@ -52,13 +52,16 @@ viewof assignment = {
 }
 ```
 
+::: {style="display: none"}
 ```{ojs}
 {
+    // React to assignment choice
     if(assignment.value) {
         window.open(`https://math.writetech.ai/tag/${assignment.value}`)
     }
 }
 ```
+:::
 
 Note that you may need to allow popups for the dropdown menu to work and, in both cases, you'll need to be logged onto WriteTech to view your assignments.
 
