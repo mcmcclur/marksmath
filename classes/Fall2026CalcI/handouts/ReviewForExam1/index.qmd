@@ -106,6 +106,7 @@ What can you say about the following limits?
 
     a. $f(x) = 3x^2 + 2x + 1$
     b. $f(x) = x^6$
+    c. $f(x) = 1/\sqrt{x}$.
 
 8. Suppose that $f$ and $g$ are differentiable functions. Show that
    $$\frac{d}{dx}(3f(x) - g(x)) = 3f'(x) - g'(x),$$
@@ -113,10 +114,12 @@ What can you say about the following limits?
 
 \newpage 
 
-9. Find the derivatives of the following polynomials using the basic differentiation rules.
+9. Find the derivatives of the following functions using the basic differentiation rules.
 
    a. $f(x) = 3x^2 + 2x + 1$
    b. $f(x) = 61x^{48} + 2x^{16} + x^{14} - x - 1$
+   c. $f(x) = \frac{x^4 - x^3 + 2x^2 - x + 1}{x^2}$.
+   d. $f(x) = \frac{x-1}{\sqrt{x}}$.
 
 10. The graph of the function $f$ is shown in the top part of @fig-sketch. Sketch the graph of $f'$ on the axes provided below the graph of $f$.
 
