@@ -30,13 +30,46 @@ with professor [Mark McClure](https://marksmath.org/)
 - [Solving a cubic](handouts/SolvingACubic)
 - [Review for Quiz 1](handouts/ReviewForQuiz1/)
 
+
 ## Homework
 
-These links point to automatically graded homework with instant AI feedback on WriteTech. You do need to be logged on to access it, though.
+Here's a [link to all your homework assignments on WriteTech AI](https://math.writetech.ai/c/complex-assignments). These are automatically graded assignments that provide instant AI feedback.
 
-- [Homework 1](https://math.writetech.ai/tag/assignment-1/){target=_blank}
-- [Homework 2](https://math.writetech.ai/tag/complex-assignment-2/){target=_blank}
+Alternatively, you can browse specific assignments via the following drop down menu:
 
+```{ojs}
+import { getCategoryAssignments } from "/components/GetDiscourseTags/GetDiscourseTags.js";
+viewof assignment = {
+    const assignments = await getCategoryAssignments("complex-assignments");
+    let tag_objects = [{format: "---"}];
+    tag_objects = tag_objects.concat(assignments.filter(function(assignment) {
+        return typeof assignment === "string" || assignment?.tag;
+    }).map(function(assignment) {
+        const tag = typeof assignment === "string" ? assignment : assignment.tag;
+        const n = tag.split("-").slice(-1)[0];
+        const status = assignment.closed ? " Closed" :
+            assignment.close ? ` closes ${assignment.close}` : "";
+        const tFix = n == 1 ? "assignment-1" : tag;
+        return ({format: `Assignment ${n}${status}`, value: tFix})
+    }));
+    return Inputs.select(tag_objects, {
+        label: "View:", format: t => t.format
+    })
+}
+```
+
+::: {style="display: none"}
+```{ojs}
+{
+    // React to assignment choice
+    if(assignment.value) {
+        window.open(`https://math.writetech.ai/tag/${assignment.value}`)
+    }
+}
+```
+:::
+
+Note that you may need to allow popups for the dropdown menu to work and, in both cases, you'll need to be logged onto WriteTech to view your assignments.
 
 :::::
 

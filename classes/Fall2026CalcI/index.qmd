@@ -40,11 +40,16 @@ Alternatively, you can browse specific assignments via the following drop down m
 ```{ojs}
 import { getCategoryAssignments } from "/components/GetDiscourseTags/GetDiscourseTags.js";
 viewof assignment = {
-    const tags = await getCategoryAssignments("calc-i-assignments");
+    const assignments = await getCategoryAssignments("calc-i-assignments");
     let tag_objects = [{format: "---"}];
-    tag_objects = tag_objects.concat(tags.map(function(t) {
-        const n = t.split("-").slice(-1)[0];
-        return ({format: `Assignment ${n}`, value: t})
+    tag_objects = tag_objects.concat(assignments.filter(function(assignment) {
+        return typeof assignment === "string" || assignment?.tag;
+    }).map(function(assignment) {
+        const tag = typeof assignment === "string" ? assignment : assignment.tag;
+        const n = tag.split("-").slice(-1)[0];
+        const status = assignment.closed ? " Closed" :
+            assignment.close ? ` closes ${assignment.close}` : "";
+        return ({format: `Assignment ${n}${status}`, value: tag})
     }));
     return Inputs.select(tag_objects, {
         label: "View:", format: t => t.format
