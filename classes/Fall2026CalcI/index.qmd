@@ -1,6 +1,8 @@
 ---
 title: Calculus I
 css: styles.css
+resources: 
+  - components/ExamHWCorrelation.csv
 ---
 
 ::: {.grid}
@@ -76,10 +78,59 @@ Note that you may need to allow popups for the dropdown menu to work and, in bot
 -->
 
 :::::
-::::: {.g-col-md-4 .d-none .d-md-block}
+<!-- ::::: {.g-col-md-4 .d-none .d-md-block}
 ```{ojs}
 import {side_pic} from './components/difference_quotient-side_pic.js'
 side_pic();
 ```
+::::: -->
+
+::::: {.g-col-md-4 .d-none .d-md-block}
+```{ojs}
+import {makeCorrelationPlot} from './components/ExamHWCorrelation.js'
+makeCorrelationPlot(year - 2000);
+```
+::::::: {.year-toggle}
+```{ojs}
+viewof year = Inputs.radio([2025,2026], {value: 2026, format: y => y})
+```
+:::::::
 :::::
 :::
+
+<style>
+    .observablehq h3 {
+        font-size: 100%;
+        font-weight: normal;
+        margin: 0;
+        text-align: center;
+    }
+    .year-toggle form {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+    .year-toggle form div {
+        padding: 0;
+    }
+    .year-toggle label {
+        margin: 0;
+        cursor: pointer;
+        border: 1px solid var(--bs-primary);
+        border-radius: var(--bs-border-radius);
+        padding: 0.375rem 0.75rem;
+        color: var(--bs-primary);
+        background: transparent;
+    }
+    .year-toggle label:has(input[type="radio"]:checked) {
+        color: white;
+        background: var(--bs-primary);
+        border-color: var(--bs-primary);
+    }
+    .year-toggle input[type="radio"] {
+        position: absolute;
+        opacity: 0;
+        pointer-events: none;
+    }
+</style>
