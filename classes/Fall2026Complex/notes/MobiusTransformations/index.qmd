@@ -1,0 +1,264 @@
+---
+title: "Möbius transformations"
+format:
+    html:
+        page-layout: article
+        toc: true
+        css: styles.css
+        include-in-header: 
+            text: |
+                <script src="https://sagecell.sagemath.org/static/embedded_sagecell.js"></script>
+                <script>sagecell.makeSagecell({"inputLocation": ".sage"});</script>
+                <link rel="stylesheet" type="text/css" href="https://sagecell.sagemath.org/static/sagecell_embed.css">
+---
+
+Möbius transformations have the form
+$$T(z)=\frac{a z+b}{c z+d}.$$
+It's not hard to show by direct computation that
+$$T^{-1}(z) = \frac{dz-b}{-cz+a}.$$
+
+<div class="sage">
+  <script type="text/x-sage">
+var('a,b,c,d, z')
+T(z) = (a*z+b)/(c*z+d)
+TInv(z) = (d*z-b)/(-c*z+a)
+TInv(T(z)).simplify_full()
+  </script>
+</div>
+
+We do need to assume that $ad-bc\neq0$ for this to be true, though. Otherwise, the function is a constant in disguise.
+
+```{ojs}
+import {
+    complexCartesianMark, 
+    complexPolarMark,
+    complexCartesianPlot, 
+    complexPolarPlot
+} from "../../components/complexImageMarks.js";
+```
+
+## Visualization
+
+Recall that we visualize a complex function by illustrating its effect on various domains in the complex plane. Here, for example, is the image of the square $[-1,1]\times[-1,1]$ under the action of the Möbius transformation
+$$T(z) = i\frac{z+1}{2-z}.$$
+
+Here's a little computer code to do it:
+
+```{ojs}
+//| echo: true
+complexCartesianPlot(
+    `i*(z+1)/(2-z)`, [-1, 1], [-1, 1],
+    {xDomain: [-1.8,1.8], yDomain: [-0.1,2.1]}
+)
+```
+
+And here's the image of the unit disk under the function
+$$f(z) = i\frac{1+z}{1-z}.$$
+
+```{ojs}
+//| echo: true
+complexPolarPlot(`i*(1+z)/(1-z)`, 
+    [0,1], [0.0001, 2*Math.PI-0.0001],
+    {xDomain: [-4.1,4.1], yDomain: [-1.1, 4.1]}
+)
+```
+
+
+I guess we are curious to know how these types of images could come out of these types of functions??
+
+
+## Circles and lines map to circles and lines
+
+We've discussed some of this before but it's worth recalling some of the material as we go into it deeper this time.
+
+> **Circles/Lines $\leftrightarrow$ circles/lines**: Let $LC$ denote the set of all lines and circles in the complex plane. Any Möbius transformation maps $LC$ to itself. That is, the image of any circle or line in the complex plane under a Möbius transformation is again a circle or line.
+
+Our textbook calls the elements of $LC$ "generalized circles" and we'll see shortly why this might be a reasonable way to think of $LC$. 
+
+To understand the ircles/Lines $\leftrightarrow$ circles/lines phenomenon, let's first reproduce [the textbook's explanation](https://complexanalysis.org/web/sec_reciprocal-transformation.html#sec_reciprocal-transformation-14) of the fact that $LC \leftrightarrow LC$ under multiplicative inversion. That is, the reciprocal function maps $LC$ to $LC$.
+
+To begin that process, we note that the equation of any circle or line can be written in the form
+$$
+A(x^2+y^2) + Bx + Cy + D = 0,
+$$
+Where $A,B,C,$ and $D$ are real constants. We obtain a line precisely when $A\neq0$. We can translate this polar form easily enough:
+$$
+Ar^2+r(B\cos \theta +C\sin \theta) + D = 0\text{.}
+$${#eq-inverted-circle}
+Now, suppose that $z=re^{i\theta}$. Then,
+$$\frac{1}{z} = \frac{1}{r}e^{-i\theta}.$$
+Put another way, if we write $\frac{1}{z} = \rho e^{i\varphi}$, then 
+$$\rho = \frac{1}{r} \text{ and } \varphi = -\theta.$$
+Substituting for $r$ and $\theta$ in @eq-inverted-circle, we get 
+$$
+A+\rho (B\cos \phi -C\sin \phi ) +D\rho ^2=0.
+$$
+This is again an equation of a line or circle, though which now depends on $D$, rather than $A$.
+
+This much proves that 
+
+> Inversion maps a circle or a line to a circle or line.
+
+What about Möbius transformations more generally? Well, if $c\neq0$, then we can write
+$$
+\frac{az+b}{cz+d}
+=
+\frac{a}{c}
+-
+\frac{ad-bc}{c^2}\frac{1}{z+\frac{d}{c}}.
+$$
+Note that this is a composition of a shift, an inversion, a dialation/rotation with one more shift. Since each of those operations preserves $LC$, so does the Möbius transformation.
+
+If $c=0$, it's even easier:
+$$
+\frac{az+b}{d} = \frac{a}{d}z + \frac{b}{d}.
+$$
+
+## Finding images under Möbius Transformations
+
+Given a Möbius transformation and a circle or line, it's natural to ask for the image of that set under the action of the Möbius transformation. Well, a line is well known to be determined by two points and a circle by three. More generally, three distinct points uniquely determine a line or circle; we get a line exactly when the three points are colinear.
+
+Often, we are interested in the image of a solid disk bound by a circle. That image could be either
+
+- another disk,
+- the exterior of another disk, or
+- a half-plane.
+
+We can find that image by simply finding the image of three points on the bounding circle. We can then examine the image of a point in the interior to characterize the image of the disk.
+
+### Example 1
+
+Find the image of the unit disk under the Möbius transformation 
+$$T(z) = \frac{2z+3}{4z+5}.$$
+
+**Solution**: We simply apply the transformation to 3 points in the unit circle:
+
+<div class="sage">
+  <script type="text/x-sage">
+def T(z): return (2*z + 3)/(4*z + 5)
+[T(z) for z in [1,I,-1, 0]]
+  </script>
+</div>
+
+The first three of these points are clearly not colinear so they determine a circle, which is exactly the image of the unit circle under $T$. The point $0$ maps to $3/5$, which lies between $5/9$ and $1$. Thus, the interior of the unit disk maps onto the interior of this circle:
+
+```{ojs}
+//| echo: true
+complexPolarPlot(
+    `(2*z + 3)/(4*z + 5)`, [0,1], [0.0001, 2*Math.PI-0.0001],
+    {yDomain: [-0.31,0.31], xDomain: [-0.1, 1.1]}
+)
+```
+
+### Example 2
+
+Find the image of the unit disk under the Möbius transformation 
+$$T(z) = \frac{z-1}{z-i}.$$
+
+We'll again apply three points on the unit circle together with the point $0$, which is in the interior.
+
+<div class="sage">
+  <script type="text/x-sage">
+def T(z): return (z - 1)/(z - I)
+[T(z) for z in [1,-I,-1, 0]]
+  </script>
+</div>
+
+Now, the first three points are collinear so the unit circle maps to a line. The origin maps to $-i$ so the interior of the unit disk maps to the side of line that contains $-i$.
+
+```{ojs}
+//| echo: true
+complexPolarPlot(
+    `(z - 1)/(z - I)`, [0,0.999], [0.0, 2*Math.PI],
+    {yDomain: [-5.1,5.1], xDomain: [-5.1,5.1]}
+)
+```
+
+
+Note that I didn't plug $z=i$ into the function since that throws an error in the Sage code. In fact, though, we often think of the point at $\infty$ as lying on the line determined by the other two points. That's really the easiest way to find that line.
+
+## Finding Möbius transformation for specified images
+
+Given a disk or half-plane, suppose we'd like to find a Möbius that maps the unit disk on to that disk or half-plane. How might we do that?
+
+### The cross-ratio
+
+Note that a Möbius transformation has four parameters but only three degrees of freedom. That is, given three parameters, we could normalize one of those to $1$ by dividing top and bottom by the same number. We get the same Möbius in terms of three parameters.
+
+As a result, the Möbius transformation should be uniquely determined by the image of three points.  Thus, if we could find a Möbius transformation that fixes $1$, maps $-I\to0$, and sends $-i\to\infty$, then we should have what we want.
+
+Given fixed and distinct $z_1$, $z_2$, and $z_3$, define the *cross-ratio* as
+$$
+T(z) = \frac{(z-z_1) (z_2-z_3)}{(z-z_3)(z_2-z_1)}.
+$$
+
+Note that the cross-ratio maps
+$$z_1\to0, \: z_2\to1, \text{ and } z_3\to\infty.$$
+
+Thus, given three points, the cross-ratio maps the circle or line determined by those three points to the real axis.
+
+### Example 3
+
+Let's try to find a Möbius transformation that maps the unit circle to the upper half plane.  To do so, we'll apply the cross-ratio choosing $z_1$, $z_2$, and $z_3$ to be three points on the unit circle. Then, we'll check the image of the origin to see if it worked.
+
+Choosing $z_1 = 1$, $z_2 = i$, and $z_3 = -1$, we get
+
+$$
+T(z) = \frac{(z-1)(i+1)}{(z+1)(i-1)}.
+$$
+
+
+
+<div class="sage">
+  <script type="text/x-sage">
+def T(z): return (z-1)*(i+1)/((z+1)*(i-1))
+[T(z) for z in [i,1,-i, 0]]
+  </script>
+</div>
+
+### 3 points $\to$ 3 points
+
+The logical challenge is to see if, given two lists of three points each, can we find a Möbius transform mapping one list to the other? Suppose our lists are $\{z_1,z_2,z_3\}$ and $\{w_1,w_2,w_3\}$. Set up the following equation comparing two cross-ratios:
+
+$$
+T_1(z) = \frac{(z-z_1) (z_2-z_3)}{(z-z_3)
+   (z_2-z_1)}=\frac{(w-w_1)
+   (w_2-w_3)}{(w-w_3) (w_2-w_1)} = T_2(w)
+$$
+
+The Möbius transformation on the left, $T_1$, sends 
+$$z_1\to0, z_2\to1, \text{ and } z_3\to\infty.$$  
+The inverse of the Möbius transformation on the right $T_2^{-1}$ sends 
+$$w_1\to0, w_2\to1, \text{ and } w_3\to\infty.$$  
+Thus, $T_2^{-1}\circ T_1$ sends 
+$$z_1\to w_1, z_2\to w_2, \text{ and } z_3\to w_3.$$ 
+We simply have to solve the equation for $w$ to find it!
+
+We can automate this procedure like so:
+
+
+<div class="sage">
+  <script type="text/x-sage">
+def cross_ratio(z, z1, z2, z3):
+    return (z - z1)*(z2 - z3)/((z - z3)*(z2 - z1))
+def mobius_transformation(z_points, w_points):
+    z = var('z')
+    z1, z2, z3 = z_points
+    w1, w2, w3 = w_points
+    lam = cross_ratio(z, z1, z2, z3)
+    k = lam * (w2 - w1)/(w2 - w3)
+    w = (k*w3 - w1)/(k - 1)
+    return w.simplify_full()
+
+mobius_transformation([1,2,3], [I,1,-I])
+  </script>
+</div>
+
+```{ojs}
+//| echo: true
+complexCartesianPlot(
+    `-((I - 1)*z - 3*I + 1)/((I - 1)*z - I + 3)`, 
+    [0,4], [0.0, 0.9999]
+)
+```
+
