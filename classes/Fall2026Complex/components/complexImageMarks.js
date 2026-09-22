@@ -271,6 +271,7 @@ class ComplexImageMark extends Plot.Mark {
     opacity,
     lineColor,
     grid,
+    maxOutputEdge,
     rest
   }) {
     const boundsData = outputBoundsData(fString, parameterType, uDomain, vDomain, {
@@ -309,12 +310,27 @@ class ComplexImageMark extends Plot.Mark {
     this.lineColor = lineColor;
     this.grid = grid;
 
-    const fillVertices = makeTriangleMesh(uDomain, vDomain, uSamples, vSamples);
+    const fForContinuity = complexFunction(fString);
+    const continuityOptions = {
+      f: fForContinuity,
+      parameterType,
+      xDomain: this.fallbackXDomain,
+      yDomain: this.fallbackYDomain,
+      maxOutputEdge
+    };
+
+    const fillVertices = makeTriangleMesh(
+      uDomain,
+      vDomain,
+      uSamples,
+      vSamples,
+      continuityOptions
+    );
     this.fillVertexCount = fillVertices.length / 2;
     gl.bindBuffer(gl.ARRAY_BUFFER, this.fillBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, fillVertices, gl.STATIC_DRAW);
 
-    const lineData = makeGridLines(uDomain, vDomain, gridLines, lineSamples);
+    const lineData = makeGridLines(uDomain, vDomain, gridLines, lineSamples, continuityOptions);
     this.lineRuns = lineData.runs;
     gl.bindBuffer(gl.ARRAY_BUFFER, this.lineBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, lineData.vertices, gl.STATIC_DRAW);
@@ -401,6 +417,7 @@ export function complexCartesianMark(fString, [a, b], [c, d], options = {}) {
     opacity = 0.95,
     lineColor = [0, 0, 0, 0.4],
     grid = true,
+    maxOutputEdge = 4,
     ...rest
   } = options;
 
@@ -421,6 +438,7 @@ export function complexCartesianMark(fString, [a, b], [c, d], options = {}) {
     opacity,
     lineColor,
     grid,
+    maxOutputEdge,
     rest
   });
 }
@@ -462,6 +480,7 @@ export function complexPolarMark(fString, [a, b], [alpha, beta], options = {}) {
     opacity = 0.95,
     lineColor = [0, 0, 0, 0.4],
     grid = true,
+    maxOutputEdge = 4,
     ...rest
   } = options;
 
@@ -482,6 +501,7 @@ export function complexPolarMark(fString, [a, b], [alpha, beta], options = {}) {
     opacity,
     lineColor,
     grid,
+    maxOutputEdge,
     rest
   });
 }
@@ -577,10 +597,26 @@ function boundsExtent(boundsData, key) {
   return [boundsData[0][key], boundsData[1][key]];
 }
 
-function makeTriangleMesh(uDomain, vDomain, uSamples, vSamples) {
+function makeTriangleMesh(uDomain, vDomain, uSamples, vSamples, continuityOptions) {
   const vertices = [];
   const uSteps = Math.max(2, uSamples);
   const vSteps = Math.max(2, vSamples);
+  const imagePoints = Array.from({ length: uSteps }, () => Array(vSteps));
+
+  for (let i = 0; i < uSteps; i++) {
+    const u = interpolate(uDomain, i/(uSteps - 1));
+    for (let j = 0; j < vSteps; j++) {
+      const v = interpolate(vDomain, j/(vSteps - 1));
+      imagePoints[i][j] = imagePoint(continuityOptions, u, v);
+    }
+  }
+
+  const addTriangle = (parameters, images) => {
+    if (!isContinuousTriangle(images, continuityOptions)) return;
+    for (const [u, v] of parameters) {
+      vertices.push(u, v);
+    }
+  };
 
   for (let i = 0; i < uSteps - 1; i++) {
     const u0 = interpolate(uDomain, i/(uSteps - 1));
@@ -589,13 +625,14 @@ function makeTriangleMesh(uDomain, vDomain, uSamples, vSamples) {
     for (let j = 0; j < vSteps - 1; j++) {
       const v0 = interpolate(vDomain, j/(vSteps - 1));
       const v1 = interpolate(vDomain, (j + 1)/(vSteps - 1));
-      vertices.push(
-        u0, v0,
-        u1, v0,
-        u0, v1,
-        u1, v0,
-        u1, v1,
-        u0, v1
+
+      addTriangle(
+        [[u0, v0], [u1, v0], [u0, v1]],
+        [imagePoints[i][j], imagePoints[i + 1][j], imagePoints[i][j + 1]]
+      );
+      addTriangle(
+        [[u1, v0], [u1, v1], [u0, v1]],
+        [imagePoints[i + 1][j], imagePoints[i + 1][j + 1], imagePoints[i][j + 1]]
       );
     }
   }
@@ -603,7 +640,7 @@ function makeTriangleMesh(uDomain, vDomain, uSamples, vSamples) {
   return new Float32Array(vertices);
 }
 
-function makeGridLines(uDomain, vDomain, gridLines, lineSamples) {
+function makeGridLines(uDomain, vDomain, gridLines, lineSamples, continuityOptions) {
   const vertices = [];
   const runs = [];
   const lines = Math.max(0, gridLines);
@@ -617,11 +654,42 @@ function makeGridLines(uDomain, vDomain, gridLines, lineSamples) {
   }
 
   const addRun = points => {
+    if (points.length < 2) return;
+
     const start = vertices.length / 2;
     for (const [u, v] of points) {
       vertices.push(u, v);
     }
     runs.push({ start, count: points.length });
+  };
+
+  const addVisibleRuns = points => {
+    let run = [];
+    let previousImage = null;
+
+    for (const [u, v] of points) {
+      const currentImage = imagePoint(continuityOptions, u, v);
+      const canContinue = previousImage
+        && isFiniteImagePoint(currentImage)
+        && outputDistance(previousImage, currentImage, continuityOptions) <= continuityOptions.maxOutputEdge;
+
+      if (!isFiniteImagePoint(currentImage)) {
+        addRun(run);
+        run = [];
+        previousImage = null;
+        continue;
+      }
+
+      if (!canContinue) {
+        addRun(run);
+        run = [];
+      }
+
+      run.push([u, v]);
+      previousImage = currentImage;
+    }
+
+    addRun(run);
   };
 
   for (let i = 0; i <= lines; i++) {
@@ -630,7 +698,7 @@ function makeGridLines(uDomain, vDomain, gridLines, lineSamples) {
     for (let j = 0; j < samples; j++) {
       points.push([u, interpolate(vDomain, j/(samples - 1))]);
     }
-    addRun(points);
+    addVisibleRuns(points);
   }
 
   for (let j = 0; j <= lines; j++) {
@@ -639,7 +707,7 @@ function makeGridLines(uDomain, vDomain, gridLines, lineSamples) {
     for (let i = 0; i < samples; i++) {
       points.push([interpolate(uDomain, i/(samples - 1)), v]);
     }
-    addRun(points);
+    addVisibleRuns(points);
   }
 
   return {
@@ -650,6 +718,44 @@ function makeGridLines(uDomain, vDomain, gridLines, lineSamples) {
 
 function interpolate([a, b], t) {
   return a + t*(b - a);
+}
+
+function imagePoint({ f, parameterType }, u, v) {
+  const z = parameterType === "polar"
+    ? math.complex(u*Math.cos(v), u*Math.sin(v))
+    : math.complex(u, v);
+
+  try {
+    const w = f(z);
+    return {
+      x: Number(w?.re ?? w),
+      y: Number(w?.im ?? 0)
+    };
+  } catch {
+    return { x: NaN, y: NaN };
+  }
+}
+
+function isContinuousTriangle(points, options) {
+  return points.every(isFiniteImagePoint)
+    && outputDistance(points[0], points[1], options) <= options.maxOutputEdge
+    && outputDistance(points[1], points[2], options) <= options.maxOutputEdge
+    && outputDistance(points[2], points[0], options) <= options.maxOutputEdge;
+}
+
+function isFiniteImagePoint(point) {
+  return Number.isFinite(point.x) && Number.isFinite(point.y);
+}
+
+function outputDistance(a, b, { xDomain, yDomain }) {
+  const xSpan = nonzeroSpan(xDomain);
+  const ySpan = nonzeroSpan(yDomain);
+  return Math.hypot((a.x - b.x)/xSpan, (a.y - b.y)/ySpan);
+}
+
+function nonzeroSpan([a, b]) {
+  const span = Math.abs(b - a);
+  return span || 1;
 }
 
 function toGLSL(node) {

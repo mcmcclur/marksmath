@@ -12,6 +12,14 @@ format:
                 <link rel="stylesheet" type="text/css" href="https://sagecell.sagemath.org/static/sagecell_embed.css">
 ---
 
+```{ojs}
+//| echo: true
+complexPolarPlot(
+    `1/z`, [0, 1], [0, 2*Math.PI],
+    {xDomain: [-4,4], yDomain: [-4,4]}
+)
+```
+
 Möbius transformations have the form
 $$T(z)=\frac{a z+b}{c z+d}.$$
 It's not hard to show by direct computation that
