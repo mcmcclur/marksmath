@@ -6,10 +6,10 @@ format:
     css: styles.css
 ---
 
-This interactive rebuild uses the Riemann sphere to show how Möbius transformations arise from simple motion in three dimensions. A colored square in the plane is lifted to the sphere by inverse stereographic projection, the sphere is moved, and the result is projected back to the plane.
+An interactive version of [Möbius transformations revealed](https://www.youtube.com/watch?v=0z1fIsUNhO4){target=_blank}
 
 ```{ojs}
-import {xySlider, mobiusRevealedThree} from "../../../components/mobiusRevealedThree.js";
+import {xySlider, mobiusRevealedThree} from "./mobiusRevealedThree.js";
 ```
 
 ::: {#mobius-revealed-explorer}
@@ -25,13 +25,14 @@ viewof sphereMotion = Inputs.form({
     label: tex`\varphi`,
     format: value => value.toFixed(3)
   }),
-  theta: Inputs.range([-3.142,3.142], {
+  theta: Inputs.range([0, 2*Math.PI], {
     value: 0,
     step: 0.001,
     label: tex`\theta`,
-    format: value => String(Math.max(-Math.PI, Math.min(Math.PI, +value.toFixed(3))))
+    format: value => value.toFixed(3)
+    // format: value => String(Math.max(-Math.PI, Math.min(Math.PI, +value.toFixed(3))))
   }),
-  psi: Inputs.range([0, Math.PI], {
+  psi: Inputs.range([0, 2*Math.PI], {
     value: 0,
     step: 0.001,
     label: tex`\psi`,
@@ -43,12 +44,8 @@ viewof sphereMotion = Inputs.form({
     label: tex`z`,
     format: value => value.toFixed(2)
   }),
-  showSphere: Inputs.toggle({
-    value: false,
-    label: "sphere"
-  }),
-  viewMode: Inputs.radio(["3D", "Plane"], {
-    value: "Plane",
+  viewMode: Inputs.radio(["3D", "Top"], {
+    value: "3D",
     label: "view"
   })
 })
@@ -56,6 +53,8 @@ viewof sphereMotion = Inputs.form({
 :::
 
 ::: {.xy-controls}
+[$x\text{-}y$]{.xy-controls-label}
+
 ```{ojs}
 viewof xy = xySlider({
   xmin: -6,
@@ -85,12 +84,11 @@ phi = sphereMotion.phi
 theta = sphereMotion.theta
 psi = sphereMotion.psi
 z = sphereMotion.z
-showSphere = sphereMotion.showSphere
 viewMode = sphereMotion.viewMode
 ```
 
 ```{ojs}
-mobius_scene.update({phi, theta, psi, z, xy, showSphere, viewMode})
+mobius_scene.update({phi, theta, psi, z, xy, viewMode})
 ```
 :::
 
@@ -122,3 +120,17 @@ fullscreen_button = {
   undefined
 }
 ```
+
+## Comments
+
+Möbius transformations are complex functions mapping $\mathbb{C} \to \mathbb{C}$ that have the form
+$$T(z) = \frac{az+b}{cz+d}.$$
+This interactive demo shows how they can be realized as rigid motions of a sphere via stereographic projection. The square shown in the plane is the image of the patch on the sphere. You can fiddle with the sliders to change the position and orientation of the sphere. The patch is then reprojected onto the plane and the result is the image of the original square under a Möbius transformation. The controls 
+
+- The 2D $x\text{-}y$ slider translates the sphere parallel to the complex plane; the projection shifts together with the sphere.
+- The $z$ slider translates the sphere up and down; the projections dilates or contracts accordingly.
+- The $\theta$ slider rotates the sphere around its north-south axis, which is *initially* the $z$-axis.
+- The $\varphi$ slider rotates the sphere about an axis parallel to the complex plane.
+- The $\psi$ slider rotates the axis of rotation for $\varphi$.
+
+More precisely, the three rotation controls are the ZXZ Euler angles $(\psi,\varphi,\theta-\psi)$.

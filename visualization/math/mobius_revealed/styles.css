@@ -99,8 +99,20 @@
   margin: 0;
 }
 
-.xy-controls .xy-picker {
-  justify-self: end;
+.xy-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.25rem;
+}
+
+.xy-controls-label {
+  white-space: nowrap;
+}
+
+.xy-controls > p {
+  margin: 0;
 }
 
 .mobius-scene-panel,
@@ -166,8 +178,8 @@
     margin-block-end: 1rem;
   }
 
-  .xy-controls .xy-picker {
-    justify-self: start;
+  .xy-controls {
+    justify-content: flex-start;
   }
 
   .mobius-scene-panel,

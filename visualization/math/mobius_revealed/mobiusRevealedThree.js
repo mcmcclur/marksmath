@@ -192,7 +192,7 @@ const PLANE_CAMERA_DISTANCE = 82;
 // One third of the visible half-height puts the origin two thirds down the view.
 const PLANE_CAMERA_CENTER_Y = PLANE_CAMERA_DISTANCE * Math.tan(THREE.MathUtils.degToRad(PLANE_CAMERA_FOV) / 2) / 3;
 const SPACE_CAMERA_POSE = {
-  position: new THREE.Vector3(5.4, -8.4, 5.7),
+  position: new THREE.Vector3(7.56, -11.76, 7.34),
   target: new THREE.Vector3(0, 0, 1.6),
   up: new THREE.Vector3(0, 0, 1),
   fov: 38
@@ -217,9 +217,9 @@ export function mobiusRevealedThree(options = {}) {
   container.appendChild(canvasHost);
 
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(PLANE_CAMERA_POSE.fov, 1, 0.05, 1000);
-  camera.position.copy(PLANE_CAMERA_POSE.position);
-  camera.up.copy(PLANE_CAMERA_POSE.up);
+  const camera = new THREE.PerspectiveCamera(SPACE_CAMERA_POSE.fov, 1, 0.05, 1000);
+  camera.position.copy(SPACE_CAMERA_POSE.position);
+  camera.up.copy(SPACE_CAMERA_POSE.up);
 
   const renderer = new THREE.WebGLRenderer({
     antialias: true,
@@ -232,8 +232,8 @@ export function mobiusRevealedThree(options = {}) {
   const controls = new OrbitControls(camera, renderer.domElement);
   controls.enableDamping = true;
   controls.dampingFactor = 0.08;
-  controls.target.copy(PLANE_CAMERA_POSE.target);
-  controls.enabled = false;
+  controls.target.copy(SPACE_CAMERA_POSE.target);
+  controls.enabled = true;
   controls.update();
 
   scene.add(new THREE.HemisphereLight(0xffffff, 0x405060, 1.8));
@@ -274,13 +274,12 @@ export function mobiusRevealedThree(options = {}) {
     psi: 0,
     z: 0,
     xy: [0, 0],
-    showSphere: false,
-    viewMode: "plane"
+    viewMode: "space"
   };
 
   let animationId = null;
   let disposed = false;
-  let activeViewMode = "plane";
+  let activeViewMode = "space";
   let viewTransition = null;
 
   const resizeObserver = new ResizeObserver(resize);
@@ -293,7 +292,6 @@ export function mobiusRevealedThree(options = {}) {
       psi: finiteNumber(next.psi, state.psi),
       z: finiteNumber(next.z, state.z),
       xy: normalizeXY(next.xy, state.xy),
-      showSphere: next.showSphere ?? state.showSphere,
       viewMode: normalizeViewMode(next.viewMode, state.viewMode)
     };
 
@@ -302,7 +300,7 @@ export function mobiusRevealedThree(options = {}) {
     updateSphereDomain(sphereMesh.geometry, frame);
     updateOutputPlane(planeMesh.material, frame);
     updateGrid(sphereGrid.geometry, frame);
-    updateSphereVisibility(state.showSphere);
+    updateSphereVisibility(state.viewMode === "space");
     updateViewMode(state.viewMode);
     render();
   }
@@ -724,7 +722,7 @@ function normalizeXY(value, fallback) {
 }
 
 function normalizeViewMode(value, fallback) {
-  if (value === "Plane" || value === "plane") return "plane";
+  if (value === "Top" || value === "Plane" || value === "plane") return "plane";
   if (value === "3D" || value === "space") return "space";
   return fallback;
 }
