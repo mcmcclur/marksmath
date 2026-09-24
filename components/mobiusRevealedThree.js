@@ -271,6 +271,7 @@ export function mobiusRevealedThree(options = {}) {
   let state = {
     phi: 0,
     theta: 0,
+    psi: 0,
     z: 0,
     xy: [0, 0],
     showSphere: false,
@@ -289,6 +290,7 @@ export function mobiusRevealedThree(options = {}) {
     state = {
       phi: finiteNumber(next.phi, state.phi),
       theta: finiteNumber(next.theta, state.theta),
+      psi: finiteNumber(next.psi, state.psi),
       z: finiteNumber(next.z, state.z),
       xy: normalizeXY(next.xy, state.xy),
       showSphere: next.showSphere ?? state.showSphere,
@@ -502,6 +504,7 @@ function makeOutputPlaneMesh() {
     uniforms: {
       phi: { value: 0 },
       theta: { value: 0 },
+      phiAxis: { value: new THREE.Vector3(1, 0, 0) },
       center: { value: new THREE.Vector3(0, 0, 1) },
       domainSpan: { value: DOMAIN_SPAN },
       gridSpacing: { value: (2 * DOMAIN_SPAN) / (GRID_LINES - 1) },
@@ -525,6 +528,7 @@ function makeOutputPlaneMesh() {
 
       uniform float phi;
       uniform float theta;
+      uniform vec3 phiAxis;
       uniform vec3 center;
       uniform float domainSpan;
       uniform float gridSpacing;
@@ -580,7 +584,6 @@ function makeOutputPlaneMesh() {
           (r2 - 1.0) / (r2 + 1.0)
         );
 
-        vec3 phiAxis = normalize(vec3(-sin(theta), cos(theta), 0.0));
         vec3 localSphere = rotateAxis(movedSphere, phiAxis, -phi);
         localSphere = rotateZ(localSphere, -theta);
 
@@ -605,6 +608,7 @@ function makeOutputPlaneMesh() {
 function updateOutputPlane(material, frame) {
   material.uniforms.phi.value = frame.phi;
   material.uniforms.theta.value = frame.theta;
+  material.uniforms.phiAxis.value.copy(frame.phiAxis);
   material.uniforms.center.value.copy(frame.center);
 }
 
@@ -656,9 +660,9 @@ function addGridRun(spherePositions, frame, parameterAt) {
   }
 }
 
-function makeFrame({ phi, theta, z, xy }) {
+function makeFrame({ phi, theta, psi, z, xy }) {
   const center = new THREE.Vector3(xy[0], xy[1], z + 1);
-  const phiAxis = new THREE.Vector3(-Math.sin(theta), Math.cos(theta), 0).normalize();
+  const phiAxis = new THREE.Vector3(Math.cos(psi), Math.sin(psi), 0);
   return { phi, theta, center, phiAxis };
 }
 

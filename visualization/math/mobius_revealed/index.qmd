@@ -31,6 +31,12 @@ viewof sphereMotion = Inputs.form({
     label: tex`\theta`,
     format: value => String(Math.max(-Math.PI, Math.min(Math.PI, +value.toFixed(3))))
   }),
+  psi: Inputs.range([0, Math.PI], {
+    value: 0,
+    step: 0.001,
+    label: tex`\psi`,
+    format: value => value.toFixed(3)
+  }),
   z: Inputs.range([-2, 3], {
     value: 0,
     step: 0.01,
@@ -77,13 +83,14 @@ mobius_scene = mobiusRevealedThree()
 ```{ojs}
 phi = sphereMotion.phi
 theta = sphereMotion.theta
+psi = sphereMotion.psi
 z = sphereMotion.z
 showSphere = sphereMotion.showSphere
 viewMode = sphereMotion.viewMode
 ```
 
 ```{ojs}
-mobius_scene.update({phi, theta, z, xy, showSphere, viewMode})
+mobius_scene.update({phi, theta, psi, z, xy, showSphere, viewMode})
 ```
 :::
 
