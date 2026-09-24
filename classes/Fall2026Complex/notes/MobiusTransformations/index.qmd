@@ -236,8 +236,8 @@ $$
 
 The Möbius transformation on the left, $T_1$, sends 
 $$z_1\to0, z_2\to1, \text{ and } z_3\to\infty.$$  
-The inverse of the Möbius transformation on the right $T_2^{-1}$ sends 
-$$w_1\to0, w_2\to1, \text{ and } w_3\to\infty.$$  
+The inverse $T_2^{-1}$ of the Möbius transformation $T_2^$ on the right sends 
+$$0\to w_1, 1\to w_2, \text{ and } \infty\to w_3.$$  
 Thus, $T_2^{-1}\circ T_1$ sends 
 $$z_1\to w_1, z_2\to w_2, \text{ and } z_3\to w_3.$$ 
 We simply have to solve the equation for $w$ to find it!
@@ -245,7 +245,7 @@ We simply have to solve the equation for $w$ to find it!
 We can automate this procedure like so:
 
 
-<div class="sage">
+<div class="sage" id="tallCell">
   <script type="text/x-sage">
 def cross_ratio(z, z1, z2, z3):
     return (z - z1)*(z2 - z3)/((z - z3)*(z2 - z1))
@@ -265,8 +265,15 @@ mobius_transformation([1,2,3], [I,1,-I])
 ```{ojs}
 //| echo: true
 complexCartesianPlot(
-    `-((I - 1)*z - 3*I + 1)/((I - 1)*z - I + 3)`, 
-    [0,4], [0.0, 0.9999]
+    `-((I - 1)*z - 3*I + 1)/((I - 1)*z - I + 3)`,
+    [-8,8], [0.0, 12], {xDomain: [-2.6,2.6], yDomain: [-1.5,1.5]}
 )
 ```
+
+<!-- 
+<style>
+#tallCell.sagecell .CodeMirror {
+    height: 400px !important;
+}
+</style> -->
 
