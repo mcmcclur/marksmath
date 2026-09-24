@@ -1,0 +1,117 @@
+---
+title: "Möbius transformations revealed"
+format:
+  html:
+    page-layout: full
+    css: styles.css
+---
+
+This interactive rebuild uses the Riemann sphere to show how Möbius transformations arise from simple motion in three dimensions. A colored square in the plane is lifted to the sphere by inverse stereographic projection, the sphere is moved, and the result is projected back to the plane.
+
+```{ojs}
+import {xySlider, mobiusRevealedThree} from "../../../components/mobiusRevealedThree.js";
+```
+
+::: {#mobius-revealed-explorer}
+<button id="mobius-fullscreen-button" type="button" aria-label="Toggle fullscreen" title="Toggle fullscreen">⛶</button>
+
+::: {.mobius-controls}
+::: {.motion-controls}
+```{ojs}
+viewof sphereMotion = Inputs.form({
+  phi: Inputs.range([0, Math.PI], {
+    value: 0,
+    step: 0.001,
+    label: tex`\varphi`,
+    format: value => value.toFixed(3)
+  }),
+  theta: Inputs.range([-Math.PI, Math.PI], {
+    value: 0,
+    // Decimal steps based at -PI can fail Firefox's native input validation.
+    label: tex`\theta`,
+    format: value => String(Math.max(-Math.PI, Math.min(Math.PI, +value.toFixed(3))))
+  }),
+  z: Inputs.range([-2, 3], {
+    value: 0,
+    step: 0.01,
+    label: tex`z`,
+    format: value => value.toFixed(2)
+  }),
+  showSphere: Inputs.toggle({
+    value: false,
+    label: "sphere"
+  }),
+  viewMode: Inputs.radio(["3D", "Plane"], {
+    value: "Plane",
+    label: "view"
+  })
+})
+```
+:::
+
+::: {.xy-controls}
+```{ojs}
+viewof xy = xySlider({
+  xmin: -6,
+  xmax: 6,
+  ymin: -6,
+  ymax: 6,
+  xstep: 0.02,
+  ystep: 0.02,
+  value: [0, 0],
+  width: "180px",
+  height: "180px"
+})
+```
+:::
+:::
+
+::: {.mobius-scene-panel} 
+```{ojs}
+mobius_scene = mobiusRevealedThree()
+```
+:::
+:::
+
+::: {style="display: none"}
+```{ojs}
+phi = sphereMotion.phi
+theta = sphereMotion.theta
+z = sphereMotion.z
+showSphere = sphereMotion.showSphere
+viewMode = sphereMotion.viewMode
+```
+
+```{ojs}
+mobius_scene.update({phi, theta, z, xy, showSphere, viewMode})
+```
+:::
+
+```{ojs}
+fullscreen_button = {
+  const button = document.querySelector("#mobius-fullscreen-button");
+  const explorer = document.querySelector("#mobius-revealed-explorer");
+  const controller = new AbortController();
+
+  function updateLabel() {
+    const isFullscreen = document.fullscreenElement === explorer;
+    button.textContent = isFullscreen ? "×" : "⛶";
+    button.setAttribute("aria-label", isFullscreen ? "Exit fullscreen" : "Enter fullscreen");
+    button.setAttribute("title", isFullscreen ? "Exit fullscreen" : "Enter fullscreen");
+  }
+
+  button.addEventListener("click", async () => {
+    if (document.fullscreenElement === explorer) {
+      await document.exitFullscreen();
+    } else {
+      await explorer.requestFullscreen();
+    }
+    updateLabel();
+  }, {signal: controller.signal});
+
+  document.addEventListener("fullscreenchange", updateLabel, {signal: controller.signal});
+  updateLabel();
+  invalidation.then(() => controller.abort());
+  undefined
+}
+```

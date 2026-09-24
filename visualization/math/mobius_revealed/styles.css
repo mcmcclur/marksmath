@@ -1,0 +1,195 @@
+#mobius-revealed-explorer {
+  position: relative;
+  width: 100%;
+  height: clamp(640px, 78vh, 860px);
+  margin-block: 1rem 2rem;
+  overflow: hidden;
+}
+
+#mobius-revealed-explorer:fullscreen {
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  background: var(--bs-body-bg, Canvas);
+}
+
+#mobius-revealed-explorer .code-copy-outer-scaffold {
+  display: none;
+}
+
+#mobius-fullscreen-button {
+  position: absolute;
+  z-index: 6;
+  right: 1rem;
+  bottom: 1rem;
+  width: 2.35rem;
+  height: 2.35rem;
+  display: grid;
+  place-items: center;
+  border: 1px solid color-mix(in srgb, currentColor 22%, transparent);
+  background: color-mix(in srgb, var(--bs-body-bg, Canvas) 82%, transparent);
+  color: currentColor;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 6px 18px color-mix(in srgb, black 18%, transparent);
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+#mobius-fullscreen-button:hover,
+#mobius-fullscreen-button:focus-visible {
+  background: color-mix(in srgb, var(--bs-body-bg, Canvas) 94%, transparent);
+}
+
+.mobius-controls {
+  position: absolute;
+  z-index: 5;
+  top: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(980px, calc(100% - 2rem));
+  display: grid;
+  grid-template-columns: minmax(340px, 1fr) auto;
+  gap: 1rem;
+  align-items: center;
+  padding: 0.75rem 0.9rem;
+  border: 1px solid color-mix(in srgb, currentColor 18%, transparent);
+  background: color-mix(in srgb, var(--bs-body-bg, Canvas) 34%, transparent);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 24px color-mix(in srgb, black 18%, transparent);
+}
+
+.motion-controls form,
+.motion-controls label {
+  width: 100%;
+}
+
+.motion-controls input[type="range"] {
+  width: 100%;
+}
+
+.motion-controls form label {
+  width: auto;
+}
+
+.motion-controls form label:has(input[type="range"]) {
+  align-items: center;
+  display: grid;
+  column-gap: 0.5rem;
+  grid-template-columns: 24px minmax(150px, 1fr) 112px;
+  width: 100%;
+}
+
+.motion-controls form label:has(input[type="range"]) > span:first-child {
+  width: 24px !important;
+}
+
+.motion-controls form label:has(input[type="range"]) input[type="number"] {
+  width: 112px !important;
+}
+
+.motion-controls form label:has(input[type="radio"]) {
+  align-items: center;
+  display: inline-flex;
+  gap: 0.35rem;
+  margin-right: 0.8rem;
+  white-space: nowrap;
+}
+
+.motion-controls form input[type="radio"] {
+  margin: 0;
+}
+
+.xy-controls .xy-picker {
+  justify-self: end;
+}
+
+.mobius-scene-panel,
+.mobius-scene-panel .cell,
+.mobius-scene-panel .cell-output,
+.mobius-scene-panel .cell-output-display,
+.mobius-scene-panel [data-nodetype] {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+}
+
+.mobius-scene-panel,
+.mobius-scene-panel [data-nodetype] {
+  position: relative;
+  overflow: hidden;
+}
+
+.mobius-revealed-three {
+  position: absolute;
+  inset: 0;
+  width: auto;
+  height: auto;
+  overflow: hidden;
+}
+
+.mobius-revealed-three__canvas {
+  position: absolute;
+  inset: 0;
+  width: auto;
+  height: auto;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, currentColor 18%, transparent);
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, currentColor 12%, transparent),
+      color-mix(in srgb, currentColor 3%, transparent)
+    );
+}
+
+.mobius-revealed-three__canvas canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+@media (max-width: 800px) {
+  #mobius-revealed-explorer {
+    height: auto;
+    overflow: visible;
+  }
+
+  .mobius-controls {
+    grid-template-columns: 1fr;
+    position: relative;
+    top: auto;
+    left: auto;
+    transform: none;
+    width: 100%;
+    margin-block-end: 1rem;
+  }
+
+  .xy-controls .xy-picker {
+    justify-self: start;
+  }
+
+  .mobius-scene-panel,
+  .mobius-scene-panel .cell,
+  .mobius-scene-panel .cell-output,
+  .mobius-scene-panel .cell-output-display,
+  .mobius-scene-panel [data-nodetype] {
+    height: clamp(520px, 72vh, 720px);
+  }
+}
+
+@media (max-width: 520px) {
+  .motion-controls form label:has(input[type="range"]) {
+    grid-template-columns: 24px minmax(130px, 1fr);
+  }
+
+  .motion-controls form label:has(input[type="range"]) input[type="number"] {
+    grid-column: 2;
+    width: 100% !important;
+  }
+
+  .mobius-revealed-three__canvas {
+    height: 560px;
+  }
+}
