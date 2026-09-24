@@ -1,0 +1,104 @@
+---
+title: Review for Exam 1
+date: 2026-09-22
+echo: false
+format:
+  html:
+    page-layout: article
+    toc: true
+  pdf:
+    mainfont: "Times New Roman"
+    output-file: "ReviewForExam1.pdf"
+    include-in-header:
+      text: |
+        \pagenumbering{gobble}
+---
+
+Our first exam is next Wednesday, September 30. Here are some topics and problems to study.
+
+
+## Definitions and theorems
+
+- [Abs(z)](https://complexanalysis.org/web/sec_geometry-1.html#ModDef){target=_blank} the absolute value of $z$
+- [arg(z)](https://complexanalysis.org/web/sec_geometry-2.html#sec_geometry-2-8){target=_blank} the set of arguments of $z$
+- [Arg(z)](https://complexanalysis.org/web/sec_geometry-2.html#sec_geometry-2-12){target=_blank} *the* principal argument of $z$
+- [$w^{1/n}$](https://complexanalysis.org/web/sec_z_n.html#def_principal_nth_root){target=_blank} the principal $n^{\text{th}}$ root of $w$
+- [Limit](https://complexanalysis.org/web/sec_limits-continuity.html#LimitDef){target=_blank} the $\varepsilon\text{-}\delta$ definition
+- [$f'(z_0)$](https://complexanalysis.org/web/sec_diff-analytic.html#Deriv_Def_1){target=_blank} the derivative of a function at a point
+- Function that's [analytic at a point $z_0$](https://complexanalysis.org/web/sec_diff-analytic.html#Analytic_Def){target=_blank} and/or [analytic on a region](https://complexanalysis.org/web/sec_diff-analytic.html#sec_diff-analytic-10){target=_blank}
+
+## Problems
+
+1. Find both square roots of $1+i$. Identify which one is the principal square root.
+
+2. Separate $f(z)=1+z+z^3$ into its real and imaginary parts.
+
+3. Writing $f(x+i y)=u(x,y)+i v(x,y)$, where $x,y\in \mathbb{R}$ and $u,v$ map $\mathbb{R}^2\to \mathbb{R}$, use the Cauchy-Riemann equations to determine which of the following defines an analytic function.
+
+   a. $f(x+i y)=\left(x^2-y^2+e^x\cos (y)\right)+i\left(2x y+e^x\sin (y)\right)$
+
+   b. $f(x+i y)=(x+y)+i(x-y)$
+
+   c. $f(z)=\bar{z}$
+
+4. Use the definition of the derivative to show that the function $f(z)=\bar{z}$ is nowhere differentiable.
+
+\newpage 
+
+5. Express the following complex numbers in the form $a+b i$.
+
+   a. $1/(1+i)$
+
+   b. $\displaystyle \left(\frac{1+i}{\sqrt{2}}\right)^{100}$
+
+6. Let $R=\{z\in \mathbb{C}:1<|z|<2,\ 0\leq \arg(z)<\pi \}$ and let $R^2$ denote the image of $R$ under the square function.
+
+   a. Sketch $R$ in the plane. Be sure to indicate any edges *not* contained in $R$ with dashed lines, while edges that *are* contained in $R$ should be solid.
+
+   b. Is $R$ open, closed, or neither? You needn't prove or even justify your assertion.
+
+   c. Sketch $R^2$ in the plane. Be sure to indicate the image of each edge of $R$.
+
+   d. Is $R^2$ open, closed, or neither? You needn't prove or even justify your assertion.
+
+7. Recall that the *cross-ratio* of four complex numbers $z,z_1,z_2,z_3$ is defined by
+$$
+\left[z,z_1,z_2,z_3\right]
+=\frac{\left(z-z_1\right)\left(z_2-z_3\right)}
+{\left(z-z_3\right)\left(z_2-z_1\right)}.
+$$
+
+   a. If $T(z)=\left[z,z_1,z_2,z_3\right]$, then what are the images of $z_1$, $z_2$, and $z_3$ under $T$?
+
+   b. Use the cross-ratio to find a Möbius transformation that sends 
+   $$2\to0, \: 4\to1, \text{ and } 3+i \to \infty.$$
+
+   c. What is the image of the circle of radius 1 centered at 3 under the action of your Möbius transformation?
+
+8. Write down an $\varepsilon\text{-}\delta$ proof of the fact that
+$$
+\lim_{z \to i} \left((1+i)z + 1\right) = i.
+$$
+
+9. Let 
+$$f(z) = \frac{(1+i) z^2}{2 z+1}.$$
+We consider $f$ as a map of the Riemann sphere to itself that fixes $\infty$.  
+Compute $f'(\infty)$ and interpret the result.
+
+
+::: {.content-visible when-format="html"}
+
+## Questions
+
+Follow the "Reply on WriteTech" button to ask a question on or make a comment about this review sheet. Your questions and comments will auto-magically appear below. You can feel free to respond to other students questions and comments. I might chime in as well.
+
+```{ojs}
+embedDiscourseMathTopic(1558)
+```
+
+```{ojs}
+import {embedDiscourseMathTopic} from '/components/EmbedDiscourseMathTopics/embedDiscourseMathTopic.js';
+```
+
+:::
+
