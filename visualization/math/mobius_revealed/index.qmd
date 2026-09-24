@@ -25,9 +25,9 @@ viewof sphereMotion = Inputs.form({
     label: tex`\varphi`,
     format: value => value.toFixed(3)
   }),
-  theta: Inputs.range([-Math.PI, Math.PI], {
+  theta: Inputs.range([-3.142,3.142], {
     value: 0,
-    // Decimal steps based at -PI can fail Firefox's native input validation.
+    step: 0.001,
     label: tex`\theta`,
     format: value => String(Math.max(-Math.PI, Math.min(Math.PI, +value.toFixed(3))))
   }),
