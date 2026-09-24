@@ -7,7 +7,7 @@ layout: article
 ::: {.panel-tabset}
 ## Data 
 
-:::: {.grid}
+::: {.grid}
 ::::: {.g-col-12 .g-col-sm-4}
 <div class="card text-bg-light mb-3">
  <img class="light-content" src="data/digit_recognizer/image-light.png" class="card-img-top" alt="Illustration of two machine learning algorithms for digit recognition">
@@ -79,6 +79,7 @@ layout: article
  </div>
 </div>
 :::::
+
 ::::: {.g-col-12 .g-col-sm-4}
 <div class="card text-bg-light mb-3">
  <img class="light-content" src="data/NextTokenVisualizer/image-light.png" class="card-img-top" alt="Next Token Visualizer">
@@ -95,18 +96,7 @@ layout: article
 
 ## Math
 
-:::: {.grid}
-::::: {.g-col-12 .g-col-sm-4}
-<div class="card text-bg-light mb-3">
- <img class="light-content" src="math/JuliaSetsAndMandelbrotSet/JuliaSetsAndMandelbrotSetLight.png" class="card-img-top" alt="Image of the Mandelbrot set and an associated Julia Set">
- <img class="dark-content" src="math/JuliaSetsAndMandelbrotSet/JuliaSetsAndMandelbrotSetDark.png" class="card-img-top" alt="Image of the Mandelbrot set and an associated Julia Set">
- <div class="card-body text-center">
-  <a href="./math/JuliaSetsAndMandelbrotSet/" class="btn btn-primary">
-    Julia Mandelbrot
-  </a>
- </div>
-</div>
-:::::
+::: {.grid}
 ::::: {.g-col-12 .g-col-sm-4}
 <div class="card text-bg-light mb-3">
  <img class="light-content" src="math/Penrose3Color/Penrose3ColorLight.png" class="card-img-top" alt="A three-colored Penrose rhomb tiling">
@@ -118,6 +108,19 @@ layout: article
  </div>
 </div>
 :::::
+
+::::: {.g-col-12 .g-col-sm-4}
+<div class="card text-bg-light mb-3">
+ <img class="light-content" src="math/mobius_revealed/image-light.png" class="card-img-top" alt="Möbius transformations snapshot">
+ <img class="dark-content" src="math/mobius_revealed/image-dark.png" class="card-img-top" alt="Möbius transformations snapshot">
+ <div class="card-body text-center">
+  <a href="./math/mobius_revealed/" class="btn btn-primary">
+    Möbius transformations revealed
+  </a>
+ </div>
+</div>
+:::::
+
 ::::: {.g-col-12 .g-col-sm-4}
 <div class="card text-bg-light mb-3">
  <img class="light-content" src="math/unfolding_polyhedra/unfolding_polyhedra_light.png" class="card-img-top" alt="Picture of an unfolding polyhedron">
@@ -129,6 +132,7 @@ layout: article
  </div>
 </div>
 :::::
+
 ::::: {.g-col-12 .g-col-sm-4}
 <div class="card text-bg-light mb-3">
  <img class="light-content" src="math/bifurcation_diagram/bifurcation_diagram_light.png" class="card-img-top" alt="Picture of the logistic bifurcation diagram">
@@ -140,17 +144,19 @@ layout: article
  </div>
 </div>
 :::::
+
 ::::: {.g-col-12 .g-col-sm-4}
 <div class="card text-bg-light mb-3">
- <img class="light-content" src="math/fractal_typesetting/fractal_typesetting_light.png" class="card-img-top" alt="Groovy typeset fractal image">
- <img class="dark-content" src="math/fractal_typesetting/fractal_typesetting_dark.png" class="card-img-top" alt="Groovy typeset fractal image">
+ <img class="light-content" src="math/JuliaSetsAndMandelbrotSet/JuliaSetsAndMandelbrotSetLight.png" class="card-img-top" alt="Image of the Mandelbrot set and an associated Julia Set">
+ <img class="dark-content" src="math/JuliaSetsAndMandelbrotSet/JuliaSetsAndMandelbrotSetDark.png" class="card-img-top" alt="Image of the Mandelbrot set and an associated Julia Set">
  <div class="card-body text-center">
-  <a href="./math/fractal_typesetting/" class="btn btn-primary">
-    Fractal typesetting
+  <a href="./math/JuliaSetsAndMandelbrotSet/" class="btn btn-primary">
+    Julia Mandelbrot
   </a>
  </div>
 </div>
 :::::
+
 ::::: {.g-col-12 .g-col-sm-4}
 <div class="card text-bg-light mb-3">
  <img class="light-content" src="math/quad_cam/quad_cam_light.png" class="card-img-top" alt="The inverse quadratic camera in action">
@@ -158,6 +164,18 @@ layout: article
  <div class="card-body text-center">
   <a href="./math/quad_cam/" class="btn btn-primary">
     Inverse quad cam
+  </a>
+ </div>
+</div>
+:::::
+
+::::: {.g-col-12 .g-col-sm-4}
+<div class="card text-bg-light mb-3">
+ <img class="light-content" src="math/fractal_typesetting/fractal_typesetting_light.png" class="card-img-top" alt="Groovy typeset fractal image">
+ <img class="dark-content" src="math/fractal_typesetting/fractal_typesetting_dark.png" class="card-img-top" alt="Groovy typeset fractal image">
+ <div class="card-body text-center">
+  <a href="./math/fractal_typesetting/" class="btn btn-primary">
+    Fractal typesetting
   </a>
  </div>
 </div>
