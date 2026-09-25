@@ -1,0 +1,45 @@
+---
+title: Derivative practice
+echo: false
+format:
+  html:
+    page-layout: article
+    toc: true
+  pdf:
+    mainfont: "Times New Roman"
+    output-file: "DerivativePractice.pdf"
+    include-in-header:
+      text: |
+        \usepackage[bottom=1in, left=1.1in, right=1.1in]{geometry}
+        \pagenumbering{gobble}
+---
+\vspace{-0.5in}
+At this point, we've learned quite a few differentiation rules - two basic rules and all five rules of combination:
+
+- Basic rules
+  - The power rule: $\displaystyle \frac{d}{dx} x^p = px^{p-1}$
+  - The natural exponential rule: $\displaystyle \frac{d}{dx} e^x = e^x$
+- Rules of combination
+  - The constant multiple rule: $\displaystyle \frac{d}{dx} c f(x) = cf'(x)$
+  - The sum rule: $\displaystyle \frac{d}{dx} (f(x)+g(x)) = f'(x)+g'(x)$
+  - The product rule: $\displaystyle \frac{d}{dx} f(x)g(x) = f'(x)g(x) + f(x)g'(x)$
+  - The quotient rule: 
+    $$\frac{d}{dx} \frac{f(x)}{g(x)} = \frac{f'(x)g(x) - f(x)g'(x)}{g(x)^2}$$
+  - The chain rule: $\displaystyle \frac{d}{dx} f(g(x)) = f'(g(x))g'(x)$
+
+Developing the ability to apply these rules efficiently is a major objective for you in this course. So, let's practice!
+
+1. $\displaystyle f(x)=(x+1)(3x^2+1)$
+\vspace{1mm}
+2. $\displaystyle f(x) = \frac{x+1}{3x^2 + 1}$
+\vspace{1mm}
+3. $\displaystyle f(x) = e^{3x}$
+\vspace{1mm}
+4. $\displaystyle f(x) = e^{3x}(x+1)^4$
+\vspace{1mm}
+5. $\displaystyle f(x) = e^x(x^2+1)(x^4+1)^4$
+\vspace{1mm}
+6. $\displaystyle f(x) = \sqrt{x^4+2}$
+\vspace{1mm}
+7. $\displaystyle f(x) = x^2\sqrt{x^4+2}$
+
