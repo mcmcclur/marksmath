@@ -13,6 +13,7 @@ execute:
 One simple way (maybe, too simple?) to think of an LLM is as a *next token predictor*. Given a sequence of tokens (each of which often corresponds to a word or part of a word), an LLM predicts several next most likely tokens and chooses one. That new sequence of tokens is fed back in and the process iterates. 
 
 This tool allows you to visualize one step of this process by taking input text and
+
 1. Breaking it into tokens and
 2. Listing the 10 most likely next tokens according to one LLM.
 

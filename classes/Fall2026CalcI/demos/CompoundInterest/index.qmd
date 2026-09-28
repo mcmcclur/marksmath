@@ -1,0 +1,131 @@
+---
+title: The number $e$ and compound interest
+page-layout: article
+echo: false
+format:
+    html:
+        toc: true
+        include-in-header:
+            text: |
+                <script src="https://sagecell.sagemath.org/static/embedded_sagecell.js"></script>
+                <script>sagecell.makeSagecell({"inputLocation": ".sage"});</script>
+---
+
+
+## Introduction 
+
+Investments left in an account that accrues interest at a regular rate grow exponentially. This document explores the effect of "compounding" that interest more regularly has on the effective rate of growth. This turns out to require a good understanding of exponential functions and the natural exponential base $e$. As such, this topic illustrates a nice application for beginning calculus students.
+
+
+## The basics of compound interest
+
+The basic question that motivates compound interest is - how much money will a bank account hold if we invest a certain amount at a given interest rate and let it grow year by year? To be more precise, suppose that 
+
+- $P$ denotes our initial investment (often called the *principal*),
+- $r$ denotes the annual interest rate, and 
+- $t$ denotes the length of time that we leave the account alone.
+
+We'd like a function $A(t)$ that tells us the amount that our account holds as a function of time $t$. For the time being we'll assume that $t$ takes discrete steps in numbers of years.
+
+### Analysis
+
+Let's be clear about the annual interest rate. This is simply the factor by which the money grows from one year to the next.
+
+- At time $t=0$, we've just put the money in the bank. We have $A(0)=P$.
+- After $t=1$ year, $A(1) = P + rP = P(1+r)$.
+- After $t=2$ years, $A(2) = P(1+r) + rP(1+r) = P(1+r)(1+r) = P(1+r)^2$.
+- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$\vdots$&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$\vdots$&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$\vdots$&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$\vdots$&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$\vdots$&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$\vdots$&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$\vdots$&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$\vdots$&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$\vdots$
+- After $t$ years, $A(t) =  P(1+r)^t$.
+
+Note that the interest that we make each year rolls into the investment the next year. This is the defining characteristic of *compound* interest. The effect is that your investment grows exponentially! Generally, though, the base $1+r$ is just a little larger than $1$.
+
+**Example**: Suppose we invest $\$1000$ at an annual interest rate of $4\%$. How much will we have after 
+
+- 1 year?
+- 10 years?
+
+*Solution*:
+
+- After 1 year, we have $A(1) = 1000\times1.04 = 1040$.
+- After 10 years, we have $A(10) = 1000\times(1.04)^{10} = 1480.24$.
+
+### Frequency of compound interest 
+
+In the previous example, the interest is compounded *annually*. What if we want more frequent access to our funds, though? The typical approach is to compound the funds more frequently; we divide our rate, though, by the number of times we compound annually.
+
+Let's suppose that our annual rate is again $4\%$. Now, though, we wish to compound the interest *quarterly*, that is $4$ times throughout the year. The standard way to accomplish this is to use a quarterly rate of $1\%$. Then, after one year, the interest will have compounded four times. After ten years, the interest will have compounded 40 times.  We'll find that 
+
+- After 1 year, we have $A(1) = 1000\times(1.01)^4 = 1040.60$.
+- After 10 years, we have $A(10) = 1000\times(1.01)^{40} = 1488.86$.
+
+Not surprisingly, we make a bit more money as time goes on. The change is not huge, though; the main advantage is more frequent access.
+
+Of course, we might want even more frequent access. We might want to compound monthly, or daily, or minutely, or anything really. We really should write down a general formula in terms of a parameter $n$ representing the number of times per year that we wish to compound the interest. This is not hard:
+
+If we compound the interest $n$ times per year at an annual rate $r$, then
+
+- the rate per period is $r/n$,
+- the number of times we compound the interest over $n$ years is $nt$, so 
+- $$A(t) = P(1+r/n)^{nt}.$${#eq-general_compound_interest_formula}
+
+**Example**: Suppose that on Jan 1 we invest $\$500$ at an annual interest rate of $6\%$ compounded daily. How much will we have on July 5 of a non leap year?
+
+*Solution*: Our rate per period will be $0.06/365$ and July 5 is the $185^{\text{th}}$ day of the year or $184$ days after Jan 1. Thus we'll have 
+$$
+500\times (1+0.06/365)^{184} = \$515.35.
+$$
+
+**Example**: Suppose that we invest $\$1$ on Jan 1 at an annual interest rate of $5\%$ compounded 12 times per year or approximately monthly. How much will we have on Jan 1 of the next year?
+
+*Solution*: Our rate per period will be $0.05/12$ and we'll compound 12 times.  Thus we'll have 
+$$
+(1+0.05/12)^{12} = \$1.05116.
+$$
+Again, we get a little more than the $5 that we'd get if we'd compounded just once. In fact, the *effect* is as if our interest were $5.116\%$. This is called the *effective rate of interest*.
+
+## Interest compounded *continuously*
+
+What if we want *constant* access to our money? Compounding by the minute is insufficient; we want our money *now*!
+
+The solution is to take the limit as $n\to\infty$ in @eq-general_compound_interest_formula. Here's that computation:
+
+$$
+\begin{aligned}
+\lim_{n\to\infty} P\left(1+\frac{r}{n}\right)^{nt} &= 
+  \lim_{n\to\infty} P\left(1+\frac{1}{n/r}\right)^{\frac{n}{r}rt} \\
+  &= \lim_{n\to\infty} P\left(\left(1+\frac{1}{n/r}\right)^{n/r}\right)^{rt}
+  = Pe^{rt}.
+\end{aligned}
+$$
+
+What a beautifully simple and pert little formula! To get there we used the fact that 
+$$
+\left(1+\frac{1}{n/r}\right)^{n/r} \to e \text{ as } n\to\infty.
+$$
+That's just the definition of $e$, since $\displaystyle \frac{n}{r} \to \infty$ as $n\to\infty$.
+
+**Example**: Suppose that $1000 was automatically deposited in a new account as the clock struck midnight on New Year's Eve going into 2009. The account accrues interest at an annual rate of 6.5% compounded continuously. How much would the account hold at 9:17 AM on July 5?
+
+*Solution*: 
+
+Of course, you can do this on a calculator. This example is a bit more complicated, though, so here's how I'd approach it in code:
+
+<div class="sage">
+  <script type="text/x-sage">
+# Minutes in a year
+M = 24*60*365
+
+# Minutes until 9:17 AM on July 5
+m = 24*60*184 + 9*60 + 17
+
+# Time in years
+t = m/M
+
+# Annual rate
+r = 0.065
+
+# Amount after time t if compounded continuously:
+print(1000*exp(r*t))
+    </script>
+</div>
+
