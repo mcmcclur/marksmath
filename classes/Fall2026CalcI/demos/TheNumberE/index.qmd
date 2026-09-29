@@ -5,6 +5,10 @@ echo: false
 format:
     html:
         toc: true
+        include-in-header:
+            text: |
+                <script src="https://sagecell.sagemath.org/static/embedded_sagecell.js"></script>
+                <script>sagecell.makeSagecell({"inputLocation": ".sage"});</script>
 ---
 
 ## Introduction
@@ -226,6 +230,24 @@ It looks like $e\approx 2.718$. A more precise approximation is
 $$
 e \approx 2.7182818284590452353602874714.
 $$
+
+## Building a limit table 
+
+Here's a little code (in a language called SageMath) that allows you to define your base `b` and then prints a table of values of $h$ vs $(b^h - 1)/h$ for various values of $h$:
+
+<div class="sage">
+  <script type="text/x-sage">
+b = 3
+table = f"|h|({b}^h-1)/h|\n|:---:|:---:|\n"
+for n in range(1,7):
+    h = 10.0^(-n)
+    df = (b^h - 1)/h
+    table = table + f"|{h:.6f}|{df}|\n"
+print(table)
+    </script>
+</div>
+
+That's live code so that you can execute it or even edit it and *then* execute it. Could prove handy for a homework problem!
 
 
 ```{ojs}
