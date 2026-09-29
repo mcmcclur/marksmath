@@ -1,0 +1,136 @@
+---
+title: Review for quiz 2
+date: 2025-09-30
+echo: false 
+format:
+  html:
+    page-layout: article
+    toc: true
+    crossrefs-hover: false 
+    css: /components/EmbedDiscourseMathTopics/embedDiscourseMathTopic.css
+  pdf:
+    mainfont: "Times New Roman"
+    output-file: Quiz2Review.pdf
+    include-in-header:
+      text: |
+        \pagenumbering{gobble}
+        \usepackage[bottom=0.1in]{geometry}
+---
+
+We have our second quiz this Friday, October 2nd. This problem sheet represents most of the types problems that will be on the quiz. You should absolutely study it fully and completely!
+
+## Problems 
+
+1. Use the differentiation rules to find the derivatives of the following functions:
+
+   a. $\displaystyle f(x)=3x^4-5x^2+7x-1$
+   \vspace{0.1in}
+   b. $\displaystyle f(x)=x^5+4e^x-6x$
+   \vspace{0.1in}
+   c. $\displaystyle f(x)=2^x+x^3$
+   \vspace{0.1in}
+   d. $\displaystyle f(x)=x^2\ln(x)$
+   \vspace{0.1in}
+   e. $\displaystyle f(x)=e^{3x-1}$
+   \vspace{0.1in}
+   f. $\displaystyle f(x)=\ln(x^2+1)$
+   \vspace{0.1in}
+   g. $\displaystyle f(x)=x^3 3^x$
+   \vspace{0.1in}
+   h. $\displaystyle f(x)=(x^3+1)2^x$
+   \vspace{0.1in}
+   i. $\displaystyle f(x)=\frac{\ln(x)}{x^2+1}$
+   \vspace{0.1in}
+   j. $\displaystyle f(x) = \frac{x^3 e^{-x^2}}{x^2+1}$
+
+   *Note*: This problem is *longer* than what you'll see on the quiz!  
+   It's just meant to be plenty of practice.
+
+\newpage 
+
+2. We'd like to estimate the derivative of $f(x) = 17^x$ using the definition of the derivative. Use the following outline to do so.
+
+   a. Write down the difference quotient for $f$.
+   b. Use a little algebra to separate out the $x$s from the $h$s.
+   c. Use @tbl-diff_quot_values below to help determine your final answer. This final answer should involve an approximate, decimal number. Be sure to use the correct number of digits that you can justify using the table.
+
+```{python}
+#| label: tbl-diff_quot_values
+#| tbl-cap: Values of $(17^h-1)/h$ near $h=0$.
+
+from IPython.display import Markdown
+
+x_vals = [10**(-n) for n in range(1,7)]
+def f(h):
+    return (17**h-1)/h
+
+# header row: first col is empty, then the x values
+header = "   |   | " + " | ".join(" " for x in x_vals) + " |"
+
+# separator row: one "---" per column
+sep = "|" + "---|" * (len(x_vals) + 1)
+
+# data rows: first cell is math header
+row_x  = "| $x$   | " + " | ".join(f"{x:.6f}" for x in x_vals) + " |"
+row_fx = "| $f(x)$ | " + " | ".join(f"{f(x):.6f}" for x in x_vals) + " |  "
+
+md_table = "\n   ".join([header, sep, row_x, row_fx]) + "  "
+
+indented_table = "\n".join("    " + line for line in md_table.splitlines())
+
+Markdown(md_table)
+```
+
+\vspace{0.4in}
+
+3. Sketch the graphs of $y=2^x$ and $y=4^x$ right on the axes provided in @fig-sketch_axes. Be sure to pay close attention to the relative rates of growth and the easily computable integer values.
+
+```{python}
+#| label: fig-sketch_axes
+#| fig-cap: "Axes for sketching a graph."
+
+import matplotlib.pyplot as plt
+import numpy as np
+
+x_min, x_max = -4.2, 3.2
+y_min, y_max = -0.2, 4.2
+
+fig, ax = plt.subplots(figsize=(7.4, 4.4))
+
+ax.set_xlim(x_min, x_max)
+ax.set_ylim(y_min, y_max)
+ax.set_aspect("equal", adjustable="box")
+
+ax.set_xticks([-4,-3,-2,-1,1,2,3])
+ax.set_yticks([1,2,3,4])
+
+ax.grid(True, which="major", color="0.75", linewidth=0.6)
+
+ax.spines["bottom"].set_position("zero")
+ax.spines["left"].set_position("zero")
+ax.spines["bottom"].set_linewidth(1.4)
+ax.spines["left"].set_linewidth(1.4)
+ax.spines["top"].set_visible(False)
+ax.spines["right"].set_visible(False)
+
+ax.xaxis.set_ticks_position("bottom")
+ax.yaxis.set_ticks_position("left")
+ax.tick_params(axis="both", which="major", length=5, width=1.2, direction="inout")
+```
+
+
+::: {.content-visible when-format="html"}
+
+## Questions
+
+Follow the "Reply on WriteTech" button to ask a question on or make a comment about this review sheet. Your questions and comments will auto-magically appear below. You can feel free to respond to other students questions and comments. I might chime in as well.
+
+```{ojs}
+embedDiscourseMathTopic(1780)
+```
+
+```{ojs}
+import {embedDiscourseMathTopic} from '/components/EmbedDiscourseMathTopics/embedDiscourseMathTopic.js';
+```
+
+:::
