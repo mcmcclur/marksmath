@@ -1,0 +1,51 @@
+---
+title: More practice for Exam 1
+echo: false
+format:
+  html:
+    page-layout: article
+    toc: true
+  pdf:
+    mainfont: "Times New Roman"
+    output-file: "PracticeForExam1.pdf"
+    include-in-header:
+      text: |
+        \pagenumbering{gobble}
+        \usepackage[bottom=0.1in]{geometry}
+---
+
+\vspace{-0.7in}
+
+Here's a bit more practice for our first exam this Wednesday. This does *not* replace the review sheet and you should definitely study that as well. The exam will certainly have a few definition statements on it, for example.
+
+
+1. Let $\sqrt[3]{x}$ denote the *principal* cube root of $x$. Evaluate
+   a. $\sqrt[3]{8}$ and
+   b. $-\sqrt[3]{-8}$  
+
+   Express these in both Cartesian and polar form.
+
+2. Use the Cauchy-Riemann equations to determine which of the following defines an analytic function.
+   a. $f(x,y) = (x + x^2 - y^2) + i(y + 2 x y)$
+   b. $g(x,y) = (x + x^2 - y^2) + i(y - 2 x y)$
+
+3. Write down an $\varepsilon\text{-}\delta$ proof of the fact that
+$$
+\lim_{z \to -i} \left((3+4i)z + 2\right) = 6 - 3 I.
+$$
+
+4. Let $C$ be the circle containing $2$, $-2$, and $2i$ and let
+$$T(z) = \frac{z+2}{z-2}.$$
+Describe the image of $C$ under the action of $T$. What is the image of the interior of the circle?
+
+5. Suppose I'd like a Möbius transformation that maps the points
+$$(i,1,2) \text{ to } (-1,-i,4)$$
+in that order. Write down a specific equation in terms of variables $w$ and $z$ that you could solve to find that Möbius transformation and a brief description of why it should work. You do not need to solve the equation.
+
+6. Let 
+$$f(z) = \frac{3 i z^3}{z^2-i}.$$
+We consider $f$ as a map of the Riemann sphere to itself that fixes $\infty$.  
+Compute $f'(\infty)$ and interpret the result.
+
+7. Describe the image of the vertical line $\{z\in\mathbb{C}:\text{Re}(z)=1\}$ under the action of the exponential function.
+
