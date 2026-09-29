@@ -1,0 +1,40 @@
+---
+title: "Calc I: In class practice for quiz 2"
+echo: false 
+format:
+  html:
+    page-layout: article
+    toc: true
+  pdf:
+    mainfont: "Times New Roman"
+    output-file: Quiz2Practice.pdf
+    include-in-header:
+      text: |
+        \pagenumbering{gobble}
+        \usepackage[bottom=0.1in]{geometry}
+---
+
+\vspace{-0.7in}
+
+Here are a few more practice problems for our next quiz this Friday.
+
+## Problems 
+
+1. Let $f(x) = 101^x$.
+
+   a. Write down the difference quotient for $f$.
+   b. Use a little algebra to separate out the $x$s and $h$s in your difference quotient.
+
+2. Use the differentiation rules to compute the derivatives of the following functions:
+
+   a. $\displaystyle f(x) = 101^x$
+   \vspace{0.1in}
+   b. $\displaystyle f(x)=e^{2x+3}$
+   \vspace{0.1in}
+   c. $\displaystyle f(x)=\ln(4x^2+1)$
+   \vspace{0.1in}
+   d. $\displaystyle f(x)=x^3e^{-x}$
+   \vspace{0.1in}
+   e. $\displaystyle f(x)=(2x^2-5x+1)2^x$
+   \vspace{0.1in}
+   f. $\displaystyle f(x)=\frac{e^x}{x^2+1}$
