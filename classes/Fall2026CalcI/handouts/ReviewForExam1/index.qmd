@@ -7,7 +7,7 @@ format:
     toc: true
   pdf:
     mainfont: "Times New Roman"
-    output-file: "Exam1Review.pdf"
+    output-file: Exam1Review.pdf
     include-in-header:
       text: |
         \usepackage[bottom=1in, left=1.1in, right=1.1in]{geometry}

@@ -9,6 +9,7 @@ format:
     css: /components/EmbedDiscourseMathTopics/embedDiscourseMathTopic.css
   pdf:
     mainfont: "Times New Roman"
+    output-file: Quiz2Review.pdf
     include-in-header:
       text: |
         \pagenumbering{gobble}
