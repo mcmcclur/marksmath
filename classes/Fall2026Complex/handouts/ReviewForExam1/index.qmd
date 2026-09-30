@@ -6,6 +6,7 @@ format:
   html:
     page-layout: article
     toc: true
+    css: /components/EmbedDiscourseMathTopics/embedDiscourseMathTopic.css
   pdf:
     mainfont: "Times New Roman"
     output-file: "ReviewForExam1.pdf"
