@@ -1,0 +1,49 @@
+---
+title: Inverse functions and logarithms
+page-layout: article
+echo: false
+format:
+    html:
+        toc: true
+        include-in-header:
+            text: |
+                <script src="https://sagecell.sagemath.org/static/embedded_sagecell.js"></script>
+                <script>sagecell.makeSagecell({"inputLocation": ".sage"});</script>
+---
+
+## Introduction
+
+We learned recently about the exponential function. Now it's time to learn about its inverse - the logarithm. We should talk more generally about inverse functions first.
+
+
+## Inverse functions
+
+If $f:S\to T$ in one-to-one fashion, it's *inverse* is the the function $f^{-1}:T\to S$ with the property that
+$$f^{-1}(f(x)) = x = f(f^{-1}(x)).$$
+I like to think of as if $f^{-1}$ "undoes" what the original function $f$ did.
+
+## Examples
+
+Here are a few examples of inverse pairs.
+
+1. $f(x) = x+1$ and $f^{-1}(x)=x-1$
+2. $f(x) = 2x$ and $f^{-1}(x)=\frac{1}{2}x$
+3. $f(x) = 2x+1$ and $f^{-1}(x)=\frac{1}{2}(x-1)$
+
+## Comments
+
+- $f^{-1}$ "undoes" what the function $f$ "does".
+  - For this reason, inverse functions are useful for solving equations
+- Which function is $f$ and which is $f^{-1} is rather arbitrary. 
+  - If $f^{-1}$ is the inverse of $f$, then $f$ is the inverse of $f^{-1}$. 
+- An alternative formulation is that
+$$y=f(x) \text{ if and only if } x=f^{y}.$$
+
+## Mirror images
+
+That last point is worth repeating
+$$y=f(x) \text{ if and only if } x=f^{y}.$$
+
+As a result the roles of $x$ and $y$ flip.
+
+## Mirror image graphs
