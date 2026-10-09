@@ -1,0 +1,46 @@
+---
+title: Trig derivative practice
+echo: false
+format:
+  html:
+    page-layout: article
+    toc: true
+  pdf:
+    mainfont: "Times New Roman"
+    output-file: "TrigDerivativePractice.pdf"
+    include-in-header:
+      text: |
+        \usepackage[bottom=1in, left=1.1in, right=1.1in]{geometry}
+        \pagenumbering{gobble}
+---
+\vspace{-0.5in}
+Here are a couple of things we've learned about trig functions recently:
+
+- Derivatives:
+  * $\frac{d}{dx} \sin(x) = \cos(x)$
+   \vspace{1mm}
+  * $\frac{d}{dx} \cos(x) = -\sin(x)$
+- A fundamental limit:
+  - $\displaystyle \lim_{\theta\to0} \frac{\sin(\theta)}{\theta} = 1$
+
+We can use the combination rules to throw those derivatives in the mix together with all sorts of other functions. We can use that fundamental limit to help us evaluate related limits.
+
+Here are a few example problems along these lines:
+
+1. Evaluate the following derivatives:
+   a. $\frac{d}{dx} \sin(x) + 2\cos(2x)$
+   \vspace{1mm}
+   b. $\frac{d}{dx} \sin^2(x) + \cos^2(x)$
+   \vspace{1mm}
+   c. $\frac{d}{dx} e^{-x^2}\cos(42x)$
+   \vspace{1mm}
+   d. $\displaystyle \frac{d}{dx} \frac{\sin(x)}{\cos(x)}$
+
+2. Evaluate the following limits:
+   a. $\displaystyle \lim_{\theta\to0} \frac{\sin(5\theta)}{\theta}$
+   \vspace{1mm}
+   b. $\displaystyle \lim_{\theta\to0} \frac{\sin(2\theta)}{\sin(3\theta)}$
+
+\vspace{1in}
+
+And don't forget that we have an exam next Friday!
