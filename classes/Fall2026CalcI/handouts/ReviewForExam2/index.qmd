@@ -67,12 +67,7 @@ We have our second exam this coming Friday, October 16th. The problems on the ex
    a. $\displaystyle \frac{d}{dx} f(x)+3g(x) = f'(x)+3g'(x)$
    b. $\displaystyle \frac{d}{dx} x^2\,f(x) = 2x\,f(x)+x^2\,f'(x)$
 
-8. The graph of the equation $x^{4}+y^{2}-3xy=1$ is shown in @fig-implicit_graph.
-   a) Explain how you know for sure that the point $(1,0)$ is on the graph.
-   b) Use implicit differentiation express $y'$ as a function in terms of both $x$ and $y$.
-   c) Find an equation of the line that's tangent to the graph at the point $(1,0)$.
-
-9. The graph of $f(x)=x^{3}+\frac{1}{2}x-\frac{3}{2}$, together with the line $y=x$, is shown in @fig-graph_for_inverse.
+8. The graph of $f(x)=x^{3}+\frac{1}{2}x-\frac{3}{2}$, together with the line $y=x$, is shown in @fig-graph_for_inverse.
 
    a) Sketch the graph of of $f^{-1}(x)$ right on the same set of axes.
    b) Evaluate $(f^{-1})'(0)$.
@@ -80,10 +75,6 @@ We have our second exam this coming Friday, October 16th. The problems on the ex
 \newpage 
 
 ## Figures 
-
-::: {style="max-width: 450px; margin: 0 auto"}
-![The graph of $x^{4}+y^{2}-3xy=1$](./figures/implicit_graph.png){#fig-implicit_graph}
-:::
 
 ::: {style="max-width: 450px; margin: 0 auto"}
 ![The graph of $f(x)=x^{3}+\frac{1}{2}x-\frac{3}{2}$](./figures/graph_for_inverse.png){#fig-graph_for_inverse}
