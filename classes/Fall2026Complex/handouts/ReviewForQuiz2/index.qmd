@@ -1,0 +1,74 @@
+---
+title: Review for quiz 2
+date: 2026-10-18
+echo: false 
+format:
+  html:
+    page-layout: article
+    toc: true
+    css: /components/EmbedDiscourseMathTopics/embedDiscourseMathTopic.css
+  pdf:
+    mainfont: "Times New Roman"
+    output-file: "ReviewForQuiz2.pdf"
+    include-in-header:
+      text: |
+        \pagenumbering{gobble}
+---
+
+We have our first quiz in just a couple of days - on Wednesday, October 21st. The problems on the quiz will be a subset of variations of these problems.
+
+## Problems 
+
+1. Write down the following definitions
+
+   a. Convergent series  
+   [Definition 4.1.12 ](https://complexanalysis.org/web/sec_sequences-series.html#sec_sequences-series-27){target=_blank} of our text  
+   b. Absolute convergent series  
+   [Definition 4.1.13 ](https://complexanalysis.org/web/sec_sequences-series.html#sec_sequences-series-28){target=_blank} of our text
+
+
+2. Find the largest open disks on which each of the following series converges:
+
+   a. $\displaystyle \sum_{n=1}^{\infty} \frac{n^2}{n!} z^n$
+   <div style="height:10px"></div>
+   \vspace{2mm}
+   b. $\displaystyle \sum_{n=1}^{\infty} \frac{n^3}{3^n} (z-(4+3i))^n$
+
+   Note that degenerate cases, such as a single point or all of $\mathbb{C}$ are possible.
+
+3. Use the geometric series formula to evaluate the following series:
+
+   a. $\displaystyle \sum_{n=0}^{\infty} \frac{1}{(1+i)^n}$
+   <div style="height:10px"></div>
+   \vspace{2mm}
+   b. $\displaystyle \sum_{n=3}^{\infty} \frac{2^{n+2}}{(3+4i)^n}$
+
+4. Starting with the series representation
+$$
+\arctan(z) = \sum_{n=0}^{\infty} (-1)^n \frac{z^{2 n+1}}{2 n+1},
+$$
+find a power series representation of 
+$$
+\int \arctan(z^2) \, dz.
+$$
+What is the largest open disk on which your power series is valid?
+
+::: {.content-visible when-format="html"}
+
+## Questions
+
+Follow the "Reply on WriteTech" button to ask a question on or make a comment about this review sheet. Your questions and comments will auto-magically appear below. You can feel free to respond to other students questions and comments. I might chime in as well.
+
+```{ojs}
+embedDiscourseMathTopic(2055)
+```
+
+```{ojs}
+import {embedDiscourseMathTopic} from '/components/EmbedDiscourseMathTopics/embedDiscourseMathTopic.js';
+```
+
+:::
+
+
+
+
