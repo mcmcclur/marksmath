@@ -1,0 +1,56 @@
+---
+title: Math carousel
+filters:
+  - carousel
+css: carousel.css?v=loading-4
+resources:
+  - carousel.js
+  - carousel.css
+  - slides/**
+include-after-body:
+  - text: '<script src="carousel.js?v=loading-4" defer></script>'
+---
+
+::: {.imax-message .d-flex .d-md-none}
+Best viewed in IMAX.
+:::
+
+::: {#math-exhibit .d-none .d-md-block}
+<div id="slides-loading" role="status" aria-live="polite">
+<span>Loading slides<span class="loading-dots" aria-hidden="true"><span>.</span><span>.</span><span>.</span></span></span>
+</div>
+<div class="exhibit-controls" role="group" aria-label="Exhibit controls">
+<button id="tour-toggle" type="button" aria-pressed="false">Pause to explore</button>
+<button id="fullscreen-toggle" type="button">Full screen</button>
+<span id="tour-status" role="status">Automatic tour · 1 / 6</span>
+</div>
+
+::::: {#math-carousel .carousel autoplay="false" controls="true" indicators="false"}
+
+:::: {.carousel-item}
+<iframe data-sequence="true" src="slides/julia_mandelbrot/index.html" title="Julia and Mandelbrot interactive demo" loading="eager"></iframe>
+::::
+
+:::: {.carousel-item}
+<iframe data-sequence="true" src="slides/unfolding_polyhedra/index.html" title="Unfolding polyhedra interactive demo" loading="eager"></iframe>
+::::
+
+:::: {.carousel-item}
+<iframe data-sequence="true" src="slides/penrose3color/index.html" title="Penrose three-coloring interactive demo" loading="eager"></iframe>
+::::
+
+:::: {.carousel-item}
+<iframe data-sequence="true" src="slides/neural_multiplier/index.html" title="Neural multiplier animation" loading="eager"></iframe>
+::::
+
+:::: {.carousel-item}
+<iframe src="slides/water_waves/index.html" title="Water waves interactive demo" loading="eager"></iframe>
+::::
+
+:::: {.carousel-item}
+<iframe src="slides/math_clock/index.html" title="Mathematical clock" loading="eager"></iframe>
+::::
+
+:::::
+
+:::

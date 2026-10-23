@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Julia sets and the Mandelbrot set</title><link rel="stylesheet" href="../demo.css">
+<style>
+body { height: 100dvh; display: flex; flex-direction: column; }
+h2 { margin-bottom: 6px; }
+.controls { margin-bottom: 6px; }
+#pictures { flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; gap: 18px; }
+figure { margin: 0; width: min(calc((100vw - 50px) / 2), calc(100dvh - 140px)); }
+figcaption { text-align: center; font-weight: 600; margin-bottom: 5px; }
+.picture { position: relative; aspect-ratio: 1; background: var(--plot-bg); border: 1px solid var(--demo-border); }
+canvas { display: block; width: 100%; height: 100%; }
+svg { position: absolute; inset: 0; width: 100%; height: 100%; touch-action: none; }
+#parameter { cursor: crosshair; }
+</style></head><body>
+<h2>Julia sets and the Mandelbrot set</h2>
+<div class="controls">
+<output id="c-value" aria-label="Current complex parameter"></output>
+</div>
+<div id="pictures">
+<figure><figcaption>Mandelbrot set · choose c</figcaption><div class="picture">
+<canvas id="mandelbrot" aria-label="Mandelbrot set"></canvas>
+<svg id="parameter" viewBox="0 0 1000 1000" aria-label="Drag to choose the complex parameter c">
+<circle id="marker" r="8" fill="#ff4422" stroke="white" stroke-width="3"></circle>
+</svg></div></figure>
+<figure><figcaption>Julia set · z² + c</figcaption><div class="picture">
+<canvas id="julia" aria-label="Julia set for the selected parameter"></canvas>
+<svg id="orbit" viewBox="0 0 1000 1000" aria-label="Move to inspect an orbit">
+<path id="orbit-path" fill="none" stroke="#7777ff" stroke-width="2" opacity="0.7"></path>
+<circle id="orbit-start" r="5" fill="#19a66a" stroke="black" visibility="hidden"></circle>
+</svg></div></figure>
+</div>
+<script type="module" src="demo.js"></script>
+</body></html>

@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Unfolding polyhedra</title><link rel="stylesheet" href="../demo.css">
+<link rel="stylesheet" href="https://www.x3dom.org/download/x3dom.css">
+<style>
+html, body { height: 100%; overflow: hidden; }
+body { height: 100dvh; display: flex; flex-direction: column; }
+h2, .controls { flex-shrink: 0; }
+#picture { flex: 1; min-height: 0; min-width: 0; overflow: hidden; }
+x3d, x3d canvas { display: block; border: 0; }
+input[type=range] { width: clamp(130px, 25vw, 400px); }
+</style>
+</head><body>
+<h2>Unfolding polyhedra</h2>
+<div class="controls">
+<label>Class <select id="class" aria-label="Polyhedron class"></select></label>
+<label>Polyhedron <select id="solid" aria-label="Polyhedron"></select></label>
+<label>Unfold <input id="unfold" type="range" min="0" max="1" step="0.001" value="0"><output id="amount">0%</output></label>
+</div>
+<div id="picture" aria-label="Interactive three-dimensional polyhedron"><p>Loading polyhedra…</p></div>
+<script type="module" src="./demo.js"></script>
+</body></html>

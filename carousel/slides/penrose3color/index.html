@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Three coloring Penrose rhombs</title><link rel="stylesheet" href="../demo.css">
+<style>
+body { height: 100dvh; display: flex; flex-direction: column; }
+.controls { gap: 10px; }
+#sizes { display: flex; flex-wrap: wrap; gap: 8px; }
+button { border: 1px solid var(--accent); border-radius: 5px; background: var(--control-bg); color: var(--demo-ink); }
+button[aria-pressed=true] { background: var(--accent-bg); color: white; }
+#picture { flex: 1; min-height: 0; }
+#picture svg { display: block; width: 100%; height: 100%; }
+#result { font-variant-numeric: tabular-nums; }
+</style></head><body>
+<h2>Three coloring Penrose rhombs</h2>
+<div class="controls">
+<div id="sizes" role="group" aria-label="Number of rhombs">
+<button type="button" data-n="7" aria-pressed="true">Just a few rhombs</button>
+<button type="button" data-n="11" aria-pressed="false">More rhombs</button>
+<button type="button" data-n="13" aria-pressed="false">Even more rhombs</button>
+<button type="button" data-n="15" aria-pressed="false">Too many rhombs</button>
+</div>
+<button id="find" type="button">Find three coloring</button>
+<output id="result" aria-live="polite"></output>
+</div>
+<div id="picture" aria-label="Penrose rhomb tiling"></div>
+<script type="module" src="demo.js"></script>
+</body></html>

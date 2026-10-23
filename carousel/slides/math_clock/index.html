@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A mathematical clock</title><link rel="stylesheet" href="../demo.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.19.0/dist/katex.min.css">
+<style>
+body { margin: 0; padding: 10px; height: 100dvh; display: flex; flex-direction: column; align-items: center; background: var(--demo-bg); }
+h2 { align-self: flex-start; margin-bottom: 4px; }
+#clock-space { flex: 1; width: 100%; min-height: 0; display: flex; align-items: center; justify-content: center; }
+#clock { position: relative; flex: none; }
+#clock > svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+#face { z-index: 0; }
+#labels { position: absolute; inset: 0; z-index: 1; color: var(--clock-ink); }
+.math-label { position: absolute; transform: translate(-50%, -50%); white-space: nowrap; line-height: 1; }
+.math-label .katex-display { margin: 0; }
+#hands { z-index: 2; pointer-events: none; }
+</style></head><body>
+<h2>A mathematical clock</h2>
+<div id="clock-space"><div id="clock" role="group" aria-label="Analog clock with mathematical hour labels">
+<svg id="face" viewBox="0 0 1000 1000" aria-hidden="true">
+<circle cx="500" cy="500" r="480" fill="var(--clock-face)" stroke="var(--clock-ink)" stroke-width="28"></circle>
+<g id="ticks" stroke="var(--clock-ink)"></g>
+</svg>
+<div id="labels"></div>
+<svg id="hands" viewBox="0 0 1000 1000" role="img" aria-label="Current local time">
+<path id="hour" d="M488 555 L483 280 L500 245 L517 280 L512 555 Z" fill="var(--clock-ink)"></path>
+<path id="minute" d="M494 570 L490 160 L500 125 L510 160 L506 570 Z" fill="var(--clock-ink)"></path>
+<line id="second" x1="500" y1="580" x2="500" y2="105" stroke="var(--clock-second)" stroke-width="5"></line>
+<circle cx="500" cy="500" r="10" fill="var(--clock-second)"></circle>
+</svg>
+</div></div>
+<script type="module" src="demo.js"></script>
+</body></html>
