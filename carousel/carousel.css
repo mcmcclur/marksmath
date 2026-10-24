@@ -1,4 +1,5 @@
 @import url("slides/theme.css");
+#math-exhibit.cursor-idle, #math-exhibit.cursor-idle * { cursor: none !important; }
 .imax-message {
   align-items: center;
   justify-content: center;

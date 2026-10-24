@@ -2,13 +2,15 @@
 title: Math carousel
 filters:
   - carousel
-css: carousel.css?v=loading-4
+css: carousel.css?v=idle-cursor-1
 resources:
   - carousel.js
   - carousel.css
+  - cursor-idle.js
   - slides/**
 include-after-body:
   - text: '<script src="carousel.js?v=loading-4" defer></script>'
+  - text: '<script src="cursor-idle.js" defer></script>'
 ---
 
 ::: {.imax-message .d-flex .d-md-none}
