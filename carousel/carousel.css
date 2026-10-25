@@ -24,12 +24,10 @@
 .loading-dots span:nth-child(3) { animation-delay: .4s; }
 @keyframes loading-dot { 0%, 80%, 100% { opacity: .2; } 40% { opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { .loading-dots span { animation: none; } }
-.exhibit-controls { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; padding: 10px 16px; border-bottom: 1px solid var(--demo-border); }
-.exhibit-controls button { padding: 8px 14px; border: 1px solid var(--accent); border-radius: 5px; background: var(--control-bg); color: var(--demo-ink); font: inherit; }
-.exhibit-controls button:hover { background: var(--control-hover); }
-#tour-toggle { background: var(--accent-bg); color: white; }
-.exhibit-controls > p { margin: 0 0 0 auto; }
-#tour-status { font-size: 0.9rem; margin-left: auto; }
+.exhibit-corner-button { position: absolute; right: 16px; z-index: 35; padding: 5px 10px; border: 1px solid transparent; border-radius: 5px; background: var(--demo-bg); color: var(--demo-muted); font: inherit; font-size: .9rem; }
+.exhibit-corner-button:hover, .exhibit-corner-button:focus-visible { color: var(--demo-ink); background: var(--control-hover); border-color: var(--demo-border); }
+#tour-toggle { top: 12px; border-color: var(--demo-border); }
+#fullscreen-toggle { bottom: 12px; font-size: 1.2rem; }
 #math-carousel .carousel-item { height: min(76vh, 850px); min-height: 400px; }
 /* The extension's image-overlay defaults otherwise block the demo controls. */
 #math-carousel .overlay { position: static; pointer-events: auto; display: block; text-align: left; }

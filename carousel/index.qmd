@@ -2,14 +2,14 @@
 title: Math carousel
 filters:
   - carousel
-css: carousel.css?v=idle-cursor-1
+css: carousel.css?v=corner-controls-1
 resources:
   - carousel.js
   - carousel.css
   - cursor-idle.js
   - slides/**
 include-after-body:
-  - text: '<script src="carousel.js?v=loading-4" defer></script>'
+  - text: '<script src="carousel.js?v=corner-controls-1" defer></script>'
   - text: '<script src="cursor-idle.js" defer></script>'
 ---
 
@@ -21,11 +21,8 @@ Best viewed in IMAX.
 <div id="slides-loading" role="status" aria-live="polite">
 <span>Loading slides<span class="loading-dots" aria-hidden="true"><span>.</span><span>.</span><span>.</span></span></span>
 </div>
-<div class="exhibit-controls" role="group" aria-label="Exhibit controls">
-<button id="tour-toggle" type="button" aria-pressed="false">Pause to explore</button>
-<button id="fullscreen-toggle" type="button">Full screen</button>
-<span id="tour-status" role="status">Automatic tour · 1 / 6</span>
-</div>
+<button id="tour-toggle" class="exhibit-corner-button" type="button" aria-pressed="false">Pause</button>
+<button id="fullscreen-toggle" class="exhibit-corner-button" type="button" aria-label="Full screen" title="Full screen"><i class="bi bi-fullscreen" aria-hidden="true"></i></button>
 
 ::::: {#math-carousel .carousel autoplay="false" controls="true" indicators="false"}
 

@@ -64,9 +64,9 @@ try {
     const end = value<0 ? [178,24,43] : [33,102,172];
     return `rgb(${end.map(channel => Math.round(247+(channel-247)*t)).join(',')})`;
   }
-  function beginCycle() {
+  function beginCycle(random = false) {
     // The opening example matches the one requested; subsequent inputs are random.
-    const input = cycle===0 ? [0.173, -0.423] : Array.from({length:2}, () => Math.round((2*Math.random()-1)*1000)/1000);
+    const input = cycle===0 && !random ? [0.173, -0.423] : Array.from({length:2}, () => Math.round((2*Math.random()-1)*1000)/1000);
     const forward = network.forward(input);
     const values = [input, ...forward.map(layer => layer.a)];
     result = values.at(-1)[0];
@@ -99,11 +99,16 @@ try {
     }
   }
   beginCycle();
-  onVisit(() => { cycle = 0; finished = false; beginCycle(); });
+  let manualRun = false;
+  onVisit(() => { cycle = 0; finished = false; manualRun = false; beginCycle(); });
   let previous = performance.now();
+  document.querySelector('#redraw').addEventListener('click', () => {
+    finished = false; manualRun = !state.auto; previous = performance.now();
+    beginCycle(true);
+  });
   function animate(now) {
     const dt = Math.min(100, now-previous)/1000; previous = now;
-    if (state.active && state.auto && !finished) {
+    if (state.active && (state.auto || manualRun) && !finished) {
       // Speed up the computation while preserving the pause to read its result.
       const readingStarts = resultAt+0.35;
       if (elapsed < readingStarts) {
@@ -112,7 +117,8 @@ try {
       } else elapsed += dt;
       render();
       if (elapsed>=resultAt+0.35+pauseAfter) {
-        if (++cycle===5) { finished = true; complete(); }
+        if (!state.auto) { manualRun = false; }
+        else if (++cycle===5) { finished = true; manualRun = false; complete(); }
         else beginCycle();
       }
     }

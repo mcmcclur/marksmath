@@ -6,18 +6,16 @@
   const readyFrames = new Set();
   let loaded = false;
   let readyCheck;
-  let startupNote = '';
   let startupTimeout;
   function showSlides(note = '') {
     loaded = true;
     loading.hidden = true;
-    startupNote = note;
+    if (note) console.warn(note);
     clearTimeout(startupTimeout);
     clearInterval(readyCheck);
     last = performance.now();
   }
   const toggle = document.querySelector('#tour-toggle');
-  const status = document.querySelector('#tour-status');
   const fullscreen = document.querySelector('#fullscreen-toggle');
   const carousel = bootstrap.Carousel.getOrCreateInstance(element, {
     interval: false, ride: false, pause: false, keyboard: true, touch: true
@@ -29,9 +27,8 @@
     frames.forEach((frame, i) => frame.contentWindow.postMessage({
       type: 'math-carousel-state', active: loaded && i === index && !document.hidden, auto: running, visit, theme: document.body.classList.contains('quarto-dark') ? 'dark' : 'light'
     }, location.origin));
-    toggle.textContent = running ? 'Pause to explore' : 'Resume automatic tour';
+    toggle.textContent = running ? 'Pause' : 'Resume';
     toggle.setAttribute('aria-pressed', String(!running));
-    status.textContent = `${running ? 'Automatic tour' : 'Explore freely'} · ${index + 1} / ${frames.length}${startupNote ? ` · ${startupNote}` : ''}`;
   }
   function advanceIfComplete() {
     if (completed && running && !document.hidden) { completed = false; carousel.next(); }
@@ -55,7 +52,6 @@
         showSlides();
       }
       if (readyFrames.size === frames.length) {
-        startupNote = '';
         clearInterval(readyCheck);
       }
       update();
@@ -77,10 +73,17 @@
     try {
       if (document.fullscreenElement) await document.exitFullscreen();
       else await exhibit.requestFullscreen();
-    } catch (error) { status.textContent = `Full screen unavailable: ${error.message}`; }
+    } catch (error) {
+      fullscreen.title = `Full screen unavailable: ${error.message}`;
+      console.error(error);
+    }
   });
   document.addEventListener('fullscreenchange', () => {
-    fullscreen.textContent = document.fullscreenElement ? 'Exit full screen' : 'Full screen';
+    const expanded = Boolean(document.fullscreenElement);
+    const label = expanded ? 'Exit full screen' : 'Full screen';
+    fullscreen.setAttribute('aria-label', label);
+    fullscreen.title = label;
+    fullscreen.querySelector('i').className = expanded ? 'bi bi-fullscreen-exit' : 'bi bi-fullscreen';
   });
   function tick(now) {
     const frame = element.querySelector('.carousel-item.active iframe');
