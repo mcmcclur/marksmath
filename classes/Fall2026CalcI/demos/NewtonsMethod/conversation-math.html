@@ -1,0 +1,42 @@
+<script>
+// Recover LaTeX from fresh ChatGPT exports without editing the transcript.
+(() => {
+    const equations = [];
+    function convertConversationMath() {
+        document.querySelectorAll('.ai-conversation .katex').forEach(equation => {
+            const source = equation.querySelector('annotation[encoding="application/x-tex"]');
+            if (!source) return;
+            const display = equation.closest('.katex-display') !== null;
+            const replacement = document.createElement('span');
+            replacement.className = display ? 'math display' : 'math inline';
+            replacement.textContent = display
+                ? '\\[' + source.textContent + '\\]'
+                : '\\(' + source.textContent + '\\)';
+            (display ? equation.closest('.katex-display') : equation).replaceWith(replacement);
+            equations.push(replacement);
+        });
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', convertConversationMath, {once: true});
+    } else {
+        convertConversationMath();
+    }
+
+    // Also handle MathJax having completed its initial pass before conversion.
+    async function typesetConversationMath() {
+        if (!equations.length || !window.MathJax?.startup?.promise) return;
+        try {
+            await window.MathJax.startup.promise;
+            await window.MathJax.typesetPromise(equations);
+        } catch (error) {
+            console.error('Could not typeset conversation equations:', error);
+        }
+    }
+    if (document.readyState === 'complete') {
+        typesetConversationMath();
+    } else {
+        window.addEventListener('load', typesetConversationMath, {once: true});
+    }
+})();
+</script>

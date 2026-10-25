@@ -1,0 +1,195 @@
+form label {
+    width: 30px !important;
+}
+
+/* Sage Cell styling from the Complex Cubics notes. */
+.sage {
+    margin: 15px;
+}
+
+.sage button {
+    transition: background-color 120ms ease, border-color 120ms ease, box-shadow 120ms ease;
+}
+
+body.quarto-light .sage button:hover,
+body.quarto-light .sage button:focus {
+    background-color: #f3f6f8;
+    border-color: #b8c2cc;
+    box-shadow: 0 0 0 0.12rem rgba(44, 62, 80, 0.08);
+}
+
+body.quarto-dark .sage .sagecell,
+body.quarto-dark .sage .sagecell_input,
+body.quarto-dark .sage .sagecell_sessionOutput,
+body.quarto-dark .sage .sagecell_output {
+    background: var(--bs-body-bg);
+    color: var(--bs-body-color);
+    border-color: var(--bs-border-color);
+}
+
+body.quarto-dark .sage .CodeMirror {
+    background: var(--bs-secondary-bg);
+    color: var(--bs-body-color);
+    border-color: var(--bs-border-color);
+}
+
+body.quarto-dark .sage .CodeMirror-gutters {
+    background: #292e34;
+    border-right-color: #49515b;
+}
+
+body.quarto-dark .sage .CodeMirror-linenumber {
+    color: #a6adb7;
+    background: transparent;
+}
+
+body.quarto-dark .sage .CodeMirror-cursor {
+    border-left-color: var(--bs-body-color);
+}
+
+body.quarto-dark .sage .CodeMirror-selected,
+body.quarto-dark .sage .CodeMirror-focused .CodeMirror-selected {
+    background: rgba(125, 162, 255, 0.28);
+}
+
+body.quarto-dark .sage .CodeMirror-matchingbracket,
+body.quarto-dark .sage .CodeMirror-nonmatchingbracket {
+    color: var(--bs-secondary-color);
+}
+
+body.quarto-dark .sage .cm-comment {
+    color: #8fb996;
+}
+
+body.quarto-dark .sage .cm-keyword,
+body.quarto-dark .sage .cm-builtin {
+    color: #ffb86c;
+}
+
+body.quarto-dark .sage .cm-string {
+    color: #a5d6ff;
+}
+
+body.quarto-dark .sage .cm-number,
+body.quarto-dark .sage .cm-atom {
+    color: #d2a8ff;
+}
+
+body.quarto-dark .sage .cm-def,
+body.quarto-dark .sage .cm-variable,
+body.quarto-dark .sage .cm-variable-2,
+body.quarto-dark .sage .cm-property {
+    color: var(--bs-body-color);
+}
+
+body.quarto-dark .sage .cm-operator {
+    color: #ff7b72;
+}
+
+body.quarto-dark .sage button,
+body.quarto-dark .sage select,
+body.quarto-dark .sage textarea,
+body.quarto-dark .sage input {
+    background-color: var(--bs-secondary-bg);
+    color: var(--bs-body-color);
+    border-color: var(--bs-border-color);
+}
+
+body.quarto-dark .sage button:hover,
+body.quarto-dark .sage button:focus {
+    background-color: #343a40;
+    border-color: #6c757d;
+    color: var(--bs-body-color);
+    box-shadow: 0 0 0 0.12rem rgba(173, 181, 189, 0.12);
+}
+
+body.quarto-dark .sage pre,
+body.quarto-dark .sage .sagecell_stdout,
+body.quarto-dark .sage .sagecell_stderr {
+    background: var(--bs-secondary-bg);
+    color: var(--bs-body-color);
+    border-color: var(--bs-border-color);
+}
+
+body.quarto-dark .sage .sagecell_stderr {
+    color: #ffb4ab;
+}
+
+button.sagecell_fullScreen {
+    display: none !important;
+}
+
+/* Saved conversation: use semantic attributes rather than exported app classes. */
+.ai-conversation {
+    --chat-border: #d5dce3;
+    --chat-prompt: #edf4fb;
+    --chat-response: #f8f9fa;
+    margin-block: 1.25rem;
+}
+
+body.quarto-dark .ai-conversation {
+    --chat-border: #49515b;
+    --chat-prompt: #26394d;
+    --chat-response: #292e34;
+}
+
+.ai-conversation [data-conversation-transcript] {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.ai-conversation [data-message-role] {
+    padding: 1rem 1.25rem;
+    margin-block: 1rem;
+    border: 1px solid var(--chat-border);
+    border-radius: 0.85rem;
+    background: var(--chat-response);
+    overflow-wrap: anywhere;
+}
+
+.ai-conversation [data-message-role="user"] {
+    margin-left: min(8%, 3rem);
+    background: var(--chat-prompt);
+}
+
+.ai-conversation [data-message-role="assistant"] {
+    margin-right: min(4%, 1.5rem);
+}
+
+.ai-conversation [data-message-attribution] {
+    margin: 0 0 0.75rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: inherit;
+}
+
+.ai-conversation [data-user-message-bubble] {
+    display: block;
+    width: 100%;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    text-align: left;
+    cursor: text;
+}
+
+.ai-conversation [data-user-message-bubble] p:last-child {
+    margin-bottom: 0;
+}
+
+.ai-conversation [data-message-actions],
+.ai-conversation [data-message-intervention],
+.ai-conversation [data-conversation-ads-supplement],
+.ai-conversation [data-conversation-inline-beacon-slot],
+.ai-conversation [role="status"] {
+    display: none !important;
+}
+
+.ai-conversation [data-d-component="math"][data-d-block] {
+    overflow-x: auto;
+    padding-block: 0.5rem;
+    margin-block: 0.5rem;
+}
