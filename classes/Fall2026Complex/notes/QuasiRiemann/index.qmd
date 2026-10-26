@@ -1,0 +1,466 @@
+---
+title: What is the Riemann Hypothesis?
+subtitle: And what does Open AI have to say about it?
+format:
+    html:
+        page-layout: article
+        toc: true
+        crossrefs-hover: false
+---
+
+The [Riemann Hypothesis](https://en.wikipedia.org/wiki/Riemann_hypothesis){target=_blank} is widely considered to be the most important open question in all of mathematics. It's certainly been the most famous open question in the mathematical community since I was in graduate school. David Hilbert included it in his list of [ten most important problems in mathematics](https://en.wikipedia.org/wiki/Hilbert%27s_problems){target=_blank} presented to International Congress of Mathematicians in Paris in 1900. Supposedly, Hilbert claimed that if he were to awaken after having slept for a thousand years, his first question would be: Has the Riemann hypothesis been proven?
+
+I am no expert on the Riemann Hypothesis. As a professor of mathematics teaching undergraduate complex variables, though, an introduction to the statement of the Riemann Hypothesis and why it's so amazing seems like a logical topic. The discussion seems even more pertinent, given Open AI's recent [dump of mathematical slop](https://en.wikipedia.org/wiki/OpenAI_bulk_release_of_mathematical_papers){target=_blank}. Evidently, the Riemann Hypothesis has, thus far resisted Open AI's assault. They do claim to have made progress, however, by supposedly proving the so-called Quasi-Riemann Conjecture.
+
+## Origin
+
+The Riemann Hypothesis lies within that part of mathematics known as *analytic number theory* - the application of ideas from analysis to questions of number theory.
+
+Real analysis is essentially the theory behind calculus. That is, $\varepsilon$s and $\delta$s and their application to the ideas of limits, continuity, and more. Complex analysis is the extension of those same ideas to complex functions mapping $\mathbb{C}\to\mathbb{C}$. Of course, both real and complex analysis have grown behind their original purpose to simply understanding calculus. They are fundamental subjects in their own right.
+
+Number theory is the study of the natural numbers or the integers. There are loads of things that we could study about the these numeric systems but one of the deepest and most fruitful fields has been the study of prime numbers, those natural numbers with no divisors other than 1 and itself:
+$$
+2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, \ldots 
+$$
+
+Euclid famously proved that there are infinitely many such numbers. I guess that's a lot. `¯\_(ツ)_/¯`
+
+The Riemann Hypothesis concerns a function that arises in complex analysis and its surprising implications for the distribution of the prime numbers.
+
+
+### Density
+
+Within the natural numbers, there are relative sizes of infinity. There are certainly infinitely many squares, for example, but they are spread out fairly thinly compared to all the naturals. You can see this in the three lists of numbers below. 
+
+```{python}
+#| echo: false
+#| output: asis
+
+from math import isqrt
+
+integers = list(range(1, 37))
+primes = {
+    n for n in integers
+    if n > 1 and all(n % d for d in range(2, isqrt(n) + 1))
+}
+squares = {n for n in integers if isqrt(n) ** 2 == n}
+
+print('<div style="overflow-x: auto;"><div style="width: max-content; white-space: nowrap; line-height: 1.4; word-spacing: 0.06em;">')
+for highlighted in [set(integers), primes, squares]:
+    numbers = " ".join(
+        f'<span style="opacity: {1 if n in highlighted else 0.25}">{n}</span>'
+        for n in integers
+    )
+    print(f'<div>{numbers}</div>')
+print('</div></div>')
+```
+
+All three lists consist of the integers 1 through 36. The second and third lists highlight the primes and squares. There are 
+
+- 36 natural numbers from 1 to 36,
+- 11 prime numbers from 1 to 36, and
+- 6 square numbers from 1 to 36.
+
+In a quantitative sense, there are fewer squares than primes and fewer primes than naturals; at least, over this interval. Does this pattern hold up? How could we even quantify that, if it does?
+
+Given a set $S\subset\mathbb{N}$, can we characterize it's density as:
+$$
+\lim_{n\to\infty} \frac{1}{n} \#(S\cap[1,n]).
+$$
+The density of the even numbers is $1/2$, for example, as is the density of the odd numbers. The density of the square numbers is zero. In fact, if $S$ is the set of squares, then for every $m,n\in\mathbb{N}$ with
+$$
+m^2 \leq n < (m+1)^2 \text{ we have } \#(S\cap[1,n]) = m.
+$$
+As a result,
+$$
+\frac{1}{n}\#(S\cap[1,n]) = \frac{m}{n} = \frac{\sqrt{m^2}}{n} \leq \frac{\sqrt{n}}{n} = \frac{1}{\sqrt{n}}.
+$$
+
+We can visualize this by making a discrete plot o $y=\frac{1}{n} \#(S\cap[1,n])$ together with the continuous graph of $y=1/\sqrt{x}$, as shown in @fig-square_density. We can see quite clearly that
+$$
+\lim_{n\to\infty} \frac{1}{n} \#(S\cap[1,n]) = 0.
+$$
+
+```{ojs}
+//| label: fig-square_density
+//| fig-cap: '$y=1/\sqrt{x}$ (<span role="img" aria-label="orange line" style="display: inline-block; width: 1.4em; border-top: 2px solid darkorange; vertical-align: middle;"></span>) together with $\#(S\cap[1,n])/n$ (<span role="img" aria-label="blue dot" style="display: inline-block; width: 0.45em; height: 0.45em; border-radius: 50%; background: steelblue; vertical-align: middle;"></span>), where $S$ is the set of squares.'
+squareDensity = d3.range(1, 101).map(n => ({
+  n,
+  density: Math.floor(Math.sqrt(n)) / n
+}))
+
+squareRootCurve = d3.range(1, 100.1, 0.1).map(x => ({x, y: 1 / Math.sqrt(x)}))
+
+Plot.plot({
+  width: Math.min(width, 800),
+  height: 350,
+  x: {label: "n", domain: [1, 100]},
+  y: {label: "Proportion", domain: [0, 1], grid: true},
+  color: {
+    domain: ["Square density: ⌊√n⌋/n", "1/√n"],
+    range: ["steelblue", "darkorange"]
+  },
+  marks: [
+    Plot.ruleY([0]),
+    Plot.ruleX(squareDensity, {
+      x: "n", y1: 0, y2: "density",
+      stroke: () => "Square density: ⌊√n⌋/n", strokeWidth: 0.75
+    }),
+    Plot.dot(squareDensity, {
+      x: "n", y: "density", fill: () => "Square density: ⌊√n⌋/n",
+      r: 2.5
+    }),
+    Plot.line(squareRootCurve, {
+      x: "x", y: "y", stroke: () => "1/√n"
+    })
+  ]
+})
+```
+
+Now that we've got a limit, maybe we're getting closer to analysis!
+
+
+### The real zeta function
+
+For a real number $s>1$, the the function $\zeta(s)$ is defined by
+$$\zeta(s) = \sum_{n=1}^{\infty} \frac{1}{n^s}.$$
+This function is studied in Calculus II, where the integral test is used to show that the series converges for all $s>1$; thus $\zeta(p)$ is well defined for $s>1$.
+
+It was Euler in 1737 who established a connection between $\zeta(s)$ and the prime numbers via the formula
+$$
+\zeta(s)=\prod_{p\text{ prime}}\frac{1}{1-\frac{1}{p^s}}.
+$$
+To see this, let's expand each term in the product as a geometric series:
+$$
+\frac{1}{1-\frac{1}{p^s}} = \sum_{n=0}^{\infty} \frac{1}{p^{ns}} = 
+  1+\frac1{p^s}+\frac1{p^{2s}}+\frac1{p^{3s}}+\cdots.
+$$
+
+Thus, the infinite product can be written
+$$
+\left(1+\frac1{2^s}+\frac1{2^{2s}}+\frac1{2^{3s}}+\cdots\right)
+\left(1+\frac1{3^s}+\frac1{3^{2s}}+\frac1{3^{3s}}+\cdots\right)
+\left(1+\frac1{5^s}+\frac1{5^{2s}}+\frac1{5^{3s}}+\cdots\right)\cdots
+$$
+Now, the unique factorization theorem asserts that every integer larger than 1 can be written as a product of prime powers in a unique way. For example, 
+$$90 = 2\times3^2\times5.$$
+There's no other factorization of 90.
+
+Now, if you expand out the infinite product above, you'll find that you can get $1/n$ for every $n$ by simply choosing the term from each sum according to the prime factorization of $n$. For example, 
+$$\frac{1}{90^s} = \frac{1}{2^s}\times\frac{1}{3^{2s}}\times\frac{1}{5}.$$
+
+
+### The infinitude of the primes
+
+With this connection, we immediately get another proof that there are infinitely many prime numbers. Just plug $s=1$ to get
+$$
+\lim_{s\to0^+} \prod_{p\text{ prime}}\frac{1}{1-\frac{1}{p^s}} = 
+\lim_{s\to0^+} \sum_{n=1}^{\infty} \frac{1}{n^s} = \infty.
+$$
+That can only happen, though, if there are infinitely many prime numbers.
+
+We can get an even stronger result, though, if we translate the product into a sum with the logarithm. To do so, note that
+$$
+\ln(\zeta(s))=\ln\left(\prod_{p\text{ prime}}\frac{1}{1-\frac{1}{p^s}}\right) = \sum_{p\,\text{prime}} \ln\left(\frac{1}{1-\frac{1}{p^s}}\right) \approx \sum_{p\,\text{prime}} \frac{1}{p^s}.
+$$
+
+In that last step, we've used the linear approximation
+$$
+\ln\left(\frac{1}{1-x}\right) \approx x,
+$$
+which you can prove using some basic calculus: $f(x) \approx f'(0)x + f(0)$. In fact, the approximation is good enough to conclude that 
+$$
+\lim_{s\to1^+} \sum_{p\,\text{prime}} \frac{1}{p^s} = \infty \text{ since } 
+\lim_{s\to1^+} \ln(\zeta(s)) = \infty.
+$$
+
+Put another way, 
+$$
+\sum_{p\,\text{prime}} \frac{1}{p}
+$$
+is a divergent series! This is a quantitative improvement on Euclid's result. It provides a quantitative way of saying that primes are more common than squares, since
+$$
+\sum_{n=1}^{\infty} \frac{1}{n^2}
+$$
+converges.
+
+## The Riemann Zeta function
+
+If we move into the complex plane, we can say even more!
+
+### Definition
+
+For a complex number $z$ with $\text{Re}(z)>1$, the Riemann Zeta function is defined by 
+$$\zeta(z) = \sum_{n=1}^{\infty} \frac{1}{n^z}.$$
+
+Now, $z$ is complex so we could write $z=a+bi$ for real $a,b$. Thus,
+$$
+\begin{aligned}
+n^z &= n^{a+bi} = e^{\ln(n^{a+bi})} = e^{(a+bi)\ln(n)} \\ 
+&= e^{a\ln(n)}e^{i b\ln(n)} = n^a e^{i b\ln(n)}
+\end{aligned}
+$$
+Of course $e^{i\theta}$ has absolute value 1, no matter the value $\theta$. Thus,
+$$
+\left|\frac{1}{n^z}\right| = \left|\frac{1}{n^a}\right|.
+$$
+As a result, whenever $\text{Re}(z)>1$,
+$$
+\sum_{n=1}^{\infty} \frac{1}{n^z}
+$$ 
+converges absolutely by the comparison test.
+
+### Extending the definition
+
+As it turn out the Riemann Hypothesis states that the roots of $\zeta$ all lie on the line with $\text{Re}(z) = 1/2$. That seems odd, since the series defining $\zeta$ converges only for $\text{Re}(z) > 1$!
+
+As it turn out, though, the definition of $\zeta$ can be extended. In fact, it can be extended to the entire complex plane, with the exception of the single point $z=1$. Doing so, is not easy. Fortunately, though, there's a neat trick that makes it not so hard to extend the definition to $\text{Re}(z) > 0$.
+
+The idea is to relate $\zeta$ to its alternating version $\eta$ defined by
+$$
+\eta(z)=\sum_{n=1}^\infty\frac{(-1)^{n-1}}{n^z}.
+$$
+Now, $\eta$ certainly looks like an alternating series so that we might thing that it converges for $\text{Re}(z)>0$. In fact, the series does converge on that larger domain but proving it is not as quite so easy as applying the alternating series test since $n^z$ is not a real number.
+
+What we can do, though, is group the terms:
+$$
+\eta(z)=\sum_{n=1}^\infty
+\left(\frac1{(2n-1)^z}-\frac1{(2n)^z}\right).
+$$
+We can then write
+$$
+\frac1{(2n-1)^z}-\frac1{(2n)^z}
+=-\int_{2n-1}^{2n}\frac{d}{dx}(x^{-z})\,dx
+=z\int_{2n-1}^{2n}x^{-z-1}\,dx.
+$$
+Remembering that $z=a+bi$ and taking absolute values, we get
+$$
+\begin{aligned}
+\left|\frac1{(2n-1)^z}-\frac1{(2n)^z}\right|
+&\leq |z|\int_{2n-1}^{2n}|x^{-z-1}|\,dx\\
+&=|z|\int_{2n-1}^{2n}x^{-a-1}\,dx \leq \frac{|z|}{(2n-1)^{a+1}}.
+\end{aligned}
+$$
+Now, since $a>0$, the comparison test immediately yields that 
+$$
+\sum_{n=1}^{\infty} \left|\frac1{(2n-1)^z}-\frac1{(2n)^z}\right|
+$$
+converges.
+
+Now that we know that $\eta$ converges for $\text{Re}(z)>0$, we can write
+$$
+\begin{aligned}
+\eta(z)
+&=\sum_{n=1}^\infty\frac1{n^z}
+-2\sum_{n=1}^\infty\frac1{(2n)^z}\\
+&=\zeta(z)-2^{1-z}\zeta(z)\\
+&=(1-2^{1-z})\zeta(z).
+\end{aligned}
+$$
+Solving for $\zeta$, we get
+$$
+\zeta(z)=\frac{\eta(z)}{1-2^{1-z}}.
+$$
+This expresses $\zeta(z)$ in a way that's defined for all $z$ with $\text{Re}(z)>0$.
+
+
+## The Riemann Hypothesis
+
+The Riemann Hypothesis conjectures that the function we've defined has infinitely many roots and that they all lie on the line with $\text{Re}(z)=1/2$.
+
+@fig-zeta_contours plots the Riemann zeta function with shading given by $|\zeta(z)|$. The contours are of $|z|$ and $\text{Arg}(z)$. 
+
+```{ojs}
+//| label: fig-zeta_contours
+//| fig-cap: 'The Riemann zeta function'
+{
+  const zetaImage = await FileAttachment("zeta.png").url();
+  const marginLeft = 60;
+  const marginRight = 20;
+  const marginTop = 20;
+  const marginBottom = 50;
+  const imageWidth = Math.min(320, width - marginLeft - marginRight);
+  // Equal horizontal and vertical units; the image spans 10.5 by 27 units.
+  const imageHeight = imageWidth * 27 / 10.5;
+
+  return Plot.plot({
+    width: imageWidth + marginLeft + marginRight,
+    height: imageHeight + marginTop + marginBottom,
+    marginLeft, marginRight, marginTop, marginBottom,
+    style: {background: "transparent", color: "inherit", margin: "auto"},
+    ariaLabel: "Contours and magnitude shading of the Riemann zeta function on −0.5 ≤ Re(z) ≤ 10 and −1 ≤ Im(z) ≤ 26",
+    x: {
+      domain: [-0.5, 10], nice: false,
+      label: "Re(z)", labelAnchor: "center", labelArrow: false,
+      ticks: [0, 2, 4, 6, 8, 10], line: true
+    },
+    y: {
+      domain: [-1, 26], nice: false,
+      label: "Im(z)", labelArrow: false,
+      ticks: [0, 5, 10, 15, 20, 25], line: true
+    },
+    marks: [
+      Plot.image([0], {
+        x: 4.75, y: 12.5, src: zetaImage,
+        width: imageWidth, height: imageHeight
+      }),
+      Plot.ruleX([1/2], {strokeDasharray: [8,5]})
+    ]
+  });
+}
+```
+
+In the picture, we can see three roots at about
+$$
+\frac{1}{2} + 14.1347i, \frac{1}{2} + 21.022i, \text{ and } \frac{1}{2} + 25.0109i.
+$$
+We can also see the pole at one.
+
+There is a lot known about these roots. The following have been proved:
+
+- There are infinitely many roots.
+- They all lie in the critical strip $0<\text{Re}(z)<1$.
+- Infinitely many of the roots lie on the critical line $\text{Re(z)} = 1/2$.
+
+It's still not known if there are others in the critical strip that lie off the critical line.
+
+
+### Hardy's $Z$ function
+
+We can turn the values of $\zeta$ along the critical line into a real-valued function:
+$$
+Z(t)=e^{i\theta(t)}\zeta\left(\frac12+it\right),
+$$
+where $\theta$ is the Riemann–Siegel theta function,
+$$
+\theta(t)=\operatorname{Im}\log\Gamma\left(\frac14+\frac{it}{2}\right)
+-\frac{t}{2}\log\pi.
+$$
+Here the logarithm is chosen continuously so that $\theta(0)=0$. The factor $e^{i\theta(t)}$ has absolute value one, so $Z(t)$ has the same zeros as $\zeta(\frac12+it)$.
+
+```{ojs}
+//| output: false
+math = import("https://cdn.jsdelivr.net/npm/mathjs@15.2.0/+esm")
+
+riemannTheta = t => math.im(math.lgamma(math.complex(0.25, t / 2)))
+  - t * Math.log(Math.PI) / 2
+
+hardyZ = t => math.re(math.multiply(
+  math.exp(math.complex(0, riemannTheta(t))),
+  math.zeta(math.complex(0.5, t))
+))
+
+hardyZData = Array.from({length: 2101}, (_, i) => {
+  const t = i * 42 / 2100;
+  return {t, Z: hardyZ(t)};
+})
+```
+
+```{ojs}
+//| label: fig-hardy-z
+//| fig-cap: "Hardy's real-valued $Z$ function along the critical line for $0<t<42$. The first three zero crossings correspond to the roots shown above."
+Plot.plot({
+  width: Math.min(width, 800),
+  height: 350,
+  marginLeft: 55,
+  marginBottom: 45,
+  style: {background: "transparent", color: "inherit"},
+  ariaLabel: "Hardy's Z function from t = 0 to 42",
+  x: {domain: [0, 42], label: "t", labelArrow: false},
+  y: {label: "Z(t)", labelArrow: false, grid: true},
+  marks: [
+    Plot.ruleY([0]),
+    Plot.line(hardyZData, {x: "t", y: "Z", strokeWidth: 2})
+  ]
+})
+```
+
+### The image of the critical line
+
+We can also plot the curve $\zeta(\frac12+it)$ directly in the complex plane. Here $t$ ranges from $-42$ to $42$. Each passage through the origin corresponds to a zero of $\zeta$ on the critical line.
+
+```{ojs}
+//| output: false
+criticalLineImage = Array.from({length: 4201}, (_, i) => {
+  const t = -42 + i * 84 / 4200;
+  const value = math.zeta(math.complex(0.5, t));
+  return {t, re: math.re(value), im: math.im(value)};
+})
+```
+
+```{ojs}
+//| label: fig-critical-line-image
+//| fig-cap: 'The image of $\frac12+it$ under $\zeta$ for $-42\leq t\leq42$.'
+Plot.plot({
+  width: Math.min(width, 800),
+  aspectRatio: 1,
+  marginLeft: 60,
+  marginBottom: 50,
+  style: {background: "transparent", color: "inherit"},
+  ariaLabel: "Image of the critical line under the Riemann zeta function for t from −42 to 42",
+  x: {label: "Re(ζ(½ + it))", labelArrow: false, grid: true},
+  y: {label: "Im(ζ(½ + it))", labelArrow: false, grid: true},
+  marks: [
+    Plot.ruleX([0]),
+    Plot.ruleY([0]),
+    Plot.line(criticalLineImage, {x: "re", y: "im", strokeWidth: 1.5})
+  ]
+})
+```
+
+```{ojs}
+zetaZeros = [14.1347, 21.022, 25.0109, 30.4249, 32.9351, 37.5862, 40.9187, 43.3271, 48.0052, 49.7738, 52.9703, 56.4462, 59.347, 60.8318, 65.1125, 67.0798, 69.5464, 72.0672, 75.7047, 77.1448, 79.3374, 82.9104, 84.7355, 87.4253, 88.8091, 92.4919, 94.6513, 95.8706, 98.8312, 101.318, 103.726, 105.447, 107.169, 111.03, 111.875, 114.32, 116.227, 118.791, 121.37, 122.947, 124.257, 127.517, 129.579, 131.088, 133.498, 134.757, 138.116, 139.736, 141.124, 143.112];
+primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47];
+```
+
+### A sum over the zeros
+
+Here we plot
+$$
+\sum_{n=1}^{N}\cos(z_n\ln x),
+$$
+where $z_n$ is the imaginary part of the $n$th positive zero listed above. The dots on the horizontal axis mark the primes.
+
+```{ojs}
+viewof N = Inputs.range([1, zetaZeros.length], {value: 50, step: 1, label: "N"})
+
+viewof M = Inputs.range([2, 50], {value: 50, step: 1, label: "M"})
+```
+
+```{ojs}
+//| output: false
+zeroSumData = {
+  const zeros = zetaZeros.slice(0, N);
+  const logMin = Math.log(1.5);
+  const logMax = Math.log(M);
+  // Sample uniformly in log(x) to resolve the oscillations near the left edge.
+  return Array.from({length: 4001}, (_, i) => {
+    const logX = logMin + (logMax - logMin) * i / 4000;
+    const x = i === 0 ? 1.5 : i === 4000 ? M : Math.exp(logX);
+    return {x, sum: zeros.reduce((total, z) => total + Math.cos(z * logX), 0)};
+  });
+}
+```
+
+```{ojs}
+//| label: fig-zero-sum
+//| fig-cap: 'A cosine sum over the first $N$ zeta zeros, with dots at the primes.'
+Plot.plot({
+  width: Math.min(width, 800),
+  height: 350,
+  marginLeft: 55,
+  marginBottom: 45,
+  style: {background: "transparent", color: "inherit"},
+  ariaLabel: `Cosine sum over the first ${N} zeta zeros for x from 1.5 to ${M}, with dots at the primes`,
+  x: {domain: [1.5, M], label: "x", labelArrow: false},
+  y: {domain: [-16, 12], nice: false, label: "Cosine sum", labelArrow: false, grid: true},
+  marks: [
+    Plot.ruleY([0]),
+    Plot.line(zeroSumData, {x: "x", y: "sum", strokeWidth: 1.5, clip: true}),
+    Plot.dot(primes.filter(p => p <= M), {
+      x: p => p, y: 0, r: 4, fill: "steelblue",
+      title: p => `Prime: ${p}`
+    })
+  ]
+})
+```

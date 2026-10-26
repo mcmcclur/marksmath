@@ -1,0 +1,123 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Wolfram 14.2' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       154,          7]
+NotebookDataLength[      4045,        115]
+NotebookOptionsPosition[      3601,        100]
+NotebookOutlinePosition[      3995,        116]
+CellTagsIndexPosition[      3952,        113]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"domainColoring", "[", 
+    RowBox[{"expr_", ",", 
+     RowBox[{"{", 
+      RowBox[{"z_", ",", "min_", ",", "max_"}], "}"}], ",", " ", "opts___"}], 
+    "]"}], " ", ":=", " ", 
+   RowBox[{"Module", "[", 
+    RowBox[{
+     RowBox[{"{", "cF", "}"}], ",", "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"cF", " ", "=", " ", 
+       RowBox[{"Function", "[", 
+        RowBox[{"expr", " ", "/.", " ", 
+         RowBox[{"z", "\[Rule]", "#"}]}], "]"}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"DensityPlot", "[", 
+       RowBox[{
+        RowBox[{"5", "-", 
+         RowBox[{"Abs", "[", 
+          RowBox[{"cF", "[", 
+           RowBox[{"x", "+", 
+            RowBox[{"I", "*", "y"}]}], "]"}], "]"}]}], ",", " ", 
+        RowBox[{"{", 
+         RowBox[{"x", ",", 
+          RowBox[{"Re", "[", "min", "]"}], ",", 
+          RowBox[{"Re", "[", "max", "]"}]}], "}"}], ",", 
+        RowBox[{"{", 
+         RowBox[{"y", ",", 
+          RowBox[{"Im", "[", "min", "]"}], ",", 
+          RowBox[{"Im", "[", "max", "]"}]}], "}"}], ",", 
+        "\[IndentingNewLine]", 
+        RowBox[{"MeshFunctions", "\[Rule]", 
+         RowBox[{"{", 
+          RowBox[{
+           RowBox[{
+            RowBox[{"Arg", "[", 
+             RowBox[{"cF", "[", 
+              RowBox[{"#1", "+", 
+               RowBox[{"I", "*", "#2"}]}], "]"}], "]"}], "&"}], ",", 
+           RowBox[{
+            RowBox[{"Abs", "[", 
+             RowBox[{"cF", "[", 
+              RowBox[{"#1", "+", 
+               RowBox[{"I", "*", "#2"}]}], "]"}], "]"}], "&"}]}], "}"}]}], ",",
+         "\[IndentingNewLine]", 
+        RowBox[{"MeshStyle", " ", "->", " ", 
+         RowBox[{"{", 
+          RowBox[{"Directive", "[", 
+           RowBox[{
+            RowBox[{"Opacity", "[", "0.4", "]"}], ",", " ", 
+            RowBox[{"Thickness", "[", "0.001", "]"}]}], "]"}], "}"}]}], ",", 
+        "\[IndentingNewLine]", "opts", ",", " ", 
+        RowBox[{"Mesh", " ", "\[Rule]", " ", "True"}], ",", " ", 
+        RowBox[{"ColorFunction", " ", "->", " ", "\"\<DeepSeaColors\>\""}], ",",
+         " ", 
+        RowBox[{"AspectRatio", "\[Rule]", "Automatic"}], ",", " ", 
+        RowBox[{"PlotPoints", " ", "\[Rule]", " ", "101"}], ",", 
+        RowBox[{"PlotRange", "->", 
+         RowBox[{"{", 
+          RowBox[{"0", ",", "5"}], "}"}]}]}], "]"}]}]}], 
+    "\[IndentingNewLine]", "]"}]}], ";"}]], "Input",
+ CellChangeTimes->{{4.00197736349341*^9, 4.0019773655030813`*^9}},
+ CellLabel->"In[1]:=",ExpressionUUID->"32d06e77-a7f3-475a-9c23-13817379db38"],
+
+Cell[BoxData[
+ RowBox[{"domainColoring", "[", 
+  RowBox[{
+   RowBox[{"Zeta", "[", "z", "]"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"z", ",", 
+     RowBox[{
+      RowBox[{
+       RowBox[{"-", "1"}], "/", "2"}], "-", "I"}], ",", 
+     RowBox[{"10", "+", 
+      RowBox[{"26", "I"}]}]}], "}"}], ",", " ", 
+   RowBox[{"Frame", "->", "False"}], ",", " ", 
+   RowBox[{"PlotRangePadding", " ", "->", " ", "0"}]}], "]"}]], "Input",
+ CellLabel->"In[2]:=",ExpressionUUID->"14606c0e-9174-4d97-bbee-d99d7997552a"]
+},
+WindowSize->{808, 694},
+WindowMargins->{{28, Automatic}, {36, Automatic}},
+FrontEndVersion->"14.2 for Mac OS X ARM (64-bit) (March 16, 2025)",
+StyleDefinitions->"Default.nb",
+ExpressionUUID->"f757816f-3149-4b4d-b1e7-438522ffb3af"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[554, 20, 2542, 63, 172, "Input",ExpressionUUID->"32d06e77-a7f3-475a-9c23-13817379db38"],
+Cell[3099, 85, 498, 13, 29, "Input",ExpressionUUID->"14606c0e-9174-4d97-bbee-d99d7997552a"]
+}
+]
+*)
+
