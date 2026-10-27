@@ -16,9 +16,9 @@ I am no expert on the Riemann Hypothesis. As a professor of mathematics teaching
 
 The Riemann Hypothesis lies within that part of mathematics known as *analytic number theory* - the application of ideas from analysis to questions of number theory.
 
-Real analysis is essentially the theory behind calculus. That is, $\varepsilon$s and $\delta$s and their application to the ideas of limits, continuity, and more. Complex analysis is the extension of those same ideas to complex functions mapping $\mathbb{C}\to\mathbb{C}$. Of course, both real and complex analysis have grown behind their original purpose to simply understanding calculus. They are fundamental subjects in their own right.
+Real analysis is essentially the theory behind calculus. That is, $\varepsilon$s and $\delta$s and their application to the ideas of limits, continuity, and more. Complex analysis is the extension of those same ideas to complex functions mapping $\mathbb{C}\to\mathbb{C}$. Of course, both real and complex analysis have grown beyond their original purpose to simply understanding calculus. They are fundamental subjects in their own right.
 
-Number theory is the study of the natural numbers or the integers. There are loads of things that we could study about the these numeric systems but one of the deepest and most fruitful fields has been the study of prime numbers, those natural numbers with no divisors other than 1 and itself:
+Number theory is the study of the natural numbers or the integers. There are loads of things that we could study about the these numeric systems but one of the deepest and most fruitful fields has been the study of prime numbers - those natural numbers with no divisors other than 1 and itself:
 $$
 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, \ldots 
 $$
@@ -146,16 +146,16 @@ Now, the unique factorization theorem asserts that every integer larger than 1 c
 $$90 = 2\times3^2\times5.$$
 There's no other factorization of 90.
 
-Now, if you expand out the infinite product above, you'll find that you can get $1/n$ for every $n$ by simply choosing the term from each sum according to the prime factorization of $n$. For example, 
-$$\frac{1}{90^s} = \frac{1}{2^s}\times\frac{1}{3^{2s}}\times\frac{1}{5}.$$
+Next, if you expand out the infinite product above, you'll find that you can get $1/n$ for every $n$ by simply choosing the term from each sum according to the prime factorization of $n$. For example, 
+$$\frac{1}{90^s} = \frac{1}{2^s}\times\frac{1}{3^{2s}}\times\frac{1}{5^s}.$$
 
 
 ### The infinitude of the primes
 
-With this connection, we immediately get another proof that there are infinitely many prime numbers. Just plug $s=1$ to get
+With this connection, we immediately get another proof that there are infinitely many prime numbers. Near $s=1$ we get
 $$
-\lim_{s\to0^+} \prod_{p\text{ prime}}\frac{1}{1-\frac{1}{p^s}} = 
-\lim_{s\to0^+} \sum_{n=1}^{\infty} \frac{1}{n^s} = \infty.
+\lim_{s\to1^+} \prod_{p\text{ prime}}\frac{1}{1-\frac{1}{p^s}} = 
+\lim_{s\to1^+} \sum_{n=1}^{\infty} \frac{1}{n^s} = \infty.
 $$
 That can only happen, though, if there are infinitely many prime numbers.
 
@@ -183,6 +183,16 @@ $$
 \sum_{n=1}^{\infty} \frac{1}{n^2}
 $$
 converges.
+
+### The prime number theorem
+
+The prime number theorem is a strong statement about the density of the primes. Let $P$ denote the set of primes for $x>0$, let $\pi(x)$ denote the number of primes less than $x$. The prime number theorem states that
+$$
+\pi(x) \sim x/\ln(x).
+$$
+Note that this implies that the primes are *much* more dense than the set of squares.
+
+One thing that the Riemann Hypothesis would allow us to do would be to strengthen this statement considerably.
 
 ## The Riemann Zeta function
 
@@ -214,13 +224,13 @@ converges absolutely by the comparison test.
 
 As it turn out the Riemann Hypothesis states that the roots of $\zeta$ all lie on the line with $\text{Re}(z) = 1/2$. That seems odd, since the series defining $\zeta$ converges only for $\text{Re}(z) > 1$!
 
-As it turn out, though, the definition of $\zeta$ can be extended. In fact, it can be extended to the entire complex plane, with the exception of the single point $z=1$. Doing so, is not easy. Fortunately, though, there's a neat trick that makes it not so hard to extend the definition to $\text{Re}(z) > 0$.
+The definition of $\zeta$ can be extended, though. In fact, it can be extended to the entire complex plane, with the exception of the single point $z=1$. Doing so, is not easy. Fortunately, though, there's a neat trick that makes it not so hard to extend the definition to $\text{Re}(z) > 0$.
 
 The idea is to relate $\zeta$ to its alternating version $\eta$ defined by
 $$
 \eta(z)=\sum_{n=1}^\infty\frac{(-1)^{n-1}}{n^z}.
 $$
-Now, $\eta$ certainly looks like an alternating series so that we might thing that it converges for $\text{Re}(z)>0$. In fact, the series does converge on that larger domain but proving it is not as quite so easy as applying the alternating series test since $n^z$ is not a real number.
+Now, $\eta$ certainly looks like an alternating series so that we might think that it converges for $\text{Re}(z)>0$. In fact, the series does converge on that larger domain but proving it is not as quite so easy as applying the alternating series test since $n^z$ is not a real number.
 
 What we can do, though, is group the terms:
 $$
@@ -248,13 +258,33 @@ $$
 converges.
 
 Now that we know that $\eta$ converges for $\text{Re}(z)>0$, we can write
+
+$$
+\eta(z)=\sum_{n=1}^\infty\frac1{n^z}
+-2\sum_{n=1}^\infty\frac1{(2n)^z}.
+$$
+
+To see this, align the terms and add like so:
+$$
+\begin{array}{r@{\;}c@{\;}rcrcrcrcrcrcr}
+\displaystyle\sum_{n=1}^{\infty}\frac1{n^z}
+&=&1&+&\dfrac1{2^z}&+&\dfrac1{3^z}&+&\dfrac1{4^z}&+&\dfrac1{5^z}&+&\dfrac1{6^z}&+&\cdots\\[1em]
+\displaystyle-2\sum_{n=1}^{\infty}\frac1{(2n)^z}
+&=&&-&\dfrac2{2^z}&&&-&\dfrac2{4^z}&&&-&\dfrac2{6^z}&-&\cdots\\[0.5em]
+\hline
+\displaystyle
+& &1&-&\dfrac1{2^z}&+&\dfrac1{3^z}&-&\dfrac1{4^z}&+&\dfrac1{5^z}&-&\dfrac1{6^z}&+&\cdots
+\end{array}
+$$
+
+That last sum is exactly $\eta(z)$! This allows us to relate $\eta$ and $\zeta$ via
+
 $$
 \begin{aligned}
 \eta(z)
 &=\sum_{n=1}^\infty\frac1{n^z}
 -2\sum_{n=1}^\infty\frac1{(2n)^z}\\
-&=\zeta(z)-2^{1-z}\zeta(z)\\
-&=(1-2^{1-z})\zeta(z).
+&=\zeta(z)-2^{1-z}\zeta(z)=(1-2^{1-z})\zeta(z).
 \end{aligned}
 $$
 Solving for $\zeta$, we get
@@ -266,7 +296,9 @@ This expresses $\zeta(z)$ in a way that's defined for all $z$ with $\text{Re}(z)
 
 ## The Riemann Hypothesis
 
-The Riemann Hypothesis conjectures that the function we've defined has infinitely many roots and that they all lie on the line with $\text{Re}(z)=1/2$.
+The Riemann Hypothesis conjectures that the function we've defined has infinitely many roots and that they all lie on the line with $\text{Re}(z)=1/2$. Let's illustrate with a few pictures.
+
+### A contour-density plot
 
 @fig-zeta_contours plots the Riemann zeta function with shading given by $|\zeta(z)|$. The contours are of $|z|$ and $\text{Arg}(z)$. 
 
@@ -310,100 +342,111 @@ The Riemann Hypothesis conjectures that the function we've defined has infinitel
 }
 ```
 
-In the picture, we can see three roots at about
-$$
-\frac{1}{2} + 14.1347i, \frac{1}{2} + 21.022i, \text{ and } \frac{1}{2} + 25.0109i.
-$$
-We can also see the pole at one.
+The vertical dashed line $\text{Re(z)} = 1/2$ is called the *critical line*. In the picture, we can see three roots on the critical line at about $0.5 + 14i$, $0.5 + 21i$, $0.5 + 25i$. We can also see the pole at $z=1$.
 
-There is a lot known about these roots. The following have been proved:
 
-- There are infinitely many roots.
-- They all lie in the critical strip $0<\text{Re}(z)<1$.
-- Infinitely many of the roots lie on the critical line $\text{Re(z)} = 1/2$.
 
-It's still not known if there are others in the critical strip that lie off the critical line.
+### The image of a vertical line
+
+Another way to visualize the critical line is to plot its image under $\zeta$ in the complex plane. That is,
+$$\{\zeta(\frac{1}{2} + it): t\in\mathbb{R}\}.$$
+We should get a winding curve that passes through the origin again and again. That's exactly what's illustrated in @fig-critical-line-image, which plots the image of the critical line over $0\leq t \leq \text{t-max}$.
+
+In fact, the visualization is just a bit more general, it plots
+$$\{\zeta(s + it): t\in\mathbb{R}\},$$
+where you can choose $s$ in $0.4 \leq s \leq 0.6$ illustrating how the path *misses* the origin when $s\neq0.5$.
+
+
+```{ojs}
+//| output: false
+zetaCritical = FileAttachment("zetaCritical.json").json()
+selectedZetaCurve = zetaCritical[zetaCurveIndex - 1]
+zetaSampleStep = 0.05
+```
+
+```{ojs}
+viewof zetaCurveIndex = Inputs.range([1, zetaCritical.length], {
+  value: zetaCritical.findIndex(d => d.s === 0.5) + 1,
+  step: 1,
+  label: "s",
+  format: n => zetaCritical[n - 1].s
+})
+
+viewof zetaTMaxIndex = Inputs.range([0, zetaCritical[0].pts.length - 1], {
+  value: 550,
+  step: 1,
+  label: "t-max",
+  format: n => (n * zetaSampleStep).toFixed(2)
+})
+```
+
+```{ojs}
+//| label: fig-critical-line-image
+//| fig-cap: 'The image of $s+it$ under $\zeta$'
+Plot.plot({
+  width: Math.min(width, 600),
+  aspectRatio: 1,
+  marginLeft: 60,
+  marginBottom: 50,
+  style: {background: "transparent", color: "inherit"},
+  ariaLabel: `Image of the line s = ${selectedZetaCurve.s} under the Riemann zeta function for t from 0 to ${(zetaTMaxIndex * zetaSampleStep).toFixed(2)}`,
+  x: {domain: [-2.1, 5.1], nice: false, label: "Re(ζ(s + it))", labelArrow: false, grid: true},
+  y: {domain: [-3.6, 3.6], nice: false, ticks: [-3, -2, -1, 0, 1, 2, 3], label: "Im(ζ(s + it))", labelArrow: false, grid: true},
+  marks: [
+    Plot.ruleX([0]),
+    Plot.ruleY([0]),
+    Plot.line(selectedZetaCurve.pts.slice(0, zetaTMaxIndex + 1), {x: p => p[0], y: p => p[1], strokeWidth: 1.5, clip: true})
+  ]
+})
+```
+
+
 
 
 ### Hardy's $Z$ function
 
-We can turn the values of $\zeta$ along the critical line into a real-valued function:
-$$
-Z(t)=e^{i\theta(t)}\zeta\left(\frac12+it\right),
-$$
-where $\theta$ is the Riemann–Siegel theta function,
-$$
-\theta(t)=\operatorname{Im}\log\Gamma\left(\frac14+\frac{it}{2}\right)
--\frac{t}{2}\log\pi.
-$$
-Here the logarithm is chosen continuously so that $\theta(0)=0$. The factor $e^{i\theta(t)}$ has absolute value one, so $Z(t)$ has the same zeros as $\zeta(\frac12+it)$.
+We can unwind the previous graph plotting $t$ vs $\pm|\zeta(0.5 + it)|$ where the $\pm$ accounts for how many rotations have been made to determine which side of the horizontal axis we should be. @fig-hardy-z shows the result.
 
 ```{ojs}
 //| output: false
-math = import("https://cdn.jsdelivr.net/npm/mathjs@15.2.0/+esm")
+hardyZValues = FileAttachment("HardyZ.json").json()
 
-riemannTheta = t => math.im(math.lgamma(math.complex(0.25, t / 2)))
-  - t * Math.log(Math.PI) / 2
+hardyZStep = 100 / (hardyZValues.length - 1)
 
-hardyZ = t => math.re(math.multiply(
-  math.exp(math.complex(0, riemannTheta(t))),
-  math.zeta(math.complex(0.5, t))
-))
+hardyZData = hardyZValues.map((Z, i) => ({t: i * hardyZStep, Z}))
 
-hardyZData = Array.from({length: 2101}, (_, i) => {
-  const t = i * 42 / 2100;
-  return {t, Z: hardyZ(t)};
+```
+
+```{ojs}
+viewof hardyTMaxIndex = Inputs.range([0, hardyZValues.length - 1], {
+  value: 550,
+  step: 1,
+  label: "t-max",
+  format: n => (n * hardyZStep).toFixed(2)
 })
 ```
 
 ```{ojs}
 //| label: fig-hardy-z
-//| fig-cap: "Hardy's real-valued $Z$ function along the critical line for $0<t<42$. The first three zero crossings correspond to the roots shown above."
+//| fig-cap: "Hardy's real-valued $Z$ function"
 Plot.plot({
   width: Math.min(width, 800),
   height: 350,
   marginLeft: 55,
   marginBottom: 45,
   style: {background: "transparent", color: "inherit"},
-  ariaLabel: "Hardy's Z function from t = 0 to 42",
-  x: {domain: [0, 42], label: "t", labelArrow: false},
-  y: {label: "Z(t)", labelArrow: false, grid: true},
+  ariaLabel: `Hardy's Z function from t = 0 to ${(hardyTMaxIndex * hardyZStep).toFixed(2)}`,
+  x: {domain: [0, Math.max(hardyZStep, hardyTMaxIndex * hardyZStep)], label: "t", labelArrow: false},
+  y: {domain: [-5, 5], nice: false, label: "Z(t)", labelArrow: false, grid: true},
   marks: [
     Plot.ruleY([0]),
-    Plot.line(hardyZData, {x: "t", y: "Z", strokeWidth: 2})
-  ]
-})
-```
-
-### The image of the critical line
-
-We can also plot the curve $\zeta(\frac12+it)$ directly in the complex plane. Here $t$ ranges from $-42$ to $42$. Each passage through the origin corresponds to a zero of $\zeta$ on the critical line.
-
-```{ojs}
-//| output: false
-criticalLineImage = Array.from({length: 4201}, (_, i) => {
-  const t = -42 + i * 84 / 4200;
-  const value = math.zeta(math.complex(0.5, t));
-  return {t, re: math.re(value), im: math.im(value)};
-})
-```
-
-```{ojs}
-//| label: fig-critical-line-image
-//| fig-cap: 'The image of $\frac12+it$ under $\zeta$ for $-42\leq t\leq42$.'
-Plot.plot({
-  width: Math.min(width, 800),
-  aspectRatio: 1,
-  marginLeft: 60,
-  marginBottom: 50,
-  style: {background: "transparent", color: "inherit"},
-  ariaLabel: "Image of the critical line under the Riemann zeta function for t from −42 to 42",
-  x: {label: "Re(ζ(½ + it))", labelArrow: false, grid: true},
-  y: {label: "Im(ζ(½ + it))", labelArrow: false, grid: true},
-  marks: [
-    Plot.ruleX([0]),
-    Plot.ruleY([0]),
-    Plot.line(criticalLineImage, {x: "re", y: "im", strokeWidth: 1.5})
+    Plot.line(hardyZData.slice(0, hardyTMaxIndex + 1), {x: "t", y: "Z", strokeWidth: 2, clip: true}),
+    Plot.dot(zetaZeros.map((t, i) => ({t, n: i + 1}))
+      .filter(d => d.t <= hardyTMaxIndex * hardyZStep), {
+      x: "t", y: 0, r: 4, fill: "steelblue",
+      title: d => `Zero ${d.n}\nt ≈ ${d.t}`,
+      tip: true
+    })
   ]
 })
 ```
@@ -413,17 +456,26 @@ zetaZeros = [14.1347, 21.022, 25.0109, 30.4249, 32.9351, 37.5862, 40.9187, 43.32
 primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47];
 ```
 
-### A sum over the zeros
+The advantage of this graph is that it allows efficient and precise location of the roots.
 
-Here we plot
+### Connecting the zeros and the primes
+
+For our last plot, we simply illustrate one way that the roots of $\zeta$ are connected to the distribution of the primes. In this context, it's traditional to list the positive imaginary parts of the roots of $\zeta$ in increasing order as $\gamma_1$, $\gamma_2$, ...
+
+Thus,
 $$
-\sum_{n=1}^{N}\cos(z_n\ln x),
+\gamma_1 \approx 14.1347, \: \gamma_2 \approx 21.022, \gamma_3 \approx 25.0109, \ldots
 $$
-where $z_n$ is the imaginary part of the $n$th positive zero listed above. The dots on the horizontal axis mark the primes.
+Using this notation, we can define the cosine sum $C_N(x)$ as
+$$
+C_N(x) = \sum_{n=1}^{N}\cos(\gamma_n\ln x).
+$$
+where $\gamma_n$ is the imaginary part of the $n$th positive zero listed above. The dots on the horizontal axis mark the primes.
+
+Now, check out this plot of $C_N$, together with the location of the primes. Note that the $N$ slider controls how many terms to use in the sum, while the $M$ slider controls the maximum value of the domain over which we plot.
 
 ```{ojs}
 viewof N = Inputs.range([1, zetaZeros.length], {value: 50, step: 1, label: "N"})
-
 viewof M = Inputs.range([2, 50], {value: 50, step: 1, label: "M"})
 ```
 
@@ -459,8 +511,29 @@ Plot.plot({
     Plot.line(zeroSumData, {x: "x", y: "sum", strokeWidth: 1.5, clip: true}),
     Plot.dot(primes.filter(p => p <= M), {
       x: p => p, y: 0, r: 4, fill: "steelblue",
-      title: p => `Prime: ${p}`
+      title: p => `Prime: ${p}`,
+      tip: true
     })
   ]
 })
 ```
+
+
+## The Quasi-Riemann Hypothesis
+
+There is quite a lot that is known about the roots. The following have been proved:
+
+- There are infinitely many roots.
+- They all lie in the critical strip $0<\text{Re}(z)<1$.
+- Infinitely many of the roots lie on the critical line.
+  - In fact, a positive proportion of the roots lie on the critical line.
+- The imaginary part of any root of $\zeta$ in the upper half plane must be at least $3\times10^{12}$.
+
+It's still not known if there are other roots in the critical strip that lie off the critical line. It's also not known if those roots might ultimately get close to $\text{Re}(z)= 0$ or $\text{Re}(z)= 1$. The Quasi-Riemann Hypothesis conjectures that they don't.
+
+**Quasi-Riemann Hypothesis**
+
+*Conjecture*: There is $\delta>0$ such that every root $z$ of the Riemann Zeta function in the critical strip satisfies
+$$\delta < \text{Re}(z) < 1 - \delta.$$
+
+Open AI, of course, claims to hav resolved this conjecture.
