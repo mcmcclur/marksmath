@@ -1,0 +1,134 @@
+---
+title: Review for quiz 3
+date: 2025-10-27
+echo: false 
+format:
+  html:
+    page-layout: article
+    toc: true
+    crossrefs-hover: false 
+    css: /components/EmbedDiscourseMathTopics/embedDiscourseMathTopic.css
+  pdf:
+    mainfont: "Times New Roman"
+    output-file: Quiz3Review.pdf
+    include-in-header:
+      text: |
+        \pagenumbering{gobble}
+        \usepackage[bottom=0.1in]{geometry}
+---
+
+We have our third quiz this Friday, October 30th. This problem sheet represents most of the types problems that will be on the quiz. You should absolutely study it fully and completely!
+
+## Problems 
+
+1. @fig-exponential-graph shows the graph of $f(x) = 5x\,e^{-x}$ over the interval $[0,6]$. For that function
+
+   a. Find the exact location of the absolute minimum.
+   b. Find the exact location of the absolute maximum.
+   c. Find the exact location of any other *relative* extremes.
+   d. Find the exact location of any inflection points.
+
+2. I've got 1000 meters of fence to build a corral. The corral will be partitioned into four pieces and built against an existing wall as shown in @fig-corral. What is the maximal total area that I can enclose?
+
+3. We'd like to generate a rational approximation to $\sqrt{5}$. To do so, let $f(x) = x^2 - 5$ and let $x_0=1$. Then,
+
+   a. Write down the corresponding Newton'd method iteration function for $f$.
+   b. Compute two Newton steps from $x_0=1$.
+
+\newpage 
+
+## Figures
+
+::: {.content-visible when-format="html"}
+
+```{ojs}
+//| label: fig-exponential-graph
+//| fig-cap: "The graph of $f(x) = 5xe^{-x}$."
+{
+  const points = d3.range(601).map(i => {
+    const x = i / 100;
+    return [x, 5 * x * Math.exp(-x)];
+  });
+
+  return Plot.plot({
+    width: Math.min(width, 640),
+    height: 320,
+    style: {background: "transparent", color: "inherit"},
+    ariaLabel: "Graph of f(x) = 5x exp(-x) on the interval [0, 6]",
+    x: {domain: [0, 6], ticks: 7, label: "x", grid: true},
+    y: {domain: [0, 2], ticks: 5, label: "f(x)", grid: true},
+    marks: [
+      Plot.ruleX([0]),
+      Plot.ruleY([0]),
+      Plot.line(points, {stroke: "currentColor", strokeWidth: 2.5})
+    ]
+  });
+}
+```
+
+```{ojs}
+//| label: fig-corral
+//| fig-cap: "A multi partitioned corral"
+{
+const w = 1.9, h = 1;
+const g = 0.09;     // offset of dimension lines from the fence
+const gap = 0.07;   // clearance on each side of a label
+const t = 0.03;     // half-length of end ticks
+return Plot.plot({
+  width: 640,
+  aspectRatio: 1,
+  x: {axis: null, domain: [-0.6, w + 0.6]},
+  y: {axis: null, domain: [-0.2, h + 0.2]},
+  style: {fontSize: "18px"},
+  marks: [
+    // wall: extends well past the corral
+    Plot.line([[-0.5, 0], [w + 0.5, 0]], {strokeWidth: 10, strokeLinecap: "butt"}),
+    // fence: left, top, right
+    Plot.line([[0, 0], [0, h], [w, h], [w, 0]], {strokeWidth: 3, strokeLinejoin: "miter"}),
+    // divider
+    Plot.line([[w / 3, 0], [w / 3, h]], {strokeWidth: 2, strokeDasharray: "1"}),
+    Plot.line([[0, h/2], [w, h/2]], {strokeWidth: 2, strokeDasharray: "1"}),
+    // dimension lines (thin) with end ticks
+    Plot.link([
+      {x1: 0, y1: h + g, x2: w / 2 - gap, y2: h + g},
+      {x1: w / 2 + gap, y1: h + g, x2: w, y2: h + g},
+      {x1: 0, y1: h + g - t, x2: 0, y2: h + g + t},
+      {x1: w, y1: h + g - t, x2: w, y2: h + g + t},
+      {x1: w + g, y1: 0, x2: w + g, y2: h / 2 - gap},
+      {x1: w + g, y1: h / 2 + gap, x2: w + g, y2: h},
+      {x1: w + g - t, y1: 0, x2: w + g + t, y2: 0},
+      {x1: w + g - t, y1: h, x2: w + g + t, y2: h}
+    ], {x1: "x1", y1: "y1", x2: "x2", y2: "y2", strokeWidth: 0.75}),
+    // labels
+    Plot.text([[w / 2, h + g]], {text: ["x"], fontStyle: "italic"}),
+    Plot.text([[w + g, h / 2]], {text: ["y"], fontStyle: "italic"})
+  ]
+});
+}
+```
+
+:::
+
+::: {.content-visible when-format="pdf"}
+
+![The graph of $f(x) = 5xe^{-x}$](figure-one.pdf){#fig-exponential-graph width=100% fig-alt="Graph of f(x) = 5x exp(-x) on the interval [0, 6]"}
+
+![A partitioned corral](figure-two.pdf){#fig-corral width=100% fig-alt="A partitioned corral"}
+
+:::
+
+::: {.content-visible when-format="html"}
+
+## Questions
+
+Follow the "Reply on WriteTech" button to ask a question on or make a comment about this review sheet. Your questions and comments will auto-magically appear below. You can feel free to respond to other students questions and comments. I might chime in as well.
+
+```{ojs}
+embedDiscourseMathTopic(2390)
+```
+
+```{ojs}
+import {embedDiscourseMathTopic} from '/components/EmbedDiscourseMathTopics/embedDiscourseMathTopic.js';
+```
+
+:::
