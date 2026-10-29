@@ -99,6 +99,18 @@ layout: article
 ::: {.grid}
 ::::: {.g-col-12 .g-col-sm-4}
 <div class="card text-bg-light mb-3">
+ <img class="light-content" src="math/xxSpindle/xxSpindleLight.png" class="card-img-top" alt="A view of the x^x Spindle">
+ <img class="dark-content" src="math/xxSpindle/xxSpindleDark.png" class="card-img-top" alt="A view of the x^x Spindle">
+ <div class="card-body text-center">
+  <a href="./math/xxSpindle" class="btn btn-primary">
+    The $x^x$ Spindle
+  </a>
+ </div>
+</div>
+:::::
+
+::::: {.g-col-12 .g-col-sm-4}
+<div class="card text-bg-light mb-3">
  <img class="light-content" src="math/Penrose3Color/Penrose3ColorLight.png" class="card-img-top" alt="A three-colored Penrose rhomb tiling">
  <img class="dark-content" src="math/Penrose3Color/Penrose3ColorDark.png" class="card-img-top" alt="A three-colored Penrose rhomb tiling">
  <div class="card-body text-center">

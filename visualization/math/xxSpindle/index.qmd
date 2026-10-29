@@ -1,0 +1,70 @@
+---
+title: "The $x^x$ spindle"
+format: html
+page-layout: article
+toc: true
+---
+
+The image below shows the $x^x$-spindle, as [described by Mark Meyerson](https://www.jstor.org/stable/2691469){target=_blank}.
+
+::: {style="max-width: 800px; margin-inline: auto"} 
+```{ojs}
+//| echo: false
+import {make_spindle} from './components/make_spindle.js'
+
+viewof n = Inputs.range([0, 15], {
+  value: 15,
+  step: 1,
+  label: "Thread pairs"
+})
+
+spindle = {
+  const plot = make_spindle();
+  invalidation.then(() => plot.destroy());
+  return plot;
+}
+```
+:::
+
+## Explanation
+
+For real $x$, $f(x) = x^x$ can be viewed as a function $f:\mathbb{R}\to\mathbb{C}$. In fact, there are infinitely many such functions given by the various branches. To see this, let's write
+$$
+x^x = e^{x\log(x)}.
+$$
+Now, the complex log has many branches defined by
+$$
+\log(x) = \ln(|x|) + i(\text{Arg}(x) + 2k\pi).
+$$
+Each choice of $k$ yields a new branch. Those separate branches are illustrated by the separate threads in the plot.
+
+
+```{ojs}
+//| echo: false
+//| output: false
+spindle.update(n)
+```
+
+## Crossing the real plane
+
+In a calculus class, it's common to define 
+$$x^{p/q} = (\sqrt[q]{x})^p.$$
+In this definition, we're assuming that $p$ is an integer and $q$ is a positive, even integer.  Thus, when $x$ is negative, $x^{p/q}$ is
+
+- well defined and positive, when $p$ is even,
+- well defined and negative, when $p$ is odd, and
+- not defined otherwise.
+
+We can plot this graph for our calculus students like so:
+
+```{ojs}
+//| echo: false
+import {real_intersection_plot} from './components/real_intersections.js'
+real_intersection_plot(15, {width: Math.min(width, 800)})
+```
+
+As is often the case, the more complete view of complex variables sheds like on the real viewpoint. Indeed, the dots occur where one of the threads puncture the $x$-$\text{Re}(x^x)$ plane. For negative $x$, in fact, branch $k$ has imaginary part
+$$
+|x|^x\sin\!\bigl(\pi x(2k+1)\bigr).
+$$
+Thus the crossings occur exactly when $x(2k+1)$ is an integer. 
