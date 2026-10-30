@@ -267,3 +267,27 @@ layout: article
 :::::
 ::::
 :::
+
+
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const tabs = Array.from(
+    document.querySelectorAll('.panel-tabset [data-bs-toggle="tab"]')
+  );
+
+  function activateTabFromHash() {
+    const name = location.hash.slice(1).toLowerCase();
+    if (!name) return;
+
+    const tab = tabs.find(
+      tab => tab.textContent.trim().toLowerCase() === name
+    );
+
+    if (tab) bootstrap.Tab.getOrCreateInstance(tab).show();
+  }
+
+  activateTabFromHash();
+  window.addEventListener("hashchange", activateTabFromHash);
+});
+</script>
