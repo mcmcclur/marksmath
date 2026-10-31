@@ -47,10 +47,11 @@ Choosing the line is not hard; it's just a matter of specifying its slope using 
 
     return Plot.plot({
         width, height,
+        style: {background: "transparent", color: "inherit"},
         x: {domain: [xmin,xmax]},
         y: {domain: [ymin,ymax]},
         marks: [
-            Plot.dot(data, {fill: 'black'}),
+            Plot.dot(data, {fill: 'currentColor'}),
             Plot.line([[xmin,a*xmin], [xmax, a*xmax]], {strokeWidth: 0.4}),
             Plot.line([[xmin,aa*xmin], [xmax, aa*xmax]]),
             Plot.axisX({y:0}), Plot.axisY({x:0}),
@@ -126,11 +127,12 @@ The diagonal line with negative slope shown in the figure is the regression line
 
 ```{ojs}
 Plot.plot({
+    style: {background: "transparent", color: "inherit"},
     marks: [
         Plot.dot(ncaa_data, {
             x: 'seed_diff',
             y: o => o.team1_score - o.team2_score,
-            fill: 'black',
+            fill: 'currentColor',
             opacity: 0.5,
             channels: {
                 'Team 1': 'team1_name', 'Team 2': 'team2_name',
@@ -140,7 +142,7 @@ Plot.plot({
         }),
         Plot.linearRegressionY(ncaa_data, 
             {x: "seed_diff", y: o => o.team1_score - o.team2_score, 
-            stroke: "black", ci: 0}
+            stroke: "currentColor", ci: 0}
         ),        
         Plot.axisX({y:0}), Plot.axisY({x:0}),
         Plot.ruleX([0]), Plot.ruleY([0])
