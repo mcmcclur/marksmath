@@ -32,6 +32,34 @@ The Riemann Hypothesis concerns a function that arises in complex analysis and i
 
 Within the natural numbers, there are relative sizes of infinity. There are certainly infinitely many squares, for example, but they are spread out fairly thinly compared to all the naturals. You can see this in the three lists of numbers below. 
 
+```{=html}
+<style>
+.number-sets {
+  overflow-x: auto;
+  padding: 0.75rem;
+  background: #fff;
+  color: #000;
+}
+.number-sets-grid { width: max-content; }
+.number-set-row {
+  display: grid;
+  grid-template-columns: 4em repeat(36, 2ch);
+  gap: 0.35em;
+  line-height: 1.8;
+  font-variant-numeric: tabular-nums;
+}
+.number-set-row > span:not(.set-label) { text-align: right; }
+.number-set-row .member {
+  font-weight: bold;
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+.number-set-row .excluded { color: #707070; }
+body.quarto-dark .number-sets { background: #222; color: #fff; }
+body.quarto-dark .number-set-row .excluded { color: #aaa; }
+</style>
+```
+
 ```{python}
 #| echo: false
 #| output: asis
@@ -45,17 +73,33 @@ primes = {
 }
 squares = {n for n in integers if isqrt(n) ** 2 == n}
 
-print('<div style="overflow-x: auto;"><div style="width: max-content; white-space: nowrap; line-height: 1.4; word-spacing: 0.06em;">')
-for highlighted in [set(integers), primes, squares]:
-    numbers = " ".join(
-        f'<span style="opacity: {1 if n in highlighted else 0.25}">{n}</span>'
+rows = [
+    ("Integers", set(integers)),
+    ("Primes", primes),
+    ("Squares", squares),
+]
+
+# Supply the mathematical content without reading three identical visual lists.
+print('<div class="visually-hidden">')
+print('<p>The following diagram compares three sets from 1 through 36.</p>')
+print('<ul>')
+for label, members in rows:
+    description = "all integers from 1 through 36" if label == "Integers" else ", ".join(map(str, sorted(members)))
+    print(f'<li>{label}: {description}.</li>')
+print('</ul></div>')
+
+print('<div class="number-sets" tabindex="0" role="region" aria-label="Number set comparison, horizontally scrollable">')
+print('<div class="number-sets-grid" aria-hidden="true">')
+for label, members in rows:
+    numbers = "".join(
+        f'<span class="{ "member" if n in members else "excluded" }">{n}</span>'
         for n in integers
     )
-    print(f'<div>{numbers}</div>')
+    print(f'<div class="number-set-row"><span class="set-label">{label}</span>{numbers}</div>')
 print('</div></div>')
 ```
 
-All three lists consist of the integers 1 through 36. The second and third lists highlight the primes and squares. There are 
+All three lists consist of the integers 1 through 36. Bold, underlined numbers belong to the indicated set; the other numbers are muted. There are
 
 - 36 natural numbers from 1 to 36,
 - 11 prime numbers from 1 to 36, and
