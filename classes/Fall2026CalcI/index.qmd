@@ -1,6 +1,5 @@
 ---
 title: Calculus I
-css: styles.css
 ---
 
 ::: {.grid}
@@ -34,6 +33,7 @@ with professor [Mark McClure](https://marksmath.org/)
   - [Water waves](/visualization/class/water_waves/)
   - [Trig summation formulae](/visualization/class/trig_sums)
 - [Newton's method](./demos/NewtonsMethod/)
+- [Linear regression](./demos/linear_regression/)
 
 ## Handouts
 

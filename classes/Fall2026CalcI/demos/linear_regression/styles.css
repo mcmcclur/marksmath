@@ -1,0 +1,6 @@
+input[type="number"] {
+  width: 120px !important;
+}
+form label {
+  width: 35px !important;
+}
