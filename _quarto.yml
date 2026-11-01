@@ -29,18 +29,26 @@ website:
         text: Class
       - href: https://legacy.marksmath.org/
         text: Legacy
-    right:
-      - href: https://www.linkedin.com/in/mark-mcclure-6739911a9/
-        text: <i class="fa fa-brands fa-linkedin"></i>
-      - href: https://github.com/mcmcclur
-        text: <i class="fa fa-brands fa-github"></i>
-      - href: https://bsky.app/profile/mark-mcclure.bsky.social
-        text: <i class="fa fa-brands fa-bluesky"></i>
-      - href: https://blog.marksmath.org/
-        text: <i class="bi bi-chat-left-text"></i>
-      - href: mailto:mcmcclur@unca.edu
-        text: <i class="fa fa-regular fa-envelope"></i>
+    tools:
+      - icon: linkedin
+        href: https://www.linkedin.com/in/mark-mcclure-6739911a9/
+        aria-label: "Mark's LinkedIn"
 
+      - icon: github
+        href: https://github.com/mcmcclur
+        aria-label: "Mark's GitHub"
+
+      - icon: bluesky
+        href: https://bsky.app/profile/mark-mcclure.bsky.social
+        aria-label: "Mark's Bluesky"
+
+      - icon: chat-left-text
+        href: https://blog.marksmath.org/
+        aria-label: "The Blog @ Mark's Math"
+
+      - icon: envelope
+        href: mailto:mcmcclur@unca.edu
+        aria-label: "Email Mark"
 format: 
   html:
     include-in-header: mathjax-config.html
