@@ -2,6 +2,7 @@
 title: Review for quiz 3
 date: 2026-10-27
 echo: false 
+export-svg-figures: true
 format:
   html:
     page-layout: article
@@ -9,7 +10,8 @@ format:
     crossrefs-hover: false 
     css: /components/EmbedDiscourseMathTopics/embedDiscourseMathTopic.css
   pdf:
-    mainfont: "Times New Roman"
+    documentclass: article
+    pdf-standard: ua-2
     output-file: Quiz3Review.pdf
     include-in-header:
       text: |

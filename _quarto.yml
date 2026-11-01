@@ -2,6 +2,7 @@ lang: en
 
 project:
   type: website 
+  pre-render: node scripts/pre-render-figures.cjs
   resources:
     - favicon.ico
     - components/includes/latex-macros.html
