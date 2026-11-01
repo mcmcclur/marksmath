@@ -4,7 +4,6 @@ format:
     include-in-header: 
       - text: |
           <script src="/jslib/cd_bundle.min.js"></script>
-          <style>.observablehq--undefined {display: none}</style>
           <style>
             #homepage-julia-wrap {
               width: 100%;
@@ -21,7 +20,7 @@ format:
 
 ::: {.grid}
 ::::: {.g-col-12 .g-col-md-8}
-## [Mark McClure]{.h1}
+# Mark McClure
 
 Professor of [Mathematics](https://math.unca.edu/)  
 [UNC - Asheville](https://www.unca.edu)  
@@ -51,7 +50,7 @@ Professor of [Mathematics](https://math.unca.edu/)
 
 ```{ojs}
 import {little_julia} from './jslib/little_julia.js';
-{
+little_julia_anim = {
   let color;
   const darkPrefered = window.matchMedia("(prefers-color-scheme: dark)").matches;
   const darkSelected = document.body.classList.contains("quarto-dark");
@@ -73,3 +72,12 @@ import {little_julia} from './jslib/little_julia.js';
 ``` 
 ::::: 
 :::
+
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  document
+    .querySelectorAll('button.navbar-toggler[role="menu"]')
+    .forEach(button => button.removeAttribute("role"));
+});
+</script>
