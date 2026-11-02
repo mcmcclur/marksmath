@@ -321,6 +321,8 @@ $$
 \end{array}
 $$
 
+::: {id="zeta-eta"}
+
 That last sum is exactly $\eta(z)$! This allows us to relate $\eta$ and $\zeta$ via
 
 $$
@@ -337,6 +339,7 @@ $$
 $$
 This expresses $\zeta(z)$ in a way that's defined for all $z$ with $\text{Re}(z)>0$.
 
+:::
 
 ## The Riemann Hypothesis
 

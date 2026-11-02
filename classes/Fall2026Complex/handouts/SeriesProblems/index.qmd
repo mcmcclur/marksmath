@@ -1,0 +1,45 @@
+---
+title: Series and elementary function problems
+date: 2026-11-02
+echo: false 
+format:
+  html:
+    page-layout: article
+    toc: true
+    crossrefs-hover: false 
+  pdf:
+    documentclass: article
+    pdf-standard: ua-2
+    output-file: SeriesAndElementaryFunctionProblems.pdf
+    include-in-header:
+      text: |
+        \pagenumbering{gobble}
+        \usepackage[bottom=0.1in]{geometry}
+---
+
+
+
+1. Recall that we [showed that $\zeta(z)=\eta(z)/(1-2^{1-z})$](../../notes/QuasiRiemann/#zeta-eta). I've also stated (without proof) a couple of times that
+$$
+\zeta(2) = \sum_{n=1}^{\infty} \frac{1}{n^2} = \frac{\pi^2}{6}
+\text{ and }
+\zeta(4) = \sum_{n=1}^{\infty} \frac{1}{n^4} = \frac{\pi^4}{90}.
+$$
+Use those facts to find closed-form expressions for 
+$$
+\eta(2) = \sum_{n=1}^{\infty} \frac{(-1)^{n+1}}{n^2}
+\text{ and }
+\eta(4) = \sum_{n=1}^{\infty} \frac{(-1)^{n+1}}{n^4}.
+$$
+
+2. Use the definition of the exponential function to show that
+
+   a. $|e^z| \leq e^{|z|}$
+   b. $\displaystyle \lim_{z\to0} \frac{e^z-1}{z} = 1$
+
+3. Compute the values of the following:
+
+   a. $\text{Log}(\sqrt{3}+i)$
+   b. $\log(8i)$
+   c. $(1+i)^{\pi i}$
+   d. $2^i$
