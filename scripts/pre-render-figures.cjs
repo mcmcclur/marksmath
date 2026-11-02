@@ -14,8 +14,8 @@ async function main() {
     const text = readFileSync(source, 'utf8');
     const frontMatter = text.match(/^---\s*\r?\n([\s\S]*?)\r?\n---\s*(?:\r?\n|$)/);
     if (!frontMatter || !/^export-svg-figures:\s*true\s*(?:#.*)?$/m.test(frontMatter[1])) continue;
-    console.log(`Preparing PDF figures for ${input}`);
     const {exportFigures} = require('./export-figures.cjs');
+    console.log(`Preparing PDF figures for ${input}`);
     await exportFigures({source, savedSvg: true});
   }
 }

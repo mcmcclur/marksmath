@@ -2,13 +2,21 @@
 const {readFileSync, writeFileSync, mkdirSync, statSync} = require('node:fs');
 const {join, resolve, dirname} = require('node:path');
 const {homedir} = require('node:os');
-// Prefer a local installation; also support the bundled Codex runtime.
-let chromium;
-try {
-  ({chromium} = require('playwright'));
-} catch (error) {
-  if (error.code !== 'MODULE_NOT_FOUND') throw error;
-  ({chromium} = require(join(homedir(), '.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright')));
+// Keep discovery usable without loading browser dependencies.
+function findFigures(sourceText) {
+  return [...sourceText.matchAll(/!\[[^\n]*\]\(([^)]+\.pdf)\)\{#(fig-[^\s}]+)/g)];
+}
+
+function loadChromium() {
+  // Prefer a local installation; also support the bundled Codex runtime.
+  let chromium;
+  try {
+    ({chromium} = require('playwright'));
+  } catch (error) {
+    if (error.code !== 'MODULE_NOT_FOUND') throw error;
+    ({chromium} = require(join(homedir(), '.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright')));
+  }
+  return chromium;
 }
 
 async function exportFigures({source, url, savedSvg = false}) {
@@ -16,15 +24,16 @@ async function exportFigures({source, url, savedSvg = false}) {
   if (statSync(source).isDirectory()) source = join(source, 'index.qmd');
   const directory = dirname(source);
   if (!savedSvg && !url) throw new Error('Supply --url with the rendered HTML page URL, or --saved-svg.');
+  const sourceText = readFileSync(source, 'utf8');
+  const figures = findFigures(sourceText);
+  if (!figures.length) throw new Error(`No labeled PDF figures found in ${source}. Expected ![caption](figure.pdf){#fig-name}.`);
+  const chromium = loadChromium();
   const browser = await chromium.launch({channel: 'chrome', headless: true});
   try {
     const page = await browser.newPage({viewport: {width: 1280, height: 900}, colorScheme: 'light'});
     if (!savedSvg) await page.goto(url);
     const pdfPage = await browser.newPage();
     await pdfPage.emulateMedia({media: 'screen'});
-    const sourceText = readFileSync(source, 'utf8');
-    const figures = [...sourceText.matchAll(/!\[[^\n]*\]\(([^)]+\.pdf)\)\{#(fig-[^\s}]+)/g)];
-    if (!figures.length) throw new Error(`No labeled PDF figures found in ${source}. Expected ![caption](figure.pdf){#fig-name}.`);
     for (const [, filename, label] of figures) {
       if (/^(?:[a-z]+:|\/)/i.test(filename)) throw new Error(`Use a relative local figure path: ${filename}`);
       const pdfPath = resolve(directory, filename);
@@ -97,7 +106,7 @@ Requires Playwright and Google Chrome. Existing figure PDFs are replaced.`);
   await exportFigures({source, url, savedSvg});
 }
 
-module.exports = {exportFigures, main};
+module.exports = {exportFigures, findFigures, main};
 if (require.main === module) {
   main().catch(error => { console.error(error.message); process.exitCode = 1; });
 }

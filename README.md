@@ -73,7 +73,8 @@ export-svg-figures: true
 ```
 
 The project pre-render hook processes only opted-in documents in the current
-render. It regenerates their figure PDFs from the saved SVGs (which must already
+render. Opting in always runs the exporter; a document without matching PDF
+figure references reports an error. It regenerates their figure PDFs from the saved SVGs (which must already
 exist), so `quarto render PATH` is sufficient, even when figure PDFs are missing.
 This also runs during HTML renders; it does not launch a nested Quarto render.
 When the OJS plots change, refresh their saved SVGs using the preview-URL command
