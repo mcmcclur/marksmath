@@ -10,8 +10,6 @@ format:
     crossrefs-hover: false 
     css: /components/EmbedDiscourseMathTopics/embedDiscourseMathTopic.css
   pdf:
-    documentclass: article
-    pdf-standard: ua-2
     output-file: Quiz3Review.pdf
     include-in-header:
       text: |

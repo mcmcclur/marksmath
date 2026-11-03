@@ -4,6 +4,7 @@ page-layout: article
 echo: false
 format:
     html:
+        css: /styles/sage-styles.css
         toc: true
         include-in-header:
             text: |

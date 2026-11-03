@@ -11,6 +11,10 @@ p {
   max-width: 950px;
 }
 
+.callout p {
+    font-size: 120%;
+}
+
 /* Centering and spacing */
 .centered {
   text-align: center

@@ -61,10 +61,12 @@ format:
     theme:
       light: flatly
       dark: darkly
-    css: styles.css
+    css: styles/main-styles.css
     page-layout: full
     echo: false
-
+  pdf:
+    documentclass: article
+    pdf-standard: ua-2
 execute:
   freeze: auto
   keep-ipynb: false

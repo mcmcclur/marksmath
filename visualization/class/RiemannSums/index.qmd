@@ -1,6 +1,6 @@
 ---
 title: Riemann Sums
-css: riemann.css
+css: [riemann.css, /styles/sage-styles.css]
 page-layout: article
 toc: true
 format:

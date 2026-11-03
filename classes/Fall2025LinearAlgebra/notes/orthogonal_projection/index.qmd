@@ -4,7 +4,7 @@ format:
     html:
         page-layout: article
         toc: true
-        css: styles.css
+        css: /styles/sage-styles.css
         include-in-header: 
             text: |
                 <script src="https://sagecell.sagemath.org/static/embedded_sagecell.js"></script>

@@ -5,7 +5,7 @@ date: 2026-03-30
 format:
   html:
     toc: true
-    css: ../note-styles.css
+    css: [../note-styles.css, /styles/sage-styles.css]
     include-in-header:
       - text: |
           <script src="https://sagecell.sagemath.org/static/embedded_sagecell.js"></script>

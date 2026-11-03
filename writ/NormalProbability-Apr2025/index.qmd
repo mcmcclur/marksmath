@@ -6,7 +6,7 @@ execute:
   eval: true
 format:
   html:
-    css: style.css
+    css: [style.css, /styles/sage-styles.css]
     toc: true
     page-layout: article
     format-links: [pdf]

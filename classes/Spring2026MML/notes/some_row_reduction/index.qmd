@@ -5,7 +5,7 @@ date: 2026-01-28
 format:
   html:
     toc: true
-    css: styles.css
+    css: [styles.css, /styles/sage-styles.css]
     page-layout: article
     include-in-header: 
         text: |

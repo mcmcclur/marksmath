@@ -6,7 +6,7 @@ format:
     html:
         toc: true
         crossrefs-hover: false
-        css: styles.css
+        css: [styles.css, /styles/sage-styles.css]
         include-after-body: conversation-math.html
         include-in-header:
             text: |
