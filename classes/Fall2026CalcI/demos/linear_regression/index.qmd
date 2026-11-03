@@ -125,7 +125,7 @@ data = {
 
 The general technique here is called *linear regression* and can be applied to *real data*. One fun application is to use past results in athletic competitions to make predictions in future competitions. Sometimes, this is called *gambling*. 
 
-For example, here's an application of the technique to the [NCAA Basketball tournament](https://wncviz.com/NCAABrackets/){target=_blank}. Each NCAA tournament involves 64 to 68 teams, each of which has a seed from 1-16. The idea is to predict the score difference based on the seed difference. 
+For example, here's an application of the technique to the [NCAA Basketball tournament](https://wncviz.com/samples/NCAABasketball/){target=_blank}. Each NCAA tournament involves 64 to 68 teams, each of which has a seed from 1-16. The idea is to predict the score difference based on the seed difference. 
 
 To do this, we need data. @fig-ncaa below shows that data for the Men's 2023 NCAA tournament. Each point corresponds to a game that was played during that tournament and you can hover over the points to get more information on the games. The horizontal axis tells us the seed difference and the vertical tells us the score difference in the game. Note that each game appears twice - once from the perspective of each team. Thus, the data is symmetric about the origin, like our simpler example above.
 
