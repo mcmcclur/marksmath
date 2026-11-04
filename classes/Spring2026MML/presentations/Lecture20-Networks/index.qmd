@@ -24,13 +24,13 @@ format:
 
 A network graph is a data structure that models pairwise relationships between discrete elements within a system. The visual presentation of this type of graph generally consists of a collection of nodes connected by edges between them.
 
-![](./images/illustrative_graph.svg)
+![](./images/illustrative_graph.svg){fig-alt="Illustration of illustrative graph."}
 
 ## What is *not* a graph?
 
 We are not talking about graphs of functions in this context. We're not talking about parabolas or sine waves or anything like that.
 
-![](./images/no-graph.png)
+![](./images/no-graph.png){fig-alt="Illustration of no graph."}
 
 
 ## Terminology for graphs
@@ -52,19 +52,19 @@ Sometimes, I might refer to the nodes of a graph as vertices.
 
 Sometimes, the nodes might be labeled.
 
-![](./images/illustrative_node_labeled_graph.svg)
+![](./images/illustrative_node_labeled_graph.svg){fig-alt="Illustration of illustrative node labeled graph."}
 
 ## Digraphs
 
 Sometimes, the edges might be directed. We call this type of graph a *directed graph* or *digraph*.
 
-![](./images/illustrative_node_labeled_digraph.svg)
+![](./images/illustrative_node_labeled_digraph.svg){fig-alt="Illustration of illustrative node labeled digraph."}
 
 ## Directed multi-graphs
 
 Sometimes, the edges might be weighted and we might have more than one between any two vertices. We call this type of graph a *directed multigraph*.
 
-![](./images/illustrative_node_labeled_edge_weighted_multi_digraph.svg){style="max-width: 400px;"}
+![](./images/illustrative_node_labeled_edge_weighted_multi_digraph.svg){style="max-width: 400px;" fig-alt="Illustration of illustrative node labeled edge weighted multi digraph."}
 
 ## Simple graphs 
 
@@ -87,9 +87,9 @@ The foundations of graph theory and topology date back to Euler's solution of th
 Can you see how the graph below captures all the information in the map that's essential to address the problem?
 
 ::: {layout-ncol=2}
-![](./images/Konigsberg_bridges.png){style="height: 240px"}  
+![](./images/Konigsberg_bridges.png){style="height: 240px" fig-alt="Illustration of konigsberg bridges."}
 
-![](./images/Konigsberg_graph.svg){style="height: 240px"}
+![](./images/Konigsberg_graph.svg){style="height: 240px" fig-alt="Illustration of konigsberg graph."}
 :::
 
 ::: {class="cite"}
@@ -101,13 +101,13 @@ Public domain images [from Wikipedia](https://en.wikipedia.org/wiki/Seven_Bridge
 
 The use of social networks to model relationships between people dates back quite a while. I found the image below in [this paper](https://www.cmu.edu/joss/content/articles/volume1/Freeman.html) from Volume 1 of the Journal of Social Structure. That article was a survey of earlier work and states that the image was taken from a 1934 paper studying human development. The image indicates who recognizes who among a collection of nine babies.
 
-![](./images/MorenoBabyNetwork.gif)
+![](./images/MorenoBabyNetwork.gif){fig-alt="Illustration of moreno Baby Network."}
 
 ## An internet map 
 
 I guess social networks got bigger. The network graph below is a map of the internet. It could also be viewed as an application to engineering.
 
-![](./images/Internet_map_1024.jpg)
+![](./images/Internet_map_1024.jpg){fig-alt="Illustration of internet map 1024."}
 
 ::: {.cite}
 By The Opte Project - Originally from the [English Wikipedia](https://commons.wikimedia.org/w/index.php?curid=1538544); description page is/was here., CC BY 2.5, 
@@ -118,7 +118,7 @@ By The Opte Project - Originally from the [English Wikipedia](https://commons.wi
 
 We've seen this before, of course.
 
-![](./images/big_south.svg)
+![](./images/big_south.svg){fig-alt="Illustration of big south."}
 
 ## Digraph fractals
 
@@ -130,7 +130,7 @@ I first learned of so-called directed multi-graphs when studying certain types o
 
 The fractal curves on the previous slide each consists of smaller copies of both curves. The combinatorics of how they all fit together can be described by the following directed multi-graph:
 
-![](./images/digraph_pic.svg)
+![](./images/digraph_pic.svg){fig-alt="Illustration of digraph pic."}
 
 
 # Terminology for walks
@@ -143,7 +143,7 @@ Recall that the seven bridges of Königsberg problem asks for a walk through the
 - A *walk* in a graph is a finite sequence of vertices  
   $$
   v_0, v_1, \dots, v_k
-  $$  
+  $$
   such that each consecutive pair $v_i, v_{i+1}$ is connected by an edge.  Vertices and edges may repeat.
 - A *trail* is a walk in which no edge is repeated. Vertices may repeat.
 - A *path* is a walk in which no vertex is repeated. This implies no edge is repeated, either.
@@ -167,7 +167,7 @@ make_house()
 Can you find an Eulerian trail through the Königsberg graph?
 
 ::: {style="max-width: 300px"}
-![](./images/Konigsberg_graph.svg)
+![](./images/Konigsberg_graph.svg){fig-alt="Illustration of konigsberg graph."}
 :::
 
 ::: {.fragment}
@@ -194,13 +194,13 @@ A connected graph has an Eulerian circuit if and only if each vertex has even de
 
 A tree is a simple graph with no cycles.
 
-![](./images/tree.svg)
+![](./images/tree.svg){fig-alt="Illustration of tree."}
 
 ## Tournaments 
 
 Tournaments have the structure of a tree:
 
-![](./images/tournament.png)
+![](./images/tournament.png){fig-alt="Illustration of tournament."}
 
 ## Administrative structure
 
@@ -224,7 +224,7 @@ tree
 
 An *abstract syntax tree* or *AST* is a graph theoretic technique to represent a mathematical expression as a tree. Can you see, for example, how we might represent $2x^3 + 1$ as 
 
-![](./images/expression_tree.svg)
+![](./images/expression_tree.svg){fig-alt="Illustration of expression tree."}
 
 ## An AST data structure 
 
@@ -325,7 +325,7 @@ Given a set of positive integers as nodes, we can form a directed graph by placi
 
 Here's the divisor graph on the set $1$ through $12$:
 
-![](./images/divisor_graph.svg)
+![](./images/divisor_graph.svg){fig-alt="Illustration of divisor graph."}
 
 ## A neural multiplier
 

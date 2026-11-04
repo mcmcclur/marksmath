@@ -44,10 +44,10 @@ Here are a few more practice problems for our second exam this Friday.
 ## Figures 
 
 ::: {style="max-width: 450px; margin: 0 auto"}
-![A set of axes for problem 5](./axes.png){#fig-axes}
+![A set of axes for problem 5](./axes.png){#fig-axes fig-alt="A set of axes for problem 5"}
 :::
 
 
 ::: {style="max-width: 450px; margin: 0 auto"}
-![The graph of $f(x)=x^{3}+2x-2$ and more](./inverse.png){#fig-inverse}
+![The graph of $f(x)=x^{3}+2x-2$ and more](./inverse.png){#fig-inverse fig-alt="The graph of $f(x)=x^{3}+2x-2$ and more"}
 :::

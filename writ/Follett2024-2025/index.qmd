@@ -353,6 +353,7 @@ There were 874 course sections at UNCA in Fall of 2024 but only 279 of those hav
 ```{python}
 #| label: fig-prefixes_by_costs
 #| fig-cap: Selected prefixes by average cost
+#| fig-alt: "Selected prefixes by average cost"
 import matplotlib.pyplot as plt
 import pandas as pd
 pd.options.mode.chained_assignment = None
@@ -384,6 +385,7 @@ Unsurprisingly, there's a big difference in the average costs by division, as sh
 ```{python}
 #| label: fig-divisions_by_costs
 #| fig-cap: Divisions by average cost
+#| fig-alt: "Divisions by average cost"
 import matplotlib.pyplot as plt
 pd.options.mode.chained_assignment = None
 

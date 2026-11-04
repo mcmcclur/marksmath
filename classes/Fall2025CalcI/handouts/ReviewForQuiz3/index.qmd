@@ -62,13 +62,13 @@ together with its regression line of the form $f(x)=ax$.
 
 ::: {style="max-width: 650px; margin 0 auto;"}
 
-![The graph of $f(x)=xe^{-3x}$](./figures/graph_for_extreme_inflection.png){#fig-extreme_inflection}
+![The graph of $f(x)=xe^{-3x}$](./figures/graph_for_extreme_inflection.png){#fig-extreme_inflection fig-alt="The graph of $f(x)=xe^{-3x}$"}
 
 :::
 
 ::: {style="max-width: 650px; margin 0 auto;"}
 
-![A divided enclosure](./figures/fence.png){#fig-fence}
+![A divided enclosure](./figures/fence.png){#fig-fence fig-alt="A divided enclosure"}
 
 :::
 
@@ -76,6 +76,7 @@ together with its regression line of the form $f(x)=ax$.
 
 ```{python}
 #| fig-cap: A rectangle inscribed under the graph of $y=e^{-x}$
+#| fig-alt: "A rectangle inscribed under the graph of $y=e^{-x}$"
 #| label: fig-exp_square
 import numpy as np
 import matplotlib.pyplot as plt
@@ -128,7 +129,7 @@ plt.show()
 
 ::: {style="max-width: 650px; margin 0 auto;"}
 
-![Some data and its regression line](./figures/regression.png){#fig-regression}
+![Some data and its regression line](./figures/regression.png){#fig-regression fig-alt="Some data and its regression line"}
 
 :::
 

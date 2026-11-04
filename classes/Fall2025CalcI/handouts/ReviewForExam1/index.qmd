@@ -120,15 +120,15 @@ What can you say about the following limits?
 ## Figures
 
 <!-- https://www.desmos.com/calculator/nmsqvmaysf -->
-![Graph for question 2](piecewise_for_limits.svg){#fig-piecewise_limits}
+![Graph for question 2](piecewise_for_limits.svg){#fig-piecewise_limits fig-alt="Graph for question 2"}
 
 <div style="height: 100px;"></div>
 
 
 ::: {#fig-sketch layout-ncol=1}
-![](piecewise_for_derivative_sketch.svg)
+![](piecewise_for_derivative_sketch.svg){fig-alt="Piecewise function graph used as the basis for sketching its derivative."}
 
-![](axes_for_derivative_sketch.svg)
+![](axes_for_derivative_sketch.svg){fig-alt="Blank coordinate axes for sketching a derivative."}
 
 The graph of a function, together with an empty pair of axes for problem 9
 :::

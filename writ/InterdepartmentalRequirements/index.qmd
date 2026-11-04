@@ -67,7 +67,7 @@ enhance_graph(GString, data)
 ```
 :::
 ::: {.content-visible when-format="pdf"}
-![Interdepartmental dependency network diagram](G.pdf){#fig-dept_network}
+![Interdepartmental dependency network diagram](G.pdf){#fig-dept_network fig-alt="Interdepartmental dependency network diagram"}
 :::
  
 Note the confluence of arrows in and out of the Math node suggesting its centrality in the curriculum. Physics and Chemistry both appear quite central as well, though the edges aren't quite as thick or numerous as they are for Mathematics. We should try to be more quantitative to distinguish these more completely.

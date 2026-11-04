@@ -55,27 +55,27 @@ $$
 
 ## Figures
 
-![A contour plot](pictures/contours.png){#fig-contours fig-align="center" style="max-width: 500px; margin: 0 auto 10px auto"}
+![A contour plot](pictures/contours.png){#fig-contours fig-align="center" style="max-width: 500px; margin: 0 auto 10px auto" fig-alt="A contour plot"}
 
 ::: {#fig-graphs layout="[[5,-1,5,-1,5]]"}
 
-![](pictures/ellipse.png)
+![](pictures/ellipse.png){fig-alt="Illustration of ellipse."}
 
-![](pictures/ellipsoid.png)
+![](pictures/ellipsoid.png){fig-alt="Illustration of ellipsoid."}
 
-![](pictures/fast-cycloid.png)
+![](pictures/fast-cycloid.png){fig-alt="Illustration of fast cycloid."}
 
-![](pictures/hyperbolicParaboloid.png)
+![](pictures/hyperbolicParaboloid.png){fig-alt="Illustration of hyperbolic Paraboloid."}
 
-![](pictures/paraboloid.png)
+![](pictures/paraboloid.png){fig-alt="Illustration of paraboloid."}
 
-![](pictures/lissajous.png)
+![](pictures/lissajous.png){fig-alt="Illustration of lissajous."}
 
-![](pictures/sphere.png)
+![](pictures/sphere.png){fig-alt="Illustration of sphere."}
 
-![](pictures/tornado.png)
+![](pictures/tornado.png){fig-alt="Illustration of tornado."}
 
-![](pictures/spiral.png)
+![](pictures/spiral.png){fig-alt="Illustration of spiral."}
 
 Groovy graphs
 :::

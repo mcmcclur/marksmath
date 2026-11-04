@@ -49,7 +49,7 @@ We have our second exam this coming Friday, September 17th. The problems on the 
    b) How long will it take my money to double?  
    Repeat the problem assuming your money is compounded continuously.
 
-4. Sketch the graph of $$f(x) = 3\sin\left(\frac{\pi}{2} x\right).$$  
+4. Sketch the graph of $$f(x) = 3\sin\left(\frac{\pi}{2} x\right).$$
    Be sure to clearly indicate the $x$ and $y$ intercepts, as well as the maximum and minimum values.
 
 5. Use the fact that $\displaystyle \lim_{\theta\to0} \sin(\theta)/\theta = 1$ to compute 
@@ -76,11 +76,11 @@ We have our second exam this coming Friday, September 17th. The problems on the 
 ## Figures 
 
 ::: {style="max-width: 450px; margin: 0 auto"}
-![The graph of $x^{4}+y^{2}-3xy=1$](./figures/implicit_graph.png){#fig-implicit_graph}
+![The graph of $x^{4}+y^{2}-3xy=1$](./figures/implicit_graph.png){#fig-implicit_graph fig-alt="The graph of $x^{4}+y^{2}-3xy=1$"}
 :::
 
 ::: {style="max-width: 450px; margin: 0 auto"}
-![The graph of $f(x)=x^{3}+\frac{1}{2}x-\frac{3}{2}$](./figures/graph_for_inverse.png){#fig-graph_for_inverse}
+![The graph of $f(x)=x^{3}+\frac{1}{2}x-\frac{3}{2}$](./figures/graph_for_inverse.png){#fig-graph_for_inverse fig-alt="The graph of $f(x)=x^{3}+\frac{1}{2}x-\frac{3}{2}$"}
 :::
 
 

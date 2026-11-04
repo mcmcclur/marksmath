@@ -70,7 +70,7 @@ If you have questions about any of the problems on this sheet, you can use the R
 ## Images
 
 ::: {style="max-width: 550px"}
-![A contour pic awaiting gradients](gradient_sketch.png){#fig-gradient_sketch}
+![A contour pic awaiting gradients](gradient_sketch.png){#fig-gradient_sketch fig-alt="A contour pic awaiting gradients"}
 :::
 
 ::: {.content-visible when-format="html"}

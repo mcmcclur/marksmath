@@ -39,11 +39,12 @@ viewof trace = Inputs.toggle({ label: "Trace point:", value: false })
 ```{ojs}
 viewof x = {
   let range = Inputs.range([-2.5, 2.5], {
+    label: "Trace:",
     value: 1,
     step: 0.01,
     disabled: !trace
   });
-  d3.select(range).select("input").remove();
+  // d3.select(range).select("input").remove();
   return range;
 }
 ```
@@ -62,7 +63,7 @@ graph = {
     Plot.axisX({ y: 0 })
   ];
   if (trace) {
-    marks.push(Plot.dot([[x, f(x)]], { r: 5, fill: "black" }));
+    marks.push(Plot.dot([[x, f(x)]], { r: 5, fill: "currentColor" }));
     marks.push(Plot.text([{t: `f(0)≈f(${x})=${d3.format('0.4f')(f(x))}`, x: -3, y: 2}], {x: 'x', y: 'y', text: 't', fontSize: 18, textAnchor: 'start'}))
   }
   return Plot.plot({

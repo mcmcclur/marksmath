@@ -159,7 +159,7 @@ $$
 
 While the formula is complicated, it has a simple interpretation that's much like the one-dimensional interpretation. The kernel is a smaller matrix that slides around the bigger matrix creating new values via the dot product as it goes along. You might visualize this like so:
 
-![](conv2d.gif)
+![](conv2d.gif){fig-alt="Animation illustrating two-dimensional convolution."}
 
 ## Image blur
 
@@ -169,7 +169,7 @@ It's easy to see how that last slide might have application in image processing.
 
 We now turn to the problem of edge detection, one of the most basic types of feature detection. Let's suppose, for example, that we've got the following basic Pacman like image:
 
-![](/images/pacman.png)
+![](/images/pacman.png){fig-alt="Pac-Man illustration used in the convolution discussion."}
 
 We'd like to be able to detect the large circle with the wedge cut out and the smaller circle and return the result as just the edges drawn in black on a white background.
 

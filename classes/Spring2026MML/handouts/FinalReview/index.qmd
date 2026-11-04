@@ -139,4 +139,4 @@ where $X$ is the vector of variables and $A$ is the vector of parameters.
 
 8. The images shown in [@fig-classification_plots] display the results of two different classification algorithms applied to the same data set. The data set consists of 300 different two-dimensional data points each indicated by color. What kinds of algorithms might have generated those plots? There might be more than one reasonable response for each plot but you should be able to articulate some reason for your response.
 
-![Classification plots](classification_plots){#fig-classification_plots width=7in}
+![Classification plots](classification_plots){#fig-classification_plots width=7in fig-alt="Classification plots"}

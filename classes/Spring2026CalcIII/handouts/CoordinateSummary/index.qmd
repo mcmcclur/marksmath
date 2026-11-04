@@ -22,7 +22,10 @@ Works great with regions bound by circular arcs centered at the origin and rays 
 
 ```{python}
 #| echo: false
+#| label: fig-polar-wedge
+#| fig-cap: "A polar wedge"
 #| fig-pos: "htbp"
+#| fig-alt: "Annular sector in the xy-plane bounded by circles r = a and r = b and rays theta = alpha and theta = beta."
 from images.polar_wedge import make_polar_wedge
 make_polar_wedge()
 ```
@@ -50,7 +53,7 @@ Polar coordinates might help for integrals like
 Cylindrical coordinates look a lot like polar coordinates + $z$. The work great with spatial regions that are extrusions of polar regions along the $z$-axis, like so:
 
 :::{style="max-width: 400px"}
-![A cylindrical wedge](./images/simple_cylindrical.png)
+![A cylindrical wedge](./images/simple_cylindrical.png){#fig-simple-cylindrical fig-alt="A cylindrical wedge"}
 :::
 
 This type of region has bounds like
@@ -80,7 +83,7 @@ $$
 which looks like 
 
 :::{style="max-width: 500px"}
-![A region with cylindrical symmetry](./images/bullet.png)
+![A region with cylindrical symmetry](./images/bullet.png){#fig-bullet fig-alt="A region with cylindrical symmetry"}
 :::
 
 ### Cylindrical examples 
@@ -98,7 +101,7 @@ $$\iiint\limits_R (2x^2 + 2y^2 + z) \, dV.$$
 Spherical coordinates work well with regions bound by portions of spheres centered at the origin. Here's one example:
 
 :::{style="max-width: 500px"}
-![A spherical wedge](./images/first_octant.png)
+![A spherical wedge](./images/first_octant.png){#fig-first-octant fig-alt="A spherical wedge"}
 :::
 
 
@@ -116,7 +119,7 @@ When setting this type of integral up, remember that
 - $\theta$ denotes the usual polar angle.
 
 :::{style="max-width: 500px"}
-![Polar coordinates illustrated](./images/spherical_coords.png)
+![Polar coordinates illustrated](./images/spherical_coords.png){#fig-spherical-coords fig-alt="Polar coordinates illustrated"}
 :::
 
 We can set up an integral over a region like this via 

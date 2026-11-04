@@ -39,7 +39,7 @@ make_map(unc_salary_map_topo, unc_salary_map_cohort)
 
 ::::: {.content-visible when-format="pdf"}
 
-![](./images/unc_salary_map.png)
+![](./images/unc_salary_map.png){fig-alt="Illustration of unc salary map."}
 
 :::::
 
@@ -188,7 +188,7 @@ make_salary_viz(summary_data);
 :::::
 
 ::::: {.content-visible when-format="pdf"}
-![](./images/system_salary_bar_chart.png)
+![](./images/system_salary_bar_chart.png){fig-alt="Illustration of system salary bar chart."}
 :::::
 :::
 
@@ -247,7 +247,7 @@ Plot.plot({
 ```
 :::::
 ::::: {.content-visible when-format="pdf"}
-![](./images/national_salary_compression.png)
+![](./images/national_salary_compression.png){fig-alt="Illustration of national salary compression."}
 :::::
 :::
 
@@ -287,7 +287,7 @@ Plot.plot({
 
 :::::
 ::::: {.content-visible when-format="pdf" fig-pos="H"}
-![](./images/system_compression_ratios.png)
+![](./images/system_compression_ratios.png){fig-alt="Illustration of system compression ratios."}
 :::::
 :::
 
@@ -329,7 +329,7 @@ my_salary_update = my_salary_chart.update(my_salary_inflation)
 :::::
 
 ::::: {.content-visible when-format="pdf"}
-![](./images/my_salary_time_series.png)
+![](./images/my_salary_time_series.png){fig-alt="Illustration of my salary time series."}
 :::::
 :::
 

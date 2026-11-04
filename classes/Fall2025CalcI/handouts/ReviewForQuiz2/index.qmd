@@ -41,12 +41,11 @@ If you have questions about any of the problems on this sheet, you can use the R
    a. $\displaystyle \lim_{x\to0} \frac{\sin(2x)}{\tan(x)}$
    a. $\displaystyle \lim_{x\to0} \frac{\sin(2x)}{\cos(x)}$
 
-3. Sketch the graph of $$f(x) = 2\cos\left(\frac{\pi}{2} x\right).$$  
+3. Sketch the graph of $$f(x) = 2\cos\left(\frac{\pi}{2} x\right).$$
    Be sure to clearly indicate the $x$ and $y$ intercepts, as well as the maximum and minimum values.
 
 4. Supposing that $f$ and $g$ are differentiable functions, use the definition of the derivative to show that
 $$\frac{d}{dx} (2f(x) - g(x)) = 2f'(x) - g'(x).$$
-   
 
 ::: {.content-visible when-format="html"}
 

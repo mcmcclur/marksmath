@@ -270,7 +270,7 @@ We can now describe how KNN works for digit recognition. The algorithm is built 
 
 Again, the data consists of a list of 784 dimensional vectors of grayscale values with labels. It's easy to render those vectors as grayscale images and display them with their labels. Here's a short subset of the results:
 
-![](digits.png)
+![](digits.png){fig-alt="Examples of handwritten digits used for digit recognition."}
 
 ## The algorithm
 

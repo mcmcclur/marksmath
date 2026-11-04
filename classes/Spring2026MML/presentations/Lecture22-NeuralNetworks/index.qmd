@@ -531,7 +531,7 @@ The final activator will be a rounded sigmoid, which is quite common for classif
 relu = lambda x: np.maximum(0, x)
 ```
 
-![](./figures/ReLU.png)
+![](./figures/ReLU.png){fig-alt="Graph of the ReLU activation function, max(0, x)."}
 
 ## Implementation in code 
 

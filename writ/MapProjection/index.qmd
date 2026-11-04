@@ -32,7 +32,7 @@ Isn't that exactly the kind of thing we study in Calc III???
 
 The earth, as we well know, is approximately spherical; it is best represented as a globe. For convenience both physical and conceptual, however, we frequently represent the spherical earth with a flat map. Such a representation *must* involve distortion. The process is illustrated in @fig-globeAndMap.
 
-![Projecting the globe](figures/Figure1.png){#fig-globeAndMap fig-align="center"}
+![Projecting the globe](figures/Figure1.png){#fig-globeAndMap fig-align="center" fig-alt="Projecting the globe"}
 
 The projection shown in @fig-globeAndMap is called *Mercator's projection*. Mercator created his projection in 1569. Although it was not universally adopted immediately, it represented a major breakthrough in navigation because *paths of constant compass bearing are represented as straight lines*. Ultimately, this property follows from the fact that Mercator's projection is a *cylindrical, conformal* projection. A major goal of this document is to understand these facts.
 
@@ -85,6 +85,7 @@ Does the map need to be *equal area* (also called area preserving)? This means q
 ```{ojs}
 //| label: fig-conformal_and_equal_area
 //| fig-cap: "Conformal and equal-area maps"
+//| fig-alt: "Conformal and equal-area maps"
 {
   let div = d3.create("div");
   let left = div
@@ -124,6 +125,7 @@ The map in @fig-choropleth shows a choropleth for population density in the cont
 ```{ojs}
 //| label: fig-choropleth
 //| fig-cap: "A choropleth for US population density"
+//| fig-alt: "A choropleth for US population density"
 choropleth_map 
 ```
 
@@ -131,7 +133,7 @@ choropleth_map
 
 Should the map be *conformal*? This means that the map preserves angles. To understand this, suppose we have two paths on a globe that intersect at some angle. If we take the image of these paths under a conformal transformation, the angle will be the same. This is illustrated in @fig-conformal, where we see the image of two paths on the globe under Mercator's projection and the equi-rectangular projection. The angle is preserved under Mercator's projection but not under the equi-rectangular projection.
 
-![The image of two paths on the globe under Mercator's projection and the equi-rectangular projection](figures/conformal.png){#fig-conformal fig-align="center"}
+![The image of two paths on the globe under Mercator's projection and the equi-rectangular projection](figures/conformal.png){#fig-conformal fig-align="center" fig-alt="The image of two paths on the globe under Mercator&#x27;s projection and the equi-rectangular projection"}
 
 #### Why conformal???
 
@@ -165,6 +167,7 @@ viewof asheville_projection
 ```{ojs}
 //| label: fig-asheville_equidistant
 //| fig-cap: "An Asheville equidistant map"
+//| fig-alt: "An Asheville equidistant map"
 asheville_map
 ```
 
@@ -183,7 +186,7 @@ There are variations on these themes, such as composite maps formed by combining
 
 Conceptually, a cylindrical projection can be visualized by wrapping a cylinder around a globe and projecting points on the globe out to the cylinder. Lambert's equal area projection is obtained quite literally from a geometric projection where each point on the globe is projected out radially from a line that goes through the North and South poles. This is illustrated in @fig-cylindricalProjection.
 
-![A cylindrical projection](figures/cylindricalProjection.png){#fig-cylindricalProjection fig-align="center"}
+![A cylindrical projection](figures/cylindricalProjection.png){#fig-cylindricalProjection fig-align="center" fig-alt="A cylindrical projection"}
 
 When we refer to a "cylindrical projection", we don't mean that it arises as a literal geometric projection in the sense that Lambert's does. Rather, we mean that the parallels all appear on the map as horizontal lines of constant width and that the meridians are evenly spaced and are perpendicular to the parallels. This geometric characterization leads to an algebraic form that a cylindrical projection must have, namely:
 $$T(\varphi,\theta) = (\theta,h(\varphi)).$$
@@ -202,7 +205,7 @@ Of these, only Lambert's is a literal projection. Nonetheless, all cylindrical p
 
 There are multiple ways this projection process could go. Two possibilities called the *stereograph* and the *orthographic* projections are shown in @fig-azimuthalProjection.
 
-![Azimuthal projections](figures/azimuthalProjection.png){#fig-azimuthalProjection fig-align="center"}
+![Azimuthal projections](figures/azimuthalProjection.png){#fig-azimuthalProjection fig-align="center" fig-alt="Azimuthal projections"}
 
 The stereographic projection is conformal while the orthographic is neither conformal nor equal area. Both distort distance quite a lot as we move away from the pole.
 
@@ -215,6 +218,7 @@ More generally, any function $T(\varphi,\theta)$ of this form is considered to b
 ```{ojs}
 //| label: fig-azimuthal_equidistant
 //| fig-cap: "Azimuthal equidistant"
+//| fig-alt: "Azimuthal equidistant"
 plain_pic(land, d3.geoAzimuthalEquidistant().rotate([0, -90]), {
   scale: 120,
   w: 600,
@@ -230,7 +234,7 @@ Of course, an azimuthal map can be centered at any point, like our Asheville equ
 Conceptually, a conic projection is obtained by projecting a sphere onto a cone and then cutting the cone so that it lies flat on a plane, as shown in @fig-conicProjection.
 
 
-![Conic projection](figures/conicProjection.png){#fig-conicProjection fig-align="center"}
+![Conic projection](figures/conicProjection.png){#fig-conicProjection fig-align="center" fig-alt="Conic projection"}
 
 If the cone is tangent to the sphere, there will be one standard parallel along which there is no distortion of length. More often, the cone intersects the sphere along two parallels, which become standard parallels on the map. As a result, conic projections can achieve very small distortion along a large area in a temperate zone.
 
@@ -241,6 +245,7 @@ Conic projections are not generally appropriate for whole earth maps. They do a 
 ```{ojs}
 //| label: fig-nc_conic
 //| fig-cap: "The state map of North Carolina"
+//| fig-alt: "The state map of North Carolina"
 nc_conic
 ```
 
@@ -258,7 +263,7 @@ To see why scale factors are so important to the understanding of geometric prop
 
 Suppose we want our transformation to be conformal, i.e., it should preserve angles. In particular, if we draw a rectangle in the plane, the angle that the diagonal of the rectangle makes with either side should be preserved under the transformation. This situation is illustrated in @fig-conformalImage, where it becomes almost immediately apparent what property the transformation should have.
 
-![A rectangle and its image under a conformal transformation](./figures/conformalImage.png){#fig-conformalImage}
+![A rectangle and its image under a conformal transformation](./figures/conformalImage.png){#fig-conformalImage fig-alt="A rectangle and its image under a conformal transformation"}
 
 ::: {.callout-note appearance="minimal"}
 In order for a transformation to be conformal, it must scale equally in the horizontal and vertical directions.
@@ -268,7 +273,7 @@ This statement indicates that the equality of scaling factors is a *necessary* c
 
 Now, suppose that we'd like our transformation to preserve area. The transformation in @fig-conformalImage clearly does not preserve area, but the transformation in @fig-conformalImage does. Again, the figure indicates how to obtain the desired property. If we scale by the factor $M$ in one direction, we've got to scale by the factor $1/M$ in the other. 
 
-![A rectangle and its image under an area preserving transformation](./figures/equalAreaImage.png){#fig-equalAreaImage}
+![A rectangle and its image under an area preserving transformation](./figures/equalAreaImage.png){#fig-equalAreaImage fig-alt="A rectangle and its image under an area preserving transformation"}
 
 ::: {.callout-note appearance="minimal"}
 In order for a transformation to be area preserving, the horizontal and vertical scaling factors must be reciprocals of one another.
@@ -290,7 +295,7 @@ $$
 M_{\varphi} = \frac{2\pi}{2\pi \cos(\varphi)} = \sec(\varphi).
 $$
 
-![Images of the parallel and meridian through a point](./figures/cylindricalScaleFactors.png){#fig-cylindricalScaleFactors}
+![Images of the parallel and meridian through a point](./figures/cylindricalScaleFactors.png){#fig-cylindricalScaleFactors fig-alt="Images of the parallel and meridian through a point"}
 
 Analysis of the scaling factor along a meridian is a little trickier. Recall that our cylindrical projection has the form $T(\varphi, \theta) = (\theta, h(\varphi))$. While $M_{\varphi}$ is uniform and depends only on $\varphi$, $M_{\theta}$ is not necessarily uniform and depends on the function $h$.
 

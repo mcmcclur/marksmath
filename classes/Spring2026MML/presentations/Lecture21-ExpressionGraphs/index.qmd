@@ -90,7 +90,7 @@ This process is called *forward propagation*.
 
 Expression graphs are concretely distinct from syntax trees, which start with the top level operator, end at the inputs, and is in the form of a tree.
 
-![](./images/AnAST.svg) 
+![](./images/AnAST.svg){fig-alt="Abstract syntax tree showing an expression broken into operations and operands."}
 
 
 # More examples
@@ -365,7 +365,7 @@ $$
 $$
 with something like so:
 
-![](./images/logisticNN.svg)
+![](./images/logisticNN.svg){fig-alt="Illustration of logistic NN."}
 
 ## The derivative
 

@@ -140,7 +140,7 @@ A schematic of the transformer (taken from the seminal 2017 paper "Attention is 
 
 Some tasks, like translation, use both the encoder and the decoder.
 </div>
-![The transformer architecture](transformer.png)
+![The transformer architecture](transformer.png){fig-alt="The transformer architecture"}
 :::
 
 

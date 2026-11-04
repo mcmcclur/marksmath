@@ -235,9 +235,9 @@ T_1(z) = \frac{(z-z_1) (z_2-z_3)}{(z-z_3)
 $$
 
 The Möbius transformation on the left, $T_1$, sends 
-$$z_1\to0, z_2\to1, \text{ and } z_3\to\infty.$$  
+$$z_1\to0, z_2\to1, \text{ and } z_3\to\infty.$$
 The inverse $T_2^{-1}$ of the Möbius transformation $T_2^$ on the right sends 
-$$0\to w_1, 1\to w_2, \text{ and } \infty\to w_3.$$  
+$$0\to w_1, 1\to w_2, \text{ and } \infty\to w_3.$$
 Thus, $T_2^{-1}\circ T_1$ sends 
 $$z_1\to w_1, z_2\to w_2, \text{ and } z_3\to w_3.$$ 
 We simply have to solve the equation for $w$ to find it!

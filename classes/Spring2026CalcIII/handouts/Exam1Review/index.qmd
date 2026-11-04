@@ -89,27 +89,27 @@ $$\vec{c}(t) = \langle 2\cos(t), \sqrt{2}\sin(t), \sqrt{2}\sin(t) \rangle.$$
 
 ## Figures
 
-![A contour plot](pictures/contours.png){#fig-contours fig-align="center" style="max-width: 500px; margin: 0 auto 10px auto"}
+![A contour plot](pictures/contours.png){#fig-contours fig-align="center" style="max-width: 500px; margin: 0 auto 10px auto" fig-alt="A contour plot"}
 
 ::: {#fig-graphs layout="[[5,-1,5,-1,5]]"}
 
-![](pictures/ellipsoid.png)
+![Illustration of ellipsoid.](pictures/ellipsoid.png){fig-alt="Illustration of ellipsoid."}
 
-![](pictures/circle.png)
+![Illustration of circle.](pictures/circle.png){fig-alt="Illustration of circle."}
 
-![](pictures/circularParaboloid.png)
+![Illustration of circular Paraboloid.](pictures/circularParaboloid.png){fig-alt="Illustration of circular Paraboloid."}
 
-![](pictures/hyperbolicParaboloid.png)
+![Illustration of hyperbolic Paraboloid.](pictures/hyperbolicParaboloid.png){fig-alt="Illustration of hyperbolic Paraboloid."}
 
-![](pictures/wavySymmetry.png)
+![Illustration of wavy Symmetry.](pictures/wavySymmetry.png){fig-alt="Illustration of wavy Symmetry."}
 
-![](pictures/lissajous.png)
+![Illustration of lissajous.](pictures/lissajous.png){fig-alt="Illustration of lissajous."}
 
-![](pictures/sphere.png)
+![Illustration of sphere.](pictures/sphere.png){fig-alt="Illustration of sphere."}
 
-![](pictures/spiralHelix.png)
+![Illustration of spiral Helix.](pictures/spiralHelix.png){fig-alt="Illustration of spiral Helix."}
 
-![](pictures/spiral.png)
+![Illustration of spiral.](pictures/spiral.png){fig-alt="Illustration of spiral."}
 
 Groovy graphs
 :::

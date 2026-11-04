@@ -3,14 +3,14 @@ title: Water waves
 css: ww_style.css
 ---
 
-The graph of a sine or cosine certainly doesn't look like like a wave travelling through water. Nonetheless, we can use the trig functions to model water waves. In one overly simplified model, we assume that a body of water is composed of a collection of individual particles. A wave propogating through the water induces circular motion of each particle in the water. Each particle moves about a center ${tex`(x_0,y_0)`}, the amplitude of the circular motion decreases exponentially with the depth, and the phase shifts as we move horizontally through the water. A model that captures these ideas looks like so:
+The graph of a sine or cosine certainly doesn't look like like a wave travelling through water. Nonetheless, we can use the trig functions to model water waves. In one overly simplified model, we assume that a body of water is composed of a collection of individual particles. A wave propogating through the water induces circular motion of each particle in the water. Each particle moves about a center $(x_0,y_0)$, the amplitude of the circular motion decreases exponentially with the depth, and the phase shifts as we move horizontally through the water. A model that captures these ideas looks like so:
 
-$$\begin{array}{cc}
+$$\begin{array}{rcl}
   x(t) & = & x_0 + A e^{\alpha y_0} \cos(\alpha x_0 - \beta t) \\
   y(t) & = & y_0 + A e^{\alpha y_0} \sin(\alpha x_0 - \beta t).
 \end{array}$$
 
-In this model $A$, represents the radius of the circular motion at the surface, $\alpha$ is the reciprocal of the wave length, and $\beta$ is the reciprocal of the period of the motion. You can fiddle with these parameters in the demo below. You can also choose to highlight two points to emphasize the circular motion of the individual particles.`
+In this model $A$, represents the radius of the circular motion at the surface, $\alpha$ is the reciprocal of the wave length, and $\beta$ is the reciprocal of the period of the motion. You can fiddle with these parameters in the demo below. You can also choose to highlight two points to emphasize the circular motion of the individual particles.
 
 ```{ojs}
 import {do_it} from './do_it.js';

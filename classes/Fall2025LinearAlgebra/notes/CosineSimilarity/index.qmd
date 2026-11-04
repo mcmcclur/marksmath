@@ -34,11 +34,11 @@ word_counts
 
 This is is exactly the kind of data needed to build word clouds like the following clouds built by [Jason Davies d3-cloud](https://github.com/jasondavies/d3-cloud){target=_blank}:
 
-![Word cloud for mathematics](wordcloudMath.svg)
+![Word cloud for mathematics](wordcloudMath.svg){fig-alt="Word cloud for mathematics"}
 
 ---
 
-![Word cloud for Physics](wordcloudPhysics.svg)
+![Word cloud for Physics](wordcloudPhysics.svg){fig-alt="Word cloud for Physics"}
 
 It's not too hard to find words common to both word clouds.
 

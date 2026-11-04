@@ -68,10 +68,23 @@ Specifying the line is not hard; it's just a matter of indicating its slope usin
 ::::: {layout = "[[1,1]]"}
 
 ```{ojs}
-viewof aa = Inputs.range(
-    [-0.1,1.2], 
-    {value: 0.6, step: 0.001, label: tex`a:`}
-)
+// viewof aa = Inputs.range(
+//     [-0.1,1.2], 
+//     {value: 0.6, step: 0.001, label: "a:"}
+// )
+
+viewof aa = {
+  const control = Inputs.range(
+    [-0.1, 1.2],
+    {value: 0.6, step: 0.001, label: "a:"}
+  );
+
+  for (const input of control.querySelectorAll("input")) {
+    input.setAttribute("aria-label", "Slope a");
+  }
+
+  return control;
+}
 ```
 ```{ojs}
 md`Squared error = ${d3.format('0.4f')(d3.sum(data, A => (aa*A[0] - A[1])**2))}`
@@ -197,11 +210,12 @@ ncaa_data = {
 }
 ```
 
-<!-- NCAA Regression Coefficient 
+<!-- NCAA Regression Coefficient -->
 ```{ojs}
+//| eval: false
+//| include: false
 d3.sum(
     ncaa_data, 
     o => o.seed_diff*(o.team1_score - o.team2_score)
 )/d3.sum(ncaa_data, o => o.seed_diff*o.seed_diff); 
 ```
--->

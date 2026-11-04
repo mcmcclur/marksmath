@@ -30,5 +30,6 @@ Here are a few warm up problems for Complex Variables. I will show you on Wednes
    $$\mathrm{Re}(z_1z_2)=\mathrm{Re}(z_1)\mathrm{Re}(z_2).$$
 
 3. Let $P(z)=a_nz^n + a_{n-1}z^{n-1} \cdots +a_1z + a_0$ be a polynomial and suppose that $z_0$ is a root of $P$. Show that $\overline{z_0}$ is also a root of $P$.  
-   *Hint*: The algebraic properties of the conjugate imply that $$\overline{P(\overline{z})} = P(z).$$  
+   *Hint*: The algebraic properties of the conjugate imply that $$\overline{P(\overline{z})} = P(z).$$
+
    You may use this fact.

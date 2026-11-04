@@ -1,11 +1,11 @@
 ---
-title: NCCAA Basketball tournaments
+title: NCAA Basketball tournaments
 format: 
   html:
     page-layout: custom
 css: tourney-style.css
 ---
-
+<main>
 <div class="content"> 
 <div class="text-container" id="observablehq-topmatter-fe316fef"></div>
 <div class="text-container" id="observablehq-viewof-men_or_women-fe316fef"></div>
@@ -27,10 +27,10 @@ The data all comes from [Kaggle's NCAA tournament competition](https://www.kaggl
 </div> 
 
 
-
-
-
 <div class="text-container" id="observablehq-styles-fe316fef"></div>
+
+</main>
+
 <script type="module">
 import {Runtime, Inspector} from "https://cdn.jsdelivr.net/npm/@observablehq/runtime@5/dist/runtime.js";
 import define from "https://api.observablehq.com/@mcmcclur/ncaa-brackets.js?v=4";

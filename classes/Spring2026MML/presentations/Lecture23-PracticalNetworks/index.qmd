@@ -198,7 +198,7 @@ Early stopping is based on the empirical observation that the training loss tend
 
 ::: {style="max-width: 900px"}
 
-![](./images/early_stop.png)
+![](./images/early_stop.png){fig-alt="Training loss continues to decrease while validation loss levels off or increases, motivating early stopping."}
 
 :::
 
@@ -230,11 +230,11 @@ A "subnetwork" can be determined by simply dropping some of the nodes and their 
 
 ::: {layout-ncol=3}
 
-![](./images/g0.png)
+![](./images/g0.png){fig-alt="Neural network illustrating the starting model for dropout."}
 
-![](./images/g1.png)
+![](./images/g1.png){fig-alt="Example subnetwork formed by dropping nodes and their incident edges."}
 
-![](./images/g2.png)
+![](./images/g2.png){fig-alt="Another example subnetwork formed by dropping nodes and their incident edges."}
 
 :::
 

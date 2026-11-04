@@ -33,7 +33,7 @@ This process is illustrated for the function $f\left(x\right)=\sin\left(x\right)
 ::: {#fig-desmos_difference_quotient .figure fig-cap="The 1D Difference Quotient" fig-alt="Approximation with the difference quotient" fig-align="center"}
 
 :::: {.content-visible when-format="pdf"}
-![](./figures/desmosDifferenceQuotient.png){width=80%}
+![](./figures/desmosDifferenceQuotient.png){width=80% fig-alt="Illustration of desmos Difference Quotient."}
 ::::
 
 :::: {.content-visible when-format="html"}
@@ -62,6 +62,7 @@ This situation is illustrated as a contour plot for the hill $f(x,y)=2-(x^2+y^2)
 ```{python}
 #| label: fig-contours
 #| fig-cap: The hill $f(x,y)=2-(x^2+y^2)/2$
+#| fig-alt: "The hill $f(x,y)=2-(x^2+y^2)/2$"
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -179,6 +180,7 @@ OK, the function is actually $f(x,y)=x^2\,\sin(x+y^2)$, but that's not the point
 
 ```{python}
 #| fig-cap: A contour diagram for estimation
+#| fig-alt: "A contour diagram for estimation"
 #| label: fig-contour_estimation
 
 # Define the function
@@ -337,6 +339,7 @@ Judging from @fig-contour_for_optimization1, it appears there is a minimum value
 
 ```{python}
 #| fig-cap: A contour diagram for optimization
+#| fig-alt: "A contour diagram for optimization"
 #| label: fig-contour_for_optimization1
 
 # Define the function
@@ -405,6 +408,7 @@ $f(x,y)=x^3 - 6xy - y^3$.  We begin with a contour diagram:
 
 ```{python}
 #| fig-cap: A contour diagram for optimization
+#| fig-alt: "A contour diagram for optimization"
 #| label: fig-contour_for_optimization2
 
 # Define the function

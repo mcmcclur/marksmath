@@ -165,13 +165,13 @@ And you can plot good old level curves with plain old Desmos:
 
 ::: {style="max-width: 600px; margin: 0 auto;"}
 
-![A contour diagram for $f(x,y)=(x + y)\cos(x)\cos(y)/2$](figures/contour1.png){#fig-contour1}
+![A contour diagram for $f(x,y)=(x + y)\cos(x)\cos(y)/2$](figures/contour1.png){#fig-contour1 fig-alt="A contour diagram for $f(x,y)=(x + y)\cos(x)\cos(y)/2$"}
 
 :::
 
 ::: {style="max-width: 600px; margin: 0 auto;"}
 
-![Some groovy graphs](figures/groovyGraphs.png){#fig-groovyGraphs}
+![Some groovy graphs](figures/groovyGraphs.png){#fig-groovyGraphs fig-alt="Some groovy graphs"}
 
 :::
 

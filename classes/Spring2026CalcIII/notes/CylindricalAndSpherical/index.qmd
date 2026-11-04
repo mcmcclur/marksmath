@@ -25,7 +25,7 @@ over regions that are "simple" in those coordinate systems.
 ## Cylindrical coordinates
 
 ::: {style="max-width: 500px"}
-![Identifying a point in the cylindrical coordinate system](images/cylindrical_coords.png)
+![Identifying a point in the cylindrical coordinate system](images/cylindrical_coords.png){fig-alt="Identifying a point in the cylindrical coordinate system"}
 :::
 
 Cylindrical coordinates are like polar + $z$: specify a point in the plane via polar coordinates $(r,\theta)$, then its vertical displacement using $z$.
@@ -35,7 +35,7 @@ Cylindrical coordinates are like polar + $z$: specify a point in the plane via p
 ### Cylindrical coords with xy
 
 ::: {style="max-width: 500px"}
-![Relating a point in the cylindrical coordinate system to Cartesian](images/cylindrical_coords_xy.png)
+![Relating a point in the cylindrical coordinate system to Cartesian](images/cylindrical_coords_xy.png){fig-alt="Relating a point in the cylindrical coordinate system to Cartesian"}
 :::
 
 If you put $x$ and $y$ in that picture, you can see the relationship between cylindrical and Cartesian.
@@ -107,7 +107,7 @@ Note: the factor $r$ is part of $dV$.
 ### Simple cylindrical regions
 
 ::: {style="max-width: 500px"}
-![A "simple" wedge in cylindrical coordinates](images/simple_cylindrical.png)
+![A "simple" wedge in cylindrical coordinates](images/simple_cylindrical.png){fig-alt="A &quot;simple&quot; wedge in cylindrical coordinates"}
 :::
 
 The simplest regions have the form
@@ -121,7 +121,7 @@ $$
 ### A functional bound
 
 ::: {style="max-width: 500px"}
-![A region with a top in cylindrical coordinates](images/bullet.png)
+![A region with a top in cylindrical coordinates](images/bullet.png){fig-alt="A region with a top in cylindrical coordinates"}
 :::
 
 Sometimes bounds depend on functions. For example:
@@ -154,7 +154,7 @@ $$
 ## Spherical coordinates
 
 ::: {style="max-width: 500px"}
-![Identifying a point in the spherical coordinate system](images/spherical_coords.png)
+![Identifying a point in the spherical coordinate system](images/spherical_coords.png){fig-alt="Identifying a point in the spherical coordinate system"}
 :::
 
 - $\rho$: distance to the origin  
@@ -166,7 +166,7 @@ $$
 ### Spherical to Cylindrical
 
 ::: {style="max-width: 500px"}
-![Slicing the spherical coordinate system](images/spherical_with_plane.png)
+![Slicing the spherical coordinate system](images/spherical_with_plane.png){fig-alt="Slicing the spherical coordinate system"}
 :::
 
 Fix $\theta$ to determine a plane, then relate $\rho,\varphi$ to $r,z$.
@@ -176,7 +176,7 @@ Fix $\theta$ to determine a plane, then relate $\rho,\varphi$ to $r,z$.
 ### Spherical to Cylindrical (cont.)
 
 ::: {style="max-width: 500px"}
-![A slice of the spherical coordinate system](images/tri.png)
+![A slice of the spherical coordinate system](images/tri.png){fig-alt="A slice of the spherical coordinate system"}
 :::
 
 Within that plane, the relationships follow from trigonometry.
@@ -227,7 +227,7 @@ Now the factor $\rho^2 \sin(\varphi)$ appears in $dV$.
 ### Simple spherical regions
 
 ::: {style="max-width: 500px"}
-![A "simple" eighth of a sphere](images/first_octant.png)
+![A "simple" eighth of a sphere](images/first_octant.png){fig-alt="A &quot;simple&quot; eighth of a sphere"}
 :::
 
 These regions have the form

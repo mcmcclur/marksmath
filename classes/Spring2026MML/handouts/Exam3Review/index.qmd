@@ -124,6 +124,7 @@ As usual, there is a link at the bottom of this sheet that will take you to a fo
 ```{python}
 #| label: fig-logistic_plot
 #| fig-cap: "Data for a logistic regression"
+#| fig-alt: "Data for a logistic regression"
 
 from images import synthetic_logistic
 synthetic_logistic()

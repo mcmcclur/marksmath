@@ -79,15 +79,15 @@ If you have questions about any of the problems on this sheet, you can use the R
 ## Images
 
 ::: {style="max-width: 550px"}
-![A directed curve through a vector field](line_int_pic.png){#fig-line_int_pic width=550px}
+![A directed curve through a vector field](line_int_pic.png){#fig-line_int_pic width=550px fig-alt="A directed curve through a vector field"}
 :::
 
 ::: {style="max-width: 550px"}
-![An irregular hexagon](poly.png){#fig-poly}
+![An irregular hexagon](poly.png){#fig-poly fig-alt="An irregular hexagon"}
 :::
 
 ::: {style="max-width: 550px"}
-![The Craig retroazimuthal projection](craig_football.png){#fig-craig_football}
+![The Craig retroazimuthal projection](craig_football.png){#fig-craig_football fig-alt="The Craig retroazimuthal projection"}
 :::
 
 ::: {.content-visible when-format="html"}

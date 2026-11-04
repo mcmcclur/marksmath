@@ -71,7 +71,7 @@ $$
 ## Figures 
 
 ::: {style="max-width: 650px; margin: 0 auto"}
-![The graph of $f(x) = x\ln(x)$](./figures/xlogx.png){#fig-xlogx}
+![The graph of $f(x) = x\ln(x)$](./figures/xlogx.png){#fig-xlogx fig-alt="The graph of $f(x) = x\ln(x)$"}
 :::
 
 ::: {style="max-width: 650px; margin: 0 auto"}
@@ -79,6 +79,7 @@ $$
 ```{python}
 #| label: fig-fence
 #| fig-cap: "A partitioned corral"
+#| fig-alt: "A partitioned corral"
 
 import matplotlib.pyplot as plt
 plt.plot([1,1],[2,0], color='black', linestyle='--')
@@ -92,11 +93,11 @@ plt.axis('off')
 :::
 
 ::: {style="max-width: 650px; margin: 0 auto"}
-![A little data together with its regression line](./figures/regress.png){#fig-regress}
+![A little data together with its regression line](./figures/regress.png){#fig-regress fig-alt="A little data together with its regression line"}
 :::
 
 ::: {style="max-width: 650px; margin: 0 auto"}
-![The complete graph of a function](./figures/piecewise_integral.png){#fig-piecewise_integral}
+![The complete graph of a function](./figures/piecewise_integral.png){#fig-piecewise_integral fig-alt="The complete graph of a function"}
 :::
 
 

@@ -44,6 +44,7 @@ We have our third quiz this Friday, October 30th. This problem sheet represents 
 ```{ojs}
 //| label: fig-exponential-graph
 //| fig-cap: "The graph of $f(x) = 5xe^{-x}$."
+//| fig-alt: "The graph of $f(x) = 5xe^{-x}$."
 {
   const points = d3.range(601).map(i => {
     const x = i / 100;
@@ -69,6 +70,7 @@ We have our third quiz this Friday, October 30th. This problem sheet represents 
 ```{ojs}
 //| label: fig-corral
 //| fig-cap: "A multi partitioned corral"
+//| fig-alt: "A multi partitioned corral"
 {
 const w = 1.9, h = 1;
 const g = 0.09;     // offset of dimension lines from the fence

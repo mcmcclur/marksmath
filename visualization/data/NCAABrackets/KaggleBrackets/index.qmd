@@ -6,8 +6,10 @@ format:
 css: kaggle.css
 ---
 
+<main>
 
 ::: {.content} 
+
 
 
 ::::: {style="margin-left: 20px"}
@@ -105,3 +107,5 @@ import {
   overall_brier_display, selected_brier_display, brackets, style, styles
 } from 'e8129da42f3b11fd';
 ```
+
+</main>

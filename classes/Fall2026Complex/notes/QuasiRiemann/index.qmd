@@ -128,6 +128,7 @@ $$
 ```{ojs}
 //| label: fig-square_density
 //| fig-cap: '$y=1/\sqrt{x}$ (<span role="img" aria-label="orange line" style="display: inline-block; width: 1.4em; border-top: 2px solid darkorange; vertical-align: middle;"></span>) together with $\#(S\cap[1,n])/n$ (<span role="img" aria-label="blue dot" style="display: inline-block; width: 0.45em; height: 0.45em; border-radius: 50%; background: steelblue; vertical-align: middle;"></span>), where $S$ is the set of squares.'
+//| fig-alt: "$y=1/\\sqrt{x}$ (<span role=\"img\" aria-label=\"orange line\" style=\"display: inline-block; width: 1.4em; border-top: 2px solid darkorange; vertical-align: middle;\"></span>) together with $\\#(S\\cap[1,n])/n$ (<span role=\"img\" aria-label=\"blue dot\" style=\"display: inline-block; width: 0.45em; height: 0.45em; border-radius: 50%; background: steelblue; vertical-align: middle;\"></span>), where $S$ is the set of squares."
 squareDensity = d3.range(1, 101).map(n => ({
   n,
   density: Math.floor(Math.sqrt(n)) / n
@@ -352,6 +353,7 @@ The Riemann Hypothesis conjectures that the function we've defined has infinitel
 ```{ojs}
 //| label: fig-zeta_contours
 //| fig-cap: 'The Riemann zeta function'
+//| fig-alt: "The Riemann zeta function"
 {
   const zetaImage = await FileAttachment("zeta.png").url();
   const marginLeft = 60;
@@ -430,6 +432,7 @@ viewof zetaTMaxIndex = Inputs.range([0, zetaCritical[0].pts.length - 1], {
 ```{ojs}
 //| label: fig-critical-line-image
 //| fig-cap: 'The image of $s+it$ under $\zeta$'
+//| fig-alt: "The image of $s+it$ under $\\zeta$"
 Plot.plot({
   width: Math.min(width, 600),
   aspectRatio: 1,
@@ -476,6 +479,7 @@ viewof hardyTMaxIndex = Inputs.range([0, hardyZValues.length - 1], {
 ```{ojs}
 //| label: fig-hardy-z
 //| fig-cap: "Hardy's real-valued $Z$ function"
+//| fig-alt: "Hardy's real-valued $Z$ function"
 Plot.plot({
   width: Math.min(width, 800),
   height: 350,
@@ -544,6 +548,7 @@ zeroSumData = {
 ```{ojs}
 //| label: fig-zero-sum
 //| fig-cap: 'A cosine sum over the first $N$ zeta zeros, with dots at the primes.'
+//| fig-alt: "A cosine sum over the first $N$ zeta zeros, with dots at the primes."
 Plot.plot({
   width: Math.min(width, 800),
   height: 350,

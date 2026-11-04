@@ -40,7 +40,7 @@ Our first exam is next Wednesday, September 17! Here's our first draft of a revi
 
 3. Write down a componentwise proof of the fact that vector addition is associative. That is, if $\mathbf{u}$, $\mathbf{v}$, and $\mathbf{w}$ are vectors in $\mathbb{R}^n$, then 
 $$(\mathbf{u} + \mathbf{v}) + \mathbf{w} = 
-  \mathbf{u} + (\mathbf{v} + \mathbf{w}).$$  
+  \mathbf{u} + (\mathbf{v} + \mathbf{w}).$$
   I guess you might try the same thing with commutativity.
 
 
@@ -125,7 +125,7 @@ B = \left(\begin{array}{rr}
 \end{array}\right).
 $$
    a. Compute $AB$ or explain why that makes no sense.
-   b. Compute $BA$ or explain why that makes no sense.  
+   b. Compute $BA$ or explain why that makes no sense.
 
 8. Write down $2\times2$ matrices that perform the following actions. In some cases, you might want to express your answer as a product of matrices that perform simpler actions.
 

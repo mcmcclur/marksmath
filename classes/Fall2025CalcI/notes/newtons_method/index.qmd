@@ -21,7 +21,7 @@ Suppose we want to find the maximum value of $f(x)=x \sin(x)$ over the interval
 $[0,\pi]$. A glance at graph shows there's exactly one.
 
 ::: img
-![](xsinx.png)
+![](xsinx.png){fig-alt="Illustration of xsinx."}
 :::
 
 So, how would we find that? I guess we just have to solve 
@@ -80,7 +80,7 @@ Let $f(x) = x^3-x-1$. It's evident from a graph that there's one
 root.
 
 ::: img
-![](fpic.png)
+![](fpic.png){fig-alt="Graph of f(x) = x^3 - x - 1, illustrating its single real root."}
 :::
 
 Newton's method works by riding the tangent line from an initial guess.
@@ -92,13 +92,13 @@ $$N(x) = x - \frac{f(x)}{f'(x)} = x -
 line to the $x$-axis:
 
 ::: img
-![](lpic.png)
+![](lpic.png){fig-alt="First Newton step for f(x) = x^3 - x - 1: the tangent at x = 2 meets the x-axis near 1.54545."}
 :::
 
 If we do that again, we end up even closer to the root:
 
 ::: img
-![](llpic.png)
+![](llpic.png){fig-alt="A second Newton step uses another tangent line to move closer to the root of x^3 - x - 1."}
 :::
 
 That's why we iterate!
