@@ -1,22 +1,70 @@
 ---
-title: "Circle area"
-echo: false
+title: "𝚷, circumference, and area"
+page-layout: article
+toc: true
 css: styles.css
 ---
 
-For the most part, we know that the area of a circle of radius $r$ is $\pi r^2$ - do we know *why*, though?
+Both the circumference and area of a circle are related to the fundamental constant $\pi$ by
+$$C = 2\pi r \text{ and } A = \pi r^2.$$
+The circumference formula is, in fact, the very definition of $\pi$ but the area formula is much deeper. From the perspective of calculus, the area computation looks a lot like a Riemann sum!
 
-The little demo below illustrates how it is that we can decompose a circle into an even number of wedges and then reassemble those wedges into something that looks kinda close to a rectangle. Can you see what the width and height of the limiting rectangle are?
 
+## $\pi$ and circumference
+
+Most students probably know that the circumference of a circle is related to its radius by
+$$C = 2\pi r.$$
+This is, in fact, pretty much the definition of $\pi$. That is, given any two circles, the ratio of their circumference to their diameter is the same. This is a fundamental characteristic of geometric similarity. This common value is, by definition, denoted with the symbols $\pi$.
+
+That is $\displaystyle \pi = C/(2r)$, for any circle.
+
+We can use this to approximate $\pi$ by inscribing a polygon into circle of radius 1. The perimeter of the polygon is just a collection of line segments so we can compute its value by adding the lengths of the line segments. Using six sides, shows that $\pi$ is a bit bigger than three. Using more sides yields better estimate, as the demo below shows.
 
 ```{ojs}
-viewof n = Inputs.range([1,32], {step: 1, value: 2})
+viewof n = Inputs.range([3, 100], {step: 1, value: 6, label: "Number of sides:"})
+
+circumferencePlot(n, width, Plot)
+
+tex`\pi \gtrsim \frac{1}{2} \times ${(2 * n * Math.sin(Math.PI / n)).toFixed(6)} = ${(n * Math.sin(Math.PI / n)).toFixed(6)}`
+```
+
+
+## $\pi$ and area
+
+We've now seen that $\pi$ and circumference are related basically by definition. It's a bit trickier to see how $\pi$ is related to area, even though we certainly all know the formula:
+$$
+A = \pi r^2.
+$$
+It was Archimedes Circa 200 BC who first derived this formula. The following demonstration, though, is generally attributed to Leonardo da Vinci during the 15th century. From the perspective of calculus, it has the advantage of a clear relationship with Riemann sums.
+
+Given a circle of radius $r$, we break it into a collection of an even number of wedges. These wedges can be rearranged into a configuration that approaches a rectangle as the number of wedges increases. It's pretty easy to see that the dimensions of that rectangle are the radius of the circle by half the circumference of the circle. That is, it's area is 
+$$
+r \times \pi r = \pi r^2.$
+$$
+
+
+```{ojs} 
+viewof area_n = Inputs.range([4,100], {step: 2, value: 4, label: "Number of wedges:"})
 ```
 
 ```{ojs}
-assemble(n)
+assemble(area_n)
 ```
 
 ```{ojs}
-import {w, h, assemble} from './generation_functions.js';
+import {w, h, assemble, circumferencePlot} from './generation_functions.js';
+```
+
+
+```{=html}
+<script>
+document.addEventListener("DOMContentLoaded", async () => {
+  const title = document.querySelector("#title-block-header h1.title");
+  if (!title || !window.MathJax?.startup?.promise) return;
+
+  await MathJax.startup.promise;
+  title.textContent = "\\(\\pi\\), circumference, and area";
+  await MathJax.typesetPromise([title]);
+});
+</script>
 ```
