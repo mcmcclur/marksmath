@@ -14,11 +14,11 @@ The circumference formula is, in fact, the very definition of $\pi$ but the area
 
 Most students probably know that the circumference of a circle is related to its radius by
 $$C = 2\pi r.$$
-This is, in fact, pretty much the definition of $\pi$. That is, given any two circles, the ratio of their circumference to their diameter is the same. This is a fundamental characteristic of geometric similarity. This common value is, by definition, denoted with the symbols $\pi$.
+This is, in fact, pretty much the definition of $\pi$. That is, given any two circles, the ratio of their circumference to their diameter is the same. This is a fundamental characteristic of geometric similarity. This common value is, by definition, denoted by the symbol $\pi$.
 
 That is $\displaystyle \pi = C/(2r)$, for any circle.
 
-We can use this to approximate $\pi$ by inscribing a polygon into circle of radius 1. The perimeter of the polygon is just a collection of line segments so we can compute its value by adding the lengths of the line segments. Using six sides, shows that $\pi$ is a bit bigger than three. Using more sides yields better estimate, as the demo below shows.
+We can use this to approximate $\pi$ by inscribing a polygon into a circle of radius 1. The perimeter of the polygon is just a collection of line segments so we can compute its value by adding the lengths of the line segments. Using six sides shows that $\pi$ is a bit bigger than three. Using more sides yields a better estimate, as the demo below shows.
 
 ```{ojs}
 viewof n = Inputs.range([3, 100], {step: 1, value: 6, label: "Number of sides:"})
@@ -39,7 +39,7 @@ It was Archimedes Circa 200 BC who first derived this formula. The following dem
 
 Given a circle of radius $r$, we break it into a collection of an even number of wedges. These wedges can be rearranged into a configuration that approaches a rectangle as the number of wedges increases. It's pretty easy to see that the dimensions of that rectangle are the radius of the circle by half the circumference of the circle. That is, it's area is 
 $$
-r \times \pi r = \pi r^2.$
+r \times \pi r = \pi r^2.
 $$
 
 

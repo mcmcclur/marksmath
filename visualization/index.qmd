@@ -201,10 +201,30 @@ layout: article
 :::: {.grid}
 ::::: {.g-col-12 .g-col-sm-4} 
 <div class="card text-bg-light mb-3">
- <img class="light-content" src="class/unit_circle/unit_ circle_light.png" class="card-img-top" alt="Static image of the unit circle">
- <img class="dark-content" src="class/unit_circle/unit_ circle_dark.png" class="card-img-top" alt="Static image of the unit circle">
+ <img class="light-content" src="class/circle_area/image_light.png" class="card-img-top" alt="Snapshot of the circle area demo">
+ <img class="dark-content" src="class/circle_area/image_dark.png" class="card-img-top" alt="Snapshot of the circle area demo">
+ <div class="card-body text-center">
+  <a href="./class/circle_area/" class="btn btn-primary">Area of a circle</a>
+ </div>
+</div>
+:::::
+
+::::: {.g-col-12 .g-col-sm-4} 
+<div class="card text-bg-light mb-3">
+ <img class="light-content" src="class/unit_circle/unit_circle_light.png" class="card-img-top" alt="Static image of the unit circle">
+ <img class="dark-content" src="class/unit_circle/unit_circle_dark.png" class="card-img-top" alt="Static image of the unit circle">
  <div class="card-body text-center">
   <a href="./class/unit_circle/" class="btn btn-primary">The unit circle</a>
+ </div>
+</div>
+:::::
+ 
+::::: {.g-col-12 .g-col-sm-4} 
+<div class="card text-bg-light mb-3">
+ <img class="light-content" src="class/RiemannSums/image_light.png" class="card-img-top" alt="Snapshot of the Riemann sum demo">
+ <img class="dark-content" src="class/RiemannSums/image_dark.png" class="card-img-top" alt="Snapshot of the Riemann sum demo">
+ <div class="card-body text-center">
+  <a href="./class/RiemannSums/" class="btn btn-primary">Riemann sums</a>
  </div>
 </div>
 :::::
