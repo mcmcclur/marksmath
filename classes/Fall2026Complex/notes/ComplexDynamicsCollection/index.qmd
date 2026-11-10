@@ -1,0 +1,17 @@
+---
+title: "Complex dynamics collection"
+format:
+    html:
+        page-layout: article
+---
+
+Here are a few resources that we'll pull up as we discuss complex dynamics.
+
+- [Section 4.2 of our text](https://complexanalysis.org/web/sec_julia-mandelbrot.html){target=_blank}
+- [My text on Chaos and Fractals](https://legacy.marksmath.org/classes/Fall2023ChaosAndFractals/chaos_and_fractals_2023){target=_blank}
+- Several old demos:
+  - [Newton's method](https://legacy.marksmath.org/visualization/complex_newton/)
+  - [The complex square function](https://legacy.marksmath.org/visualization/complex_square_iteration/)
+  - [Quadratic Julia sets](https://legacy.marksmath.org/visualization/julia_sets/)
+  - [Basins of attraction](https://legacy.marksmath.org/visualization/interactive_basins/)
+  - [Zooming into the Mandelbrot set](https://legacy.marksmath.org/visualization/mandelzoom/)
