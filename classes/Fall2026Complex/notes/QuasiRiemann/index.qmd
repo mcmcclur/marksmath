@@ -588,4 +588,159 @@ It's still not known if there are other roots in the critical strip that lie off
 *Conjecture*: There is $\delta>0$ such that every root $z$ of the Riemann Zeta function in the critical strip satisfies
 $$\delta < \text{Re}(z) < 1 - \delta.$$
 
-Open AI, of course, claims to hav resolved this conjecture.
+Open AI, of course, claims to have resolved this conjecture. In fact, they show that $\delta$ can be taken to be $1/8$.
+
+## Video Update
+
+This Youtube video shows Fields medalist James Maynard explain the quasi-Riemann Hypothesis. He, evidently, seems convinced of the proof's correctness and, as one of the world's leading experts on the subject is well positioned to know.
+
+```{=html}
+<style>
+.riemann-video {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16/9;
+}
+.riemann-video iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+.riemann-video-cue {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+}
+.riemann-video-cue > .riemann-video-comment {
+  padding: 0.15em 0.5em;
+  border: 4px solid #111;
+  border-radius: 0.2em;
+  background: rgb(255 223 0 / 0.4);
+  color: #111;
+  font-size: clamp(1rem, 3vw, 2rem);
+  text-align: center;
+  font-weight: 900;
+  box-shadow: 0 0 25px #0008;
+}
+.riemann-video-oval {
+  /* Center and radii, as percentages of the video width and height. */
+  --oval-center-x: 35%;
+  --oval-center-y: 15%;
+  --oval-radius-x: 5%;
+  --oval-radius-y: 9%;
+
+  position: absolute;
+  left: var(--oval-center-x);
+  top: var(--oval-center-y);
+  width: calc(2 * var(--oval-radius-x));
+  height: calc(2 * var(--oval-radius-y));
+  transform: translate(-50%, -50%);
+  box-sizing: border-box;
+  border: 3px solid #ffdf00;
+  border-radius: 50%;
+  background: transparent;
+}
+.riemann-video-cue[hidden] { display: none; }
+</style>
+
+<div class="riemann-video">
+  <iframe id="riemann-video-player" src="https://www.youtube.com/embed/2GsuvsEg28o?start=467&amp;enablejsapi=1&amp;playsinline=1" title="Oxford Mathematics in Conversation on AI - Ben Green and James Maynard with Jan Obloj" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+  <div id="riemann-video-cue" class="riemann-video-cue" role="status" aria-live="polite" aria-atomic="true" hidden></div>
+</div>
+
+<script>
+(() => {
+  const iframe = document.getElementById("riemann-video-player");
+  const overlay = document.getElementById("riemann-video-cue");
+  const cueTime = 504;
+  // Rearm only after observing playback positioned before the cutoff.
+  let cueArmed = false;
+  let cueVisible = false;
+  let timer;
+
+  // Replace this function's contents to perform another action at the cue.
+  function showComment() {
+    const message = document.createElement("span");
+    message.className = "riemann-video-comment";
+    // Unicode fallback while MathJax prepares the TeX (or if it is unavailable).
+    message.textContent = "He can't write a ζ either!";
+    const oval = document.createElement("div");
+    oval.className = "riemann-video-oval";
+    oval.setAttribute("aria-hidden", "true");
+    overlay.hidden = false;
+    overlay.replaceChildren(message, oval);
+    const mathJax = window.MathJax;
+    if (mathJax?.startup?.promise) {
+      mathJax.startup.promise.then(async () => {
+        if (!message.isConnected) return;
+        message.textContent = String.raw`He can't write a \(\zeta\) either!`;
+        await mathJax.typesetPromise([message]);
+      }).catch(() => {
+        message.textContent = "He can't write a ζ either!";
+      });
+    }
+  }
+
+  function hideComment() {
+    if (!cueVisible) return;
+    overlay.hidden = true;
+    // Release MathJax's references before removing dynamically typeset math.
+    window.MathJax?.typesetClear?.([overlay]);
+    overlay.replaceChildren();
+    cueVisible = false;
+  }
+
+  function updateCue(player) {
+    const time = player.getCurrentTime();
+    if (time < cueTime) cueArmed = true;
+    if (cueArmed && time >= cueTime &&
+        player.getPlayerState() === YT.PlayerState.PLAYING) {
+      // Consume the cue before pausing, so resuming cannot trigger it again.
+      cueArmed = false;
+      cueVisible = true;
+      showComment();
+      player.pauseVideo();
+    }
+  }
+
+  function createPlayer() {
+    new YT.Player(iframe, {
+      events: {
+        onReady: ({target}) => {
+          // Poll video time rather than elapsed wall time: pauses, speed changes,
+          // and seeking must all stay synchronized with the cue.
+          updateCue(target);
+          timer = window.setInterval(() => updateCue(target), 100);
+        },
+        onStateChange: ({target, data}) => {
+          if (data === YT.PlayerState.PLAYING) hideComment();
+          updateCue(target);
+        }
+      }
+    });
+  }
+
+  const source = new URL(iframe.src);
+  source.searchParams.set("origin", window.location.origin);
+  iframe.src = source.href;
+
+  if (window.YT && window.YT.Player) {
+    createPlayer();
+  } else {
+    const previousReady = window.onYouTubeIframeAPIReady;
+    window.onYouTubeIframeAPIReady = () => {
+      if (previousReady) previousReady();
+      createPlayer();
+    };
+    if (!document.querySelector('script[src="https://www.youtube.com/iframe_api"]')) {
+      const script = document.createElement("script");
+      script.src = "https://www.youtube.com/iframe_api";
+      document.head.append(script);
+    }
+  }
+  window.addEventListener("pagehide", () => window.clearInterval(timer), {once: true});
+})();
+</script>
+```
