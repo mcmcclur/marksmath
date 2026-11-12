@@ -1,0 +1,77 @@
+---
+title: Review for Exam 2
+date: 2026-11-11
+echo: false
+format:
+  html:
+    page-layout: article
+    toc: true
+    css: /components/EmbedDiscourseMathTopics/embedDiscourseMathTopic.css
+  pdf:
+    mainfont: "Times New Roman"
+    output-file: "ReviewForExam2.pdf"
+    include-in-header:
+      text: |
+        \pagenumbering{gobble}
+---
+
+Our next exam is next Wednesday, November 18. Here are some topics and problems to study.
+
+::: {.callout-note}
+
+## Note
+
+This is a first draft!
+
+:::
+
+## Definitions and theorems
+
+1. [Riemann zeta function](https://en.wikipedia.org/wiki/Riemann_zeta_function)
+2. [Riemann hypothesis](https://en.wikipedia.org/wiki/Riemann_hypothesis#mwRg)
+3. Attractive fixed point of a function $f:\mathbb C\to \mathbb C$.
+
+
+## Problems
+
+1. Express the function $S(z)$ given by
+    $$
+    S(z) = \sum_{n=3}^{\infty} \frac{(z-2)^n}{2^{n+1}}
+    $$
+    as a closed form function of $z$. What is the largest open disk on which your function is equal $S(z)$?
+
+2. Express 
+    $$
+    \int\frac{\sin(z)}{z}\,dx
+    $$
+    as a power series.
+
+3. Show that 
+$$\sum_{n=1}^{\infty} \frac{1}{n^z}$$ 
+converges for $\text{Re}(z)>1$.
+
+4. Suppose I tell you that 
+$$\sum_{n=1}^{\infty} \frac{(-1)^{n+1}}{n^{1/3}} \approx 0.571753.$$
+Can you give me a good numerical approximation to $\zeta(1/3)$?
+
+5. Let $C$ denote curve that follows the right half of the unit circle from $-i$ to $i$. Set up and evaluate 
+$$
+\int_C \frac{1}{z^5} dz.
+$$
+
+6. Let $C$ denote the positively oriented circle of radius 2 centered at the origin. Evaluate 
+$$\int_C f(z) \, dz$$
+for each of the following functions:
+
+   a. $f(z) = 1/(z-1)$
+   b. $f(z) = 1/(z-3)$
+   c. $f(z) = z/((z-1)(z-3))$
+   d. $f(z) = \sin(z)/z$
+   e. $f(z) = \cos(z)/z$
+
+7. Suppose that $f(z) = z^2-2i=(z-(1+i)) (z+(1+i))$.
+
+   a. Write down the Newton's method iteration function $N$ for $f$.
+   b. Suppose we iterate $N$ starting from $z_0 = 10$. What is the limit of the sequence that we generate?
+
+8. Find and classify the fixed points of $f(z) = z(2-z)$
