@@ -17,19 +17,14 @@ format:
 
 Our next exam is next Wednesday, November 18. Here are some topics and problems to study.
 
-::: {.callout-note}
-
-## Note
-
-This is a first draft!
-
-:::
-
 ## Definitions and theorems
 
 1. [Riemann zeta function](https://en.wikipedia.org/wiki/Riemann_zeta_function)
 2. [Riemann hypothesis](https://en.wikipedia.org/wiki/Riemann_hypothesis#mwRg)
-3. Attractive fixed point of a function $f:\mathbb C\to \mathbb C$.
+3. [The Cauchy-Gorsat Theorem](https://complexanalysis.org/web/sec_cauchy-goursat.html#CG_Thm)
+4. [The Cauch Integral Formula](https://complexanalysis.org/web/sec_cauchy-integral-formulas.html#Cauchy_Int_Formula)
+5. [Attractive fixed point of a function $f:\mathbb C\to \mathbb C$.](https://marksmath.org/ChaosText/section-classification_of_fixed_points.html#definition-classification_of_fixed_points)  
+   (Can you rephrase it for $\mathbb C$, rather than $\mathbb R$?)
 
 
 ## Problems
@@ -38,17 +33,19 @@ This is a first draft!
     $$
     S(z) = \sum_{n=3}^{\infty} \frac{(z-2)^n}{2^{n+1}}
     $$
-    as a closed form function of $z$. What is the largest open disk on which your function is equal $S(z)$?
+    as a closed form function of $z$. What is the largest open disk on which your function is equal to $S(z)$?
 
 2. Express 
     $$
-    \int\frac{\sin(z)}{z}\,dx
+    \int\frac{\sin(z)}{z}\,dz
     $$
     as a power series.
 
 3. Show that 
 $$\sum_{n=1}^{\infty} \frac{1}{n^z}$$ 
 converges for $\text{Re}(z)>1$.
+
+\newpage 
 
 4. Suppose I tell you that 
 $$\sum_{n=1}^{\infty} \frac{(-1)^{n+1}}{n^{1/3}} \approx 0.571753.$$
@@ -75,3 +72,24 @@ for each of the following functions:
    b. Suppose we iterate $N$ starting from $z_0 = 10$. What is the limit of the sequence that we generate?
 
 8. Find and classify the fixed points of $f(z) = z(2-z)$
+
+
+
+
+
+::: {.content-visible when-format="html"}
+
+## Questions
+
+Follow the "Reply on WriteTech" button to ask a question on or make a comment about this review sheet. Your questions and comments will auto-magically appear below. You can feel free to respond to other students questions and comments. I might chime in as well.
+
+```{ojs}
+embedDiscourseMathTopic(2897)
+```
+
+```{ojs}
+import {embedDiscourseMathTopic} from '/components/EmbedDiscourseMathTopics/embedDiscourseMathTopic.js';
+```
+
+:::
+
