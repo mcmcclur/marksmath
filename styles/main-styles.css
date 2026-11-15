@@ -38,6 +38,9 @@ p {
 
 
 /* Light / Dark */
+.quarto-dark .responsive-raster {
+  filter: invert(1) hue-rotate(180deg);
+}
 .quarto-dark .viz-container {
   background-color: #333;
   border: solid 2px #555;

@@ -11,7 +11,7 @@ One overly simplistic way to characterize calculus might be as that part of math
 A common early example is the computation of the slope of a tangent line. Can you use a slider in the image below to take a guess at the slope of the tangent line?
 
 ::: {.mask}
-<iframe src="https://www.desmos.com/calculator/whhfmmx5ig?embed" style="border: 1px solid #ccc; width: 100%; height: 80vh" frameborder=0></iframe>
+<iframe src="https://www.desmos.com/calculator/whhfmmx5ig?embed" style="border: 1px solid #ccc; width: 100%; height: 80vh; filter: invert(1) hue-rotate(180deg);" frameborder=0></iframe>
 ::: 
 
 ## Details
