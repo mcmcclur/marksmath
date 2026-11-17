@@ -1,0 +1,52 @@
+---
+title: More practice for Exam 2
+echo: false
+format:
+  html:
+    page-layout: article
+    toc: true
+  pdf:
+    mainfont: "Times New Roman"
+    output-file: "PracticeForExam2.pdf"
+    include-in-header:
+      text: |
+        \pagenumbering{gobble}
+        \usepackage[bottom=0.1in]{geometry}
+---
+
+\vspace{-0.7in}
+
+Here's a bit more practice for our last midterm this Wednesday. This does *not* replace the review sheet and you should definitely study that as well. 
+
+
+## Problems
+
+2. Express 
+    $$
+    \frac{1}{z} e^{z^2}
+    $$
+    as a power series.  
+    Note: There might be a $1/z$ term in there.
+
+<!-- -->
+
+4. Suppose I tell you that 
+$$\sum_{n=1}^{\infty} \frac{(-1)^{n+1}}{n^{1/2}} \approx 0.604899.$$
+Can you give me a good numerical approximation to $\zeta(1/2)$?
+
+5. Let $L$ denote the straight line segment from $0$ to $1+i$. Set up and evaluate 
+$$
+\int_L e^z dz.
+$$
+
+6. Let $C$ denote the positively oriented circle of radius 5 centered at the origin. Evaluate 
+$$\int_C f(z) \, dz$$
+for each of the following functions:
+
+   a. $f(z) = 1/(z-10)$
+   b. $f(z) = z/((z-2)(z-10))$
+
+<!-- -->
+
+8. Find and classify the fixed points of $f(z) = z^3 - \frac{i}{2}z^2 + z$.
+
