@@ -23,7 +23,7 @@ Here are a few more practice problems for our last midterm this Friday, November
 <!-- -->
 
 5. @fig-regress shows the data 
-$$\{(-3,-2),(-3,1),(3,-1), (3,2)\},$$
+$$\{(-3,-2),(-3,-1),(3,1), (3,2)\},$$
 together with its regression line of the form $f(x)=ax$.
 
    a. Write down the formula for $E(a)$ representing the squared error of the regression as a function of the parameter $a$.
