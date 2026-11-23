@@ -57,14 +57,14 @@ $$
 ## Figures 
 
 ::: {style="max-width: 450px; margin: 0 auto;"}
-![The graph of $f(x) = e^{-x^2/2}$](./figures/normal_inflection.png){#fig-normal_inflection .responsive-raster width=400px fig-pos="H" fig-alt="The graph of $f(x) = e^{-x^2/2}$"}
+![The graph of $f(x) = e^{-x^2/2}$](./figures/normal_inflection.png){#fig-normal_inflection .responsive-raster width=400px fig-pos="h!" fig-alt="The graph of $f(x) = e^{-x^2/2}$"}
 :::
 
 ::: {style="max-width: 450px; margin: 0 auto"}
-![A little data together with its regression line](./figures/regress.png){#fig-regress .responsive-raster width=400px fig-pos="H" fig-alt="A little data together with its regression line"}
+![A little data together with its regression line](./figures/regress.png){#fig-regress .responsive-raster width=400px fig-pos="h!" fig-alt="A little data together with its regression line"}
 :::
 
 ::: {style="max-width: 450px; margin: 0 auto"}
-![The complete graph of a function](./figures/piecewise_integral.png){#fig-piecewise_integral .responsive-raster width=400px fig-pos="H" fig-alt="The complete graph of a function"}
+![The complete graph of a function](./figures/piecewise_integral.png){#fig-piecewise_integral .responsive-raster width=400px fig-pos="h!" fig-alt="The complete graph of a function"}
 :::
 
