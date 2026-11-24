@@ -80,7 +80,7 @@ Plot.plot({...})
 
 The README documents this workflow in full, including its limitations (SVG figures only, explicit dimensions required).
 
-### Accessibility
+### Accessibility and user preferences
 
 Accessibility is a real requirement here: PDF output targets PDF/UA-2 (`pdf-standard: ua-2` in `_quarto.yml`), and the rendered site is checked with `quarto call axe`.
 
@@ -88,6 +88,8 @@ Accessibility is a real requirement here: PDF output targets PDF/UA-2 (`pdf-stan
 - Accepted findings are recorded by hand in `_axe-baseline.json` at the repo root (create it as `{ "findings": [] }` if absent), with a note explaining each decision.
 - `_axe-checks/README.md` documents the full workflow; read it before touching any accessibility output.
 - Fixes go in the Quarto source (`.qmd`, `_quarto.yml`, theme files), never in `_site/`.
+
+The site also respects the user's color-scheme choice (`respect-user-color-scheme: true`). Raster images (scans, screenshots, light-background line art) should carry the `responsive-raster` class: the global rule `.quarto-dark img.responsive-raster` in `styles/main-styles.css` inverts them in dark mode. In markdown, that's the `.responsive-raster` attribute on the image; in OJS, add the class to the element. Inversion suits some images better than others — check the result per image.
 
 ## Editing Guidelines
 
